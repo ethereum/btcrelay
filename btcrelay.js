@@ -8,7 +8,7 @@ contract BTCRelay {
     uint32 nonce;
   }
 
-  uint lastKnownBlock;
+  hash lastKnownBlock;
 
   function BTCRelay() {
 
@@ -31,5 +31,15 @@ contract BTCRelay {
     header.time = time;
     header.bits = bits;
     header.nonce = nonce;
+  }
+
+  // TODO: pass in BlockHeader when Solidity supports non-storage structs
+  function isNexBlock(hash hashPrevBlock) returns (bool _) {
+    if (hashPrevBlock == lastKnownBlock) {
+      return true;
+    }
+    else {
+      return false;
+    }
   }
 }
