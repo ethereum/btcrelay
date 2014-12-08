@@ -1,8 +1,8 @@
 contract BTCRelay {
   struct BlockHeader {
     uint32 version;
-    uint hashPrevBlock;
-    uint hashMerkleRoot;
+    hash hashPrevBlock;
+    hash hashMerkleRoot;
     uint32 time;
     uint32 bits;
     uint32 nonce;
@@ -18,4 +18,18 @@ contract BTCRelay {
     //block[lastKnownBlock].header = ...
   }
 
+  function storeBlockHeader(uint32 version,
+      hash hashPrevBlock,
+      hash hashMerkleRoot,
+      uint32 time,
+      uint32 bits,
+      uint32 nonce) {
+    BlockHeader header;
+    header.version = version;
+    header.hashPrevBlock = hashPrevBlock;
+    header.hashMerkleRoot = hashMerkleRoot;
+    header.time = time;
+    header.bits = bits;
+    header.nonce = nonce;
+  }
 }
