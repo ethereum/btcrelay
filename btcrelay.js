@@ -55,6 +55,7 @@ contract BTCRelay {
     }
   }
 
+  // TODO: use ** for EXP (doesn't exist in Solidity yet), use arrays, loops, etc
   function flipBytes(uint n) {
     uint mask = 0xff;
     var b1 = n & mask;
