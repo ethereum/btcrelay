@@ -1,7 +1,7 @@
-byte = [1,2,3,4,5]
+byte = range(32)
 
 def flipBytes(n):
-    numByte = 5
+    numByte = 32
     mask = 0xff
     i = 0
     while i < numByte:
