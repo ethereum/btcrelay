@@ -1,7 +1,6 @@
-data byte[32]
-
 def flipBytes(n):
-    numByte = 4
+    byte = array(32)
+    numByte = 32
     mask = 0xff
     i = 0
     while i < numByte:
@@ -17,10 +16,5 @@ def flipBytes(n):
     while i < numByte:
         ret = ret | byte[i]
         i += 1
-
-    # ret = byte[0]
-    # ret = ret | byte[1]
-    # ret = ret | byte[2]
-    # ret = ret | byte[3]
 
     return(ret)
