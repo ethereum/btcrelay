@@ -59,13 +59,6 @@ def srt(n, x):
 
 
 def test():
-    # b1 = 0x0100000081cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a3080000
-    # b2 = 0x00000000e320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0
-    # b3 = 0xf1fc122bc7f5d74df2b9441a42a1469500000000000000000000000000000000
-    # hash1 = sha256([b1,b2,b3], chars=80)
-    # hash2 = sha256([hash1], 1)
-    # return(hash2)
-
     version = 0x01000000
     hashPrevBlock = 0x81cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a308000000000000
     hashMerkleRoot = 0xe320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0f1fc122b
@@ -73,6 +66,17 @@ def test():
     bits = 0xf2b9441a
     nonce = 0x42a14695
 
+    res = self.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+    return(res)
+
+
+def hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
+    # b1 = 0x0100000081cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a3080000
+    # b2 = 0x00000000e320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0
+    # b3 = 0xf1fc122bc7f5d74df2b9441a42a1469500000000000000000000000000000000
+    # hash1 = sha256([b1,b2,b3], chars=80)
+    # hash2 = sha256([hash1], 1)
+    # return(hash2)
 
     verPart = self.slt(version, 28*8)
     hpb28 = self.srt(hashPrevBlock, 4*8)  # 81cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a3080000
