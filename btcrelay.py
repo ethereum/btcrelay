@@ -27,6 +27,8 @@ def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
     target = mant * slt(1, (8*(exp - 3)))
 
 
+
+
 def flipBytes(n):
     numByte = 32
     mask = 0xff
@@ -47,17 +49,41 @@ def flipBytes(n):
 def slt(n, x):
     return(n * 2^x)
 
+# shift right
+def srt(n, x):
+    return(n / 2^x)
+
+# pad with trailing zeroes
+#def rpad(val, numZero):
+
 
 def test():
-    # b1 = 0x0100000081cd02ab7e569e8bcd9317e2
-    # b2 = 0xfe99f2de44d49ab2b8851ba4a308000000000000e320b6c2fffc8d750423db8b
-    # b3 = 0x1eb942ae710e951ed797f7affc8892b0f1fc122bc7f5d74df2b9441a42a14695
+    # b1 = 0x0100000081cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a3080000
+    # b2 = 0x00000000e320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0
+    # b3 = 0xf1fc122bc7f5d74df2b9441a42a1469500000000000000000000000000000000
+    # hash1 = sha256([b1,b2,b3], chars=80)
+    # hash2 = sha256([hash1], 1)
+    # return(hash2)
+
+    version = 0x01000000
+    hashPrevBlock = 0x81cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a308000000000000
+    hashMerkleRoot = 0xe320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0f1fc122b
+    time = 0xc7f5d74d
+    bits = 0xf2b9441a
+    nonce = 0x42a14695
 
 
+    verPart = self.slt(version, 28)
+    hpb28 = self.srt(hashPrevBlock, 4)  # 0x81cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a308000
+    b1 = verPart | hpb28
 
-    b1 = 0x0100000081cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a3080000
-    b2 = 0x00000000e320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0
-    b3 = 0xf1fc122bc7f5d74df2b9441a42a1469500000000000000000000000000000000
+    hpbLast4 = self.slt(hashPrevBlock, 28)  # 000000000
+    hm28 = self.srt(hashMerkleRoot, 4)  # e320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0
+    b2 = hpbLast4 | hm28
+
+    hmLast4 = self.slt(hashMerkleRoot, 28)
+    b3 = hmLast4 | time | bits | nonce
+
     hash1 = sha256([b1,b2,b3], chars=80)
-
-    return(hash1)
+    hash2 = sha256([hash1], 1)
+    return(hash2)
