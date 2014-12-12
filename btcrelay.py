@@ -77,13 +77,13 @@ def test():
     hpb28 = self.srt(hashPrevBlock, 4*8)  # 81cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a3080000
     b1 = verPart | hpb28
 
-    hpbLast4 = self.slt(hashPrevBlock, 28)  # 000000000
-    hm28 = self.srt(hashMerkleRoot, 4)  # e320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0
+    hpbLast4 = self.slt(hashPrevBlock, 28*8)  # 000000000
+    hm28 = self.srt(hashMerkleRoot, 4*8)  # e320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0
     b2 = hpbLast4 | hm28
 
-    hmLast4 = self.slt(hashMerkleRoot, 28)
-    b3 = hmLast4 | time | bits | nonce
+    hmLast4 = self.slt(hashMerkleRoot, 28*8)
+    b3 = hmLast4 | self.slt(time, 28*8) | self.slt(bits, 24*8) | self.slt(nonce, 20*8)
 
     hash1 = sha256([b1,b2,b3], chars=80)
     hash2 = sha256([hash1], 1)
-    return(b1)
+    return(b3)
