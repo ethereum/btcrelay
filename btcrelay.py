@@ -36,7 +36,7 @@ def flipBytes(n, numByte):
     i = 0
     while i < numByte:
         b = n & mask
-        b /= 2^(i*8)
+        b = div(b, 2^(i*8))
         b *= 2^((numByte-i-1)*8)
         mask *= 256
         result = result | b
@@ -62,7 +62,7 @@ def test():
     mrkl_root = 0x871714dcbae6c8193a2bb9b2a69fe1c0440399f38d94b3a0f1b447275a29978a
     time_ = 0x53058b35 # 2014-02-20 04:57:25
     bits = 0x19015f53
-    nonce = 856192327
+    nonce = 856192328
 
     target = self.targetFromBits(bits)
 
