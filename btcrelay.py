@@ -13,6 +13,7 @@
 
 def shared():
     TWO_POW_24 = 2 ^ 24
+    ZEROS = 0x0000000000000000000000000000000000000000000000000000000000000000
 
 def init():
     self.storage[16] = 0x00000000000000000cfdd50d917943949fa708829ab70108c98cdb9f7d62339d
@@ -53,7 +54,7 @@ def slt(n, x):
 def srt(n, x):
     return(div(n, 2^x))
 
-# pad with trailing zeroes
+# pad with trailing zeros
 #def rpad(val, numZero):
 
 
@@ -82,8 +83,11 @@ def test():
     b2 = hpbLast4 | hm28
 
     hmLast4 = self.slt(hashMerkleRoot, 28*8)
-    b3 = hmLast4 | self.slt(time, 28*8) | self.slt(bits, 24*8) | self.slt(nonce, 20*8)
+    timePart = ZEROS | self.slt(time, 24*8)
+    bitsPart = ZEROS | self.slt(bits, 20*8)
+    noncePart = ZEROS | self.slt(nonce, 16*8)
+    b3 = hmLast4 | timePart | bitsPart | noncePart
 
     hash1 = sha256([b1,b2,b3], chars=80)
     hash2 = sha256([hash1], 1)
-    return(b3)
+    return(hash2)
