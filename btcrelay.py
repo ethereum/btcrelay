@@ -19,14 +19,13 @@ def init():
     self.storage[16] = 0x00000000000000000cfdd50d917943949fa708829ab70108c98cdb9f7d62339d
 
 def code():
-    ret = self.slt(2,4)
+    ret = self.shiftLeft(2,4)
     return(ret)
 
 def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
     exp = bits / TWO_POW_24
     mant = bits & 0xffffff
-    target = mant * slt(1, (8*(exp - 3)))  # slt ok or need different func?
-
+    target = mant * shiftLeft(1, (8*(exp - 3)))
 
 
 
@@ -47,11 +46,11 @@ def flipBytes(n):
     return(result)
 
 # shift left
-def slt(n, x):
+def shiftLeft(n, x):
     return(n * 2^x)
 
 # shift right
-def srt(n, x):
+def shiftRight(n, x):
     return(div(n, 2^x))
 
 # pad with trailing zeros
@@ -74,7 +73,7 @@ def test():
 def targetFromBits(bits):
     exp = div(bits, TWO_POW_24)
     mant = bits & 0xffffff
-    target = mant * self.slt(1, (8*(exp - 3)))
+    target = mant * self.shiftLeft(1, (8*(exp - 3)))
     return(target)
 
 def hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
@@ -92,18 +91,18 @@ def hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
     # hash2 = sha256([hash1], 1)
     # return(hash2)
 
-    verPart = self.slt(version, 28*8)
-    hpb28 = self.srt(hashPrevBlock, 4*8)  # 81cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a3080000
+    verPart = self.shiftLeft(version, 28*8)
+    hpb28 = self.shiftRight(hashPrevBlock, 4*8)  # 81cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a3080000
     b1 = verPart | hpb28
 
-    hpbLast4 = self.slt(hashPrevBlock, 28*8)  # 000000000
-    hm28 = self.srt(hashMerkleRoot, 4*8)  # e320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0
+    hpbLast4 = self.shiftLeft(hashPrevBlock, 28*8)  # 000000000
+    hm28 = self.shiftRight(hashMerkleRoot, 4*8)  # e320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0
     b2 = hpbLast4 | hm28
 
-    hmLast4 = self.slt(hashMerkleRoot, 28*8)
-    timePart = ZEROS | self.slt(time, 24*8)
-    bitsPart = ZEROS | self.slt(bits, 20*8)
-    noncePart = ZEROS | self.slt(nonce, 16*8)
+    hmLast4 = self.shiftLeft(hashMerkleRoot, 28*8)
+    timePart = ZEROS | self.shiftLeft(time, 24*8)
+    bitsPart = ZEROS | self.shiftLeft(bits, 20*8)
+    noncePart = ZEROS | self.shiftLeft(nonce, 16*8)
     b3 = hmLast4 | timePart | bitsPart | noncePart
 
     hash1 = sha256([b1,b2,b3], chars=80)
