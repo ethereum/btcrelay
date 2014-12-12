@@ -59,18 +59,32 @@ def srt(n, x):
 
 
 def test():
-    version = 0x01000000
-    hashPrevBlock = 0x81cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a308000000000000
-    hashMerkleRoot = 0xe320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0f1fc122b
-    time = 0xc7f5d74d
-    bits = 0xf2b9441a
-    nonce = 0x42a14695
+    ver = 2
+    prev_block = 0x000000000000000117c80378b8da0e33559b5997f2ad55e2f7d18ec1975b9717
+    mrkl_root = 0x871714dcbae6c8193a2bb9b2a69fe1c0440399f38d94b3a0f1b447275a29978a
+    time_ = 0x53058b35 # 2014-02-20 04:57:25
+    bits = 0x19015f53
 
-    res = self.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
-    return(res)
+    return(self.targetFromBits(bits))
 
+    # res = self.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+    # return(res)
+
+
+def targetFromBits(bits):
+    exp = div(bits, TWO_POW_24)
+    mant = bits & 0xffffff
+    target = mant * self.slt(1, (8*(exp - 3)))
+    return(target)
 
 def hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
+    # https://en.bitcoin.it/wiki/Block_hashing_algorithm
+    # version = 0x01000000
+    # hashPrevBlock = 0x81cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a308000000000000
+    # hashMerkleRoot = 0xe320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0f1fc122b
+    # time = 0xc7f5d74d
+    # bits = 0xf2b9441a
+    # nonce = 0x42a14695
     # b1 = 0x0100000081cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a3080000
     # b2 = 0x00000000e320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0
     # b3 = 0xf1fc122bc7f5d74df2b9441a42a1469500000000000000000000000000000000
