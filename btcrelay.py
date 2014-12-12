@@ -25,12 +25,11 @@ def code():
 def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
     exp = bits / TWO_POW_24
     mant = bits & 0xffffff
-    target = mant * shiftLeft(1, (8*(exp - 3)))
+    target = mant * self.shiftLeft(1, (8*(exp - 3)))
 
 
 
-def flipBytes(n):
-    numByte = 32
+def flipBytes(n, numByte):
     mask = 0xff
 
     result = 0
@@ -63,11 +62,27 @@ def test():
     mrkl_root = 0x871714dcbae6c8193a2bb9b2a69fe1c0440399f38d94b3a0f1b447275a29978a
     time_ = 0x53058b35 # 2014-02-20 04:57:25
     bits = 0x19015f53
+    nonce = 856192327
 
-    return(self.targetFromBits(bits))
+    target = self.targetFromBits(bits)
 
-    # res = self.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
-    # return(res)
+    version = self.flipBytes(ver, 4)
+    hashPrevBlock = self.flipBytes(prev_block, 32)
+    hashMerkleRoot = self.flipBytes(mrkl_root, 32)
+    time = self.flipBytes(time_, 4)
+    bits = self.flipBytes(bits, 4)
+    nonce = self.flipBytes(nonce, 4)
+
+    hash = self.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+
+    hash = self.flipBytes(hash, 32)
+
+    return(hash)
+
+    if hash < target
+        return(1)
+    else
+        return(0)
 
 
 def targetFromBits(bits):
