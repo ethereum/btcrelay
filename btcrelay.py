@@ -77,8 +77,6 @@ def test():
 
     hash = self.flipBytes(hash, 32)
 
-    return(hash)
-
     if hash < target
         return(1)
     else
