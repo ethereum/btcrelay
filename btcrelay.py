@@ -24,7 +24,7 @@ def code():
 def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
     exp = bits / TWO_POW_24
     mant = bits & 0xffffff
-    target = mant * slt(1, (8*(exp - 3)))
+    target = mant * slt(1, (8*(exp - 3)))  # slt ok or need different func?
 
 
 
@@ -51,7 +51,7 @@ def slt(n, x):
 
 # shift right
 def srt(n, x):
-    return(n / 2^x)
+    return(div(n, 2^x))
 
 # pad with trailing zeroes
 #def rpad(val, numZero):
@@ -73,8 +73,8 @@ def test():
     nonce = 0x42a14695
 
 
-    verPart = self.slt(version, 28)
-    hpb28 = self.srt(hashPrevBlock, 4)  # 0x81cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a308000
+    verPart = self.slt(version, 28*8)
+    hpb28 = self.srt(hashPrevBlock, 4*8)  # 81cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a3080000
     b1 = verPart | hpb28
 
     hpbLast4 = self.slt(hashPrevBlock, 28)  # 000000000
@@ -86,4 +86,4 @@ def test():
 
     hash1 = sha256([b1,b2,b3], chars=80)
     hash2 = sha256([hash1], 1)
-    return(hash2)
+    return(b1)
