@@ -11,12 +11,19 @@
 # 17: score
 #
 
+data block[2^256](_number, _blockHeader(_version, _prevBlock, _mrklRoot, _time, _bits, _nonce))
+
+
+#self.block.blockHeader[]
+
 def shared():
     TWO_POW_24 = 2 ^ 24
     ZEROS = 0x0000000000000000000000000000000000000000000000000000000000000000
 
 def init():
-    self.storage[16] = 0x00000000000000000cfdd50d917943949fa708829ab70108c98cdb9f7d62339d
+    trustedBlock = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
+    self.block[trustedBlock]._number = 333000
+    self.block[trustedBlock]._blockHeader._version = 2
 
 def code():
     ret = self.shiftLeft(2,4)
@@ -56,14 +63,8 @@ def shiftRight(n, x):
 #def rpad(val, numZero):
 
 
-def test(nonce):
-    ver = 2
-    prev_block = 0x000000000000000117c80378b8da0e33559b5997f2ad55e2f7d18ec1975b9717
-    mrkl_root = 0x871714dcbae6c8193a2bb9b2a69fe1c0440399f38d94b3a0f1b447275a29978a
-    time_ = 0x53058b35 # 2014-02-20 04:57:25
-    bits = 0x19015f53
-
-    res = self.isNonceValid(ver, prev_block, mrkl_root, time_, bits, nonce)
+def test():
+    res = self.testIsNonceValid()
     return(res)
 
 
@@ -125,3 +126,15 @@ def hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
     hash1 = sha256([b1,b2,b3], chars=80)
     hash2 = sha256([hash1], 1)
     return(hash2)
+
+
+def testIsNonceValid():
+    ver = 2
+    prev_block = 0x000000000000000117c80378b8da0e33559b5997f2ad55e2f7d18ec1975b9717
+    mrkl_root = 0x871714dcbae6c8193a2bb9b2a69fe1c0440399f38d94b3a0f1b447275a29978a
+    time_ = 0x53058b35 # 2014-02-20 04:57:25
+    bits = 0x19015f53
+    nonce = 856192328
+
+    res = self.isNonceValid(ver, prev_block, mrkl_root, time_, bits, nonce)
+    return(res)
