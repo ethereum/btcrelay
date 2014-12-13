@@ -81,7 +81,7 @@ def isNonceValid(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
 
     hash = self.flipBytes(hash, 32)
 
-    if hash < target
+    if lt(hash, target)
         return(1)
     else
         return(0)
