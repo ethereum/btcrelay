@@ -11,7 +11,8 @@
 # 17: score
 #
 
-data block[2^256](_number, _blockHeader(_version, _prevBlock, _mrklRoot, _time, _bits, _nonce))
+data lastKnownBlock
+data block[2^256](_height, _blockHeader(_version, _prevBlock, _mrklRoot, _time, _bits, _nonce))
 
 
 #self.block.blockHeader[]
@@ -21,9 +22,7 @@ def shared():
     ZEROS = 0x0000000000000000000000000000000000000000000000000000000000000000
 
 def init():
-    trustedBlock = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
-    self.block[trustedBlock]._number = 333000
-    self.block[trustedBlock]._blockHeader._version = 2
+    self.init333k()
 
 def code():
     ret = self.shiftLeft(2,4)
@@ -64,7 +63,7 @@ def shiftRight(n, x):
 
 
 def test():
-    res = self.testIsNonceValid()
+    res = self.testAddBlock()
     return(res)
 
 
@@ -127,6 +126,29 @@ def hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
     hash2 = sha256([hash1], 1)
     return(hash2)
 
+
+
+def testAddBlock():
+    self.init333k()
+    version = 2
+    hashPrevBlock = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
+    hashMerkleRoot = 0xf6f8bc90fd41f626705ac8de7efe7ac723ba02f6d00eab29c6fe36a757779ddd
+    time = 1417792088
+    bits = 0x181b7b74
+    nonce = 796195988
+
+    if hashPrevBlock == self.lastKnownBlock
+        return(1)
+    else
+        return(0)
+
+
+
+def init333k():
+    self.lastKnownBlock = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
+    trustedBlock = self.lastKnownBlock
+    self.block[trustedBlock]._height = 333000
+    self.block[trustedBlock]._blockHeader._version = 2
 
 def testIsNonceValid():
     ver = 2
