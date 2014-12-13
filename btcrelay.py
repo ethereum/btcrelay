@@ -56,20 +56,24 @@ def shiftRight(n, x):
 #def rpad(val, numZero):
 
 
-def test():
+def test(nonce):
     ver = 2
     prev_block = 0x000000000000000117c80378b8da0e33559b5997f2ad55e2f7d18ec1975b9717
     mrkl_root = 0x871714dcbae6c8193a2bb9b2a69fe1c0440399f38d94b3a0f1b447275a29978a
     time_ = 0x53058b35 # 2014-02-20 04:57:25
     bits = 0x19015f53
-    nonce = 856192328
 
+    res = self.isNonceValid(ver, prev_block, mrkl_root, time_, bits, nonce)
+    return(res)
+
+
+def isNonceValid(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
     target = self.targetFromBits(bits)
 
-    version = self.flipBytes(ver, 4)
-    hashPrevBlock = self.flipBytes(prev_block, 32)
-    hashMerkleRoot = self.flipBytes(mrkl_root, 32)
-    time = self.flipBytes(time_, 4)
+    version = self.flipBytes(version, 4)
+    hashPrevBlock = self.flipBytes(hashPrevBlock, 32)
+    hashMerkleRoot = self.flipBytes(hashMerkleRoot, 32)
+    time = self.flipBytes(time, 4)
     bits = self.flipBytes(bits, 4)
     nonce = self.flipBytes(nonce, 4)
 
