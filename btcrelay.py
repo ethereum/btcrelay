@@ -137,11 +137,13 @@ def testAddBlock():
     bits = 0x181b7b74
     nonce = 796195988
 
-    if hashPrevBlock == self.lastKnownBlock
-        return(1)
-    else
+    if hashPrevBlock != self.lastKnownBlock
         return(0)
 
+    if self.isNonceValid(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+        return(1)
+
+    return(0)
 
 
 def init333k():
