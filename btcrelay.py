@@ -130,6 +130,7 @@ def hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
 
 def testAddBlock():
     self.init333k()
+    blockHash = 0x000000000000000010e318d0c61da0b84246481d9cc097fda9327fe90b1538c1
     version = 2
     hashPrevBlock = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
     hashMerkleRoot = 0xf6f8bc90fd41f626705ac8de7efe7ac723ba02f6d00eab29c6fe36a757779ddd
@@ -141,7 +142,11 @@ def testAddBlock():
         return(0)
 
     if self.isNonceValid(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
-        return(1)
+        self.block[blockHash]._height = self.block[self.lastKnownBlock]._height + 1
+        self.block[blockHash]._blockHeader._version = version
+        # todo
+
+        return(self.block[blockHash]._height)
 
     return(0)
 
