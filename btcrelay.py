@@ -47,6 +47,8 @@ def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
         self.block[blockHash]._blockHeader._bits = bits
         self.block[blockHash]._blockHeader._nonce = nonce
 
+        self.lastKnownBlock = blockHash
+
         return(self.block[blockHash]._height)
 
     return(0)
