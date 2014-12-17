@@ -126,12 +126,13 @@ def testAddBlock():
     bits = 0x181b7b74
     nonce = 796195988
 
-    blockHash = self.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
-
     if hashPrevBlock != self.lastKnownBlock
         return(0)
 
-    if self.isNonceValid(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+    blockHash = self.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+    target = self.targetFromBits(bits)
+
+    if lt(hash, target)
         self.block[blockHash]._height = self.block[self.lastKnownBlock]._height + 1
 
         self.block[blockHash]._blockHeader._version = version
