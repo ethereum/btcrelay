@@ -29,7 +29,7 @@ def code():
     return(ret)
 
 def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
-    if hashPrevBlock != self.lastKnownBlock
+    if hashPrevBlock != self.lastKnownBlock:
         return(0)
 
     blockHash = self.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
@@ -37,7 +37,7 @@ def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
 
     # TODO other validation of block?  eg timestamp
 
-    if lt(hash, target)
+    if lt(hash, target):
         self.block[blockHash]._height = self.block[self.lastKnownBlock]._height + 1
 
         self.block[blockHash]._blockHeader._version = version
@@ -92,9 +92,9 @@ def isNonceValid(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
 
     hash = self.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
 
-    if lt(hash, target)
+    if lt(hash, target):
         return(1)
-    else
+    else:
         return(0)
 
 
