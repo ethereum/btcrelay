@@ -83,7 +83,7 @@ def shiftRight(n, x):
 
 
 def test():
-    res = self.testVerifyTx()
+    res = self.testWithin6Confirms()
     return(res)
 
 
@@ -137,23 +137,31 @@ def __rawHashBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, non
 
 
 def verifyTx(tx, proof, txBlockHash):
+    return(13)
+
+def testVerifyTx():
+    return(13)
+
+def within6Confirms(txBlockHash):
     blockHash = self.lastKnownBlock
 
     i = 0
     while i < 6:
         if txBlockHash == blockHash:
-            return(13)
+            return(1)
 
         blockHash = self.block[blockHash]._blockHeader._prevBlock
         i += 1
 
-    return(7)
+    return(0)
 
-def testVerifyTx():
+def testWithin6Confirms():
+    # this only tests 0 and 1 confirms currently. to test further, need to add more blocks.
     self.testStoreBlockHeader()
-    zeroConf = self.verifyTx(0,0, 0x000000000000000010e318d0c61da0b84246481d9cc097fda9327fe90b1538c1)
-    oneConf = self.verifyTx(0,0, 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759)
-    return(zeroConf + oneConf)
+    zeroConf = self.within6Confirms(0x000000000000000010e318d0c61da0b84246481d9cc097fda9327fe90b1538c1)
+    oneConf = self.within6Confirms(0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759)
+    res = zeroConf + oneConf
+    return(res == 2)
 
 def concatHash(tx1, tx2):
     left = self.flipBytes(tx1, 32)
