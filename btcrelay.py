@@ -63,7 +63,7 @@ def shiftRight(n, x):
 
 
 def test():
-    res = self.testIsNonceValid()
+    res = self.testHashHeader()
     return(res)
 
 
@@ -154,7 +154,6 @@ def testHashHeader():
 
     expBlockHash = 0x000000000000000010e318d0c61da0b84246481d9cc097fda9327fe90b1538c1
     blockHash = self.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
-    return(blockHash)
     return(blockHash == expBlockHash)
 
 
