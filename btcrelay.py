@@ -83,7 +83,7 @@ def shiftRight(n, x):
 
 
 def test():
-    res = self.testConcatHash()
+    res = self.testVerifyTx()
     return(res)
 
 
@@ -136,12 +136,24 @@ def __rawHashBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, non
     return(hash2)
 
 
-def verifyTx(tx, proof):
-    return(0)
+def verifyTx(tx, proof, txBlockHash):
+    blockHash = self.lastKnownBlock
+
+    i = 0
+    while i < 6:
+        if txBlockHash == blockHash:
+            return(13)
+
+        blockHash = self.block[blockHash]._blockHeader._prevBlock
+        i += 1
+
+    return(7)
 
 def testVerifyTx():
-    r = self.verifyTx(0,0)
-    return(r)
+    self.testStoreBlockHeader()
+    zeroConf = self.verifyTx(0,0, 0x000000000000000010e318d0c61da0b84246481d9cc097fda9327fe90b1538c1)
+    oneConf = self.verifyTx(0,0, 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759)
+    return(zeroConf + oneConf)
 
 def concatHash(tx1, tx2):
     left = self.flipBytes(tx1, 32)
