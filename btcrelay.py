@@ -63,7 +63,7 @@ def shiftRight(n, x):
 
 
 def test():
-    res = self.testAddBlock()
+    res = self.testHashHeader()
     return(res)
 
 
@@ -94,20 +94,6 @@ def targetFromBits(bits):
     return(target)
 
 def hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
-    # https://en.bitcoin.it/wiki/Block_hashing_algorithm
-    # version = 0x01000000
-    # hashPrevBlock = 0x81cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a308000000000000
-    # hashMerkleRoot = 0xe320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0f1fc122b
-    # time = 0xc7f5d74d
-    # bits = 0xf2b9441a
-    # nonce = 0x42a14695
-    # b1 = 0x0100000081cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a3080000
-    # b2 = 0x00000000e320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0
-    # b3 = 0xf1fc122bc7f5d74df2b9441a42a1469500000000000000000000000000000000
-    # hash1 = sha256([b1,b2,b3], chars=80)
-    # hash2 = sha256([hash1], 1)
-    # return(hash2)
-
     verPart = self.shiftLeft(version, 28*8)
     hpb28 = self.shiftRight(hashPrevBlock, 4*8)  # 81cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a3080000
     b1 = verPart | hpb28
@@ -155,6 +141,25 @@ def testAddBlock():
 
     return(0)
 
+def testHashHeader():
+    # https://en.bitcoin.it/wiki/Block_hashing_algorithm
+    version = 0x01000000
+    hashPrevBlock = 0x81cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a308000000000000
+    hashMerkleRoot = 0xe320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0f1fc122b
+    time = 0xc7f5d74d
+    bits = 0xf2b9441a
+    nonce = 0x42a14695
+
+    # these should be the intermediate b1,b2,b3 values inside hashHeader()
+    # b1 = 0x0100000081cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a3080000
+    # b2 = 0x00000000e320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0
+    # b3 = 0xf1fc122bc7f5d74df2b9441a42a1469500000000000000000000000000000000
+    # hash1 = sha256([b1,b2,b3], chars=80)
+    # hash2 = sha256([hash1], 1)
+    # return(hash2)
+
+    expHash = 0x1dbd981fe6985776b644b173a4d0385ddc1aa2a829688d1e0000000000000000
+    return expHash == self.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
 
 def init333k():
     self.lastKnownBlock = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
