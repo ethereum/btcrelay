@@ -70,13 +70,6 @@ def test():
 def isNonceValid(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
     target = self.targetFromBits(bits)
 
-    version = self.flipBytes(version, 4)
-    hashPrevBlock = self.flipBytes(hashPrevBlock, 32)
-    hashMerkleRoot = self.flipBytes(hashMerkleRoot, 32)
-    time = self.flipBytes(time, 4)
-    bits = self.flipBytes(bits, 4)
-    nonce = self.flipBytes(nonce, 4)
-
     hash = self.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
 
     if lt(hash, target)
@@ -93,6 +86,13 @@ def targetFromBits(bits):
 
 
 def hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
+    version = self.flipBytes(version, 4)
+    hashPrevBlock = self.flipBytes(hashPrevBlock, 32)
+    hashMerkleRoot = self.flipBytes(hashMerkleRoot, 32)
+    time = self.flipBytes(time, 4)
+    bits = self.flipBytes(bits, 4)
+    nonce = self.flipBytes(nonce, 4)
+
     hash = self.__rawHashBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
     return(self.flipBytes(hash, 32))
 
@@ -143,6 +143,20 @@ def testAddBlock():
         return(self.block[blockHash]._height)
 
     return(0)
+
+def testHashHeader():
+    version = 2
+    hashPrevBlock = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
+    hashMerkleRoot = 0xf6f8bc90fd41f626705ac8de7efe7ac723ba02f6d00eab29c6fe36a757779ddd
+    time = 1417792088
+    bits = 0x181b7b74
+    nonce = 796195988
+
+    expBlockHash = 0x000000000000000010e318d0c61da0b84246481d9cc097fda9327fe90b1538c1
+    blockHash = self.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+    return(blockHash)
+    return(blockHash == expBlockHash)
+
 
 def test__rawHashBlockHeader():
     # https://en.bitcoin.it/wiki/Block_hashing_algorithm
