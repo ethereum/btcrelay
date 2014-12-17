@@ -29,9 +29,27 @@ def code():
     return(ret)
 
 def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
-    exp = bits / TWO_POW_24
-    mant = bits & 0xffffff
-    target = mant * self.shiftLeft(1, (8*(exp - 3)))
+    if hashPrevBlock != self.lastKnownBlock
+        return(0)
+
+    blockHash = self.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+    target = self.targetFromBits(bits)
+
+    # TODO other validation of block?  eg timestamp
+
+    if lt(hash, target)
+        self.block[blockHash]._height = self.block[self.lastKnownBlock]._height + 1
+
+        self.block[blockHash]._blockHeader._version = version
+        self.block[blockHash]._blockHeader._prevBlock = hashPrevBlock
+        self.block[blockHash]._blockHeader._mrklRoot = hashMerkleRoot
+        self.block[blockHash]._blockHeader._time = time
+        self.block[blockHash]._blockHeader._bits = bits
+        self.block[blockHash]._blockHeader._nonce = nonce
+
+        return(self.block[blockHash]._height)
+
+    return(0)
 
 
 
@@ -63,7 +81,7 @@ def shiftRight(n, x):
 
 
 def test():
-    res = self.testAddBlock()
+    res = self.testStoreBlockHeader()
     return(res)
 
 
@@ -117,7 +135,7 @@ def __rawHashBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, non
 
 
 
-def testAddBlock():
+def testStoreBlockHeader():
     self.init333k()
     version = 2
     hashPrevBlock = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
@@ -125,26 +143,10 @@ def testAddBlock():
     time = 1417792088
     bits = 0x181b7b74
     nonce = 796195988
+    blockNumber = 333001
 
-    if hashPrevBlock != self.lastKnownBlock
-        return(0)
+    return(blockNumber == self.storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce))
 
-    blockHash = self.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
-    target = self.targetFromBits(bits)
-
-    if lt(hash, target)
-        self.block[blockHash]._height = self.block[self.lastKnownBlock]._height + 1
-
-        self.block[blockHash]._blockHeader._version = version
-        self.block[blockHash]._blockHeader._prevBlock = hashPrevBlock
-        self.block[blockHash]._blockHeader._mrklRoot = hashMerkleRoot
-        self.block[blockHash]._blockHeader._time = time
-        self.block[blockHash]._blockHeader._bits = bits
-        self.block[blockHash]._blockHeader._nonce = nonce
-
-        return(self.block[blockHash]._height)
-
-    return(0)
 
 def testHashHeader():
     version = 2
