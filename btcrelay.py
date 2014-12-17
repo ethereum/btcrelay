@@ -143,8 +143,13 @@ def testAddBlock():
 
     if self.isNonceValid(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
         self.block[blockHash]._height = self.block[self.lastKnownBlock]._height + 1
+
         self.block[blockHash]._blockHeader._version = version
-        # todo
+        self.block[blockHash]._blockHeader._prevBlock = hashPrevBlock
+        self.block[blockHash]._blockHeader._mrklRoot = hashMerkleRoot
+        self.block[blockHash]._blockHeader._time = time
+        self.block[blockHash]._blockHeader._bits = bits
+        self.block[blockHash]._blockHeader._nonce = nonce
 
         return(self.block[blockHash]._height)
 
