@@ -86,7 +86,7 @@ def shiftRight(n, x):
 
 
 def test():
-    res = self.testWithin6Confirms()
+    res = self.testVerifyTx()
     return(res)
 
 
@@ -143,8 +143,12 @@ def verifyTx(tx, proof, proofLen, txBlockHash):
     return(self.proofList[0]._path)
 
 def testVerifyTx():
+    # values are from block 100K
+    tx = 0x8c14f0db3df150123e6f3dbbf30f8b955a8249b62ac1d1ff16284aefa3d06d87
     self.proofList[0]._hash = 0xfff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4
-    self.proofList[0]._path = LEFT_HASH
+    self.proofList[0]._path = RIGHT_HASH
+    self.proofList[1]._hash = 0x8e30899078ca1813be036a073bbf80b86cdddde1c96e9e9c99e9e3782df4ae49
+    self.proofList[1]._path = RIGHT_HASH
     r = self.verifyTx(13, 13, 2, 13)
     return(r)
 
