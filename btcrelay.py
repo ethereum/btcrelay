@@ -140,7 +140,21 @@ def __rawHashBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, non
 
 
 def verifyTx(tx, proof, proofLen, txBlockHash):
-    return(self.proofList[0]._path)
+    resultHash = tx
+    i = 0
+    while i < proofLen:
+        proofHex = self.proofList[i]._hash
+        if self.proofList[i]._path == LEFT_HASH:
+            left = proofHex
+            right = resultHash
+        elif self.proofList[i]._path == RIGHT_HASH:
+            left = resultHash
+            right = proofHex
+
+        resultHash = self.concatHash(left, right)
+        i += 1
+
+    return(resultHash)
 
 def testVerifyTx():
     # values are from block 100K
@@ -149,8 +163,9 @@ def testVerifyTx():
     self.proofList[0]._path = RIGHT_HASH
     self.proofList[1]._hash = 0x8e30899078ca1813be036a073bbf80b86cdddde1c96e9e9c99e9e3782df4ae49
     self.proofList[1]._path = RIGHT_HASH
-    r = self.verifyTx(13, 13, 2, 13)
-    return(r)
+    r = self.verifyTx(tx, 13, 2, 13)
+    expMerkle = 0xf3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766
+    return(r == expMerkle)
 
 def within6Confirms(txBlockHash):
     blockHash = self.lastKnownBlock
