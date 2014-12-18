@@ -13,6 +13,7 @@
 
 data lastKnownBlock
 data block[2^256](_height, _blockHeader(_version, _prevBlock, _mrklRoot, _time, _bits, _nonce))
+data proofList[](_hash, _path)
 
 
 #self.block.blockHeader[]
@@ -20,6 +21,8 @@ data block[2^256](_height, _blockHeader(_version, _prevBlock, _mrklRoot, _time, 
 def shared():
     TWO_POW_24 = 2 ^ 24
     ZEROS = 0x0000000000000000000000000000000000000000000000000000000000000000
+    LEFT_HASH = 1
+    RIGHT_HASH = 2
 
 def init():
     self.init333k()
@@ -136,11 +139,14 @@ def __rawHashBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, non
     return(hash2)
 
 
-def verifyTx(tx, proof, txBlockHash):
-    return(13)
+def verifyTx(tx, proof, proofLen, txBlockHash):
+    return(self.proofList[0]._path)
 
 def testVerifyTx():
-    return(13)
+    self.proofList[0]._hash = 0xfff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4
+    self.proofList[0]._path = LEFT_HASH
+    r = self.verifyTx(13, 13, 2, 13)
+    return(r)
 
 def within6Confirms(txBlockHash):
     blockHash = self.lastKnownBlock
