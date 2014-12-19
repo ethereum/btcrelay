@@ -13,7 +13,6 @@
 
 data lastKnownBlock
 data block[2^256](_height, _blockHeader(_version, _prevBlock, _mrklRoot, _time, _bits, _nonce))
-data proofList[](_hash, _path)
 
 
 #self.block.blockHeader[]
@@ -139,15 +138,15 @@ def __rawHashBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, non
     return(hash2)
 
 
-def verifyTx(tx, proof, proofLen, txBlockHash):
+def verifyTx(tx, hash:a, path:a, txBlockHash):
     resultHash = tx
     i = 0
-    while i < proofLen:
-        proofHex = self.proofList[i]._hash
-        if self.proofList[i]._path == LEFT_HASH:
+    while i < 2:
+        proofHex = hash[i]
+        if path[i] == LEFT_HASH:
             left = proofHex
             right = resultHash
-        elif self.proofList[i]._path == RIGHT_HASH:
+        elif path[i] == RIGHT_HASH:
             left = resultHash
             right = proofHex
 
@@ -159,11 +158,16 @@ def verifyTx(tx, proof, proofLen, txBlockHash):
 def testVerifyTx():
     # values are from block 100K
     tx = 0x8c14f0db3df150123e6f3dbbf30f8b955a8249b62ac1d1ff16284aefa3d06d87
-    self.proofList[0]._hash = 0xfff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4
-    self.proofList[0]._path = RIGHT_HASH
-    self.proofList[1]._hash = 0x8e30899078ca1813be036a073bbf80b86cdddde1c96e9e9c99e9e3782df4ae49
-    self.proofList[1]._path = RIGHT_HASH
-    r = self.verifyTx(tx, 13, 2, 13)
+    hash = array(2)
+    path = array(2)
+
+    hash[0] = 0xfff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4
+    path[0] = RIGHT_HASH
+
+    hash[1] = 0x8e30899078ca1813be036a073bbf80b86cdddde1c96e9e9c99e9e3782df4ae49
+    path[1] = RIGHT_HASH
+
+    r = self.verifyTx(tx, hash:2, path:2, 13)
     expMerkle = 0xf3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766
     return(r == expMerkle)
 
