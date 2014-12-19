@@ -139,9 +139,7 @@ def __rawHashBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, non
 
 
 def verifyTx(tx, proofLen, hash:a, path:a, txBlockHash):
-    isConfirmed = self.within6Confirms(txBlockHash)
-
-    if !isConfirmed:
+    if self.within6Confirms(txBlockHash):
         return(0)
 
     merkle = self.computeMerkle(tx, proofLen, hash:proofLen, path:proofLen)
