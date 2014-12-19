@@ -85,9 +85,7 @@ def shiftRight(n, x):
 
 
 def test():
-    return(4444)
     res = self.test7thConfirm()
-    return(546)
     return(res)
 
 
@@ -154,22 +152,21 @@ def verifyTx(tx, proofLen, hash:a, path:a, txBlockHash):
     else:
         return(0)
 
-def testVerifyTx():
-    self.testAt6thConfirmVerifyTx()
-    valid = self.testAt7thConfirmVerifyTx()
-    return(valid)
-    return(valid == 1)
+# def testVerifyTx():
+#     self.testAt6thConfirmVerifyTx()
+#     valid = self.testAt7thConfirmVerifyTx()
+#     return(valid)
+#     return(valid == 1)
 
 def test7thConfirm():
-    return(234)
     self.init333k()
     b0 = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
-    b1 = 0x000000000000000015873421af098d4d286bf38a1bf1fdac8fda3674fdb8ac04 # block #333001
-    b2 = 0x000000000000000002c29d17ccb9ebc85ee9fd495d19fe9d2ed73f246dd28d99
-    b3 = 0x00000000000000000088be09d237453389d088f5159370ff76be415d53bdd565
-    b4 = 0x00000000000000001567e5b961490f0ecc6449deba7a0f3e0eb7531979892c09
-    b5 = 0x00000000000000001b3b2cbe493085372ad5012e7993d04c455115d65f78e971
-    b6 = 0x00000000000000001567e5b961490f0ecc6449deba7a0f3e0eb7531979892c09
+    b1 = 0x000000000000000010e318d0c61da0b84246481d9cc097fda9327fe90b1538c1 # block #333001
+    b2 = 0x000000000000000005895c1348171a774e11ee57374680b54a982e9d9e7309a1
+    b3 = 0x00000000000000001348f0e7b14d82d8105992f0968faeb533a03c55c3d72365
+    b4 = 0x000000000000000004001d114c6c278eb0ad37a3ce3a111cf534dd358896c5b3
+    b5 = 0x000000000000000004860a07b991a6cd7cae1327c36c21903b8bbe8d2c316ac5
+    b6 = 0x0000000000000000016f889a84b7a06e2d4d90cec924400cf62a6ca3ae67dd46
 
     self.lastKnownBlock = b6
 
@@ -180,52 +177,49 @@ def test7thConfirm():
     self.block[b2]._blockHeader._prevBlock = b1
     self.block[b1]._blockHeader._prevBlock = b0
 
+    return(self.within6Confirms(b0) == 0)
 
-    return(self.within6Confirms(b6))
-
-    return(self.within6Confirms(b0) == 1)
-
-def testAt7thConfirmVerifyTx():
-    self.init333k()
-    b0 = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
-    b1 = 0x000000000000000015873421af098d4d286bf38a1bf1fdac8fda3674fdb8ac04 # block #333001
-    b2 = 0x000000000000000002c29d17ccb9ebc85ee9fd495d19fe9d2ed73f246dd28d99
-    b3 = 0x00000000000000000088be09d237453389d088f5159370ff76be415d53bdd565
-    b4 = 0x00000000000000001567e5b961490f0ecc6449deba7a0f3e0eb7531979892c09
-    b5 = 0x00000000000000001b3b2cbe493085372ad5012e7993d04c455115d65f78e971
-    b6 = 0x00000000000000001567e5b961490f0ecc6449deba7a0f3e0eb7531979892c09
-
-    self.lastKnownBlock = b6
-
-    self.block[b6]._blockHeader._prevBlock = b5
-    self.block[b5]._blockHeader._prevBlock = b4
-    self.block[b4]._blockHeader._prevBlock = b3
-    self.block[b3]._blockHeader._prevBlock = b2
-    self.block[b2]._blockHeader._prevBlock = b1
-    self.block[b1]._blockHeader._prevBlock = b0
-
-    txBlockHash = b0
-    return self.verifyTx(tx, proofLen, hash:a, path:a, txBlockHash)
-
-def testAt6thConfirmVerifyTx():
-    self.init333k()
-    b0 = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
-    b1 = 0x000000000000000015873421af098d4d286bf38a1bf1fdac8fda3674fdb8ac04 # block #333001
-    b2 = 0x000000000000000002c29d17ccb9ebc85ee9fd495d19fe9d2ed73f246dd28d99
-    b3 = 0x00000000000000000088be09d237453389d088f5159370ff76be415d53bdd565
-    b4 = 0x00000000000000001567e5b961490f0ecc6449deba7a0f3e0eb7531979892c09
-    b5 = 0x00000000000000001b3b2cbe493085372ad5012e7993d04c455115d65f78e971
-
-    self.lastKnownBlock = b5
-
-    self.block[b5]._blockHeader._prevBlock = b4
-    self.block[b4]._blockHeader._prevBlock = b3
-    self.block[b3]._blockHeader._prevBlock = b2
-    self.block[b2]._blockHeader._prevBlock = b1
-    self.block[b1]._blockHeader._prevBlock = b0
-
-    txBlockHash = b0
-    return self.verifyTx(tx, proofLen, hash:a, path:a, txBlockHash)
+# def testAt7thConfirmVerifyTx():
+#     self.init333k()
+#     b0 = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
+#     b1 = 0x000000000000000015873421af098d4d286bf38a1bf1fdac8fda3674fdb8ac04 # block #333001
+#     b2 = 0x000000000000000002c29d17ccb9ebc85ee9fd495d19fe9d2ed73f246dd28d99
+#     b3 = 0x00000000000000000088be09d237453389d088f5159370ff76be415d53bdd565
+#     b4 = 0x00000000000000001567e5b961490f0ecc6449deba7a0f3e0eb7531979892c09
+#     b5 = 0x00000000000000001b3b2cbe493085372ad5012e7993d04c455115d65f78e971
+#     b6 = 0x00000000000000001567e5b961490f0ecc6449deba7a0f3e0eb7531979892c09
+#
+#     self.lastKnownBlock = b6
+#
+#     self.block[b6]._blockHeader._prevBlock = b5
+#     self.block[b5]._blockHeader._prevBlock = b4
+#     self.block[b4]._blockHeader._prevBlock = b3
+#     self.block[b3]._blockHeader._prevBlock = b2
+#     self.block[b2]._blockHeader._prevBlock = b1
+#     self.block[b1]._blockHeader._prevBlock = b0
+#
+#     txBlockHash = b0
+#     return self.verifyTx(tx, proofLen, hash:a, path:a, txBlockHash)
+#
+# def testAt6thConfirmVerifyTx():
+#     self.init333k()
+#     b0 = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
+#     b1 = 0x000000000000000015873421af098d4d286bf38a1bf1fdac8fda3674fdb8ac04 # block #333001
+#     b2 = 0x000000000000000002c29d17ccb9ebc85ee9fd495d19fe9d2ed73f246dd28d99
+#     b3 = 0x00000000000000000088be09d237453389d088f5159370ff76be415d53bdd565
+#     b4 = 0x00000000000000001567e5b961490f0ecc6449deba7a0f3e0eb7531979892c09
+#     b5 = 0x00000000000000001b3b2cbe493085372ad5012e7993d04c455115d65f78e971
+#
+#     self.lastKnownBlock = b5
+#
+#     self.block[b5]._blockHeader._prevBlock = b4
+#     self.block[b4]._blockHeader._prevBlock = b3
+#     self.block[b3]._blockHeader._prevBlock = b2
+#     self.block[b2]._blockHeader._prevBlock = b1
+#     self.block[b1]._blockHeader._prevBlock = b0
+#
+#     txBlockHash = b0
+#     return self.verifyTx(tx, proofLen, hash:a, path:a, txBlockHash)
 
 
 def computeMerkle(tx, proofLen, hash:a, path:a):
@@ -263,7 +257,6 @@ def testComputeMerkle():
     return(r == expMerkle)
 
 def within6Confirms(txBlockHash):
-    return(98)
     blockHash = self.lastKnownBlock
 
     i = 0
