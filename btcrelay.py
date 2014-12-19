@@ -85,7 +85,7 @@ def shiftRight(n, x):
 
 
 def test():
-    res = self.testComputeMerkle()
+    res = self.testVerifyTx()
     return(res)
 
 
@@ -136,6 +136,25 @@ def __rawHashBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, non
     hash1 = sha256([b1,b2,b3], chars=80)
     hash2 = sha256([hash1], 1)
     return(hash2)
+
+
+def verifyTx(tx, proofLen, hash:a, path:a, txBlockHash):
+    isConfirmed = self.within6Confirms(txBlockHash)
+
+    if !isConfirmed:
+        return(0)
+
+    merkle = self.computeMerkle(tx, proofLen, hash:proofLen, path:proofLen)
+
+    if merkle == self.block[txBlockHash]._blockHeader._mrklRoot:
+        return(1)
+    else:
+        return(0)
+
+
+def testVerifyTx():
+    txBlockHash = 0x01
+    return self.verifyTx(tx, proofLen, hash:a, path:a, txBlockHash)
 
 
 def computeMerkle(tx, proofLen, hash:a, path:a):
