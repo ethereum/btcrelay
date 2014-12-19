@@ -153,7 +153,14 @@ def verifyTx(tx, proofLen, hash:a, path:a, txBlockHash):
 
 
 def testVerifyTx():
-    txBlockHash = 0x01
+    self.init333k()
+    b9 = 0x000000000000000015873421af098d4d286bf38a1bf1fdac8fda3674fdb8ac04 # block #332999
+    b8 = 0x000000000000000002c29d17ccb9ebc85ee9fd495d19fe9d2ed73f246dd28d99
+    b7 = 0x00000000000000000088be09d237453389d088f5159370ff76be415d53bdd565
+    b6 = 0x00000000000000001567e5b961490f0ecc6449deba7a0f3e0eb7531979892c09
+    b5 = 0x00000000000000001b3b2cbe493085372ad5012e7993d04c455115d65f78e971
+
+    txBlockHash = b5
     return self.verifyTx(tx, proofLen, hash:a, path:a, txBlockHash)
 
 
