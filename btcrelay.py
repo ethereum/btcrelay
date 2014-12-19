@@ -85,7 +85,7 @@ def shiftRight(n, x):
 
 
 def test():
-    res = self.testVerifyTx()
+    res = self.testComputeMerkle()
     return(res)
 
 
@@ -138,7 +138,7 @@ def __rawHashBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, non
     return(hash2)
 
 
-def verifyTx(tx, proofLen, hash:a, path:a, txBlockHash):
+def computeMerkle(tx, proofLen, hash:a, path:a):
     resultHash = tx
     i = 0
     while i < proofLen:
@@ -155,7 +155,7 @@ def verifyTx(tx, proofLen, hash:a, path:a, txBlockHash):
 
     return(resultHash)
 
-def testVerifyTx():
+def testComputeMerkle():
     # values are from block 100K
     tx = 0x8c14f0db3df150123e6f3dbbf30f8b955a8249b62ac1d1ff16284aefa3d06d87
     proofLen = 2
@@ -168,7 +168,7 @@ def testVerifyTx():
     hash[1] = 0x8e30899078ca1813be036a073bbf80b86cdddde1c96e9e9c99e9e3782df4ae49
     path[1] = RIGHT_HASH
 
-    r = self.verifyTx(tx, proofLen, hash:proofLen, path:proofLen, 13)
+    r = self.computeMerkle(tx, proofLen, hash:proofLen, path:proofLen)
     expMerkle = 0xf3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766
     return(r == expMerkle)
 
