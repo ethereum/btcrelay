@@ -159,6 +159,7 @@ def testVerifyTx():
     b4 = 0x000000000000000004001d114c6c278eb0ad37a3ce3a111cf534dd358896c5b3
     b5 = 0x000000000000000004860a07b991a6cd7cae1327c36c21903b8bbe8d2c316ac5
     b6 = 0x0000000000000000016f889a84b7a06e2d4d90cec924400cf62a6ca3ae67dd46
+    bFake = 0xdead
 
     self.lastKnownBlock = b6
 
@@ -169,15 +170,24 @@ def testVerifyTx():
     self.block[b2]._blockHeader._prevBlock = b1
     self.block[b1]._blockHeader._prevBlock = b0
 
-    txBlockHash = b1
-    expB1 = self.verifyTx(tx, proofLen, hash:a, path:a, txBlockHash) == 0
+    # TODO proof
 
-    txBlockHash = b0
-    expB0 = self.verifyTx(tx, proofLen, hash:a, path:a, txBlockHash) == 1
+    # txBlockHash = 0xdead
+    txBlockHash = bFake
+    expFake = self.verifyTx(tx, proofLen, hash:a, path:a, txBlockHash) #== 0
 
-    return(expB1 and expB0)
+    return(expFake)
+
+    # txBlockHash = b1
+    # expB1 = self.verifyTx(tx, proofLen, hash:2, path:2, txBlockHash) == 0
+    #
+    # txBlockHash = b0
+    # expB0 = self.verifyTx(tx, proofLen, hash:2, path:2, txBlockHash) == 1
+    #
+    # return(expFake and expB1 and expB0)
 
 
+# return -1 if there's an error (eg called with incorrect params)
 def computeMerkle(tx, proofLen, hash:a, path:a):
     resultHash = tx
     i = 0
@@ -191,7 +201,11 @@ def computeMerkle(tx, proofLen, hash:a, path:a):
             right = proofHex
 
         resultHash = self.concatHash(left, right)
+
         i += 1
+
+    if !resultHash:
+        return(-1)
 
     return(resultHash)
 
