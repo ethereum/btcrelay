@@ -85,7 +85,7 @@ def shiftRight(n, x):
 
 
 def test():
-    res = self.test7thConfirm()
+    res = self.testWithin6Confirms()
     return(res)
 
 
@@ -158,7 +158,7 @@ def verifyTx(tx, proofLen, hash:a, path:a, txBlockHash):
 #     return(valid)
 #     return(valid == 1)
 
-def test7thConfirm():
+def testWithin6Confirms():
     self.init333k()
     b0 = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
     b1 = 0x000000000000000010e318d0c61da0b84246481d9cc097fda9327fe90b1538c1 # block #333001
@@ -177,7 +177,12 @@ def test7thConfirm():
     self.block[b2]._blockHeader._prevBlock = b1
     self.block[b1]._blockHeader._prevBlock = b0
 
-    return(self.within6Confirms(b0) == 0)
+    expB6 = self.within6Confirms(b6) == 1
+    expB5 = self.within6Confirms(b5) == 1
+    expB1 = self.within6Confirms(b1) == 1
+    expB0 = self.within6Confirms(b0) == 0
+
+    return(expB6 and expB5 and expB1 and expB0)
 
 # def testAt7thConfirmVerifyTx():
 #     self.init333k()
@@ -268,14 +273,6 @@ def within6Confirms(txBlockHash):
         i += 1
 
     return(0)
-
-def testWithin6Confirms():
-    # this only tests 0 and 1 confirms currently. to test further, need to add more blocks.
-    self.testStoreBlockHeader()
-    zeroConf = self.within6Confirms(0x000000000000000010e318d0c61da0b84246481d9cc097fda9327fe90b1538c1)
-    oneConf = self.within6Confirms(0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759)
-    res = zeroConf + oneConf
-    return(res == 2)
 
 def concatHash(tx1, tx2):
     left = self.flipBytes(tx1, 32)
