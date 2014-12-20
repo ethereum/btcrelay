@@ -158,7 +158,6 @@ def testVerifyTx():
     b4 = 0x000000000000b0b8b4e8105d62300d63c8ec1a1df0af1c2cdbd943b156a8cd79
     b5 = 0x000000000000dab0130bbcc991d3d7ae6b81aa6f50a798888dfe62337458dc45
     b6 = 0x0000000000009b958a82c10804bd667722799cc3b457bc061cd4b7779110cd60
-    bFake = 0xdead
 
     self.lastKnownBlock = b6
 
@@ -171,7 +170,6 @@ def testVerifyTx():
 
     self.block[b0]._blockHeader._mrklRoot = 0xf3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766
 
-    # TODO proof
     # values are from block 100K
     tx = 0x8c14f0db3df150123e6f3dbbf30f8b955a8249b62ac1d1ff16284aefa3d06d87
     proofLen = 2
@@ -184,20 +182,23 @@ def testVerifyTx():
     hash[1] = 0x8e30899078ca1813be036a073bbf80b86cdddde1c96e9e9c99e9e3782df4ae49
     path[1] = RIGHT_HASH
 
-
-    # txBlockHash = 0xdead
-    # txBlockHash = bFake
-    # expFake = self.verifyTx(tx, proofLen, hash:a, path:a, txBlockHash) #== 0
+    # txBlockHash = 0x8e30899078ca1813be036a073bbf80b86cdddde1c96e9e9c99e9e3782df4ae49
+    # expFake = self.verifyTx(tx, proofLen, hash:2, path:2, txBlockHash) #== 0
     #
     # return(expFake)
 
-    txBlockHash = b1
-    expB1 = self.verifyTx(tx, proofLen, hash:2, path:2, txBlockHash) == 0
+    txBlockHash = 0xdead
+    expFake = 0 == self.verifyTx(tx, proofLen, hash:proofLen, path:proofLen, txBlockHash)
+    return(expFake)
+
+    # txBlockHash = b1
+    # expB1 = 0 == self.verifyTx(tx, proofLen, hash:2, path:2, txBlockHash)
+    # return(expB1)
 
     txBlockHash = b0
-    expB0 = self.verifyTx(tx, proofLen, hash:2, path:2, txBlockHash) == 1
+    expB0 = 1 == self.verifyTx(tx, proofLen, hash:proofLen, path:proofLen, txBlockHash)
 
-    return(expB1 and expB0)
+    return(expFake and expB1 and expB0)
 
 
 # return -1 if there's an error (eg called with incorrect params)
