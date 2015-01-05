@@ -139,7 +139,7 @@ def __rawHashBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, non
     return(hash2)
 
 
-def verifyTx(tx, proofLen, hash:a, path, txBlockHash):
+def verifyTx(tx, proofLen, hash:a, path:a, txBlockHash):
     if self.within6Confirms(txBlockHash):
         return(0)
 
