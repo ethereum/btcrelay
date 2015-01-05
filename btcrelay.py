@@ -85,8 +85,7 @@ def shiftRight(n, x):
 
 
 def test():
-    # res = self.testVerifyTx()
-    res = 13
+    res = self.testVerifyTx()
     return(res)
 
 
