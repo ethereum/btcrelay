@@ -151,6 +151,7 @@ def verifyTx(tx, proofLen, hash:a, path:a, txBlockHash):
 
 
 def testVerifyTx():
+    # verifyTx should only return 1 for b0
     b0 = 0x000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506
     b1 = 0x00000000000080b66c911bd5ba14a74260057311eaeb1982802f7010f1a9f090 # block #100001
     b2 = 0x0000000000013b8ab2cd513b0261a14096412195a72a0c4827d229dcc7e0f7af
@@ -182,19 +183,13 @@ def testVerifyTx():
     hash[1] = 0x8e30899078ca1813be036a073bbf80b86cdddde1c96e9e9c99e9e3782df4ae49
     path[1] = RIGHT_HASH
 
-    # txBlockHash = 0x8e30899078ca1813be036a073bbf80b86cdddde1c96e9e9c99e9e3782df4ae49
-    # expFake = self.verifyTx(tx, proofLen, hash:2, path:2, txBlockHash) #== 0
-    #
-    # return(expFake)
-
     txBlockHash = 0xdead
     expFake = 0 == self.verifyTx(tx, proofLen, hash, path, txBlockHash)
-    return(expFake)
 
-    # txBlockHash = b1
-    # expB1 = 0 == self.verifyTx(tx, proofLen, hash:2, path:2, txBlockHash)
-    # return(expB1)
+    txBlockHash = b1
+    expB1 = 0 == self.verifyTx(tx, proofLen, hash, path, txBlockHash)
 
+    # verifyTx should only return 1 for b0
     txBlockHash = b0
     expB0 = 1 == self.verifyTx(tx, proofLen, hash, path, txBlockHash)
 
