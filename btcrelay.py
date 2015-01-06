@@ -14,6 +14,8 @@
 data lastKnownBlock
 data block[2^256](_height, _blockHeader(_version, _prevBlock, _mrklRoot, _time, _bits, _nonce))
 
+extern btc_eth: [processTransfer]
+
 
 #self.block.blockHeader[]
 
@@ -85,7 +87,9 @@ def shiftRight(n, x):
 
 
 def test():
-    res = self.testVerifyTx()
+    BTC_ETH = create('btc-eth.py')
+    res = BTC_ETH.processTransfer(13, as=btc_eth)
+    #res = self.testVerifyTx()
     return(res)
 
 
