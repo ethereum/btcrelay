@@ -93,6 +93,43 @@ def test():
     return(res)
 
 
+def runTests():
+    ALL_GOOD = 99999
+    i = 100
+    if self.testIsNonceValid() != 1:
+        return(i)
+    i += 1
+
+    if self.test__rawHashBlockHeader() != 1:
+        return(i)
+    i += 1
+
+    if self.testHashHeader() != 1:
+        return(i)
+    i += 1
+
+    if self.testStoreBlockHeader() != 1:
+        return(i)
+    i += 1
+
+    if self.testConcatHash() != 1:
+        return(i)
+    i += 1
+
+    if self.testWithin6Confirms() != 1:
+        return(i)
+    i += 1
+
+    if self.testComputeMerkle() != 1:
+        return(i)
+    i += 1
+
+    if self.testVerifyTx() != 1:
+        return(i)
+    i += 1
+
+    return(ALL_GOOD)
+
 def isNonceValid(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
     target = self.targetFromBits(bits)
 
