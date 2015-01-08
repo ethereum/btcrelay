@@ -9,8 +9,8 @@ data pos
 self.pos = 0
 
 def test():
-    #res = self.test_str_findChar()
-    res = self.test_decode()
+    res = self.test_str_findChar()
+    #res = self.test_decode()
     return(res)
 
 
@@ -33,7 +33,7 @@ def decode(string:s, base):
 
 
 # char is just a string of length 1
-def str_findChar(string, char):
+def str_findChar(string:s, char):
     slen = len(string)
     i = 0
     while i < slen:
@@ -44,7 +44,7 @@ def str_findChar(string, char):
 
 
 def test_str_findChar():
-    res = self.str_findChar(self.codeString256, '2')
+    res = self.str_findChar(self.codeString256, "A")
     return(res)
 
 
