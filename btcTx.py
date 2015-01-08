@@ -1,14 +1,40 @@
 
+data codeString256
+# workaround for now
+self.codeString256 = text("0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz")
+
+
 data pos
 
 self.pos = 0
+
+def test():
+    res = self.test_str_findChar()
+    return(res)
+
 
 def read_as_int(bytez):
     self.pos += bytez
     return(self.pos)
 
 def decode(string, base):
+    s = text("ab")
     return(13)
+
+# char is just a string of length 1
+def str_findChar(string, char):
+    slen = len(string)
+    i = 0
+    while i < slen:
+        if getch(string, i) == char:
+            return(i)
+        i += 1
+    return(-1)
+
+
+def test_str_findChar():
+    res = self.str_findChar(self.codeString256, '2')
+    return(res)
 
 
 def test_decode():
