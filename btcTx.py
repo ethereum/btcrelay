@@ -9,7 +9,8 @@ data pos
 self.pos = 0
 
 def test():
-    res = self.test_str_findChar()
+    #res = self.test_str_findChar()
+    res = self.test_decode()
     return(res)
 
 
@@ -17,9 +18,20 @@ def read_as_int(bytez):
     self.pos += bytez
     return(self.pos)
 
+
+# not generic
 def decode(string, base):
-    s = text("ab")
-    return(13)
+    slen = len(string)
+    result = 0
+    i = 0
+    while i < slen:
+        result *= base
+
+        # +48 since codeString256 is a workaround
+        result += 48 + self.str_findChar(self.codeString256, getch(string, i))
+    return(result)
+
+
 
 # char is just a string of length 1
 def str_findChar(string, char):
