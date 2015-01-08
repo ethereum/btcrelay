@@ -9,8 +9,9 @@ data pos
 self.pos = 0
 
 def test():
+    res = self.test_str_rev()
     # res = self.test_str_findChar()
-    res = self.test_decode()
+    #res = self.test_decode()
     return(res)
 
 
@@ -42,6 +43,23 @@ def str_findChar(string:s, char):
         i += 1
     return(-1)
 
+
+def str_rev(string:s):
+    halfLen = len(s) / 2
+    i = 0
+    while i < halfLen:
+        oldHead = getch(string, i)
+        tailIndex = slen - 1 - i
+        new = getch(string, tailIndex)
+        setch(string, i, new)
+        setch(string, tailIndex, oldHead)
+        i += 1
+    return(string:s)
+
+
+def test_str_rev():
+    res = self.str_rev("abc", outsz=3)
+    return(res)
 
 def test_str_findChar():
     res = self.str_findChar(self.codeString256, "A")
