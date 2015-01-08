@@ -9,8 +9,8 @@ data pos
 self.pos = 0
 
 def test():
-    res = self.test_str_findChar()
-    #res = self.test_decode()
+    # res = self.test_str_findChar()
+    res = self.test_decode()
     return(res)
 
 
@@ -50,9 +50,8 @@ def test_str_findChar():
 
 def test_decode():
     res = self.decode(text("0010"), 256)
-    return(res)
-    # expected = 808464688
-    # return(res == expected)
+    expected = 808464688
+    return(res == expected)
 
 def test_read_as_int():
     # tx = '01000000010c432f4fb3e871a8bda638350b3d5c698cf431db8d6031b53e3fb5159e59d4a90000000000ffffffff0100f2052a010000001976a9143744841e13b90b4aca16fe793a7f88da3a23cc7188ac00000000'
