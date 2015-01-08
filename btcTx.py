@@ -19,16 +19,15 @@ def read_as_int(bytez):
     return(self.pos)
 
 
-# not generic
-def decode(string, base):
+# not generic, eg assumes base is 256
+def decode(string:s, base):
     slen = len(string)
     result = 0
     i = 0
     while i < slen:
         result *= base
-
-        # +48 since codeString256 is a workaround
-        result += 48 + self.str_findChar(self.codeString256, getch(string, i))
+        result += getch(string, i)
+        i += 1
     return(result)
 
 
@@ -50,9 +49,10 @@ def test_str_findChar():
 
 
 def test_decode():
-    res = self.decode('0010', 256)
-    expected = 808464688
-    return(res == expected)
+    res = self.decode(text("0010"), 256)
+    return(res)
+    # expected = 808464688
+    # return(res == expected)
 
 def test_read_as_int():
     # tx = '01000000010c432f4fb3e871a8bda638350b3d5c698cf431db8d6031b53e3fb5159e59d4a90000000000ffffffff0100f2052a010000001976a9143744841e13b90b4aca16fe793a7f88da3a23cc7188ac00000000'
