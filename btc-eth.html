@@ -1,0 +1,71 @@
+<html>
+<head>
+  <title>JavaScript API</title>
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">;
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js">;
+
+
+<!-- script src="https://es6-promises.s3.amazonaws.com/es6-promise-2.0.0.min.js">
+window.Promise = window.ES6Promise;
+console.log('jtest: ', Promise)
+</script -->
+
+<!-- // <script src="es6-promise-2.0.1.min.js">
+var Promise = require('es6-promise').Promise;
+console.log(Promise);
+console.log('jtest')
+</script> -->
+
+  <!-- // <script src="ethereum.min.js"></script> -->
+
+<script type="text/javascript">
+// var web3 = require('web3');
+
+// web3.setProvider(new web3.providers.WebSocketProvider('ws://localhost:40404/eth'));
+
+///First web3.eth.watch code to monitor coinbase
+web3.eth.watch({altered: web3.eth.coinbase}).changed(function(){
+  	web3.eth.coinbase.then(function(result) {
+  		document.getElementById('coinbase').innerText = result;
+  	});
+  	web3.eth.balanceAt(web3.eth.coinbase).then(function(result){
+    	document.getElementById('balance').innerText = result;
+    });
+});
+
+///Insert your contract address var here:
+
+
+///Second web3.eth.watch code to monitor block number
+web3.eth.watch().changed(function(){
+	web3.eth.block(web3.eth.number).then(function(result){
+    	document.getElementById('latestBlock').innerText = web3.eth.number._result;
+    	document.getElementById('latestBlockHash').innerText = result.hash;
+    	document.getElementById('latestBlockTimestamp').innerText = Date(result.timestamp);
+  	})
+});
+
+</script>
+
+</head>
+
+<body>
+
+  <div class="header">
+    <h3>JavaScript API</h3>
+  </div>
+
+  <div class="jumbotron">
+    <h5>Coinbase Address: <strong id="coinbase"></strong></h5>
+    <h5>Balance: <strong id="balance"></strong></h5>
+    <h5>Latest Block Number: <strong id="latestBlock"></strong></h5>
+    <h5>Latest Block Timestamp: <strong id="latestBlockTimestamp"></strong></h5>
+    <h5>Latest Block Hash: <strong id="latestBlockHash"></strong></h5>
+    <h5>Contract String: <strong id="contractString"></strong></h5>
+    <h5>Favourite Python: <strong id="favouritePython"></strong></h5>
+    <br>
+  </div>
+
+</body>
+
+</html>
