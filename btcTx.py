@@ -8,15 +8,23 @@ data pos
 
 self.pos = 0
 
-def f2(string:s, size):
-    #size = 2 #len(s)
+# string reverse to array (since issues such as https://github.com/ethereum/serpent/issues/35 36, 37...)
+def strRev2a(string:s, size):
     arr = array(size)
-    arr[0] = getch(string, 1)
-    arr[1] = getch(string, 0)
+    halfLen = size / 2
+    i = 0
+    while i < halfLen:
+        tailIndex = size - 1 - i
+        tmp = getch(string, i)
+        arr[i] = getch(string, tailIndex)
+        arr[tailIndex] = tmp
+        i += 1
     return(arr:a)
 
-def t2():
-    b = self.f2(text("cd"), 2, outsz=2)
+def test_strRev2a():
+    string = text("abcdef")
+    size = len(string)
+    b = self.strRev2a(string, size, outsz=size)
     return(b:a)
 
 def f1(string:s):
