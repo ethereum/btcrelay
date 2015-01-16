@@ -8,17 +8,15 @@ data pos
 
 self.pos = 0
 
-def f2(string:s):
-    arr = array(2)
-    arr[0] = getch(string, 0) - 2
-    arr[1] = getch(string, 1) - 2
+def f2(string:s, size):
+    #size = 2 #len(s)
+    arr = array(size)
+    arr[0] = getch(string, 1)
+    arr[1] = getch(string, 0)
     return(arr:a)
 
 def t2():
-    a = array(2)
-    a[0] = 3
-    a[1] = 4
-    b = self.f2(text("cd"), outsz=2)
+    b = self.f2(text("cd"), 2, outsz=2)
     return(b:a)
 
 def f1(string:s):
