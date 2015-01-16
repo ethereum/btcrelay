@@ -8,24 +8,7 @@ data pos
 
 self.pos = 0
 
-# string reverse to array (since issues such as https://github.com/ethereum/serpent/issues/35 36, 37...)
-def strRev2a(string:s, size):
-    arr = array(size)
-    halfLen = size / 2
-    i = 0
-    while i < halfLen:
-        tailIndex = size - 1 - i
-        tmp = getch(string, i)
-        arr[i] = getch(string, tailIndex)
-        arr[tailIndex] = tmp
-        i += 1
-    return(arr:a)
 
-def test_strRev2a():
-    string = text("abcdef")
-    size = len(string)
-    b = self.strRev2a(string, size, outsz=size)
-    return(b:a)
 
 def f1(string:s):
     setch(string, 0, "a")
@@ -86,6 +69,26 @@ def str_findChar(string:s, char):
     return(-1)
 
 
+# string reverse to array (since issues such as https://github.com/ethereum/serpent/issues/35 36, 37...)
+def strRev2a(string:s, size):
+    arr = array(size)
+    halfLen = size / 2
+    i = 0
+    while i < halfLen:
+        tailIndex = size - 1 - i
+        tmp = getch(string, i)
+        arr[i] = getch(string, tailIndex)
+        arr[tailIndex] = tmp
+        i += 1
+    return(arr:a)
+
+def test_strRev2a():
+    string = text("abcdef")
+    size = len(string)
+    b = self.strRev2a(string, size, outsz=size)
+    return(b:a)
+
+# not working yet (since issues such as https://github.com/ethereum/serpent/issues/35 36, 37...)
 def str_rev(string:s):
     halfLen = len(s) / 2
     i = 0
@@ -98,10 +101,11 @@ def str_rev(string:s):
         i += 1
     return(string:s)
 
-
 def test_str_rev():
     res = self.str_rev("abc")
     return(res)
+
+
 
 def test_str_findChar():
     res = self.str_findChar(self.codeString256, "A")
