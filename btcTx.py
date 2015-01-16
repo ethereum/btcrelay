@@ -8,6 +8,29 @@ data pos
 
 self.pos = 0
 
+def f1(string:s):
+    setch(string, 0, "a")
+    setch(string, 1, "b")
+    return(string)
+
+def t1():
+    string = text("cd")
+    res = self.f1(string)
+    return([getch(res,0), getch(res,1)]:a)  # should return [97,98]
+    return(getch(res,1))   # how to get "ab" ?
+
+def logt():
+    # log(1)
+    # log(1, 2)
+    # log(1, 2, 3)
+    # log(1, 2, 3, 4)
+    log(data=[1,2,3])
+    log(1, data=[1,2,3])
+    log(1, 2, data=[1,2,3])
+    log(1, 2, 3, data=[1,2,3])
+    log(1, 2, 3, 4, data=[1,2,3])
+
+
 def test():
     res = self.test_str_rev()
     # res = self.test_str_findChar()
@@ -58,7 +81,7 @@ def str_rev(string:s):
 
 
 def test_str_rev():
-    res = self.str_rev("abc", outsz=3)
+    res = self.str_rev("abc")
     return(res)
 
 def test_str_findChar():
