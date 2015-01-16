@@ -69,13 +69,37 @@ web3.eth.watch().changed(function(){
 // ];
 
 
-var bethAddress = '0x82a05f47635daab083ee267b4a1f20f949d9392f';
+// var bethAddress = '0x82a05f47635daab083ee267b4a1f20f949d9392f';
+// var bethAbi = [
+//   {
+//     'name': 'callsA',
+//     'constant': false,
+//     'inputs': [{
+//       'name': 'n',
+//       'type': 'uint256'
+//     }],
+//     'outputs': [
+//         {
+//             "name": "d",
+//             "type": "uint256"
+//         }
+//     ]
+//   }
+// ];
+
+
+
+var bethAddress = '0x4eca28c2c6e25040fa77794eb2145193ec6b8841';
 var bethAbi = [
   {
     'name': 'callsA',
     'constant': false,
     'inputs': [{
       'name': 'n',
+      'type': 'uint256'
+    },
+    {
+      'name': 'x',
       'type': 'uint256'
     }],
     'outputs': [
@@ -88,6 +112,8 @@ var bethAbi = [
 ];
 
 
+
+
 var contract = web3.eth.contract(bethAddress, bethAbi);
 
 var padLeft = function (string, chars) {
@@ -97,7 +123,7 @@ var padLeft = function (string, chars) {
 function callExampleContract() {
   // param = 9;
   var param = parseInt(document.getElementById('value').value);
-  contract.callsA(param).transact().then(function(res) {
+  contract.callsA(param, '0x205215f022af4950618730bcfae161b28397bc41').transact().then(function(res) {
             document.getElementById('result').innerText = res[0];
         });
 
