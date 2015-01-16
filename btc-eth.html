@@ -50,10 +50,29 @@ web3.eth.watch().changed(function(){
 // curl -X POST --data '{"jsonrpc":"2.0","method":"eth_balanceAt","params":["0x205215f022af4950618730bcfae161b28397bc41"],"id":1}' http://localhost:8080
 
 
-var bethAddress = '0x205215f022af4950618730bcfae161b28397bc41';
+// var bethAddress = '0x205215f022af4950618730bcfae161b28397bc41';
+// var bethAbi = [
+//   {
+//     'name': 'processTransfer',
+//     'constant': false,
+//     'inputs': [{
+//       'name': 'n',
+//       'type': 'uint256'
+//     }],
+//     'outputs': [
+//         {
+//             "name": "d",
+//             "type": "uint256"
+//         }
+//     ]
+//   }
+// ];
+
+
+var bethAddress = '0x82a05f47635daab083ee267b4a1f20f949d9392f';
 var bethAbi = [
   {
-    'name': 'processTransfer',
+    'name': 'callsA',
     'constant': false,
     'inputs': [{
       'name': 'n',
@@ -68,6 +87,7 @@ var bethAbi = [
   }
 ];
 
+
 var contract = web3.eth.contract(bethAddress, bethAbi);
 
 var padLeft = function (string, chars) {
@@ -77,7 +97,7 @@ var padLeft = function (string, chars) {
 function callExampleContract() {
   // param = 9;
   var param = parseInt(document.getElementById('value').value);
-  contract.processTransfer(param).transact().then(function(res) {
+  contract.callsA(param).transact().then(function(res) {
             document.getElementById('result').innerText = res[0];
         });
 
