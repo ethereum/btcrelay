@@ -113,6 +113,37 @@ def str_findChar(string:s, char):
     return(-1)
 
 
+
+def pair_rev(in_arr:a, size):
+    if size % 2 != 0:
+        return(7777777)
+
+    arr = array(size)
+    halfLen = size / 2
+    i = 0
+    while i < halfLen:
+        tailIndex = size - 1 - i
+        tmp = in_arr[i]
+        arr[i] = in_arr[tailIndex-1]
+        arr[tailIndex-1] = tmp
+        tmp = in_arr[i+1]
+        arr[i+1] = in_arr[tailIndex]
+        arr[tailIndex] = tmp
+        i += 2
+    return(arr:a)
+
+
+def test_pair_rev():
+    size = 4
+    arr = array(4)
+    arr[0] = 1
+    arr[1] = 2
+    arr[2] = 3
+    arr[3] = 4
+    b = self.pair_rev(arr, size, outsz=size)
+    return(b:a)  # expect [3, 4, 1, 2]
+
+
 # string reverse to array (since issues such as https://github.com/ethereum/serpent/issues/35 36, 37...)
 def arr_rev(in_arr:a, size):
     arr = array(size)
