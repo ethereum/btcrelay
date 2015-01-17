@@ -99,11 +99,9 @@ def readUInt32LE():
     size = 8
     bb = self.initFromBuf(size, outsz=size)
 
-    return(bb:a)
-
     val = self.pair_rev(bb, size, outsz=size)
     self.pos += 4
-    return(val:a)
+    return(val[6])
 
 
 def test_readUInt32LE():
