@@ -5,6 +5,7 @@ self.codeString256 = text("0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abc
 
 
 data pos
+data buf
 
 self.pos = 0
 
@@ -43,6 +44,47 @@ def test():
 def read_as_int(bytez):
     self.pos += bytez
     return(self.pos)
+
+
+
+def flipBytes(n, numByte):
+    mask = 0xff
+
+    result = 0
+    i = 0
+    while i < numByte:
+        b = n & mask
+        b = div(b, 2^(i*8))
+        b *= 2^((numByte-i-1)*8)
+        mask *= 256
+        result = result | b
+        i += 1
+
+    return(result)
+
+# shift left
+def shiftLeft(n, x):
+    return(n * 2^x)
+
+# shift right
+def shiftRight(n, x):
+    return(div(n, 2^x))
+
+
+
+def readUInt32LE():
+    bb = self.buf
+    val = self.flipBytes(bb, 4)
+    self.pos += 4
+    return(val)
+
+
+def test_readUInt32LE():
+    self.buf = 0x03042342
+    self.pos = 0
+    res = self.readUInt32LE()
+    exp = 0x42230403
+    return(res == exp)
 
 
 # not generic, eg assumes base is 256
