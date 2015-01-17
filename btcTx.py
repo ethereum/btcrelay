@@ -74,15 +74,19 @@ def shiftRight(n, x):
 
 def readUInt32LE():
     bb = self.buf
-    val = self.flipBytes(bb, 4)
+    size = 8
+    val = self.pair_rev(bb, size, outsz=size)
     self.pos += 4
-    return(val)
+    return(val:a)
 
 
 def test_readUInt32LE():
     rawTx = text("03042342")
     size = len(rawTx)
-    self.buf = self.str2a(rawTx, outsz=size)
+    self.buf = self.str2a(rawTx, size, outsz=size)
+
+    return(self.buf, a)
+
     self.pos = 0
     res = self.readUInt32LE()
     exp = 0x42230403
@@ -175,6 +179,12 @@ def str2a(string:s, size):
         arr[i] = getch(string, i)
         i += 1
     return(arr:a)
+
+def test_str2a():
+    string = text("abcdef")
+    size = len(string)
+    b = self.str2a(string, size, outsz=size)
+    return(b:a)
 
 # string reverse to array (since issues such as https://github.com/ethereum/serpent/issues/35 36, 37...)
 def strRev2a(string:s, size):
