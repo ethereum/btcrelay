@@ -95,12 +95,29 @@ def test_initFromBuf():
     return(bb:a)
 
 
+
+
+def t3():
+    s = text("7")
+    char = getch(s, 0)
+    return(char)  # how to convert to 7 (instead of 55)
+
+
 def readUInt32LE():
     size = 8
     bb = self.initFromBuf(size, outsz=size)
 
     val = self.pair_rev(bb, size, outsz=size)
     self.pos += 4
+
+    result = 0
+    i = 0
+    while i < size:
+        result += val[i] * 2^i
+        i += 1
+    return(result)
+
+
     return(val[6])
 
 
