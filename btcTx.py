@@ -5,7 +5,7 @@ self.codeString256 = text("0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abc
 
 
 data pos
-data buf
+data buf[]
 
 self.pos = 0
 
@@ -71,10 +71,36 @@ def shiftRight(n, x):
     return(div(n, 2^x))
 
 
+def copyToBuf(arr:a, size):
+    i = 0
+    while i < size:
+        self.buf[i] = arr[i]
+        i += 1
+
+
+def initFromBuf(size):
+    arr = array(size)
+    i = 0
+    while i < size:
+        arr[i] = self.buf[i]
+        i += 1
+    return(arr:a)
+
+def test_initFromBuf():
+    size = 3
+    self.buf[0] = 1
+    self.buf[1] = 3
+    self.buf[2] = 5
+    bb = self.initFromBuf(size, outsz=size)
+    return(bb:a)
+
 
 def readUInt32LE():
-    bb = self.buf
     size = 8
+    bb = self.initFromBuf(size, outsz=size)
+
+    return(bb:a)
+
     val = self.pair_rev(bb, size, outsz=size)
     self.pos += 4
     return(val:a)
@@ -83,14 +109,13 @@ def readUInt32LE():
 def test_readUInt32LE():
     rawTx = text("03042342")
     size = len(rawTx)
-    self.buf = self.str2a(rawTx, size, outsz=size)
-
-    return(self.buf, a)
+    bb = self.str2a(rawTx, size, outsz=size)
+    self.copyToBuf(bb, size)
 
     self.pos = 0
     res = self.readUInt32LE()
     exp = 0x42230403
-    return(res == exp)
+    return(res)
 
 
 # not generic, eg assumes base is 256
@@ -146,6 +171,7 @@ def test_pair_rev():
     arr[3] = 4
     b = self.pair_rev(arr, size, outsz=size)
     return(b:a)  # expect [3, 4, 1, 2]
+
 
 
 # string reverse to array (since issues such as https://github.com/ethereum/serpent/issues/35 36, 37...)
