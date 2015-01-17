@@ -80,7 +80,9 @@ def readUInt32LE():
 
 
 def test_readUInt32LE():
-    self.buf = 0x03042342
+    rawTx = text("03042342")
+    size = len(rawTx)
+    self.buf = self.str2a(rawTx, outsz=size)
     self.pos = 0
     res = self.readUInt32LE()
     exp = 0x42230403
@@ -112,9 +114,43 @@ def str_findChar(string:s, char):
 
 
 # string reverse to array (since issues such as https://github.com/ethereum/serpent/issues/35 36, 37...)
+def arr_rev(in_arr:a, size):
+    arr = array(size)
+    halfLen = size / 2
+    if size % 2 == 1:
+        halfLen += 1
+    i = 0
+    while i < halfLen:
+        tailIndex = size - 1 - i
+        tmp = in_arr[i]
+        arr[i] = in_arr[tailIndex]
+        arr[tailIndex] = tmp
+        i += 1
+    return(arr:a)
+
+def test_arr_rev():
+    arr = array(3)
+    arr[0] = 1
+    arr[1] = 2
+    arr[2] = 3
+    b = self.arr_rev(arr, 3, outsz=3)
+    return(b:a)
+
+# string to array
+def str2a(string:s, size):
+    arr = array(size)
+    i = 0
+    while i < size:
+        arr[i] = getch(string, i)
+        i += 1
+    return(arr:a)
+
+# string reverse to array (since issues such as https://github.com/ethereum/serpent/issues/35 36, 37...)
 def strRev2a(string:s, size):
     arr = array(size)
     halfLen = size / 2
+    if size % 2 == 1:
+        halfLen += 1
     i = 0
     while i < halfLen:
         tailIndex = size - 1 - i
@@ -132,7 +168,10 @@ def test_strRev2a():
 
 # not working yet (since issues such as https://github.com/ethereum/serpent/issues/35 36, 37...)
 def str_rev(string:s):
-    halfLen = len(s) / 2
+    size = len(s)
+    halfLen = size / 2
+    if size % 2 == 1:
+        halfLen += 1
     i = 0
     while i < halfLen:
         oldHead = getch(string, i)
@@ -158,6 +197,11 @@ def test_decode():
     res = self.decode(text("0010"), 256)
     expected = 808464688
     return(res == expected)
+
+def test_deserialize():
+    rawTx = text("01000000010c432f4fb3e871a8bda638350b3d5c698cf431db8d6031b53e3fb5159e59d4a90000000000ffffffff0100f2052a010000001976a9143744841e13b90b4aca16fe793a7f88da3a23cc7188ac00000000")
+    # version <- get 4 chars, flip, then decode
+    return(13)
 
 def test_read_as_int():
     # tx = '01000000010c432f4fb3e871a8bda638350b3d5c698cf431db8d6031b53e3fb5159e59d4a90000000000ffffffff0100f2052a010000001976a9143744841e13b90b4aca16fe793a7f88da3a23cc7188ac00000000'
