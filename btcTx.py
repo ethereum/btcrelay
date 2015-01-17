@@ -113,7 +113,8 @@ def readUInt32LE():
     result = 0
     i = 0
     while i < size:
-        result += val[i] * 2^i
+        log(val[i]-48)
+        result += (val[i]-48) * 2^i
         i += 1
     return(result)
 
@@ -122,7 +123,8 @@ def readUInt32LE():
 
 
 def test_readUInt32LE():
-    rawTx = text("03042342")
+    # rawTx = text("03042342")
+    rawTx = text("01000000")
     size = len(rawTx)
     bb = self.str2a(rawTx, size, outsz=size)
     self.copyToBuf(bb, size)
