@@ -113,8 +113,8 @@ def readUInt32LE():
     result = 0
     i = 0
     while i < size:
-        log(val[i]-48)
-        result += (val[i]-48) * 2^i
+        # log(val[size-1-i]-48)
+        result += (val[size-1-i]-48) * 2^i
         i += 1
     return(result)
 
