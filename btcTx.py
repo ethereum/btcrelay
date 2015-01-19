@@ -103,13 +103,14 @@ def t3():
     return(char)  # how to convert to 7 (instead of 55)
 
 
-
-def readUInt8():
-    size = 2
+# only handles lowercase a-f
+# tested via tests for readUInt8, readUInt32LE, ...
+def readUnsignedBitsLE(bits):
+    size = bits / 4
     bb = self.initFromBuf(size, outsz=size)
 
     val = self.pair_rev(bb, size, outsz=size)
-    self.pos += 1
+    self.pos += size / 2
 
     result = 0
     i = 0
@@ -128,6 +129,9 @@ def readUInt8():
 
         i += 1
     return(result)
+
+def readUInt8():
+    return self.readUnsignedBitsLE(8)
 
 
 def test_readUInt8_simple():
@@ -159,30 +163,7 @@ def test_readUInt8_hex():
 
 # only handles lowercase a-f
 def readUInt32LE():
-    size = 8
-    bb = self.initFromBuf(size, outsz=size)
-
-    val = self.pair_rev(bb, size, outsz=size)
-    self.pos += 4
-
-    result = 0
-    i = 0
-    while i < size:
-        char = val[size-1-i]
-        # log(char)
-        if (char >= 97 && char <= 102):  # only handles lowercase a-f
-            numeric = char - 87
-        else:
-            numeric = char - 48
-
-        # log(numeric)
-
-        result += numeric * 16^i
-        # log(result)
-
-        i += 1
-    return(result)
-
+    return self.readUnsignedBitsLE(32)
 
 
 def test_readUInt32LE():
