@@ -103,6 +103,18 @@ def t3():
     return(char)  # how to convert to 7 (instead of 55)
 
 
+def readVarintNum():
+    first = self.readUInt8()
+    if first == 0xfd:
+        return(self.readUInt16LE())
+    else if first == 0xfe:
+        return(self.readUInt32LE())
+    else if first == 0xff:
+        return(self.readUInt64LE())
+    else:
+        return(first)
+
+
 # only handles lowercase a-f
 # tested via tests for readUInt8, readUInt32LE, ...
 def readUnsignedBitsLE(bits):
