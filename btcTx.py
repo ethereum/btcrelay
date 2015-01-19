@@ -161,6 +161,22 @@ def test_readUInt8_hex():
     exp = 60
     return(res == exp)
 
+
+def readUInt16LE():
+    return self.readUnsignedBitsLE(16)
+
+def test_readUInt16LE_hex():
+    rawTx = text("89ab")
+    size = len(rawTx)
+    bb = self.str2a(rawTx, size, outsz=size)
+    self.copyToBuf(bb, size)
+
+    self.pos = 0
+    res = self.readUInt16LE()
+    exp = 0xab89
+    return(res == exp)
+
+
 # only handles lowercase a-f
 def readUInt32LE():
     return self.readUnsignedBitsLE(32)
