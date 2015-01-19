@@ -7,8 +7,6 @@ self.codeString256 = text("0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abc
 data pos
 data buf[]
 
-self.pos = 0
-
 
 
 def f1(string:s):
