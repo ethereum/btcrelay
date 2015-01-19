@@ -121,7 +121,7 @@ def readUInt32LE():
     i = 0
     while i < size:
         char = val[size-1-i]
-        #log(char)
+        # log(char)
         if (char >= 97 && char <= 102):
             numeric = char - 87
         else:
@@ -129,7 +129,9 @@ def readUInt32LE():
 
         # log(numeric)
 
-        result += numeric * 2^i
+        result += numeric * 16^i
+        # log(result)
+
         i += 1
     return(result)
 
@@ -138,7 +140,8 @@ def readUInt32LE():
 def test_readUInt32LE():
     t1 = self.test_readUInt32LE_simple()
     t2 = self.test_readUInt32LE_hex()
-    return(t1 == 1 && t2 == 1)
+    t3 = self.test_readUInt32LE_nodejs()
+    return(t1 == 1 && t2 == 1 && t3 == 1)
 
 def test_readUInt32LE_simple():
     rawTx = text("01000000")
@@ -204,7 +207,7 @@ def str_findChar(string:s, char):
 
 def pair_rev(in_arr:a, size):
     if size % 2 != 0:
-        return(7777777)
+        return(7777777) # error
 
     arr = array(size)
     halfLen = size / 2
