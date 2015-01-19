@@ -103,6 +103,13 @@ def t3():
     return(char)  # how to convert to 7 (instead of 55)
 
 
+
+# def readUInt8():
+#
+#
+# def test_readUInt8():
+
+
 def readUInt32LE():
     size = 8
     bb = self.initFromBuf(size, outsz=size)
@@ -113,13 +120,19 @@ def readUInt32LE():
     result = 0
     i = 0
     while i < size:
-        # log(val[size-1-i]-48)
-        result += (val[size-1-i]-48) * 2^i
+        char = val[size-1-i]
+        #log(char)
+        if (char >= 97 && char <= 102):
+            numeric = char - 87
+        else:
+            numeric = char - 48
+
+        # log(numeric)
+
+        result += numeric * 2^i
         i += 1
     return(result)
 
-
-    return(val[6])
 
 
 def test_readUInt32LE():
@@ -132,6 +145,19 @@ def test_readUInt32LE():
     self.pos = 0
     res = self.readUInt32LE()
     exp = 0x42230403
+    return(res)
+
+
+def test_readUInt32LE_hex():
+    # rawTx = text("03042342")
+    rawTx = text("0f000000")
+    size = len(rawTx)
+    bb = self.str2a(rawTx, size, outsz=size)
+    self.copyToBuf(bb, size)
+
+    self.pos = 0
+    res = self.readUInt32LE()
+    # exp = 0x42230403
     return(res)
 
 
