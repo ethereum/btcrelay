@@ -81,8 +81,11 @@ def copyToBuf(arr:a, size):
 def initFromBuf(size):
     arr = array(size)
     i = 0
+    log(size)
+    log(self.pos)
     while i < size:
-        arr[i] = self.buf[i]
+        arr[i] = self.buf[(self.pos*2) + i]
+        # log(arr[i])
         i += 1
     return(arr:a)
 
@@ -107,22 +110,38 @@ def readVarintNum():
     first = self.readUInt8()
     if first == 0xfd:
         return(self.readUInt16LE())
-    else if first == 0xfe:
+    elif first == 0xfe:
         return(self.readUInt32LE())
-    else if first == 0xff:
+    elif first == 0xff:
         return(self.readUInt64LE())
     else:
         return(first)
 
+def tt():
+    rawTx = text("0100000003")
+    size = len(rawTx)
+    bb = self.str2a(rawTx, size, outsz=size)
+    self.copyToBuf(bb, size)
+
+    self.pos = 0
+    version = self.readUInt32LE()
+    # log(version)
+    log(self.pos)
+    ins = self.readVarintNum()
+    # log(ins)
+    # log(self.pos)
+    return(version == 1 && ins == 1)
 
 # only handles lowercase a-f
 # tested via tests for readUInt8, readUInt32LE, ...
 def readUnsignedBitsLE(bits):
     size = bits / 4
     bb = self.initFromBuf(size, outsz=size)
+    # log(bb)
 
     val = self.pair_rev(bb, size, outsz=size)
     self.pos += size / 2
+    # log(self.pos)
 
     result = 0
     i = 0
@@ -281,6 +300,9 @@ def pair_rev(in_arr:a, size):
     if size % 2 != 0:
         return(7777777) # error
 
+    if size == 2:
+        return([in_arr[0], in_arr[1]], 2)
+
     arr = array(size)
     halfLen = size / 2
     i = 0
@@ -295,6 +317,14 @@ def pair_rev(in_arr:a, size):
         i += 2
     return(arr:a)
 
+
+def test_pair_rev_single():
+    size = 2
+    arr = array(2)
+    arr[0] = 1
+    arr[1] = 2
+    b = self.pair_rev(arr, size, outsz=size)
+    return(b:a)  # expect [1, 2]
 
 def test_pair_rev():
     size = 4
@@ -400,6 +430,9 @@ def test_decode():
     return(res == expected)
 
 def test_deserialize():
+    # source, forgot
+    # >>> deserialize(tx)
+    # {'locktime': 0, 'outs': [{'value': 5000000000, 'script': '76a9143744841e13b90b4aca16fe793a7f88da3a23cc7188ac'}], 'version': 1, 'ins': [{'script': '', 'outpoint': {'index': 0, 'hash': 'a9d4599e15b53f3eb531608ddb31f48c695c3d0b3538a6bda871e8b34f2f430c'}, 'sequence': 4294967295}]}
     rawTx = text("01000000010c432f4fb3e871a8bda638350b3d5c698cf431db8d6031b53e3fb5159e59d4a90000000000ffffffff0100f2052a010000001976a9143744841e13b90b4aca16fe793a7f88da3a23cc7188ac00000000")
     # version <- get 4 chars, flip, then decode
     return(13)
