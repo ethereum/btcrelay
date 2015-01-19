@@ -128,6 +128,21 @@ def test_readUInt8_simple():
     exp = 2
     return(res == exp)
 
+def test_readUInt8():
+    t1 = self.test_readUInt8_simple()
+    t2 = self.test_readUInt8_hex()
+    return(t1 == 1 && t2 == 1)    
+
+def test_readUInt8_hex():
+    rawTx = text("c")
+    size = len(rawTx)
+    bb = self.str2a(rawTx, size, outsz=size)
+    self.copyToBuf(bb, size)
+
+    self.pos = 0
+    res = self.readUInt8()
+    exp = 12
+    return(res == exp)
 
 # only handles lowercase a-f
 def readUInt32LE():
