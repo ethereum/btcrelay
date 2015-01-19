@@ -225,6 +225,21 @@ def test_readUInt32LE_nodejs():
     return(res == exp)
 
 
+def readUInt64LE():
+    return self.readUnsignedBitsLE(64)
+
+def test_readUInt64LE_hex():
+    rawTx = text("abcdef0123456789")
+    size = len(rawTx)
+    bb = self.str2a(rawTx, size, outsz=size)
+    self.copyToBuf(bb, size)
+
+    self.pos = 0
+    res = self.readUInt64LE()
+    exp = 0x8967452301efcdab
+    return(res == exp)
+
+
 # not generic, eg assumes base is 256
 def decode(string:s, base):
     slen = len(string)
