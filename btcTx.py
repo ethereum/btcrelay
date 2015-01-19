@@ -105,20 +105,33 @@ def t3():
 
 
 def readUInt8():
-    size = 1
+    size = 2
     bb = self.initFromBuf(size, outsz=size)
+
+    val = self.pair_rev(bb, size, outsz=size)
     self.pos += 1
 
-    char = bb[0]
-    if (char >= 97 && char <= 102):  # only handles lowercase a-f
-        numeric = char - 87
-    else:
-        numeric = char - 48
-    return(numeric)
+    result = 0
+    i = 0
+    while i < size:
+        char = val[size-1-i]
+        # log(char)
+        if (char >= 97 && char <= 102):  # only handles lowercase a-f
+            numeric = char - 87
+        else:
+            numeric = char - 48
+
+        # log(numeric)
+
+        result += numeric * 16^i
+        # log(result)
+
+        i += 1
+    return(result)
 
 
 def test_readUInt8_simple():
-    rawTx = text("2")
+    rawTx = text("02")
     size = len(rawTx)
     bb = self.str2a(rawTx, size, outsz=size)
     self.copyToBuf(bb, size)
@@ -131,17 +144,17 @@ def test_readUInt8_simple():
 def test_readUInt8():
     t1 = self.test_readUInt8_simple()
     t2 = self.test_readUInt8_hex()
-    return(t1 == 1 && t2 == 1)    
+    return(t1 == 1 && t2 == 1)
 
 def test_readUInt8_hex():
-    rawTx = text("c")
+    rawTx = text("3c")
     size = len(rawTx)
     bb = self.str2a(rawTx, size, outsz=size)
     self.copyToBuf(bb, size)
 
     self.pos = 0
     res = self.readUInt8()
-    exp = 12
+    exp = 60
     return(res == exp)
 
 # only handles lowercase a-f
