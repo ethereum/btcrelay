@@ -136,7 +136,11 @@ def readUInt32LE():
 
 
 def test_readUInt32LE():
-    # rawTx = text("03042342")
+    t1 = self.test_readUInt32LE_simple()
+    t2 = self.test_readUInt32LE_hex()
+    return(t1 == 1 && t2 == 1)
+
+def test_readUInt32LE_simple():
     rawTx = text("01000000")
     size = len(rawTx)
     bb = self.str2a(rawTx, size, outsz=size)
@@ -144,8 +148,8 @@ def test_readUInt32LE():
 
     self.pos = 0
     res = self.readUInt32LE()
-    exp = 0x42230403
-    return(res)
+    exp = 1
+    return(res == exp)
 
 
 def test_readUInt32LE_hex():
@@ -157,8 +161,20 @@ def test_readUInt32LE_hex():
 
     self.pos = 0
     res = self.readUInt32LE()
-    # exp = 0x42230403
-    return(res)
+    exp = 15
+    return(res == exp)
+
+# test from http://nodejs.org/api/buffer.html#buffer_buf_readuint32le_offset_noassert
+def test_readUInt32LE_nodejs():
+    rawTx = text("03042342")
+    size = len(rawTx)
+    bb = self.str2a(rawTx, size, outsz=size)
+    self.copyToBuf(bb, size)
+
+    self.pos = 0
+    res = self.readUInt32LE()
+    exp = 0x42230403
+    return(res == exp)
 
 
 # not generic, eg assumes base is 256
