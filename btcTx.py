@@ -79,8 +79,8 @@ def copyToBuf(arr:a, size):
 def initFromBuf(size):
     arr = array(size)
     i = 0
-    log(size)
-    log(self.pos)
+    # log(size)
+    # log(self.pos)
     while i < size:
         arr[i] = self.buf[(self.pos*2) + i]
         # log(arr[i])
@@ -115,7 +115,8 @@ def readVarintNum():
     else:
         return(first)
 
-def tt():
+# wip testing deserialization
+def twip():
     rawTx = text("0100000003")
     size = len(rawTx)
     bb = self.str2a(rawTx, size, outsz=size)
@@ -123,12 +124,12 @@ def tt():
 
     self.pos = 0
     version = self.readUInt32LE()
-    # log(version)
-    log(self.pos)
-    ins = self.readVarintNum()
-    # log(ins)
+    log(version)
     # log(self.pos)
-    return(version == 1 && ins == 1)
+    ins = self.readVarintNum()
+    log(ins)
+    # log(self.pos)
+    return(version == 1 && ins == 3)
 
 # only handles lowercase a-f
 # tested via tests for readUInt8, readUInt32LE, ...
