@@ -7,6 +7,8 @@ self.codeString256 = text("0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abc
 data pos
 data buf[]
 
+data tmpScriptLen
+data tmpScriptArr[]
 
 
 def f1(string:s):
@@ -111,18 +113,21 @@ def txinFromBuf():
     # log(seqNum)
 
 
+# returns satoshis and sets self.tmpScriptLen and self.tmpScriptArr
 def txoutFromBuf():
     satoshis = self.readUInt64LE()
     log(satoshis)
 
     scriptSize = self.readVarintNum()
     log(scriptSize)
+    self.tmpScriptLen = scriptSize
 
     if scriptSize > 0:
         scriptArr = self.readSimple(scriptSize, outsz=scriptSize*2)
+        self.tmpScriptArr = scriptArr
         #log(data=scriptArr)
 
-    return([satoshis, scriptSize, scriptArr], 3)
+    return(satoshis)
 
 
 # does not convert to numeric
@@ -204,6 +209,43 @@ def twip():
 
     return(version == 1 && numIns == 1)
 
+# unoptimized
+def getOutput0Script():
+    version = self.readUInt32LE()
+    # log(version)
+    # log(self.pos)
+    numIns = self.readVarintNum()
+    # log(numIns)
+    # log(self.pos)
+
+    # todo loop numIns
+    self.txinFromBuf()
+
+    numOuts = self.readVarintNum()
+
+    self.txoutFromBuf(outsz=2)
+
+    return(self.tmpScriptArr:a)
+
+def test_getOutput0Script():
+    rawTx = text("01000000010c432f4fb3e871a8bda638350b3d5c698cf431db8d6031b53e3fb5159e59d4a90000000000ffffffff0100f2052a010000001976a9143744841e13b90b4aca16fe793a7f88da3a23cc7188ac00000000")
+    size = len(rawTx)
+    bb = self.str2a(rawTx, size, outsz=size)
+    self.copyToBuf(bb, size)
+
+    self.pos = 0
+
+    self.getOutput0()
+
+
+
+    bb = self.str2a(rawTx, size, outsz=size)
+    self.copyToBuf(bb, size)
+
+    self.pos = 0
+
+    res = self.getOutput0Script(outsz=self.tmpScriptLen)
+    return(res:a)
 
 # unoptimized
 def getOutput0():
@@ -219,10 +261,9 @@ def getOutput0():
 
     numOuts = self.readVarintNum()
 
-    out0 = self.txoutFromBuf(outsz=3)
+    satoshis = self.txoutFromBuf()
 
-    return(out0:a)
-
+    return(satoshis)
 
 def test_getOutput0():
     rawTx = text("01000000010c432f4fb3e871a8bda638350b3d5c698cf431db8d6031b53e3fb5159e59d4a90000000000ffffffff0100f2052a010000001976a9143744841e13b90b4aca16fe793a7f88da3a23cc7188ac00000000")
