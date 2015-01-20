@@ -118,8 +118,20 @@ def txoutFromBuf():
     scriptSize = self.readVarintNum()
     log(scriptSize)
 
-    #if scriptSize > 0:
-        #todo
+    if scriptSize > 0:
+        scriptArr = self.readSimple(scriptSize, outsz=scriptSize*2)
+        #log(data=scriptArr)
+
+
+
+# does not convert to numeric
+# make sure caller uses outsz=len*2
+def readSimple(len):
+    size = len * 2
+    bb = self.initFromBuf(size, outsz=size)
+    self.pos += len # note: len NOT size
+    # log(data=bb)
+    return(bb:a)
 
 
 # does not convert to numeric
@@ -164,7 +176,7 @@ def twip():
     # {'locktime': 0, 'outs': [{'value': 5000000000, 'script': '76a9143744841e13b90b4aca16fe793a7f88da3a23cc7188ac'}], 'version': 1, 'ins': [{'script': '', 'outpoint': {'index': 0, 'hash': 'a9d4599e15b53f3eb531608ddb31f48c695c3d0b3538a6bda871e8b34f2f430c'}, 'sequence': 4294967295}]}
 
    #rawTx = text("01000000010c432f4fb3e871a8bda638350b3d5c698cf431db8d6031b53e3fb5159e59d4a90000000000ffffffff0100f2052a010000001976a9143744841e13b90b4aca16fe793a7f88da3a23cc7188ac00000000")
-    rawTx = text("01000000010c432f4fb3e871a8bda638350b3d5c698cf431db8d6031b53e3fb5159e59d4a90000000000ffffffff0100f2052a0100000019")
+    rawTx = text("01000000010c432f4fb3e871a8bda638350b3d5c698cf431db8d6031b53e3fb5159e59d4a90000000000ffffffff0100f2052a010000001976a9143744841e13b90b4aca16fe793a7f88da3a23cc7188ac")
     size = len(rawTx)
     bb = self.str2a(rawTx, size, outsz=size)
     self.copyToBuf(bb, size)
