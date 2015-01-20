@@ -104,6 +104,7 @@ def readReverse(len):
     size = len * 2
     bb = self.initFromBuf(size, outsz=size)
     val = self.pair_rev(bb, size, outsz=size)
+    self.pos += len # note: len NOT size
     return(val:a)
 
 
