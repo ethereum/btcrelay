@@ -342,6 +342,12 @@ def test_getOutput1Script():
     dblSize = res[1]*2
     scriptArr = self.initFromArr(dblSize, 2, outsz=dblSize)
 
+
+    hash = sha256(scriptArr, dblSize)
+    # log(hash)
+    exp = 71890310846922344280121795744358198578782792037309011779978844978237080739429 # not sure how to get this
+    return(hash == exp)
+
     return(scriptArr:a)
 
 
