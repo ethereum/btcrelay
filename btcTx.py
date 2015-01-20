@@ -245,11 +245,13 @@ def twip():
 
     return(version == 1 && numIns == 1)
 
+
 # unoptimized
 # to get the scriptArr, do this:
 # res = self.getOutput0Script(outsz=2)
 # dblSize = res[1]*2   # #res[1] is the scriptSize
 # scriptArr = self.initFromArr(dblSize, 2, outsz=dblSize)
+# the (standard) output script should be of form 76a914 <hashAddr> 88ac
 def getOutput0Script():
     version = self.readUInt32LE()
     # log(version)
