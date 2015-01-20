@@ -96,14 +96,30 @@ def test_initFromBuf():
     return(bb:a)
 
 
+# def txinFromBuf():
 
 
-def t3():
-    s = text("7")
-    char = getch(s, 0)
-    return(char)  # how to convert to 7 (instead of 55)
+# does not convert to numeric
+def readReverse(len):
+    size = len * 2
+    bb = self.initFromBuf(size, outsz=size)
+    val = self.pair_rev(bb, size, outsz=size)
+    return(val:a)
 
 
+def test_readReverse():
+    rawTx = text("0c432f4fb3e871a8bda638350b3d5c698cf431db8d6031b53e3fb5159e59d4a9")
+    size = len(rawTx)
+    bb = self.str2a(rawTx, size, outsz=size)
+    self.copyToBuf(bb, size)
+
+    self.pos = 0
+    res = self.readReverse(32, outsz=64)
+    # exp is a9d4599e15b53f3eb531608ddb31f48c695c3d0b3538a6bda871e8b34f2f430c
+    # (ord('a') is 97, ord('9') is 57 and this is what will be returned...)
+    return(res:a)  # expect [97, 57, 100, 52, 53 etc] if numeric, expect [10, 9, 13, 4, 5, 9, 9, etc]
+
+# tested via twip()
 def readVarintNum():
     first = self.readUInt8()
     if first == 0xfd:
