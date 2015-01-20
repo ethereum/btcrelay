@@ -297,7 +297,7 @@ def test_getOutput0Script():
     return(scriptArr:a)
 
 
-def getOutput1Script():
+def getOutputScript(outNum):
     version = self.readUInt32LE()
     # log(version)
     # log(self.pos)
@@ -311,7 +311,6 @@ def getOutput1Script():
     numOuts = self.readVarintNum()
 
     i = 0
-    outNum = 1
     while i <= outNum:
         satAndSize = self.txoutFromBuf(outsz=2)
         i += 1
@@ -337,7 +336,7 @@ def test_getOutput1Script():
 
     self.pos = 0
 
-    res = self.getOutput1Script(outsz=2)
+    res = self.getOutputScript(1, outsz=2)
     #res[1] is the scriptSize
     # log(res[1])
     dblSize = res[1]*2
