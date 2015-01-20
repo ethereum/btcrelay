@@ -210,9 +210,15 @@ def twip():
     # source, forgot
     # >>> deserialize(tx)
     # {'locktime': 0, 'outs': [{'value': 5000000000, 'script': '76a9143744841e13b90b4aca16fe793a7f88da3a23cc7188ac'}], 'version': 1, 'ins': [{'script': '', 'outpoint': {'index': 0, 'hash': 'a9d4599e15b53f3eb531608ddb31f48c695c3d0b3538a6bda871e8b34f2f430c'}, 'sequence': 4294967295}]}
-
    #rawTx = text("01000000010c432f4fb3e871a8bda638350b3d5c698cf431db8d6031b53e3fb5159e59d4a90000000000ffffffff0100f2052a010000001976a9143744841e13b90b4aca16fe793a7f88da3a23cc7188ac00000000")
-    rawTx = text("01000000010c432f4fb3e871a8bda638350b3d5c698cf431db8d6031b53e3fb5159e59d4a90000000000ffffffff0100f2052a010000001976a9143744841e13b90b4aca16fe793a7f88da3a23cc7188ac00000000")
+
+
+    # source tx is 60c1f1a3160042152114e2bba45600a5045711c3a8a458016248acec59653471
+    # {'locktime': 0, 'outs': [{'value': 38042249285, 'script': '76a9147d4e6d55e1dffb0df85f509343451d170d14755188ac'},
+    # {'value': 1500000, 'script': '76a9143bc576e6960a9d45201ba5087e39224d0a05a07988ac'}], 'version': 1, 'ins': [{'script': '493046022100be69797cf5d784412b1258256eb657c191a04893479dfa2ae5c7f2088c7adbe0022100e6b000bd633b286ed1b9bc7682fe753d9fdad61fbe5da2a6e9444198e33a670f012102f0e17f9afb1dca5ab9058b7021ba9fcbedecf4fac0f1c9e0fd96c4fdc200c1c2', 'outpoint': {'index': 1, 'hash': '6b040cd7a4676b5c7b11f144e73c1958c177fcd79e934f6be8ce02c8cd12546d'}, 'sequence': 4294967295}]}
+    rawTx = text("01000000016d5412cdc802cee86b4f939ed7fc77c158193ce744f1117b5c6b67a4d70c046b010000006c493046022100be69797cf5d784412b1258256eb657c191a04893479dfa2ae5c7f2088c7adbe0022100e6b000bd633b286ed1b9bc7682fe753d9fdad61fbe5da2a6e9444198e33a670f012102f0e17f9afb1dca5ab9058b7021ba9fcbedecf4fac0f1c9e0fd96c4fdc200c1c2ffffffff0245a87edb080000001976a9147d4e6d55e1dffb0df85f509343451d170d14755188ac60e31600000000001976a9143bc576e6960a9d45201ba5087e39224d0a05a07988ac00000000")
+
+
     size = len(rawTx)
     bb = self.str2a(rawTx, size, outsz=size)
     self.copyToBuf(bb, size)
@@ -229,13 +235,13 @@ def twip():
     self.txinFromBuf()
 
     numOuts = self.readVarintNum()
-    # log(numOuts)
+    log(numOuts)
 
     # todo loop numOuts
-    self.txoutFromBuf()
-
-    nLockTime = self.readUInt32LE()
-    log(nLockTime)
+    # self.txoutFromBuf()
+    #
+    # nLockTime = self.readUInt32LE()
+    # log(nLockTime)
 
     return(version == 1 && numIns == 1)
 
