@@ -130,8 +130,9 @@ def txinFromBuf():
     scriptSize = self.readVarintNum()
     # log(scriptSize)
 
-    #if scriptSize > 0:
-        #todo
+    if scriptSize > 0:
+        dblSize = scriptSize*2
+        scriptArr = self.readSimple(scriptSize, outsz=dblSize)
 
     seqNum = self.readUInt32LE()
     # log(seqNum)
