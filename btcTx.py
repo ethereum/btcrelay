@@ -147,8 +147,9 @@ def txoutFromBuf():
     # self.tmpScriptLen = scriptSize
 
     if scriptSize > 0:
-        scriptArr = self.readSimple(scriptSize, outsz=scriptSize*2)
-        # self.copyToArr(scriptArr, scriptSize, 2)
+        dblSize = scriptSize*2
+        scriptArr = self.readSimple(scriptSize, outsz=dblSize)
+        self.copyToArr(scriptArr, dblSize, 2)
 
         # self.tmpScriptArr = scriptArr
         #log(data=scriptArr)
@@ -274,7 +275,12 @@ def test_getOutput0Script():
     self.pos = 0
 
     res = self.getOutput0Script(outsz=2)
-    return(res:a)
+    #res[1] is the scriptSize
+    # log(res[1])
+    dblSize = res[1]*2
+    scriptArr = self.initFromArr(dblSize, 2, outsz=dblSize)
+
+    return(scriptArr:a)
 
 # unoptimized
 def getOutput0():
