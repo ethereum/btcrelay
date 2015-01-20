@@ -7,8 +7,10 @@ self.codeString256 = text("0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abc
 data pos
 data buf[]
 
+
 data tmpScriptLen
-data tmpScriptArr[]
+data tmpScriptArr[]  # 'id' is 2
+
 
 
 def f1(string:s):
@@ -71,6 +73,28 @@ def shiftRight(n, x):
     return(div(n, 2^x))
 
 
+# copy 'arr' to global array with given 'id'
+def copyToArr(arr:a, size, id):
+    i = 0
+    while i < size:
+        if id == 2:
+            self.tmpScriptArr[i] = arr[i]
+        i += 1
+
+# returns array
+def initFromArr(size, id):
+    arr = array(size)
+    i = 0
+    # log(size)
+    # log(self.pos)
+    while i < size:
+        if id == 2:
+            arr[i] = self.tmpScriptArr[i]
+        # log(arr[i])
+        i += 1
+    return(arr:a)
+
+
 def copyToBuf(arr:a, size):
     i = 0
     while i < size:
@@ -120,14 +144,19 @@ def txoutFromBuf():
 
     scriptSize = self.readVarintNum()
     log(scriptSize)
-    self.tmpScriptLen = scriptSize
+    # self.tmpScriptLen = scriptSize
 
     if scriptSize > 0:
         scriptArr = self.readSimple(scriptSize, outsz=scriptSize*2)
-        self.tmpScriptArr = scriptArr
+        # self.copyToArr(scriptArr, scriptSize, 2)
+
+        # self.tmpScriptArr = scriptArr
         #log(data=scriptArr)
 
-    return(satoshis)
+
+    # mcopy( , scriptArr, scriptSize)
+
+    return([satoshis, scriptSize], 2)
 
 
 # does not convert to numeric
@@ -223,28 +252,28 @@ def getOutput0Script():
 
     numOuts = self.readVarintNum()
 
-    self.txoutFromBuf(outsz=2)
+    satAndSize = self.txoutFromBuf(outsz=2)
 
-    return(self.tmpScriptArr:a)
+    return(satAndSize:a)
 
 def test_getOutput0Script():
     rawTx = text("01000000010c432f4fb3e871a8bda638350b3d5c698cf431db8d6031b53e3fb5159e59d4a90000000000ffffffff0100f2052a010000001976a9143744841e13b90b4aca16fe793a7f88da3a23cc7188ac00000000")
     size = len(rawTx)
+    # bb = self.str2a(rawTx, size, outsz=size)
+    # self.copyToBuf(bb, size)
+    #
+    # self.pos = 0
+    #
+    # self.getOutput0()
+
+
+
     bb = self.str2a(rawTx, size, outsz=size)
     self.copyToBuf(bb, size)
 
     self.pos = 0
 
-    self.getOutput0()
-
-
-
-    bb = self.str2a(rawTx, size, outsz=size)
-    self.copyToBuf(bb, size)
-
-    self.pos = 0
-
-    res = self.getOutput0Script(outsz=self.tmpScriptLen)
+    res = self.getOutput0Script(outsz=2)
     return(res:a)
 
 # unoptimized
