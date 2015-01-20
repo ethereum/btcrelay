@@ -96,10 +96,18 @@ def test_initFromBuf():
     return(bb:a)
 
 
-# def txinFromBuf():
+def txinFromBuf():
+    prevTxId = self.readReverse(32, outsz=64)
+    outputIndex = self.readUInt32LE()
+    log(outputIndex)
+
+    scriptSize = self.readVarintNum()
+    log(scriptSize)
+
 
 
 # does not convert to numeric
+# make sure caller uses outsz=len*2
 def readReverse(len):
     size = len * 2
     bb = self.initFromBuf(size, outsz=size)
@@ -134,19 +142,31 @@ def readVarintNum():
 
 # wip testing deserialization
 def twip():
-    rawTx = text("0100000003")
+
+    # source, forgot
+    # >>> deserialize(tx)
+    # {'locktime': 0, 'outs': [{'value': 5000000000, 'script': '76a9143744841e13b90b4aca16fe793a7f88da3a23cc7188ac'}], 'version': 1, 'ins': [{'script': '', 'outpoint': {'index': 0, 'hash': 'a9d4599e15b53f3eb531608ddb31f48c695c3d0b3538a6bda871e8b34f2f430c'}, 'sequence': 4294967295}]}
+
+   #rawTx = text("01000000010c432f4fb3e871a8bda638350b3d5c698cf431db8d6031b53e3fb5159e59d4a90000000000ffffffff0100f2052a010000001976a9143744841e13b90b4aca16fe793a7f88da3a23cc7188ac00000000")
+    rawTx = text("01000000010c432f4fb3e871a8bda638350b3d5c698cf431db8d6031b53e3fb5159e59d4a90000000000")
     size = len(rawTx)
     bb = self.str2a(rawTx, size, outsz=size)
     self.copyToBuf(bb, size)
 
     self.pos = 0
     version = self.readUInt32LE()
-    log(version)
+    # log(version)
     # log(self.pos)
-    ins = self.readVarintNum()
-    log(ins)
+    numIns = self.readVarintNum()
+    # log(numIns)
     # log(self.pos)
-    return(version == 1 && ins == 3)
+
+    # todo loop numIns
+    self.txinFromBuf()
+
+    return(version == 1 && numIns == 1)
+
+
 
 # only handles lowercase a-f
 # tested via tests for readUInt8, readUInt32LE, ...
@@ -444,14 +464,6 @@ def test_decode():
     res = self.decode(text("0010"), 256)
     expected = 808464688
     return(res == expected)
-
-def test_deserialize():
-    # source, forgot
-    # >>> deserialize(tx)
-    # {'locktime': 0, 'outs': [{'value': 5000000000, 'script': '76a9143744841e13b90b4aca16fe793a7f88da3a23cc7188ac'}], 'version': 1, 'ins': [{'script': '', 'outpoint': {'index': 0, 'hash': 'a9d4599e15b53f3eb531608ddb31f48c695c3d0b3538a6bda871e8b34f2f430c'}, 'sequence': 4294967295}]}
-    rawTx = text("01000000010c432f4fb3e871a8bda638350b3d5c698cf431db8d6031b53e3fb5159e59d4a90000000000ffffffff0100f2052a010000001976a9143744841e13b90b4aca16fe793a7f88da3a23cc7188ac00000000")
-    # version <- get 4 chars, flip, then decode
-    return(13)
 
 def test_read_as_int():
     # tx = '01000000010c432f4fb3e871a8bda638350b3d5c698cf431db8d6031b53e3fb5159e59d4a90000000000ffffffff0100f2052a010000001976a9143744841e13b90b4aca16fe793a7f88da3a23cc7188ac00000000'
