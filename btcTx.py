@@ -1,76 +1,9 @@
 
-data codeString256
-# workaround for now
-self.codeString256 = text("0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz")
-
-
 data pos
 data buf[]
 
 
-data tmpScriptLen
 data tmpScriptArr[]  # 'id' is 2
-
-
-
-def f1(string:s):
-    setch(string, 0, "a")
-    setch(string, 1, "b")
-    return(string)
-
-def t1():
-    string = text("cd")
-    res = self.f1(string)
-    return([getch(res,0), getch(res,1)]:a)  # should return [97,98]
-    return(getch(res,1))   # how to get "ab" ?
-
-def logt():
-    # log(1)
-    # log(1, 2)
-    # log(1, 2, 3)
-    # log(1, 2, 3, 4)
-    log(data=[1,2,3])
-    log(1, data=[1,2,3])
-    log(1, 2, data=[1,2,3])
-    log(1, 2, 3, data=[1,2,3])
-    log(1, 2, 3, 4, data=[1,2,3])
-
-
-def test():
-    res = self.test_str_rev()
-    # res = self.test_str_findChar()
-    #res = self.test_decode()
-    return(res)
-
-
-def read_as_int(bytez):
-    self.pos += bytez
-    return(self.pos)
-
-
-
-def flipBytes(n, numByte):
-    mask = 0xff
-
-    result = 0
-    i = 0
-    while i < numByte:
-        b = n & mask
-        b = div(b, 2^(i*8))
-        b *= 2^((numByte-i-1)*8)
-        mask *= 256
-        result = result | b
-        i += 1
-
-    return(result)
-
-# shift left
-def shiftLeft(n, x):
-    return(n * 2^x)
-
-# shift right
-def shiftRight(n, x):
-    return(div(n, 2^x))
 
 
 # copy 'arr' to global array with given 'id'
@@ -94,14 +27,14 @@ def initFromArr(size, id):
         i += 1
     return(arr:a)
 
-
+# copy 'arr' to global self.buf[]
 def copyToBuf(arr:a, size):
     i = 0
     while i < size:
         self.buf[i] = arr[i]
         i += 1
 
-
+# return an array with the contents of self.buf[] starting for index self.pos
 def initFromBuf(size):
     arr = array(size)
     i = 0
@@ -204,49 +137,6 @@ def readVarintNum():
         return(self.readUInt64LE())
     else:
         return(first)
-
-# wip testing deserialization
-def twip():
-
-    # source, forgot
-    # >>> deserialize(tx)
-    # {'locktime': 0, 'outs': [{'value': 5000000000, 'script': '76a9143744841e13b90b4aca16fe793a7f88da3a23cc7188ac'}], 'version': 1, 'ins': [{'script': '', 'outpoint': {'index': 0, 'hash': 'a9d4599e15b53f3eb531608ddb31f48c695c3d0b3538a6bda871e8b34f2f430c'}, 'sequence': 4294967295}]}
-   #rawTx = text("01000000010c432f4fb3e871a8bda638350b3d5c698cf431db8d6031b53e3fb5159e59d4a90000000000ffffffff0100f2052a010000001976a9143744841e13b90b4aca16fe793a7f88da3a23cc7188ac00000000")
-
-
-    # source tx is 60c1f1a3160042152114e2bba45600a5045711c3a8a458016248acec59653471
-    # {'locktime': 0, 'outs': [{'value': 38042249285, 'script': '76a9147d4e6d55e1dffb0df85f509343451d170d14755188ac'},
-    # {'value': 1500000, 'script': '76a9143bc576e6960a9d45201ba5087e39224d0a05a07988ac'}], 'version': 1, 'ins': [{'script': '493046022100be69797cf5d784412b1258256eb657c191a04893479dfa2ae5c7f2088c7adbe0022100e6b000bd633b286ed1b9bc7682fe753d9fdad61fbe5da2a6e9444198e33a670f012102f0e17f9afb1dca5ab9058b7021ba9fcbedecf4fac0f1c9e0fd96c4fdc200c1c2', 'outpoint': {'index': 1, 'hash': '6b040cd7a4676b5c7b11f144e73c1958c177fcd79e934f6be8ce02c8cd12546d'}, 'sequence': 4294967295}]}
-    rawTx = text("01000000016d5412cdc802cee86b4f939ed7fc77c158193ce744f1117b5c6b67a4d70c046b010000006c493046022100be69797cf5d784412b1258256eb657c191a04893479dfa2ae5c7f2088c7adbe0022100e6b000bd633b286ed1b9bc7682fe753d9fdad61fbe5da2a6e9444198e33a670f012102f0e17f9afb1dca5ab9058b7021ba9fcbedecf4fac0f1c9e0fd96c4fdc200c1c2ffffffff0245a87edb080000001976a9147d4e6d55e1dffb0df85f509343451d170d14755188ac60e31600000000001976a9143bc576e6960a9d45201ba5087e39224d0a05a07988ac00000000")
-
-
-    size = len(rawTx)
-    bb = self.str2a(rawTx, size, outsz=size)
-    self.copyToBuf(bb, size)
-
-    self.pos = 0
-    version = self.readUInt32LE()
-    # log(version)
-    # log(self.pos)
-    numIns = self.readVarintNum()
-    # log(numIns)
-    # log(self.pos)
-
-    # todo loop numIns
-    self.txinFromBuf()
-
-    numOuts = self.readVarintNum()
-    log(numOuts)
-
-    # todo loop numOuts
-    # self.txoutFromBuf()
-    #
-    # nLockTime = self.readUInt32LE()
-    # log(nLockTime)
-
-    return(version == 1 && numIns == 1)
-
-
 
 
 # unoptimized
@@ -495,18 +385,6 @@ def test_readUInt64LE_hex():
     return(res == exp)
 
 
-# not generic, eg assumes base is 256
-def decode(string:s, base):
-    slen = len(string)
-    result = 0
-    i = 0
-    while i < slen:
-        result *= base
-        result += getch(string, i)
-        i += 1
-    return(result)
-
-
 
 # char is just a string of length 1
 def str_findChar(string:s, char):
@@ -519,7 +397,7 @@ def str_findChar(string:s, char):
     return(-1)
 
 
-
+# reverses in_arr in pairs, for the purpose of reversing bytes
 def pair_rev(in_arr:a, size):
     if size % 2 != 0:
         return(7777777) # error
@@ -643,18 +521,6 @@ def test_str_rev():
 
 
 
-def test_str_findChar():
-    res = self.str_findChar(self.codeString256, "A")
-    return(res)
-
-
-def test_decode():
-    res = self.decode(text("0010"), 256)
-    expected = 808464688
-    return(res == expected)
-
-def test_read_as_int():
-    # tx = '01000000010c432f4fb3e871a8bda638350b3d5c698cf431db8d6031b53e3fb5159e59d4a90000000000ffffffff0100f2052a010000001976a9143744841e13b90b4aca16fe793a7f88da3a23cc7188ac00000000'
-    expected = 808464688
-    res = self.read_as_int(13)
-    return(res)
+# def test_str_findChar():
+#     res = self.str_findChar(self.codeString256, "A")
+#     return(res)
