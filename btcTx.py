@@ -141,11 +141,11 @@ def readVarintNum():
 
 # unoptimized
 # to get the scriptArr, do this:
-# res = self.getOutputScript(0, outsz=2)
+# res = self.getOutScriptSize(0, outsz=2)
 # dblSize = res[1]*2   # #res[1] is the scriptSize
 # scriptArr = self.initFromArr(dblSize, 2, outsz=dblSize)
 # the (standard) output script should be of form 76a914 <hashAddr> 88ac
-def getOutputScript(outNum):
+def getOutScriptSize(outNum):
     version = self.readUInt32LE()
     # log(version)
     # log(self.pos)
@@ -168,7 +168,7 @@ def getOutputScript(outNum):
     return(satAndSize:a)
 
 
-def test_getOutputScriptWithMultipleInputs():
+def test_getOutScriptSizeWithMultipleInputs():
     # 3 ins, 2 outs
     rawTx = text("0100000003d64e15b7c11f7532059fe6aacc819b5d886e3aaa602078db57cbae2a8f17cde8000000006b483045022027a176130ebf8bf49fdac27cdc83266a68b19c292b08df1be29f3d964c7e90b602210084ae66b4ff5ed342d78102ef8a4bde87b3ded06929ccaf9a8f71b137baa1816a012102270d473b083897519e5f01c47de7ac50877b6a295775f35966922b3571614370ffffffff54f0e7ded00c01082257eda035d65513b509ddbbe05fae19df0065c294822c9d010000006c493046022100f7423fdbcff22d3cd49921d0af92420d548b925bb1671dc826f15ccc5e05c3de022100d60a6178d892bcf012a79cf9e3430ab70a33b3fa2d156ecf541584e44fa83b150121036674d9607e0461b158c4b3d6368d1869e893cd122c68ebe47af253ff686f064effffffffa6155f8b449da0d3f9d2e1bc8e864c8b78615c1fa560076acaee8802d256a6dd010000006c493046022100e220318b55597c80eecccf9b84f37ab287c14277ccccd269d32f863d8d58d403022100f87818cbed15276f0d5be51aed5bd3b8dea934d6dd2244f2c3170369b96f365501210204b08466f452bb42cefc081ca1c773e26ce0a43566bd9d17b30065c1847072f4ffffffff02301bb50e000000001976a914bdb644fddd802bf7388df220279a18abdf65ebb788ac009ccf6f000000001976a914802d61e8496ffc132cdad325c9abf2e7c9ef222b88ac00000000")
     size = len(rawTx)
@@ -177,7 +177,7 @@ def test_getOutputScriptWithMultipleInputs():
     self.pos = 0
 
 
-    res = self.getOutputScript(0, outsz=2)
+    res = self.getOutScriptSize(0, outsz=2)
     #res[1] is the scriptSize
     # log(res[1])
     dblSize = res[1]*2
@@ -191,13 +191,13 @@ def test_getOutputScriptWithMultipleInputs():
 
 
 # test tx has only 1 input
-def test_getOutputScript():
+def test_getOutScriptSize():
     res1 = self.test_getOutput0Script()
     res2 = self.test_getOutput1Script()
     return(res1 == 1 && res2 == 1)
 
 # test tx has only 1 input
-def setupForTestGetOutputScript():
+def setupForTestgetOutScriptSize():
     # only 1 output rawTx = text("01000000010c432f4fb3e871a8bda638350b3d5c698cf431db8d6031b53e3fb5159e59d4a90000000000ffffffff0100f2052a010000001976a9143744841e13b90b4aca16fe793a7f88da3a23cc7188ac00000000")
     rawTx = text("01000000016d5412cdc802cee86b4f939ed7fc77c158193ce744f1117b5c6b67a4d70c046b010000006c493046022100be69797cf5d784412b1258256eb657c191a04893479dfa2ae5c7f2088c7adbe0022100e6b000bd633b286ed1b9bc7682fe753d9fdad61fbe5da2a6e9444198e33a670f012102f0e17f9afb1dca5ab9058b7021ba9fcbedecf4fac0f1c9e0fd96c4fdc200c1c2ffffffff0245a87edb080000001976a9147d4e6d55e1dffb0df85f509343451d170d14755188ac60e31600000000001976a9143bc576e6960a9d45201ba5087e39224d0a05a07988ac00000000")
     size = len(rawTx)
@@ -207,8 +207,8 @@ def setupForTestGetOutputScript():
 
 
 def test_getOutput0Script():
-    self.setupForTestGetOutputScript()
-    res = self.getOutputScript(0, outsz=2)
+    self.setupForTestgetOutScriptSize()
+    res = self.getOutScriptSize(0, outsz=2)
     #res[1] is the scriptSize
     # log(res[1])
     dblSize = res[1]*2
@@ -222,8 +222,8 @@ def test_getOutput0Script():
 
 
 def test_getOutput1Script():
-    self.setupForTestGetOutputScript()
-    res = self.getOutputScript(1, outsz=2)
+    self.setupForTestgetOutScriptSize()
+    res = self.getOutScriptSize(1, outsz=2)
     #res[1] is the scriptSize
     # log(res[1])
     dblSize = res[1]*2
