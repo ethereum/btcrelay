@@ -4,7 +4,7 @@
 
 d91d87f8b485a028bc17c1d47c3703ff01483e14 is sampleContractB.py
 
-344b1e3192051e98d67487ffd6015c53e9472634 is sampleContractC.py
+5d1e3a9efc03d0e625514ad41ce13cd8720970d8 is sampleContractC.py
 
 block 15008 has the manual transact()
 
