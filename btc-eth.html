@@ -88,7 +88,7 @@ web3.eth.watch().changed(function(){
 // ];
 
 
-var bethAddress = '0x6bbc5acd27676061ed6e4a101dea4a91518871a3';
+var bethAddress = '0xd91d87f8b485a028bc17c1d47c3703ff01483e14';
 var bethAbi = [
   {
     'name': 'test',
@@ -96,7 +96,12 @@ var bethAbi = [
     'inputs': [{
       'name': 'arr',
       'type': 'int[]'
-    }],
+    },
+    {
+      'name': 'm',
+      'type': 'int'
+    }
+    ],
     'outputs': [
         {
             "name": "d",
@@ -142,7 +147,7 @@ var padLeft = function (string, chars) {
 function callExampleContract() {
   // param = 9;
   var param = parseInt(document.getElementById('value').value);
-  contract.test([param]).transact().then(function(res) {
+  contract.test([param], 5).transact().then(function(res) {
             document.getElementById('result').innerText = res[0];
         });
 

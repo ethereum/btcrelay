@@ -2,7 +2,7 @@
 205215f022af4950618730bcfae161b28397bc41 is sampleContractA.py
 47fab65f1fb1e41d07d4566dba342c04d5b57192 is sampleContractcallsA.py
 
-6bbc5acd27676061ed6e4a101dea4a91518871a3 is sampleContractB.py
+d91d87f8b485a028bc17c1d47c3703ff01483e14 is sampleContractB.py
 
 block 15008 has the manual transact()
 
