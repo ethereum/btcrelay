@@ -32,6 +32,8 @@ def code():
     ret = self.shiftLeft(2,4)
     return(ret)
 
+# check difficulty
+#
 def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
     if hashPrevBlock != self.lastKnownBlock:
         return(0)
@@ -41,7 +43,8 @@ def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
 
     # TODO other validation of block?  eg timestamp
 
-    if lt(hash, target):
+#
+    if lt(blockHash, target):
         self.block[blockHash]._height = self.block[self.lastKnownBlock]._height + 1
 
         self.block[blockHash]._blockHeader._version = version

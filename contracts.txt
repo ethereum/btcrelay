@@ -16,8 +16,8 @@ concat:
 d91d87f8b485a028bc17c1d47c3703ff01483e14 is sampleContractB.py
 
 
-01c64ba40b13ed3e43d7efebb748d5da7548ea7e is sampleContractC.py
-
+01c64ba40b13ed3e43d7efebb748d5da7548ea7e is sampleContractC.py (reads 32nd char)
+5d1e3a9efc03d0e625514ad41ce13cd8720970d8 is contractC that reads the 33rd char
 
 block 15008 has the manual transact()
 
