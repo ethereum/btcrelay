@@ -162,6 +162,7 @@ def getMetaForTxOut(rawTx:s, size, outNum):
     return(meta)
 
 
+
 # returns an array [satoshis, outputScriptSize] and writes the
 # outputScript to self.tmpScriptArr, and outputScriptSize to self.tmpScriptLen
 def __getMetaForOutput(outNum):
@@ -187,15 +188,21 @@ def __getMetaForOutput(outNum):
     return(satAndSize:a)
 
 
-
 def __setupForParsingTx(rawTx:s, size):
     bb = self.str2a(rawTx, size, outsz=size)
     self.copyToBuf(bb, size)
     self.pos = 0
 
-def __checkOutputScript(rawTx:s, size, outNum, expHashOfOutputScript):
+
+def getScriptForTxOut(rawTx:s, size, outNum):
     meta = self.getMetaForTxOut(rawTx, size, outNum, outsz=2)
     scriptArr = self.__getOutScriptFromTmpArr(outsz=self.tmpScriptLen)
+    return(scriptArr:a)
+
+
+# assumes that scriptArr size is less than 2000
+def __checkOutputScript(rawTx:s, size, outNum, expHashOfOutputScript):
+    scriptArr = self.getScriptForTxOut(rawTx, size, outNum, outsz=2000)  # hardcoded outsz limit
 
     hash = sha256(scriptArr, self.tmpScriptLen)
     # log(hash)
