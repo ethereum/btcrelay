@@ -141,7 +141,7 @@ def readVarintNum():
 
 # unoptimized
 # to get the scriptArr, do this:
-# res = self.getMetaForOutputNumber(0, outsz=2)
+# res = self.__getMetaForTxOut(0, outsz=2)
 # dblSize = res[1]*2   # #res[1] is the scriptSize
 # scriptArr = self.__getOutScriptFromTmpArr(dblSize, 2, outsz=dblSize)
 # the (standard) output script should be of form 76a914 <hashAddr> 88ac
@@ -152,7 +152,7 @@ def __getOutScriptFromTmpArr():
 
 # returns an array [satoshis, outputScriptSize] and writes the
 # outputScript to self.tmpScriptArr, and outputScriptSize to self.tmpScriptLen
-def getMetaForOutputNumber(outNum):
+def __getMetaForTxOut(outNum):
     version = self.readUInt32LE()
     # log(version)
     # log(self.pos)
@@ -183,7 +183,7 @@ def __setupForParsingTx(rawTx:s, size):
 
 def __checkOutputScript(rawTx:s, size, outNum, expHashOfOutputScript):
     self.__setupForParsingTx(rawTx, size)
-    meta = self.getMetaForOutputNumber(outNum, outsz=2)
+    meta = self.__getMetaForTxOut(outNum, outsz=2)
     scriptArr = self.__getOutScriptFromTmpArr(outsz=self.tmpScriptLen)
 
     hash = sha256(scriptArr, self.tmpScriptLen)
