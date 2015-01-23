@@ -143,9 +143,9 @@ def readVarintNum():
 # to get the scriptArr, do this:
 # res = self.getMetaForOutputNumber(0, outsz=2)
 # dblSize = res[1]*2   # #res[1] is the scriptSize
-# scriptArr = self.getOutputScript(dblSize, 2, outsz=dblSize)
+# scriptArr = self.__getOutScriptFromTmpArr(dblSize, 2, outsz=dblSize)
 # the (standard) output script should be of form 76a914 <hashAddr> 88ac
-def getOutputScript():
+def __getOutScriptFromTmpArr():
     scriptArr = self.initFromArr(self.tmpScriptLen, 2, outsz=self.tmpScriptLen)  # 2 is the id for tmpScriptArr
     return(scriptArr:a)
 
@@ -175,13 +175,16 @@ def getMetaForOutputNumber(outNum):
     return(satAndSize:a)
 
 
-def __checkOutputScript(rawTx:s, size, outNum, expHashOfOutputScript):
+
+def __setupForParsingTx(rawTx:s, size):
     bb = self.str2a(rawTx, size, outsz=size)
     self.copyToBuf(bb, size)
     self.pos = 0
 
+def __checkOutputScript(rawTx:s, size, outNum, expHashOfOutputScript):
+    self.__setupForParsingTx(rawTx, size)
     meta = self.getMetaForOutputNumber(outNum, outsz=2)
-    scriptArr = self.getOutputScript(outsz=self.tmpScriptLen)
+    scriptArr = self.__getOutScriptFromTmpArr(outsz=self.tmpScriptLen)
 
     hash = sha256(scriptArr, self.tmpScriptLen)
     # log(hash)
