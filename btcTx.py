@@ -141,7 +141,7 @@ def readVarintNum():
 
 # unoptimized
 # to get the scriptArr, do this:
-# res = self.__getMetaForTxOut(0, outsz=2)
+# res = self.__getMetaForOutput(0, outsz=2)
 # dblSize = res[1]*2   # #res[1] is the scriptSize
 # scriptArr = self.__getOutScriptFromTmpArr(dblSize, 2, outsz=dblSize)
 # the (standard) output script should be of form 76a914 <hashAddr> 88ac
@@ -150,9 +150,21 @@ def __getOutScriptFromTmpArr():
     return(scriptArr:a)
 
 
+
 # returns an array [satoshis, outputScriptSize] and writes the
 # outputScript to self.tmpScriptArr, and outputScriptSize to self.tmpScriptLen
-def __getMetaForTxOut(outNum):
+#
+# this is needed until can figure out how a dynamically sized array can be returned from a function
+# instead of needing 2 functions, one that returns array size, then calling to get the actual array
+def getMetaForTxOut(rawTx:s, size, outNum):
+    self.__setupForParsingTx(rawTx, size)
+    meta = self.__getMetaForOutput(outNum, outsz=2)
+    return(meta)
+
+
+# returns an array [satoshis, outputScriptSize] and writes the
+# outputScript to self.tmpScriptArr, and outputScriptSize to self.tmpScriptLen
+def __getMetaForOutput(outNum):
     version = self.readUInt32LE()
     # log(version)
     # log(self.pos)
@@ -182,8 +194,7 @@ def __setupForParsingTx(rawTx:s, size):
     self.pos = 0
 
 def __checkOutputScript(rawTx:s, size, outNum, expHashOfOutputScript):
-    self.__setupForParsingTx(rawTx, size)
-    meta = self.__getMetaForTxOut(outNum, outsz=2)
+    meta = self.getMetaForTxOut(rawTx, size, outNum, outsz=2)
     scriptArr = self.__getOutScriptFromTmpArr(outsz=self.tmpScriptLen)
 
     hash = sha256(scriptArr, self.tmpScriptLen)
