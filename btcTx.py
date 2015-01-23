@@ -182,14 +182,13 @@ def test_getOutputScriptWithMultipleInputs():
     size = len(rawTx)
     outNum = 0
     expHashOfOutputScript = 18263457219859066632795018565730871302430616201752059402413209513794416243122
-    res = self.t22(rawTx, size, outNum, expHashOfOutputScript)
+    res = self.__checkOutputScript(rawTx, size, outNum, expHashOfOutputScript)
     return(res)
 
-def t22(rawTx:s, size, outNum, expHashOfOutputScript):
+def __checkOutputScript(rawTx:s, size, outNum, expHashOfOutputScript):
     bb = self.str2a(rawTx, size, outsz=size)
     self.copyToBuf(bb, size)
     self.pos = 0
-
 
     meta = self.getMetaForOutputNumber(outNum, outsz=2)
     scriptArr = self.getOutputScript(outsz=self.tmpScriptLen)
@@ -216,19 +215,12 @@ def setupForTestgetMetaForOutputNumber():
 
 
 def test_getOutput0Script():
-    self.setupForTestgetMetaForOutputNumber()
-    res = self.getMetaForOutputNumber(0, outsz=2)
-    #res[1] is the scriptSize
-    # log(res[1])
-    dblSize = res[1]*2
-    scriptArr = self.initFromArr(dblSize, 2, outsz=dblSize)
-    # return(scriptArr:a)
-
-    hash = sha256(scriptArr, dblSize)
-    # log(hash)
-    exp = 59193746930381602221929576708645239567127131472230248524131494292030451013368 # not sure how to get this
-    return(hash == exp)
-
+    rawTx = text("01000000016d5412cdc802cee86b4f939ed7fc77c158193ce744f1117b5c6b67a4d70c046b010000006c493046022100be69797cf5d784412b1258256eb657c191a04893479dfa2ae5c7f2088c7adbe0022100e6b000bd633b286ed1b9bc7682fe753d9fdad61fbe5da2a6e9444198e33a670f012102f0e17f9afb1dca5ab9058b7021ba9fcbedecf4fac0f1c9e0fd96c4fdc200c1c2ffffffff0245a87edb080000001976a9147d4e6d55e1dffb0df85f509343451d170d14755188ac60e31600000000001976a9143bc576e6960a9d45201ba5087e39224d0a05a07988ac00000000")
+    size = len(rawTx)
+    outNum = 0
+    expHashOfOutputScript = 59193746930381602221929576708645239567127131472230248524131494292030451013368
+    res = self.__checkOutputScript(rawTx, size, outNum, expHashOfOutputScript)
+    return(res)
 
 def test_getOutput1Script():
     self.setupForTestgetMetaForOutputNumber()
