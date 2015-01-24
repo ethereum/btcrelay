@@ -16,35 +16,35 @@ def copyToArr(arr:a, size, id):
 
 # returns array
 def initFromArr(size, id):
-    arr = array(size)
+    myarr = array(size)
     i = 0
     # log(size)
     # log(self.pos)
     while i < size:
         if id == 2:
-            arr[i] = self.tmpScriptArr[i]
+            myarr[i] = self.tmpScriptArr[i]
         # log(arr[i])
         i += 1
-    return(arr:a)
+    return(myarr:a)
 
 # copy 'arr' to global self.buf[]
-def copyToBuf(arr:a, size):
+def copyToBuf(myarr:a, size):
     i = 0
     while i < size:
-        self.buf[i] = arr[i]
+        self.buf[i] = myarr[i]
         i += 1
 
 # return an array with the contents of self.buf[] starting for index self.pos
 def initFromBuf(size):
-    arr = array(size)
+    myarr = array(size)
     i = 0
     # log(size)
     # log(self.pos)
     while i < size:
-        arr[i] = self.buf[(self.pos*2) + i]
+        myarr[i] = self.buf[(self.pos*2) + i]
         # log(arr[i])
         i += 1
-    return(arr:a)
+    return(myarr:a)
 
 def test_initFromBuf():
     size = 3
@@ -404,44 +404,44 @@ def pair_rev(in_arr:a, size):
     if size == 2:
         return([in_arr[0], in_arr[1]], 2)
 
-    arr = array(size)
+    myarr = array(size)
     halfLen = size / 2
     i = 0
     while i < halfLen:
         tailIndex = size - 1 - i
         tmp = in_arr[i]
-        arr[i] = in_arr[tailIndex-1]
-        arr[tailIndex-1] = tmp
+        myarr[i] = in_arr[tailIndex-1]
+        myarr[tailIndex-1] = tmp
         tmp = in_arr[i+1]
-        arr[i+1] = in_arr[tailIndex]
-        arr[tailIndex] = tmp
+        myarr[i+1] = in_arr[tailIndex]
+        myarr[tailIndex] = tmp
         i += 2
-    return(arr:a)
+    return(myarr:a)
 
 
 def test_pair_rev_single():
     size = 2
-    arr = array(2)
-    arr[0] = 1
-    arr[1] = 2
-    b = self.pair_rev(arr, size, outsz=size)
+    myarr = array(2)
+    myarr[0] = 1
+    myarr[1] = 2
+    b = self.pair_rev(myarr, size, outsz=size)
     return(b:a)  # expect [1, 2]
 
 def test_pair_rev():
     size = 4
-    arr = array(4)
-    arr[0] = 1
-    arr[1] = 2
-    arr[2] = 3
-    arr[3] = 4
-    b = self.pair_rev(arr, size, outsz=size)
+    myarr = array(4)
+    myarr[0] = 1
+    myarr[1] = 2
+    myarr[2] = 3
+    myarr[3] = 4
+    b = self.pair_rev(myarr, size, outsz=size)
     return(b:a)  # expect [3, 4, 1, 2]
 
 
 
 # string reverse to array (since issues such as https://github.com/ethereum/serpent/issues/35 36, 37...)
 def arr_rev(in_arr:a, size):
-    arr = array(size)
+    myarr = array(size)
     halfLen = size / 2
     if size % 2 == 1:
         halfLen += 1
@@ -449,27 +449,27 @@ def arr_rev(in_arr:a, size):
     while i < halfLen:
         tailIndex = size - 1 - i
         tmp = in_arr[i]
-        arr[i] = in_arr[tailIndex]
-        arr[tailIndex] = tmp
+        myarr[i] = in_arr[tailIndex]
+        myarr[tailIndex] = tmp
         i += 1
     return(arr:a)
 
 def test_arr_rev():
-    arr = array(3)
-    arr[0] = 1
-    arr[1] = 2
-    arr[2] = 3
-    b = self.arr_rev(arr, 3, outsz=3)
+    myarr = array(3)
+    myarr[0] = 1
+    myarr[1] = 2
+    myarr[2] = 3
+    b = self.arr_rev(myarr, 3, outsz=3)
     return(b:a)
 
 # string to array
 def str2a(string:s, size):
-    arr = array(size)
+    myarr = array(size)
     i = 0
     while i < size:
-        arr[i] = getch(string, i)
+        myarr[i] = getch(string, i)
         i += 1
-    return(arr:a)
+    return(myarr:a)
 
 def test_str2a():
     string = text("abcdef")
@@ -479,7 +479,7 @@ def test_str2a():
 
 # string reverse to array (since issues such as https://github.com/ethereum/serpent/issues/35 36, 37...)
 def strRev2a(string:s, size):
-    arr = array(size)
+    myarr = array(size)
     halfLen = size / 2
     if size % 2 == 1:
         halfLen += 1
@@ -487,10 +487,10 @@ def strRev2a(string:s, size):
     while i < halfLen:
         tailIndex = size - 1 - i
         tmp = getch(string, i)
-        arr[i] = getch(string, tailIndex)
-        arr[tailIndex] = tmp
+        myarr[i] = getch(string, tailIndex)
+        myarr[tailIndex] = tmp
         i += 1
-    return(arr:a)
+    return(myarr:a)
 
 def test_strRev2a():
     string = text("abcdef")
