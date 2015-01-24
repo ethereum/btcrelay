@@ -23,7 +23,7 @@ def initFromArr(size, id):
     while i < size:
         if id == 2:
             myarr[i] = self.tmpScriptArr[i]
-        # log(arr[i])
+        # log(myarr[i])
         i += 1
     return(myarr:arr)
 
@@ -42,7 +42,7 @@ def initFromBuf(size):
     # log(self.pos)
     while i < size:
         myarr[i] = self.buf[(self.pos*2) + i]
-        # log(arr[i])
+        # log(myarr[i])
         i += 1
     return(myarr:arr)
 
@@ -452,7 +452,7 @@ def arr_rev(in_arr:arr, size):
         myarr[i] = in_arr[tailIndex]
         myarr[tailIndex] = tmp
         i += 1
-    return(arr:arr)
+    return(myarr:arr)
 
 def test_arr_rev():
     myarr = array(3)
