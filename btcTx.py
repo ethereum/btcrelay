@@ -207,11 +207,12 @@ def __checkOutputScript(rawTx:str, size, outNum, expHashOfOutputScript):
     # log(data=scriptArr)
 
     log(self.tmpScriptLen)
-    scriptStr = self.a2str(scriptArr, self.tmpScriptLen)
+    scriptStr = self.a2str(scriptArr, self.tmpScriptLen, outsz=self.tmpScriptLen)
 
     log(777777777777)
 
-    log(datastr=scriptStr)
+    # log(datastr=scriptStr)
+    # return(346536546)
 
     hash = sha256(scriptStr, self.tmpScriptLen)
     log(hash)
