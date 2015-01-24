@@ -156,7 +156,7 @@ def __getOutScriptFromTmpArr():
 #
 # this is needed until can figure out how a dynamically sized array can be returned from a function
 # instead of needing 2 functions, one that returns array size, then calling to get the actual array
-def getMetaForTxOut(rawTx:s, size, outNum):
+def getMetaForTxOut(rawTx:str, size, outNum):
     self.__setupForParsingTx(rawTx, size)
     meta = self.__getMetaForOutput(outNum, outsz=2)
     return(meta)
@@ -188,20 +188,20 @@ def __getMetaForOutput(outNum):
     return(satAndSize:arr)
 
 
-def __setupForParsingTx(rawTx:s, size):
+def __setupForParsingTx(rawTx:str, size):
     bb = self.str2a(rawTx, size, outsz=size)
     self.copyToBuf(bb, size)
     self.pos = 0
 
 
-def getScriptForTxOut(rawTx:s, size, outNum):
+def getScriptForTxOut(rawTx:str, size, outNum):
     meta = self.getMetaForTxOut(rawTx, size, outNum, outsz=2)
     scriptArr = self.__getOutScriptFromTmpArr(outsz=self.tmpScriptLen)
     return(scriptArr:arr)
 
 
 # assumes that scriptArr size is less than 2000
-def __checkOutputScript(rawTx:s, size, outNum, expHashOfOutputScript):
+def __checkOutputScript(rawTx:str, size, outNum, expHashOfOutputScript):
     scriptArr = self.getScriptForTxOut(rawTx, size, outNum, outsz=2000)  # hardcoded outsz limit
 
     hash = sha256(scriptArr, self.tmpScriptLen)
@@ -386,7 +386,7 @@ def test_readUInt64LE_hex():
 
 
 # char is just a string of length 1
-def str_findChar(string:s, char):
+def str_findChar(string:str, char):
     slen = len(string)
     i = 0
     while i < slen:
@@ -463,7 +463,7 @@ def test_arr_rev():
     return(b:arr)
 
 # string to array
-def str2a(string:s, size):
+def str2a(string:str, size):
     myarr = array(size)
     i = 0
     while i < size:
@@ -478,7 +478,7 @@ def test_str2a():
     return(b:arr)
 
 # string reverse to array (since issues such as https://github.com/ethereum/serpent/issues/35 36, 37...)
-def strRev2a(string:s, size):
+def strRev2a(string:str, size):
     myarr = array(size)
     halfLen = size / 2
     if size % 2 == 1:
@@ -499,7 +499,7 @@ def test_strRev2a():
     return(b:arr)
 
 # not working yet (since issues such as https://github.com/ethereum/serpent/issues/35 36, 37...)
-def str_rev(string:s):
+def str_rev(string:str):
     size = len(s)
     halfLen = size / 2
     if size % 2 == 1:
@@ -512,7 +512,7 @@ def str_rev(string:s):
         setch(string, i, new)
         setch(string, tailIndex, oldHead)
         i += 1
-    return(string:s)
+    return(string:str)
 
 def test_str_rev():
     res = self.str_rev("abc")
