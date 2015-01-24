@@ -7,7 +7,7 @@ data tmpScriptArr[]  # 'id' is 2
 
 
 # copy 'arr' to global array with given 'id'
-def copyToArr(arr:a, size, id):
+def copyToArr(arr:arr, size, id):
     i = 0
     while i < size:
         if id == 2:
@@ -25,10 +25,10 @@ def initFromArr(size, id):
             myarr[i] = self.tmpScriptArr[i]
         # log(arr[i])
         i += 1
-    return(myarr:a)
+    return(myarr:arr)
 
 # copy 'arr' to global self.buf[]
-def copyToBuf(myarr:a, size):
+def copyToBuf(myarr:arr, size):
     i = 0
     while i < size:
         self.buf[i] = myarr[i]
@@ -44,7 +44,7 @@ def initFromBuf(size):
         myarr[i] = self.buf[(self.pos*2) + i]
         # log(arr[i])
         i += 1
-    return(myarr:a)
+    return(myarr:arr)
 
 def test_initFromBuf():
     size = 3
@@ -52,7 +52,7 @@ def test_initFromBuf():
     self.buf[1] = 3
     self.buf[2] = 5
     bb = self.initFromBuf(size, outsz=size)
-    return(bb:a)
+    return(bb:arr)
 
 
 def txinFromBuf():
@@ -101,7 +101,7 @@ def readSimple(len):
     bb = self.initFromBuf(size, outsz=size)
     self.pos += len # note: len NOT size
     # log(data=bb)
-    return(bb:a)
+    return(bb:arr)
 
 
 # does not convert to numeric
@@ -111,7 +111,7 @@ def readReverse(len):
     bb = self.initFromBuf(size, outsz=size)
     val = self.pair_rev(bb, size, outsz=size)
     self.pos += len # note: len NOT size
-    return(val:a)
+    return(val:arr)
 
 
 def test_readReverse():
@@ -124,7 +124,7 @@ def test_readReverse():
     res = self.readReverse(32, outsz=64)
     # exp is a9d4599e15b53f3eb531608ddb31f48c695c3d0b3538a6bda871e8b34f2f430c
     # (ord('a') is 97, ord('9') is 57 and this is what will be returned...)
-    return(res:a)  # expect [97, 57, 100, 52, 53 etc] if numeric, expect [10, 9, 13, 4, 5, 9, 9, etc]
+    return(res:arr)  # expect [97, 57, 100, 52, 53 etc] if numeric, expect [10, 9, 13, 4, 5, 9, 9, etc]
 
 # tested via twip()
 def readVarintNum():
@@ -147,7 +147,7 @@ def readVarintNum():
 # the (standard) output script should be of form 76a914 <hashAddr> 88ac
 def __getOutScriptFromTmpArr():
     scriptArr = self.initFromArr(self.tmpScriptLen, 2, outsz=self.tmpScriptLen)  # 2 is the id for tmpScriptArr
-    return(scriptArr:a)
+    return(scriptArr:arr)
 
 
 
@@ -185,7 +185,7 @@ def __getMetaForOutput(outNum):
         satAndSize = self.txoutFromBuf(outsz=2)
         i += 1
 
-    return(satAndSize:a)
+    return(satAndSize:arr)
 
 
 def __setupForParsingTx(rawTx:s, size):
@@ -197,7 +197,7 @@ def __setupForParsingTx(rawTx:s, size):
 def getScriptForTxOut(rawTx:s, size, outNum):
     meta = self.getMetaForTxOut(rawTx, size, outNum, outsz=2)
     scriptArr = self.__getOutScriptFromTmpArr(outsz=self.tmpScriptLen)
-    return(scriptArr:a)
+    return(scriptArr:arr)
 
 
 # assumes that scriptArr size is less than 2000
@@ -397,7 +397,7 @@ def str_findChar(string:s, char):
 
 
 # reverses in_arr in pairs, for the purpose of reversing bytes
-def pair_rev(in_arr:a, size):
+def pair_rev(in_arr:arr, size):
     if size % 2 != 0:
         return(7777777) # error
 
@@ -416,7 +416,7 @@ def pair_rev(in_arr:a, size):
         myarr[i+1] = in_arr[tailIndex]
         myarr[tailIndex] = tmp
         i += 2
-    return(myarr:a)
+    return(myarr:arr)
 
 
 def test_pair_rev_single():
@@ -425,7 +425,7 @@ def test_pair_rev_single():
     myarr[0] = 1
     myarr[1] = 2
     b = self.pair_rev(myarr, size, outsz=size)
-    return(b:a)  # expect [1, 2]
+    return(b:arr)  # expect [1, 2]
 
 def test_pair_rev():
     size = 4
@@ -435,12 +435,12 @@ def test_pair_rev():
     myarr[2] = 3
     myarr[3] = 4
     b = self.pair_rev(myarr, size, outsz=size)
-    return(b:a)  # expect [3, 4, 1, 2]
+    return(b:arr)  # expect [3, 4, 1, 2]
 
 
 
 # string reverse to array (since issues such as https://github.com/ethereum/serpent/issues/35 36, 37...)
-def arr_rev(in_arr:a, size):
+def arr_rev(in_arr:arr, size):
     myarr = array(size)
     halfLen = size / 2
     if size % 2 == 1:
@@ -452,7 +452,7 @@ def arr_rev(in_arr:a, size):
         myarr[i] = in_arr[tailIndex]
         myarr[tailIndex] = tmp
         i += 1
-    return(arr:a)
+    return(arr:arr)
 
 def test_arr_rev():
     myarr = array(3)
@@ -460,7 +460,7 @@ def test_arr_rev():
     myarr[1] = 2
     myarr[2] = 3
     b = self.arr_rev(myarr, 3, outsz=3)
-    return(b:a)
+    return(b:arr)
 
 # string to array
 def str2a(string:s, size):
@@ -469,13 +469,13 @@ def str2a(string:s, size):
     while i < size:
         myarr[i] = getch(string, i)
         i += 1
-    return(myarr:a)
+    return(myarr:arr)
 
 def test_str2a():
     string = text("abcdef")
     size = len(string)
     b = self.str2a(string, size, outsz=size)
-    return(b:a)
+    return(b:arr)
 
 # string reverse to array (since issues such as https://github.com/ethereum/serpent/issues/35 36, 37...)
 def strRev2a(string:s, size):
@@ -490,13 +490,13 @@ def strRev2a(string:s, size):
         myarr[i] = getch(string, tailIndex)
         myarr[tailIndex] = tmp
         i += 1
-    return(myarr:a)
+    return(myarr:arr)
 
 def test_strRev2a():
     string = text("abcdef")
     size = len(string)
     b = self.strRev2a(string, size, outsz=size)
-    return(b:a)
+    return(b:arr)
 
 # not working yet (since issues such as https://github.com/ethereum/serpent/issues/35 36, 37...)
 def str_rev(string:s):
