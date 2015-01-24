@@ -202,10 +202,18 @@ def getScriptForTxOut(rawTx:str, size, outNum):
 
 # assumes that scriptArr size is less than 2000
 def __checkOutputScript(rawTx:str, size, outNum, expHashOfOutputScript):
-    scriptArr = self.getScriptForTxOut(rawTx, size, outNum, outsz=2000)  # hardcoded outsz limit
+    scriptArr = self.getScriptForTxOut(rawTx, size, outNum, outsz=50)  # hardcoded outsz limit
+
     # log(data=scriptArr)
+
     log(self.tmpScriptLen)
-    hash = sha256(scriptArr, self.tmpScriptLen)
+    scriptStr = self.a2str(scriptArr, self.tmpScriptLen)
+
+    log(777777777777)
+
+    log(datastr=scriptStr)
+
+    hash = sha256(scriptStr, self.tmpScriptLen)
     log(hash)
     return(hash == expHashOfOutputScript)
 
@@ -527,8 +535,15 @@ def a2str(myarr:arr, size):
 
     i = 0
     while i < size:
+        log(i)
+
         setch(mystr, i, myarr[i])
+
+        # log(myarr[i])
+
         i += 1
+
+    log(datastr=mystr)
 
     return(mystr:str)
 
