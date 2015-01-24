@@ -7,11 +7,11 @@ data tmpScriptArr[]  # 'id' is 2
 
 
 # copy 'arr' to global array with given 'id'
-def copyToArr(arr:arr, size, id):
+def copyToArr(myarr:arr, size, id):
     i = 0
     while i < size:
         if id == 2:
-            self.tmpScriptArr[i] = arr[i]
+            self.tmpScriptArr[i] = myarr[i]
         i += 1
 
 # returns array
@@ -386,11 +386,11 @@ def test_readUInt64LE_hex():
 
 
 # char is just a string of length 1
-def str_findChar(string:str, char):
-    slen = len(string)
+def str_findChar(mystring:str, char):
+    slen = len(mystring)
     i = 0
     while i < slen:
-        if getch(string, i) == char:
+        if getch(mystring, i) == char:
             return(i)
         i += 1
     return(-1)
@@ -463,22 +463,22 @@ def test_arr_rev():
     return(b:arr)
 
 # string to array
-def str2a(string:str, size):
+def str2a(mystring:str, size):
     myarr = array(size)
     i = 0
     while i < size:
-        myarr[i] = getch(string, i)
+        myarr[i] = getch(mystring, i)
         i += 1
     return(myarr:arr)
 
 def test_str2a():
-    string = text("abcdef")
-    size = len(string)
-    b = self.str2a(string, size, outsz=size)
+    mystring = text("abcdef")
+    size = len(mystring)
+    b = self.str2a(mystring, size, outsz=size)
     return(b:arr)
 
 # string reverse to array (since issues such as https://github.com/ethereum/serpent/issues/35 36, 37...)
-def strRev2a(string:str, size):
+def strRev2a(mystring:str, size):
     myarr = array(size)
     halfLen = size / 2
     if size % 2 == 1:
@@ -486,33 +486,33 @@ def strRev2a(string:str, size):
     i = 0
     while i < halfLen:
         tailIndex = size - 1 - i
-        tmp = getch(string, i)
-        myarr[i] = getch(string, tailIndex)
+        tmp = getch(mystring, i)
+        myarr[i] = getch(mystring, tailIndex)
         myarr[tailIndex] = tmp
         i += 1
     return(myarr:arr)
 
 def test_strRev2a():
-    string = text("abcdef")
-    size = len(string)
-    b = self.strRev2a(string, size, outsz=size)
+    mystring = text("abcdef")
+    size = len(mystring)
+    b = self.strRev2a(mystring, size, outsz=size)
     return(b:arr)
 
 # not working yet (since issues such as https://github.com/ethereum/serpent/issues/35 36, 37...)
-def str_rev(string:str):
+def str_rev(mystring:str):
     size = len(s)
     halfLen = size / 2
     if size % 2 == 1:
         halfLen += 1
     i = 0
     while i < halfLen:
-        oldHead = getch(string, i)
+        oldHead = getch(mystring, i)
         tailIndex = slen - 1 - i
-        new = getch(string, tailIndex)
-        setch(string, i, new)
-        setch(string, tailIndex, oldHead)
+        new = getch(mystring, tailIndex)
+        setch(mystring, i, new)
+        setch(mystring, tailIndex, oldHead)
         i += 1
-    return(string:str)
+    return(mystring:str)
 
 def test_str_rev():
     res = self.str_rev("abc")
