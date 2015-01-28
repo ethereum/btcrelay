@@ -12,7 +12,8 @@
 #
 
 data lastKnownBlock
-data block[2^256](_height, _blockHeader(_version, _prevBlock, _mrklRoot, _time, _bits, _nonce))
+data highScore
+data block[2^256](_height, _score, _blockHeader(_version, _prevBlock, _mrklRoot, _time, _bits, _nonce))
 
 extern btc_eth: [processTransfer]
 
@@ -32,8 +33,7 @@ def code():
     ret = self.shiftLeft(2,4)
     return(ret)
 
-# check difficulty
-#
+
 def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
     if hashPrevBlock != self.lastKnownBlock:
         return(0)
@@ -41,11 +41,12 @@ def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
     blockHash = self.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
     target = self.targetFromBits(bits)
 
+    # TODO
+    difficulty = ??
+
     # TODO other validation of block?  eg timestamp
 
     if gt(blockHash, 0) && lt(blockHash, target):
-        self.block[blockHash]._height = self.block[self.lastKnownBlock]._height + 1
-
         self.block[blockHash]._blockHeader._version = version
         self.block[blockHash]._blockHeader._prevBlock = hashPrevBlock
         self.block[blockHash]._blockHeader._mrklRoot = hashMerkleRoot
@@ -53,7 +54,14 @@ def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
         self.block[blockHash]._blockHeader._bits = bits
         self.block[blockHash]._blockHeader._nonce = nonce
 
-        self.lastKnownBlock = blockHash
+        self.block[blockHash]._score = self.block[hashPrevBlock]._score + difficulty
+
+
+        self.block[blockHash]._height = self.block[hashPrevBlock]._height + 1
+
+        if gt(self.block[blockHash]._score, highScore):
+            self.lastKnownBlock = blockHash
+            highScore = self.block[blockHash]._score
 
         return(self.block[blockHash]._height)
 
