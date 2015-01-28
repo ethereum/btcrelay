@@ -25,6 +25,7 @@ extern btc_eth: [processTransfer]
 #self.block.blockHeader[]
 
 def shared():
+    DIFFICULTY_1 = 0x00000000FFFF0000000000000000000000000000000000000000000000000000
     TWO_POW_24 = 2 ^ 24
     ZEROS = 0x0000000000000000000000000000000000000000000000000000000000000000
     LEFT_HASH = 1
@@ -48,8 +49,7 @@ def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
     blockHash = self.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
     target = self.targetFromBits(bits)
 
-    # TODO
-    difficulty = ??
+    difficulty = DIFFICULTY_1 / target # https://en.bitcoin.it/wiki/Difficulty
 
     # TODO other validation of block?  eg timestamp
 
