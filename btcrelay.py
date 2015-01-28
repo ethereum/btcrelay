@@ -43,7 +43,7 @@ def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
 
     # TODO other validation of block?  eg timestamp
 
-    if lt(hash, target):  # fix to blockHash
+    if gt(blockHash, 0) && lt(blockHash, target):
         self.block[blockHash]._height = self.block[self.lastKnownBlock]._height + 1
 
         self.block[blockHash]._blockHeader._version = version
