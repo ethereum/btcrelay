@@ -7,12 +7,16 @@
 # 13: time
 # 14: bits
 # 15: nonce
-# 16: blockHash / lastKnownBlock
+# 16: blockHash / heaviestBlock
 # 17: score
 #
 
-data lastKnownBlock
+# block with the highest score (the end of the blockchain)
+data heaviestBlock
+
+# highest score among all blocks (so far)
 data highScore
+
 data block[2^256](_height, _score, _blockHeader(_version, _prevBlock, _mrklRoot, _time, _bits, _nonce))
 
 extern btc_eth: [processTransfer]
@@ -35,7 +39,7 @@ def code():
 
 
 def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
-    if hashPrevBlock != self.lastKnownBlock:
+    if hashPrevBlock != self.heaviestBlock:
         return(0)
 
     blockHash = self.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
@@ -60,7 +64,7 @@ def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
         self.block[blockHash]._height = self.block[hashPrevBlock]._height + 1
 
         if gt(self.block[blockHash]._score, highScore):
-            self.lastKnownBlock = blockHash
+            self.heaviestBlock = blockHash
             highScore = self.block[blockHash]._score
 
         return(self.block[blockHash]._height)
@@ -219,7 +223,7 @@ def testRelayTx():
     b5 = 0x000000000000dab0130bbcc991d3d7ae6b81aa6f50a798888dfe62337458dc45
     b6 = 0x0000000000009b958a82c10804bd667722799cc3b457bc061cd4b7779110cd60
 
-    self.lastKnownBlock = b6
+    self.heaviestBlock = b6
 
     self.block[b6]._blockHeader._prevBlock = b5
     self.block[b5]._blockHeader._prevBlock = b4
@@ -259,7 +263,7 @@ def testVerifyTx():
     b5 = 0x000000000000dab0130bbcc991d3d7ae6b81aa6f50a798888dfe62337458dc45
     b6 = 0x0000000000009b958a82c10804bd667722799cc3b457bc061cd4b7779110cd60
 
-    self.lastKnownBlock = b6
+    self.heaviestBlock = b6
 
     self.block[b6]._blockHeader._prevBlock = b5
     self.block[b5]._blockHeader._prevBlock = b4
@@ -335,7 +339,7 @@ def testComputeMerkle():
     return(r == expMerkle)
 
 def within6Confirms(txBlockHash):
-    blockHash = self.lastKnownBlock
+    blockHash = self.heaviestBlock
 
     i = 0
     while i < 6:
@@ -367,7 +371,7 @@ def testWithin6Confirms():
     b5 = 0x000000000000000004860a07b991a6cd7cae1327c36c21903b8bbe8d2c316ac5
     b6 = 0x0000000000000000016f889a84b7a06e2d4d90cec924400cf62a6ca3ae67dd46
 
-    self.lastKnownBlock = b6
+    self.heaviestBlock = b6
 
     self.block[b6]._blockHeader._prevBlock = b5
     self.block[b5]._blockHeader._prevBlock = b4
@@ -439,8 +443,8 @@ def test__rawHashBlockHeader():
     return res == expHash
 
 def init333k():
-    self.lastKnownBlock = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
-    trustedBlock = self.lastKnownBlock
+    self.heaviestBlock = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
+    trustedBlock = self.heaviestBlock
     self.block[trustedBlock]._height = 333000
     self.block[trustedBlock]._blockHeader._version = 2
 
