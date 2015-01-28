@@ -43,8 +43,7 @@ def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
 
     # TODO other validation of block?  eg timestamp
 
-#
-    if lt(blockHash, target):
+    if lt(hash, target):  # fix to blockHash
         self.block[blockHash]._height = self.block[self.lastKnownBlock]._height + 1
 
         self.block[blockHash]._blockHeader._version = version
@@ -178,11 +177,11 @@ def __rawHashBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, non
     b3 = hmLast4 | timePart | bitsPart | noncePart
 
     hash1 = sha256([b1,b2,b3], chars=80)
-    hash2 = sha256([hash1], 1)
+    hash2 = sha256([hash1], items=1)
     return(hash2)
 
 
-def verifyTx(tx, proofLen, hash:a, path:a, txBlockHash):
+def verifyTx(tx, proofLen, hash:arr, path:arr, txBlockHash):
     if self.within6Confirms(txBlockHash):
         return(0)
 
@@ -193,7 +192,7 @@ def verifyTx(tx, proofLen, hash:a, path:a, txBlockHash):
     else:
         return(0)
 
-def relayTx(tx, proofLen, hash:a, path:a, txBlockHash, contract):
+def relayTx(tx, proofLen, hash:arr, path:arr, txBlockHash, contract):
     if self.verifyTx(tx, proofLen, hash, path, txBlockHash) == 1:
         res = contract.processTransfer(13, as=btc_eth)
         return(res)
@@ -289,7 +288,7 @@ def testVerifyTx():
 
 
 # return -1 if there's an error (eg called with incorrect params)
-def computeMerkle(tx, proofLen, hash:a, path:a):
+def computeMerkle(tx, proofLen, hash:arr, path:arr):
     resultHash = tx
     i = 0
     while i < proofLen:
@@ -425,8 +424,11 @@ def test__rawHashBlockHeader():
     # hash2 = sha256([hash1], 1)
     # return(hash2)
 
+    res = self.__rawHashBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+    # log(res)
+
     expHash = 0x1dbd981fe6985776b644b173a4d0385ddc1aa2a829688d1e0000000000000000
-    return expHash == self.__rawHashBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+    return res == expHash
 
 def init333k():
     self.lastKnownBlock = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
