@@ -39,6 +39,9 @@ def code():
 
 
 def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
+    # this check can be removed to allow older block headers to be added, but it
+    # may provide an attack vector where the contract can be spammed with valid
+    # headers that will not be used and simply take up memory storage
     if hashPrevBlock != self.heaviestBlock:
         return(0)
 
