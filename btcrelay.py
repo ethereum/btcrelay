@@ -49,6 +49,8 @@ def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
     blockHash = self.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
     target = self.targetFromBits(bits)
 
+    log(target)
+
     difficulty = DIFFICULTY_1 / target # https://en.bitcoin.it/wiki/Difficulty
 
     # TODO other validation of block?  eg timestamp
@@ -163,6 +165,13 @@ def targetFromBits(bits):
     mant = bits & 0xffffff
     target = mant * self.shiftLeft(1, (8*(exp - 3)))
     return(target)
+
+# http://www.righto.com/2014/02/bitcoin-mining-hard-way-algorithms.html#ref3
+def testTargetFromBits():
+    bits = 0x19015f53
+    exp = 8614444778121073626993210829679478604092861119379437256704
+    res = self.targetFromBits(bits)
+    return(res == exp)
 
 
 def hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
