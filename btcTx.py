@@ -139,6 +139,31 @@ def readVarintNum():
         return(first)
 
 
+
+def parseBlockHeader(rawHeader:str):
+    version = self.readUInt32LE()
+    prevHash = self.readSimple(32)
+    merkleRoot = self.readSimple(32)
+    time = self.readUInt32LE()
+    bits = self.readUInt32LE()
+    nonce = self.readUInt32LE()
+
+
+
+def parseBlock(rawBlock:str):
+    magicnum = self.readUInt32LE()
+    size = self.readUInt32LE()
+    # header = self.parseBlockHeader()  #todo
+    # txsvi = self.readVarintBuf()  # todo
+    # txslen = txsvi.toNumber()  # todo
+    # int i = 0
+  # for (var i = 0; i < txslen; i++) {
+  #   info.txs.push(Transaction().fromBufferReader(br));
+  # }
+
+
+
+
 # unoptimized
 # to get the scriptArr, do this:
 # res = self.__getMetaForOutput(0, outsz=2)
