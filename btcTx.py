@@ -151,7 +151,9 @@ def parseBlockHeader(rawHeader:str):
     # log(version)
     # prevHashStr = self.a2str(prevHash, 64, outsz=64)
     # log(datastr=prevHashStr)
-    # log(merkleRoot)
+    # log(time)
+    # log(bits)
+    # log(nonce)
 
 
 def test_parseBlockHeader():
