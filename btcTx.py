@@ -149,6 +149,15 @@ def parseBlockHeader(rawHeader:str):
     nonce = self.readUInt32LE()
 
 
+def test_parseBlockHeader():
+    # from https://en.bitcoin.it/wiki/Block_hashing_algorithm
+    rawBlockHeader = text("0100000081cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a308000000000000e320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0f1fc122bc7f5d74df2b9441a42a14695")
+    #outNum = 0
+    # exp hash is untested
+    # expHashOfOutputScript = 56502271141207574289324577080259466406131090189524790551966501267826601078627
+    #res = self.__checkOutputScript(rawTx, len(rawTx), outNum, expHashOfOutputScript)
+    #return(res)
+
 
 def parseBlock(rawBlock:str):
     magicnum = self.readUInt32LE()
