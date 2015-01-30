@@ -142,15 +142,16 @@ def readVarintNum():
 
 def parseBlockHeader(rawHeader:str):
     version = self.readUInt32LE()
-    prevHash = self.readSimple(32)
-    merkleRoot = self.readSimple(32)
+    prevHash = self.readReverse(32, outsz=64)
+    merkleRoot = self.readReverse(32, outsz=64)
     time = self.readUInt32LE()
     bits = self.readUInt32LE()
     nonce = self.readUInt32LE()
 
-    log(version)
-    log(prevHash)
-    log(merkleRoot)
+    # log(version)
+    # prevHashStr = self.a2str(prevHash, 64, outsz=64)
+    # log(datastr=prevHashStr)
+    # log(merkleRoot)
 
 
 def test_parseBlockHeader():
