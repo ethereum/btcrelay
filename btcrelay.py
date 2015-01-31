@@ -54,8 +54,8 @@ def a2str(myarr:arr, size):
 
 def testGetBlockComponents(version, hashPrevBlock:arr, hashMerkleRoot:arr, time, bits, nonce):
     log(version)
-    prevHashStr = self.a2str(hashPrevBlock, 64, outsz=64)
-    log(datastr=prevHashStr)
+    # prevHashStr = self.a2str(hashPrevBlock, 64, outsz=64)
+    # log(datastr=prevHashStr)
     return(913)
 
 

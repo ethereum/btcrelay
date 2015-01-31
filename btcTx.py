@@ -184,6 +184,11 @@ def callBtcRelay(rawHeader:str):
     bits = self.readUInt32LE()
     nonce = self.readUInt32LE()
 
+    log(version)
+    return(999)
+    prevHashStr = self.a2str(prevHash, 64, outsz=64)
+    log(datastr=prevHashStr)
+
     res = BTC_RELAY.testGetBlockComponents(version, prevHash, merkleRoot, time, bits, nonce)
     return(res)
 
