@@ -1,4 +1,8 @@
 
+extern btc_relay: [testGetBlockComponents]
+
+BTC_RELAY = create('btcrelay.py')
+
 data pos
 data buf[]
 
@@ -172,18 +176,26 @@ def test_parseBlockHeader():
     #return(res)
 
 
-def parseBlock(rawBlock:str):
-    magicnum = self.readUInt32LE()
-    size = self.readUInt32LE()
-    # header = self.parseBlockHeader()  #todo
-    # txsvi = self.readVarintBuf()  # todo
-    # txslen = txsvi.toNumber()  # todo
-    # int i = 0
-  # for (var i = 0; i < txslen; i++) {
-  #   info.txs.push(Transaction().fromBufferReader(br));
-  # }
+def callBtcRelay(rawHeader:str):
+    version = self.readUInt32LE()
+    prevHash = self.readReverse(32, outsz=64)
+    merkleRoot = self.readReverse(32, outsz=64)
+    time = self.readUInt32LE()
+    bits = self.readUInt32LE()
+    nonce = self.readUInt32LE()
+
+    res = BTC_RELAY.testGetBlockComponents(version, prevHash, merkleRoot, time, bits, nonce)
+    return(res)
 
 
+def test_callBtcRelay():
+    # from https://en.bitcoin.it/wiki/Block_hashing_algorithm, this is blockheader 125552
+    rawBlockHeader = text("0100000081cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a308000000000000e320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0f1fc122bc7f5d74df2b9441a42a14695")
+    size = len(rawBlockHeader)
+
+    self.__setupForParsingTx(rawBlockHeader, size)
+    res = self.callBtcRelay(rawBlockHeader)
+    return(res)
 
 
 # unoptimized
