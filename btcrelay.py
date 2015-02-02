@@ -54,27 +54,29 @@ def code():
 
 
 def testGetBlockComponents(version, hashPrevBlock:arr, hashMerkleRoot:arr, time, bits, nonce):
-    log(version)
+    # log(version)
     # prevHashStr = self.a2str(hashPrevBlock, 64, outsz=64)
     # log(datastr=prevHashStr)
 
     nPrev = self.a2int(hashPrevBlock)
-    log(nPrev)
+    # log(nPrev)
 
     nMerkle = self.a2int(hashMerkleRoot)
-    log(nMerkle)
+    # log(nMerkle)
 
-    log(time)
-    log(bits)
-    log(nonce)
-    return(913)
+    # log(time)
+    # log(bits)
+    # log(nonce)
+
+    res = self.storeBlockHeader(version, nPrev, nMerkle, time, bits, nonce)
+    return(res)
 
 
 def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
     # this check can be removed to allow older block headers to be added, but it
     # may provide an attack vector where the contract can be spammed with valid
     # headers that will not be used and simply take up memory storage
-    if hashPrevBlock != self.heaviestBlock:
+    if hashPrevBlock != self.heaviestBlock:  # special case for genesis prev block of 0 is not needed since self.heaviestBlock is 0 initially
         return(0)
 
     blockHash = self.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
