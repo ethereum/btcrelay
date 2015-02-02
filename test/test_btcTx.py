@@ -22,6 +22,16 @@ class TestBtcTx(object):
 
     @slow
     def testSB(self):
-        h = "0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c"
-        res = self.c.storeRawBlockHeader(h)
-        assert res == [1]
+        print("jstart")
+        i = 1
+        with open("test/blockHeaders.txt") as f:
+            for header in f:
+                # print(header)
+                res = self.c.storeRawBlockHeader(header)
+                assert res == [i]
+                i += 1
+        print("jend")
+
+        # h = "0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c"
+        # res = self.c.storeRawBlockHeader(h)
+        # assert res == [1]
