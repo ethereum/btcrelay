@@ -22,4 +22,6 @@ class TestBtcTx(object):
 
     @slow
     def testSB(self):
-        assert self.c.testStoringHeaders() == [2]
+        h = "0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c"
+        res = self.c.storeRawBlockHeader(h)
+        assert res == [1]
