@@ -319,6 +319,40 @@ def test_getOutput1Script():
 # def deserialize():
 
 
+# array to int, eg [48,49, 97, 98] -> 0x01ab
+# only handles lowercase a-f
+def a2int(in_arr:arr):
+    size = len(in_arr)
+    result = 0
+    i = 0
+    while i < size:
+        char = in_arr[size-1-i]
+        # log(char)
+        if (char >= 97 && char <= 102):  # only handles lowercase a-f
+            numeric = char - 87
+        else:
+            numeric = char - 48
+
+        # log(numeric)
+
+        result += numeric * 16^i
+        # log(result)
+
+        i += 1
+    return(result)
+
+
+def test_a2int():
+    myarr = array(4)
+    myarr[0] = 48
+    myarr[1] = 49
+    myarr[2] = 97
+    myarr[3] = 98
+    res = self.a2int(myarr)
+    return(res)
+
+
+
 # only handles lowercase a-f
 # tested via tests for readUInt8, readUInt32LE, ...
 def readUnsignedBitsLE(bits):
