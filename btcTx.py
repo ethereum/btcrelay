@@ -198,6 +198,16 @@ def test_callBtcRelay():
     return(res)
 
 
+def testStoreGenesisBlock():
+    rawBlockHeader = text("0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c")
+    size = len(rawBlockHeader)
+
+    self.__setupForParsingTx(rawBlockHeader, size)
+    res = self.callBtcRelay(rawBlockHeader)
+    return(res)
+
+
+
 # unoptimized
 # to get the scriptArr, do this:
 # res = self.__getMetaForOutput(0, outsz=2)

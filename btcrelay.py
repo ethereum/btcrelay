@@ -57,6 +57,9 @@ def testGetBlockComponents(version, hashPrevBlock:arr, hashMerkleRoot:arr, time,
     log(version)
     prevHashStr = self.a2str(hashPrevBlock, 64, outsz=64)
     log(datastr=prevHashStr)
+    log(time)
+    log(bits)
+    log(nonce)
     return(913)
 
 
@@ -425,6 +428,7 @@ def testConcatHash():
     tx2 = 0xfff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4
     r = self.concatHash(tx1, tx2)
     return(r == 0xccdafb73d8dcd0173d5d5c3c9a0770d0b3953db889dab99ef05b1907518cb815)
+
 
 def testStoreBlockHeader():
     self.init333k()
