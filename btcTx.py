@@ -227,6 +227,11 @@ def testStoringHeaders():
     return(res)
 
 
+# heaviestBlock is in btcrelay.py
+def logBlockchainHead():
+    log(self.heaviestBlock)
+
+
 # unoptimized
 # to get the scriptArr, do this:
 # res = self.__getMetaForOutput(0, outsz=2)

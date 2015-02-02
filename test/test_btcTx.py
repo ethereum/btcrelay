@@ -30,6 +30,8 @@ class TestBtcTx(object):
                 res = self.c.storeRawBlockHeader(header)
                 assert res == [i]
                 i += 1
+
+        self.c.logBlockchainHead()
         print("jend")
 
         # h = "0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c"
