@@ -1,8 +1,4 @@
 
-extern btc_relay: [testGetBlockComponents]
-
-BTC_RELAY = create('btcrelay.py')
-
 data pos
 data buf[]
 
@@ -184,12 +180,11 @@ def callBtcRelay(rawHeader:str):
     bits = self.readUInt32LE()
     nonce = self.readUInt32LE()
 
-    log(version)
-    return(999)
-    prevHashStr = self.a2str(prevHash, 64, outsz=64)
-    log(datastr=prevHashStr)
+    # log(version)
+    # prevHashStr = self.a2str(prevHash, 64, outsz=64)
+    # log(datastr=prevHashStr)
 
-    res = BTC_RELAY.testGetBlockComponents(version, prevHash, merkleRoot, time, bits, nonce)
+    res = self.testGetBlockComponents(version, prevHash, merkleRoot, time, bits, nonce)
     return(res)
 
 
@@ -613,3 +608,7 @@ def test_a2str():
 # def test_str_findChar():
 #     res = self.str_findChar(self.codeString256, "A")
 #     return(res)
+
+
+# needs to be at bottom, for now https://github.com/ethereum/serpent/issues/44
+inset('btcrelay.py')
