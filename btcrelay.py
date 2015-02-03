@@ -370,7 +370,7 @@ def concatHash(tx1, tx2):
     right = self.flipBytes(tx2, 32)
 
     hash1 = sha256([left, right], chars=64)
-    hash2 = sha256([hash1], 1)
+    hash2 = sha256([hash1], items=1)
 
     return(self.flipBytes(hash2, 32))
 
