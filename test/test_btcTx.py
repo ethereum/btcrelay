@@ -24,14 +24,31 @@ class TestBtcTx(object):
     def testSB(self):
         print("jstart")
         i = 1
-        with open("test/blockHeaders.txt") as f:
+        with open("test/headers/bh80k.txt") as f:
             for header in f:
                 # print(header)
                 res = self.c.storeRawBlockHeader(header)
                 assert res == [i]
                 i += 1
 
+        with open("test/headers/bh80_100k.txt") as f:
+            for header in f:
+                # print(header)
+                res = self.c.storeRawBlockHeader(header)
+                assert res == [i]
+                i += 1
+
+        with open("test/headers/bh100_150k.txt") as f:
+            for header in f:
+                # print(header)
+                res = self.c.storeRawBlockHeader(header)
+                assert res == [i]
+                i += 1
+
+
         self.c.logBlockchainHead()
+
+        print "gas used: ", self.s.block.gas_used
         print("jend")
 
         # h = "0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c"
