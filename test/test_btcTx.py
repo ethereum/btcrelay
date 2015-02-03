@@ -1,5 +1,6 @@
 from pyethereum import tester
 
+import datetime
 import pytest
 slow = pytest.mark.slow
 
@@ -25,25 +26,32 @@ class TestBtcTx(object):
         print("jstart")
         i = 1
         with open("test/headers/bh80k.txt") as f:
+
+            print("*************************"+str(datetime.datetime.now().time()))
+
             for header in f:
                 # print(header)
                 res = self.c.storeRawBlockHeader(header)
+                if i==5:
+                    break
                 assert res == [i]
                 i += 1
 
-        with open("test/headers/bh80_100k.txt") as f:
-            for header in f:
-                # print(header)
-                res = self.c.storeRawBlockHeader(header)
-                assert res == [i]
-                i += 1
+            print("*************************"+str(datetime.datetime.now().time()))
 
-        with open("test/headers/bh100_150k.txt") as f:
-            for header in f:
-                # print(header)
-                res = self.c.storeRawBlockHeader(header)
-                assert res == [i]
-                i += 1
+        # with open("test/headers/bh80_100k.txt") as f:
+        #     for header in f:
+        #         # print(header)
+        #         res = self.c.storeRawBlockHeader(header)
+        #         assert res == [i]
+        #         i += 1
+        #
+        # with open("test/headers/bh100_150k.txt") as f:
+        #     for header in f:
+        #         # print(header)
+        #         res = self.c.storeRawBlockHeader(header)
+        #         assert res == [i]
+        #         i += 1
 
 
         self.c.logBlockchainHead()
