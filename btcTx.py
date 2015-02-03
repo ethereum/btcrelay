@@ -172,7 +172,26 @@ def test_parseBlockHeader():
     #return(res)
 
 
-def callBtcRelay(rawHeader:str):
+def callBtcRelayToStoreHeader(version, hashPrevBlock:arr, hashMerkleRoot:arr, time, bits, nonce):
+    # log(version)
+    # prevHashStr = self.a2str(hashPrevBlock, 64, outsz=64)
+    # log(datastr=prevHashStr)
+
+    nPrev = self.a2int(hashPrevBlock)
+    # log(nPrev)
+
+    nMerkle = self.a2int(hashMerkleRoot)
+    # log(nMerkle)
+
+    # log(time)
+    # log(bits)
+    # log(nonce)
+
+    res = self.storeBlockHeader(version, nPrev, nMerkle, time, bits, nonce)
+    return(res)
+
+
+def parseAndStoreHeader(rawHeader:str):
     version = self.readUInt32LE()
     prevHash = self.readReverse(32, outsz=64)
     merkleRoot = self.readReverse(32, outsz=64)
@@ -184,17 +203,17 @@ def callBtcRelay(rawHeader:str):
     # prevHashStr = self.a2str(prevHash, 64, outsz=64)
     # log(datastr=prevHashStr)
 
-    res = self.testGetBlockComponents(version, prevHash, merkleRoot, time, bits, nonce)
+    res = self.callBtcRelayToStoreHeader(version, prevHash, merkleRoot, time, bits, nonce)
     return(res)
 
 
-def test_callBtcRelay():
+def test_parseAndStoreHeader():
     # from https://en.bitcoin.it/wiki/Block_hashing_algorithm, this is blockheader 125552
     rawBlockHeader = text("0100000081cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a308000000000000e320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0f1fc122bc7f5d74df2b9441a42a14695")
     size = len(rawBlockHeader)
 
     self.__setupForParsingTx(rawBlockHeader, size)
-    res = self.callBtcRelay(rawBlockHeader)
+    res = self.parseAndStoreHeader(rawBlockHeader)
     return(res)
 
 # def jtestlog(mystring:str):
@@ -204,7 +223,7 @@ def storeRawBlockHeader(rawBlockHeader:str):
     size = len(rawBlockHeader)
 
     self.__setupForParsingTx(rawBlockHeader, size)
-    res = self.callBtcRelay(rawBlockHeader)
+    res = self.parseAndStoreHeader(rawBlockHeader)
     return(res)
 
 def testStoreGenesisBlock():

@@ -40,37 +40,6 @@ def code():
 
 
 
-#TODO put in utils
-# commented out since this is already in btcTx.py
-# def a2str(myarr:arr, size):
-#     mystr = string(size)
-#
-#     i = 0
-#     while i < size:
-#         setch(mystr, i, myarr[i])
-#         i += 1
-#
-#     return(mystr:str)
-
-
-def testGetBlockComponents(version, hashPrevBlock:arr, hashMerkleRoot:arr, time, bits, nonce):
-    # log(version)
-    # prevHashStr = self.a2str(hashPrevBlock, 64, outsz=64)
-    # log(datastr=prevHashStr)
-
-    nPrev = self.a2int(hashPrevBlock)
-    # log(nPrev)
-
-    nMerkle = self.a2int(hashMerkleRoot)
-    # log(nMerkle)
-
-    # log(time)
-    # log(bits)
-    # log(nonce)
-
-    res = self.storeBlockHeader(version, nPrev, nMerkle, time, bits, nonce)
-    return(res)
-
 
 def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
     # this check can be removed to allow older block headers to be added, but it
