@@ -96,17 +96,9 @@ def test_readUInt8_hex():
 
 def test_readUInt16LE_hex():
     rawTx = text("89ab")
-
     save(self.gStr[0], rawTx, chars=len(rawTx))
-
-    # self.gStr = rawTx
-
-    # log(datastr=self.gStr)
-    # size = len(rawTx)
-    # bb = self.str2a(rawTx, size, outsz=size)
-    # self.copyToBuf(bb, size)
-
     self.pos = 0
+
     res = readUInt16LE()
     exp = 0xab89
     return(res == exp)
@@ -145,11 +137,9 @@ def test_readUInt32LE_hex():
 # test from http://nodejs.org/api/buffer.html#buffer_buf_readuint32le_offset_noassert
 def test_readUInt32LE_nodejs():
     rawTx = text("03042342")
-    size = len(rawTx)
-    bb = self.str2a(rawTx, size, outsz=size)
-    self.copyToBuf(bb, size)
-
+    save(self.gStr[0], rawTx, chars=len(rawTx))
     self.pos = 0
+
     res = readUInt32LE()
     exp = 0x42230403
     return(res == exp)
