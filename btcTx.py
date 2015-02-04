@@ -137,6 +137,7 @@ def parseAndStoreHeader(rawHeader:str):
 def storeRawBlockHeader(rawBlockHeader:str):
     # size = len(rawBlockHeader)
 
+    self.pos = 0
     save(self.gStr[0], rawBlockHeader, chars=len(rawBlockHeader))
 
 
