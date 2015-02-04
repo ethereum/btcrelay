@@ -70,10 +70,10 @@ def txinFromBuf():
 # returns satoshis and sets self.tmpScriptLen and self.tmpScriptArr
 def txoutFromBuf():
     satoshis = readUInt64LE()
-    log(satoshis)
+    # log(satoshis)
 
     scriptSize = self.readVarintNum()
-    log(scriptSize)
+    # log(scriptSize)
     self.tmpScriptLen = scriptSize * 2
 
     if scriptSize > 0:
@@ -126,8 +126,8 @@ def parseAndStoreHeader(rawHeader:str):
     bits = readUInt32LE()
     nonce = readUInt32LE()
 
-    log(version)
-    log(merkleRoot)
+    # log(version)
+    # log(merkleRoot)
 
     res = self.callBtcRelayToStoreHeader(version, prevHash, merkleRoot, time, bits, nonce)
     return(res)
@@ -253,30 +253,12 @@ def readUnsignedBitsLE(bits):
     offset = self.pos * 2
     endIndex = offset + size
 
-    # log(offset)
-    # b = byte(offset, self.gStr[0])
-    # log(b)
-    #
-
     jstr = load(self.gStr[0], chars=endIndex)
-
-    # log(44444)
-    # log(datastr=jstr)
-
-    # currStr = slice(self.gStr[0], chars=offset, chars=offset+size-1)
-    # currStr = slice(jstr, chars=0, chars=1)
 
     currStr = slice(jstr, chars=offset, chars=endIndex)
 
-    # log(8888)
-    # log(offset)
-    # log(endIndex)
-    log(datastr=currStr)
-    log(byte(1, currStr))
-
     result = 0
     j = 0
-    #while j < 1:  #TODO TODO TODO TODO
     while j < size:
         # "01 23 45" want it to read "10 32 54"
         if j % 2 == 0:
@@ -284,9 +266,9 @@ def readUnsignedBitsLE(bits):
         else:
             i = j - 1
 
-        log(1000+i)
+        # log(1000+i)
         char = getch(currStr, i) # self.buf[offset + i]
-        log(char)
+        # log(char)
         if (char >= 97 && char <= 102):  # only handles lowercase a-f
             numeric = char - 87
         else:
