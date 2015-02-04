@@ -122,29 +122,15 @@ def readVarintNum():
         return(first)
 
 
-def callBtcRelayToStoreHeader(version, hashPrevBlock:arr, hashMerkleRoot:arr, time, bits, nonce):
-    # log(version)
-    # prevHashStr = self.a2str(hashPrevBlock, 64, outsz=64)
-    # log(datastr=prevHashStr)
-
-    nPrev = self.a2int(hashPrevBlock)
-    # log(nPrev)
-
-    nMerkle = self.a2int(hashMerkleRoot)
-    # log(nMerkle)
-
-    # log(time)
-    # log(bits)
-    # log(nonce)
-
-    res = self.storeBlockHeader(version, nPrev, nMerkle, time, bits, nonce)
+def callBtcRelayToStoreHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
+    res = self.storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
     return(res)
 
 
 def parseAndStoreHeader(rawHeader:str):
     version = self.readUInt32LE()
-    prevHash = self.readReverse(32, outsz=64)
-    merkleRoot = self.readReverse(32, outsz=64)
+    prevHash = self.readUnsignedBitsLE(256)
+    merkleRoot = self.readUnsignedBitsLE(256)
     time = self.readUInt32LE()
     bits = self.readUInt32LE()
     nonce = self.readUInt32LE()
