@@ -51,7 +51,7 @@ def initFromBuf(size):
 
 def txinFromBuf():
     prevTxId = self.readUnsignedBitsLE(256)
-    outputIndex = self.readUInt32LE()
+    outputIndex = readUInt32LE()
     # log(outputIndex)
 
     scriptSize = self.readVarintNum()
@@ -61,13 +61,13 @@ def txinFromBuf():
         dblSize = scriptSize*2
         scriptArr = self.readSimple(scriptSize, outsz=dblSize)
 
-    seqNum = self.readUInt32LE()
+    seqNum = readUInt32LE()
     # log(seqNum)
 
 
 # returns satoshis and sets self.tmpScriptLen and self.tmpScriptArr
 def txoutFromBuf():
-    satoshis = self.readUInt64LE()
+    satoshis = readUInt64LE()
     log(satoshis)
 
     scriptSize = self.readVarintNum()
@@ -100,13 +100,13 @@ def readSimple(len):
 
 # tested via twip()
 def readVarintNum():
-    first = self.readUInt8()
+    first = readUInt8()
     if first == 0xfd:
-        return(self.readUInt16LE())
+        return(readUInt16LE())
     elif first == 0xfe:
-        return(self.readUInt32LE())
+        return(readUInt32LE())
     elif first == 0xff:
-        return(self.readUInt64LE())
+        return(readUInt64LE())
     else:
         return(first)
 
@@ -117,12 +117,12 @@ def callBtcRelayToStoreHeader(version, hashPrevBlock, hashMerkleRoot, time, bits
 
 
 def parseAndStoreHeader(rawHeader:str):
-    version = self.readUInt32LE()
+    version = readUInt32LE()
     prevHash = self.readUnsignedBitsLE(256)
     merkleRoot = self.readUnsignedBitsLE(256)
-    time = self.readUInt32LE()
-    bits = self.readUInt32LE()
-    nonce = self.readUInt32LE()
+    time = readUInt32LE()
+    bits = readUInt32LE()
+    nonce = readUInt32LE()
 
     # log(version)
     # prevHashStr = self.a2str(prevHash, 64, outsz=64)
@@ -173,7 +173,7 @@ def getMetaForTxOut(rawTx:str, size, outNum):
 # returns an array [satoshis, outputScriptSize] and writes the
 # outputScript to self.tmpScriptArr, and outputScriptSize to self.tmpScriptLen
 def __getMetaForOutput(outNum):
-    version = self.readUInt32LE()
+    version = readUInt32LE()
     # log(version)
     # log(self.pos)
     numIns = self.readVarintNum()
@@ -261,21 +261,21 @@ def readUnsignedBitsLE(bits):
 
     return(result)
 
-def readUInt8():
-    return self.readUnsignedBitsLE(8)
+macro readUInt8():
+    self.readUnsignedBitsLE(8)
 
 
-def readUInt16LE():
-    return self.readUnsignedBitsLE(16)
+macro readUInt16LE():
+    self.readUnsignedBitsLE(16)
 
 
 # only handles lowercase a-f
-def readUInt32LE():
-    return self.readUnsignedBitsLE(32)
+macro readUInt32LE():
+    self.readUnsignedBitsLE(32)
 
 
-def readUInt64LE():
-    return self.readUnsignedBitsLE(64)
+macro readUInt64LE():
+    self.readUnsignedBitsLE(64)
 
 
 # string to array
