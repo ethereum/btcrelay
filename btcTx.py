@@ -41,7 +41,7 @@ def initFromBuf(size):
     # log(size)
     # log(self.pos)
     while i < size:
-        myarr[i] = self.buf[(self.pos*2) + i]
+        myarr[i] = self.buf[(self.pos*2) + i]  #TODO put *2 in a var outside loop
         # log(myarr[i])
         i += 1
     return(myarr:arr)
@@ -277,17 +277,7 @@ def a2int(in_arr:arr):
 # tested via tests for readUInt8, readUInt32LE, ...
 def readUnsignedBitsLE(bits):
     size = bits / 4
-
-
-    bb = self.initFromBuf(size, outsz=size)
-    # log(bb)
-
-    # val = self.pair_rev(bb, size, outsz=size)
-    # log(self.pos)
-
-
-
-
+    offset = self.pos * 2
     result = 0
     j = 0
     while j < size:
@@ -297,9 +287,7 @@ def readUnsignedBitsLE(bits):
         else:
             i = j - 1
 
-        log(i)
-
-        char = bb[i]
+        char = self.buf[offset + i]
         # log(char)
         if (char >= 97 && char <= 102):  # only handles lowercase a-f
             numeric = char - 87
