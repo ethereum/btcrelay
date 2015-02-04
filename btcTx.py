@@ -87,7 +87,7 @@ def txoutFromBuf():
 
     # mcopy( , scriptArr, scriptSize)
 
-    return([satoshis, scriptSize], 2)
+    return([satoshis, scriptSize], items=2)
 
 
 # does not convert to numeric
@@ -139,8 +139,24 @@ def storeRawBlockHeader(rawBlockHeader:str):
 
     save(self.gStr[0], rawBlockHeader, chars=len(rawBlockHeader))
 
+
+    log(3333333333333)
+
+    currStr = slice(self.gStr[0], chars=0, chars=1)
+    # res = byte(0, currStr)
+    #
+
+    log(66666)
+
+    res = byte(0, self.gStr[0])
+
+
+
+
+
     # self.__setupForParsingTx(rawBlockHeader, size)
-    res = self.parseAndStoreHeader(rawBlockHeader)
+
+    # res = self.parseAndStoreHeader(rawBlockHeader)
     return(res)
 
 
@@ -235,8 +251,23 @@ def __checkOutputScript(rawTx:str, size, outNum, expHashOfOutputScript):
 def readUnsignedBitsLE(bits):
     size = bits / 4
     offset = self.pos * 2
+
+    # log(offset)
+    # b = byte(offset, self.gStr[0])
+    # log(b)
+
+    jstr = load(self.gStr[0], chars=offset+size)
+
+    # currStr = slice(self.gStr[0], chars=offset, chars=offset+size-1)
+    # currStr = slice(jstr, chars=0, chars=1)
+
+    currStr = slice(jstr, chars=offset, chars=offset+size-1)
+
+    # log(dataStr=currStr)
+
     result = 0
     j = 0
+    #while j < 1:  #TODO TODO TODO TODO
     while j < size:
         # "01 23 45" want it to read "10 32 54"
         if j % 2 == 0:
@@ -245,7 +276,7 @@ def readUnsignedBitsLE(bits):
             i = j - 1
 
         log(i)
-        char = byte(offset + i, self.gStr[0]) # self.buf[offset + i]
+        char = byte(i, currStr) # self.buf[offset + i]
         log(char)
         if (char >= 97 && char <= 102):  # only handles lowercase a-f
             numeric = char - 87
