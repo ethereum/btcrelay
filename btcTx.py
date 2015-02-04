@@ -277,17 +277,29 @@ def a2int(in_arr:arr):
 # tested via tests for readUInt8, readUInt32LE, ...
 def readUnsignedBitsLE(bits):
     size = bits / 4
+
+
     bb = self.initFromBuf(size, outsz=size)
     # log(bb)
 
-    val = self.pair_rev(bb, size, outsz=size)
-    self.pos += size / 2
+    # val = self.pair_rev(bb, size, outsz=size)
     # log(self.pos)
 
+
+
+
     result = 0
-    i = 0
-    while i < size:
-        char = val[size-1-i]
+    j = 0
+    while j < size:
+        # "01 23 45" want it to read "10 32 54"
+        if j % 2 == 0:
+            i = j + 1
+        else:
+            i = j - 1
+
+        log(i)
+
+        char = bb[i]
         # log(char)
         if (char >= 97 && char <= 102):  # only handles lowercase a-f
             numeric = char - 87
@@ -296,10 +308,15 @@ def readUnsignedBitsLE(bits):
 
         # log(numeric)
 
-        result += numeric * 16^i
+        result += numeric * 16^j
         # log(result)
 
-        i += 1
+        j += 1
+
+
+    # important
+    self.pos += size / 2
+
     return(result)
 
 def readUInt8():
