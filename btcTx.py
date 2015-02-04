@@ -126,9 +126,8 @@ def parseAndStoreHeader(rawHeader:str):
     bits = readUInt32LE()
     nonce = readUInt32LE()
 
-    # log(version)
-    # prevHashStr = self.a2str(prevHash, 64, outsz=64)
-    # log(datastr=prevHashStr)
+    log(version)
+    log(merkleRoot)
 
     res = self.callBtcRelayToStoreHeader(version, prevHash, merkleRoot, time, bits, nonce)
     return(res)
@@ -245,7 +244,7 @@ def readUnsignedBitsLE(bits):
         else:
             i = j - 1
 
-        # log(i)
+        log(i)
         char = byte(offset + i, self.gStr[0]) # self.buf[offset + i]
         log(char)
         if (char >= 97 && char <= 102):  # only handles lowercase a-f
