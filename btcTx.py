@@ -140,15 +140,15 @@ def storeRawBlockHeader(rawBlockHeader:str):
     save(self.gStr[0], rawBlockHeader, chars=len(rawBlockHeader))
 
 
-    log(3333333333333)
-
-    currStr = slice(self.gStr[0], chars=0, chars=1)
-    # res = byte(0, currStr)
+    # log(3333333333333)
     #
-
-    log(66666)
-
-    res = byte(0, self.gStr[0])
+    # currStr = slice(self.gStr[0], chars=0, chars=1)
+    # # res = byte(0, currStr)
+    # #
+    #
+    # log(66666)
+    #
+    # res = byte(0, self.gStr[0])
 
 
 
@@ -156,7 +156,7 @@ def storeRawBlockHeader(rawBlockHeader:str):
 
     # self.__setupForParsingTx(rawBlockHeader, size)
 
-    # res = self.parseAndStoreHeader(rawBlockHeader)
+    res = self.parseAndStoreHeader(rawBlockHeader)
     return(res)
 
 
@@ -251,19 +251,28 @@ def __checkOutputScript(rawTx:str, size, outNum, expHashOfOutputScript):
 def readUnsignedBitsLE(bits):
     size = bits / 4
     offset = self.pos * 2
+    endIndex = offset + size
 
     # log(offset)
     # b = byte(offset, self.gStr[0])
     # log(b)
+    #
 
-    jstr = load(self.gStr[0], chars=offset+size)
+    jstr = load(self.gStr[0], chars=endIndex)
+
+    # log(44444)
+    # log(datastr=jstr)
 
     # currStr = slice(self.gStr[0], chars=offset, chars=offset+size-1)
     # currStr = slice(jstr, chars=0, chars=1)
 
-    currStr = slice(jstr, chars=offset, chars=offset+size-1)
+    currStr = slice(jstr, chars=offset, chars=endIndex)
 
-    # log(dataStr=currStr)
+    # log(8888)
+    # log(offset)
+    # log(endIndex)
+    log(datastr=currStr)
+    log(byte(1, currStr))
 
     result = 0
     j = 0
@@ -275,8 +284,8 @@ def readUnsignedBitsLE(bits):
         else:
             i = j - 1
 
-        log(i)
-        char = byte(i, currStr) # self.buf[offset + i]
+        log(1000+i)
+        char = getch(currStr, i) # self.buf[offset + i]
         log(char)
         if (char >= 97 && char <= 102):  # only handles lowercase a-f
             numeric = char - 87
