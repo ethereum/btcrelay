@@ -37,11 +37,12 @@ def copyToBuf(myarr:arr, size):
 # return an array with the contents of self.buf[] starting for index self.pos
 def initFromBuf(size):
     myarr = array(size)
+    offset = self.pos * 2
     i = 0
     # log(size)
     # log(self.pos)
     while i < size:
-        myarr[i] = self.buf[(self.pos*2) + i]  #TODO put *2 in a var outside loop
+        myarr[i] = self.buf[offset + i]
         # log(myarr[i])
         i += 1
     return(myarr:arr)
