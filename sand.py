@@ -2,11 +2,17 @@
 data buf[]
 
 def foo():
-    # mystr = text("0100000081cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a308000000000000e320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0f1fc122b")
-
-    # mystr=text("01ab00")
 
     mystr=text("81cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a308000000000000e320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0f1fc122b81cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a308000000000000e320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0f1fc122b")
+    save(self.buf[0], mystr, chars=len(mystr))
+
+    self.g()
+
+
+# mystr = text("0100000081cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a308000000000000e320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0f1fc122b")
+
+# mystr=text("01ab00")
+
 
     # log(mystr[0])
     # log(mystr[2])
@@ -26,19 +32,33 @@ def foo():
     # b = byte(0, mystr[6])
     # log(b)
 
-    self.g(mystr)
 
-def g(mystr:str):
-    save(self.buf[0], mystr, chars=len(mystr))
+
+def g():
+    jstr = load(self.buf[0], chars=132)
+    log(datastr=jstr)
+
+    j = slice(jstr, chars=128, chars=132)
+    log(datastr=j)
+
+    # log(self.buf[0])
+
+
+
+    # j = slice(mystr, chars=128, chars=132)
+    #
+    # log(datastr=j)
+    # log(j)
+
     # b = byte(2, self.buf[0])
     # log(b)
 
     # log(datastr=self.buf[0])
-
-    log(self.buf[0])
-    log(self.buf[1])
-    log(self.buf[4])
-    log(self.buf[6])
+    #
+    # log(self.buf[0])
+    # log(self.buf[1])
+    # log(self.buf[4])
+    # log(self.buf[6])
 
 
 # data buf
