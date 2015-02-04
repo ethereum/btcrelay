@@ -161,57 +161,13 @@ def test_readUInt64LE_hex():
     exp = 0x8967452301efcdab
     return(res == exp)
 
-def test_pair_rev_single():
-    size = 2
-    myarr = array(2)
-    myarr[0] = 1
-    myarr[1] = 2
-    b = self.pair_rev(myarr, size, outsz=size)
-    return(b:arr)  # expect [1, 2]
 
-def test_pair_rev():
-    size = 4
-    myarr = array(4)
-    myarr[0] = 1
-    myarr[1] = 2
-    myarr[2] = 3
-    myarr[3] = 4
-    b = self.pair_rev(myarr, size, outsz=size)
-    return(b:arr)  # expect [3, 4, 1, 2]
-
-
-
-def test_arr_rev():
-    myarr = array(3)
-    myarr[0] = 1
-    myarr[1] = 2
-    myarr[2] = 3
-    b = self.arr_rev(myarr, 3, outsz=3)
-    return(b:arr)
 
 def test_str2a():
     mystring = text("abcdef")
     size = len(mystring)
     b = self.str2a(mystring, size, outsz=size)
     return(b:arr)
-
-def test_strRev2a():
-    mystring = text("abcdef")
-    size = len(mystring)
-    b = self.strRev2a(mystring, size, outsz=size)
-
-
-
-
-def test_a2int():
-    myarr = array(4)
-    myarr[0] = 48
-    myarr[1] = 49
-    myarr[2] = 97
-    myarr[3] = 98
-    res = self.a2int(myarr)
-    return(res)
-
 
 def test_initFromBuf():
     size = 3
@@ -220,23 +176,6 @@ def test_initFromBuf():
     self.buf[2] = 5
     bb = self.initFromBuf(size, outsz=size)
     return(bb:arr)
-
-def test_readReverse():
-    rawTx = text("0c432f4fb3e871a8bda638350b3d5c698cf431db8d6031b53e3fb5159e59d4a9")
-    size = len(rawTx)
-    bb = self.str2a(rawTx, size, outsz=size)
-    self.copyToBuf(bb, size)
-
-    self.pos = 0
-    res = self.readReverse(32, outsz=64)
-    # exp is a9d4599e15b53f3eb531608ddb31f48c695c3d0b3538a6bda871e8b34f2f430c
-    # (ord('a') is 97, ord('9') is 57 and this is what will be returned...)
-    return(res:arr)  # expect [97, 57, 100, 52, 53 etc] if numeric, expect [10, 9, 13, 4, 5, 9, 9, etc]
-
-
-def test_str_rev():
-    res = self.str_rev("abc")
-    return(res)
 
 def test_a2str():
     # mystr = text("cow")
