@@ -2,6 +2,8 @@
 data pos
 data buf[]
 
+data gStr[]
+
 data tmpScriptLen
 data tmpScriptArr[]  # 'id' is 2
 
@@ -134,9 +136,11 @@ def parseAndStoreHeader(rawHeader:str):
 
 
 def storeRawBlockHeader(rawBlockHeader:str):
-    size = len(rawBlockHeader)
+    # size = len(rawBlockHeader)
 
-    self.__setupForParsingTx(rawBlockHeader, size)
+    save(self.gStr[0], rawBlockHeader, chars=len(rawBlockHeader))
+
+    # self.__setupForParsingTx(rawBlockHeader, size)
     res = self.parseAndStoreHeader(rawBlockHeader)
     return(res)
 
@@ -241,8 +245,9 @@ def readUnsignedBitsLE(bits):
         else:
             i = j - 1
 
-        char = self.buf[offset + i]
-        # log(char)
+        # log(i)
+        char = byte(offset + i, self.gStr[0]) # self.buf[offset + i]
+        log(char)
         if (char >= 97 && char <= 102):  # only handles lowercase a-f
             numeric = char - 87
         else:
