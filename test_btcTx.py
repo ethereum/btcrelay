@@ -73,7 +73,7 @@ def test_readUInt8_simple():
     self.copyToBuf(bb, size)
 
     self.pos = 0
-    res = self.readUInt8()
+    res = readUInt8()
     exp = 2
     return(res == exp)
 
@@ -89,19 +89,25 @@ def test_readUInt8_hex():
     self.copyToBuf(bb, size)
 
     self.pos = 0
-    res = self.readUInt8()
+    res = readUInt8()
     exp = 60
     return(res == exp)
 
 
 def test_readUInt16LE_hex():
     rawTx = text("89ab")
-    size = len(rawTx)
-    bb = self.str2a(rawTx, size, outsz=size)
-    self.copyToBuf(bb, size)
+
+    save(self.gStr[0], rawTx, chars=len(rawTx))
+
+    # self.gStr = rawTx
+
+    # log(datastr=self.gStr)
+    # size = len(rawTx)
+    # bb = self.str2a(rawTx, size, outsz=size)
+    # self.copyToBuf(bb, size)
 
     self.pos = 0
-    res = self.readUInt16LE()
+    res = readUInt16LE()
     exp = 0xab89
     return(res == exp)
 
@@ -119,7 +125,7 @@ def test_readUInt32LE_simple():
     self.copyToBuf(bb, size)
 
     self.pos = 0
-    res = self.readUInt32LE()
+    res = readUInt32LE()
     exp = 1
     return(res == exp)
 
@@ -132,7 +138,7 @@ def test_readUInt32LE_hex():
     self.copyToBuf(bb, size)
 
     self.pos = 0
-    res = self.readUInt32LE()
+    res = readUInt32LE()
     exp = 15
     return(res == exp)
 
@@ -144,7 +150,7 @@ def test_readUInt32LE_nodejs():
     self.copyToBuf(bb, size)
 
     self.pos = 0
-    res = self.readUInt32LE()
+    res = readUInt32LE()
     exp = 0x42230403
     return(res == exp)
 
@@ -157,7 +163,7 @@ def test_readUInt64LE_hex():
     self.copyToBuf(bb, size)
 
     self.pos = 0
-    res = self.readUInt64LE()
+    res = readUInt64LE()
     exp = 0x8967452301efcdab
     return(res == exp)
 
