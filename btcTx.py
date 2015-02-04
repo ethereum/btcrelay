@@ -50,7 +50,7 @@ def initFromBuf(size):
 
 
 def txinFromBuf():
-    prevTxId = self.readReverse(32, outsz=64)
+    prevTxId = self.readUnsignedBitsLE(256)
     outputIndex = self.readUInt32LE()
     # log(outputIndex)
 
