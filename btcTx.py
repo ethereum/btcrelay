@@ -62,13 +62,15 @@ def txinFromBuf():
 
 # returns satoshis and sets self.tmpScriptLen and self.tmpScriptArr
 def txoutFromBuf():
-    log(8989)
+
     satoshis = readUInt64LE()
     # log(satoshis)
 
     scriptSize = self.readVarintNum()
     # log(scriptSize)
     self.tmpScriptLen = scriptSize * 2
+    log(8989)
+    log(self.tmpScriptLen)
 
     if scriptSize > 0:
         dblSize = scriptSize*2
@@ -175,21 +177,6 @@ def storeRawBlockHeader(rawBlockHeader:str):
     self.pos = 0
     save(self.gStr[0], rawBlockHeader, chars=len(rawBlockHeader))
 
-
-    # log(3333333333333)
-    #
-    # currStr = slice(self.gStr[0], chars=0, chars=1)
-    # # res = byte(0, currStr)
-    # #
-    #
-    # log(66666)
-    #
-    # res = byte(0, self.gStr[0])
-
-
-
-
-
     # self.__setupForParsingTx(rawBlockHeader, size)
 
     res = self.parseAndStoreHeader(rawBlockHeader)
@@ -268,6 +255,7 @@ def __setupForParsingTx(hexStr:str, size):
 
 def getScriptForTxOut(rawTx:str, size, outNum):
     meta = self.getMetaForTxOut(rawTx, size, outNum, outsz=2)
+    log(1212)
     log(data=meta)
 
     # scriptArr = self.__getOutScriptFromTmpArr(outsz=self.tmpScriptLen)
@@ -280,7 +268,28 @@ def doCheckOutputScript(rawTx:str, size, outNum, expHashOfOutputScript):
 
     # scriptStr = self.a2str(scriptArr, self.tmpScriptLen, outsz=self.tmpScriptLen)
     # log(datastr=scriptStr)
-    hash = sha256(self.gStr[0]:str)
+
+    log(3232)
+    cnt = self.tmpScriptLen
+    log(cnt)
+    # log(self.tmpScriptLen)
+
+    b=byte(0, self.gScript[0])
+    log(b)
+    b=byte(1, self.gScript[0])
+    log(b)
+    b=byte(2, self.gScript[0])
+    log(b)
+    b=byte(3, self.gScript[0])
+    log(b)
+
+    myarr = load(self.gScript[0], items=(cnt/32)+1)
+    log(data=myarr)
+
+    hash = sha256(myarr, chars=cnt)
+
+    # hash = sha256(self.gScript[0], items=cnt)
+    log(4343)
     # log(hash)
     return(hash == expHashOfOutputScript)
 
@@ -291,7 +300,7 @@ def __checkOutputScript(rawTx:str, size, outNum, expHashOfOutputScript):
 
     # scriptStr = self.a2str(scriptArr, self.tmpScriptLen, outsz=self.tmpScriptLen)
     # log(datastr=scriptStr)
-    hash = sha256(self.gStr[0]:str)
+    hash = sha256(self.gScript[0]:str)
     # log(hash)
     return(hash == expHashOfOutputScript)
 
