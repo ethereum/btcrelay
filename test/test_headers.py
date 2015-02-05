@@ -59,7 +59,7 @@ class TestBtcTx(object):
 
         print "gas used: ", self.s.block.gas_used
         duration = datetime.combine(date.today(), endTime) - datetime.combine(date.today(), startTime)
-        print("************************* duration: "+str(duration))
+        print("********** duration: "+str(duration)+" ********** start:"+str(startTime)+" end:"+str(endTime))
         print("jend")
 
         # h = "0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c"
