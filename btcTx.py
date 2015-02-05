@@ -144,7 +144,7 @@ def logBlockchainHead():
 #
 # this is needed until can figure out how a dynamically sized array can be returned from a function
 # instead of needing 2 functions, one that returns array size, then calling to get the actual array
-def getMetaForTxOut(rawTx:str, size, outNum):
+def parseTxOut(rawTx:str, size, outNum):
     self.__setupForParsingTx(rawTx, size)
     meta = self.__getMetaForOutput(outNum, outsz=2)
     return(meta, items=2)
@@ -188,18 +188,8 @@ def __setupForParsingTx(hexStr:str, size):
     save(self.gStr[0], hexStr, chars=len(hexStr))
 
 
-def getScriptForTxOut(rawTx:str, size, outNum):
-    meta = self.getMetaForTxOut(rawTx, size, outNum, outsz=2)
-    log(1212)
-    log(data=meta)
-
-    # scriptArr = self.__getOutScriptFromTmpArr(outsz=self.tmpScriptLen)
-    # return(scriptArr:arr)
-
-
-
 def doCheckOutputScript(rawTx:str, size, outNum, expHashOfOutputScript):
-    self.getScriptForTxOut(rawTx, size, outNum)
+    self.parseTxOut(rawTx, size, outNum)
 
     # scriptStr = self.a2str(scriptArr, self.tmpScriptLen, outsz=self.tmpScriptLen)
     # log(datastr=scriptStr)
