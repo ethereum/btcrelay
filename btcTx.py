@@ -53,22 +53,15 @@ def readSimple(len):
     offset = self.pos * 2
     endIndex = offset + size
 
-    jstr = load(self.gStr[0], chars=endIndex)
+    # ideally, getting a slice of gStr would be done in 1 step, but Serpent limitation
+    tmpStr = load(self.gStr[0], chars=endIndex)
+    currStr = slice(tmpStr, chars=offset, chars=endIndex)
 
-    log(90011)
-    log(datastr=jstr)
-
-    currStr = slice(jstr, chars=offset, chars=endIndex)
-    log(903333333333333)
     self.pos += len # note: len NOT size
-    # log(data=bb)
-    # return(bb:arr)
-    log(datastr=currStr)
     return(currStr:str)
 
 
 
-# tested via twip()
 def readVarintNum():
     first = readUInt8()
     if first == 0xfd:
@@ -103,12 +96,7 @@ def parseAndStoreHeader(rawHeader:str):
 
 
 def storeRawBlockHeader(rawBlockHeader:str):
-    # size = len(rawBlockHeader)
-
-    self.pos = 0
-    save(self.gStr[0], rawBlockHeader, chars=len(rawBlockHeader))
-
-    # self.__setupForParsingTx(rawBlockHeader, size)
+    self.__setupForParsingTx(rawBlockHeader)
 
     res = self.parseAndStoreHeader(rawBlockHeader)
     return(res)
@@ -125,8 +113,9 @@ def logBlockchainHead():
 #
 # this is needed until can figure out how a dynamically sized array can be returned from a function
 # instead of needing 2 functions, one that returns array size, then calling to get the actual array
+# TODO 2nd param size isn't needed anymore
 def parseTransaction(rawTx:str, size, outNum):
-    self.__setupForParsingTx(rawTx, size)
+    self.__setupForParsingTx(rawTx)
     meta = self.__getMetaForOutput(outNum, outsz=2)
     return(meta, items=2)
 
@@ -164,7 +153,7 @@ def __getMetaForOutput(outNum):
     return(satAndSize:arr)
 
 
-def __setupForParsingTx(hexStr:str, size):
+def __setupForParsingTx(hexStr:str):
     self.pos = 0
     save(self.gStr[0], hexStr, chars=len(hexStr))
 
