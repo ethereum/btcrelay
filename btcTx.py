@@ -69,19 +69,6 @@ def txoutFromBuf():
 # make sure caller uses outsz=len*2
 def readSimple(len):
     size = len * 2
-    currStr = self.initFromBuf(size, outsz=size)
-    log(903333333333333)
-    self.pos += len # note: len NOT size
-    # log(data=bb)
-    # return(bb:arr)
-    log(datastr=currStr)
-    return(currStr:str)
-
-# return an array with the contents of self.buf[] starting for index self.pos
-def initFromBuf(size):
-
-    log(9000)
-
     offset = self.pos * 2
     endIndex = offset + size
 
@@ -91,23 +78,13 @@ def initFromBuf(size):
     log(datastr=jstr)
 
     currStr = slice(jstr, chars=offset, chars=endIndex)
-
-    log(90022)
+    log(903333333333333)
+    self.pos += len # note: len NOT size
+    # log(data=bb)
+    # return(bb:arr)
     log(datastr=currStr)
-
     return(currStr:str)
 
-
-    # myarr = array(size)
-    # offset = self.pos * 2
-    # i = 0
-    # # log(size)
-    # # log(self.pos)
-    # while i < size:
-    #     myarr[i] = self.buf[offset + i]
-    #     # log(myarr[i])
-    #     i += 1
-    # return(myarr:arr)
 
 
 # tested via twip()
