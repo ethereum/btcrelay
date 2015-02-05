@@ -71,7 +71,7 @@ class TestBtcTx(object):
 
 
     @slow
-    @pytest.mark.skipif(True,reason='skip')
+    # @pytest.mark.skipif(True,reason='skip')
     def testSB(self):
         print("jstart")
         i = 1
