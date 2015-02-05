@@ -221,7 +221,7 @@ def __getOutScriptFromTmpArr():
 def getMetaForTxOut(rawTx:str, size, outNum):
     self.__setupForParsingTx(rawTx, size)
     meta = self.__getMetaForOutput(outNum, outsz=2)
-    return(meta)
+    return(meta, items=2)
 
 
 
