@@ -28,7 +28,7 @@ def txinParse():
 
 
 # returns satoshis, scriptSize and sets self.tmpScriptLen
-# eventually, self.tmpScriptLen can probably be removed and also returned by this function
+# TODO eventually, self.tmpScriptLen can probably be removed and also returned by this function
 def txoutParse():
 
     satoshis = readUInt64LE()
@@ -53,7 +53,7 @@ def readSimple(len):
     offset = self.pos * 2
     endIndex = offset + size
 
-    # ideally, getting a slice of gStr would be done in 1 step, but Serpent limitation
+    # TODO ideally, getting a slice of gStr would be done in 1 step, but Serpent limitation
     tmpStr = load(self.gStr[0], chars=endIndex)
     currStr = slice(tmpStr, chars=offset, chars=endIndex)
 
@@ -131,24 +131,17 @@ def __getMetaForOutput(outNum):
     # log(numIns)
     # log(self.pos)
 
-    log(44)
-
     i = 0
     while i < numIns:
         self.txinParse()
         i += 1
 
-    log(555)
-
     numOuts = self.readVarintNum()
-    log(numOuts)
 
     i = 0
     while i <= outNum:
         satAndSize = self.txoutParse(outsz=2)
         i += 1
-
-    log(899)
 
     return(satAndSize:arr)
 
@@ -159,32 +152,14 @@ def __setupForParsing(hexStr:str):
 
 
 def doCheckOutputScript(rawTx:str, size, outNum, expHashOfOutputScript):
-    self.parseTransaction(rawTx, size, outNum)
-
-    # scriptStr = self.a2str(scriptArr, self.tmpScriptLen, outsz=self.tmpScriptLen)
-    # log(datastr=scriptStr)
-
-    log(3232)
+    self.parseTransaction(rawTx, size, outNum)  # TODO we are not using the return value, so conceivably self.tmpScriptLen could be returned here and global removed
     cnt = self.tmpScriptLen
-    log(cnt)
-    # log(self.tmpScriptLen)
 
-    b=byte(0, self.gScript[0])
-    log(b)
-    b=byte(1, self.gScript[0])
-    log(b)
-    b=byte(2, self.gScript[0])
-    log(b)
-    b=byte(3, self.gScript[0])
-    log(b)
+    # TODO using load() until it can be figured out how to use gScript directly with sha256
+    myarr = load(self.gScript[0], items=(cnt/32)+1)  # if cnt is say 50, we want 2 chunks of 32bytes
+    # log(data=myarr)
 
-    myarr = load(self.gScript[0], items=(cnt/32)+1)
-    log(data=myarr)
-
-    hash = sha256(myarr, chars=cnt)
-
-    # hash = sha256(self.gScript[0], items=cnt)
-    log(4343)
+    hash = sha256(myarr, chars=cnt)  # note: chars=cnt NOT items=...
     # log(hash)
     return(hash == expHashOfOutputScript)
 
@@ -204,9 +179,9 @@ def readUnsignedBitsLE(bits):
     offset = self.pos * 2
     endIndex = offset + size
 
-    jstr = load(self.gStr[0], chars=endIndex)
-
-    currStr = slice(jstr, chars=offset, chars=endIndex)
+    # TODO ideally, getting a slice of gStr would be done in 1 step, but Serpent limitation
+    tmpStr = load(self.gStr[0], chars=endIndex)
+    currStr = slice(tmpStr, chars=offset, chars=endIndex)
 
     result = 0
     j = 0
@@ -217,8 +192,7 @@ def readUnsignedBitsLE(bits):
         else:
             i = j - 1
 
-        # log(1000+i)
-        char = getch(currStr, i) # self.buf[offset + i]
+        char = getch(currStr, i)
         # log(char)
         if (char >= 97 && char <= 102):  # only handles lowercase a-f
             numeric = char - 87

@@ -1,12 +1,48 @@
 
 data buf[]
 
+
 def foo():
+    # mystr = text("1")
+    # res = sha256(mystr:str)
+    # return(res)
 
-    mystr=text("81cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a308000000000000e320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0f1fc122b81cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a308000000000000e320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0f1fc122b")
-    save(self.buf[0], mystr, chars=len(mystr))
 
-    self.g()
+    mystr = text("11111111111111111111111111111111")
+    save(self.buf[0], mystr, chars=32)
+
+    myarr = load(self.buf[0], items=1)
+    log(data=myarr)
+
+    res = sha256(myarr, chars=1)
+    return(res)
+
+
+
+    # self.buf[0] = 1
+    # self.buf[1] = 3
+    # self.buf[2] = 5
+    #
+    # myarr = array(3)
+    # mcopy(myarr, self.buf[0], chars=3)
+    # return(myarr:arr)
+
+
+
+    # myarr = load(self.buf[0], items=3):arr
+    # return(myarr:arr)
+
+    # return(load(self.buf[0], chars=3):arr)
+
+
+
+
+
+
+    # mystr=text("81cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a308000000000000e320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0f1fc122b81cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a308000000000000e320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0f1fc122b")
+    # save(self.buf[0], mystr, chars=len(mystr))
+    #
+    # self.g()
 
 
 # mystr = text("0100000081cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a308000000000000e320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0f1fc122b")
@@ -34,12 +70,12 @@ def foo():
 
 
 
-def g():
-    jstr = load(self.buf[0], chars=132)
-    log(datastr=jstr)
-
-    j = slice(jstr, chars=128, chars=132)
-    log(datastr=j)
+# def g():
+#     jstr = load(self.buf[0], chars=132)
+#     log(datastr=jstr)
+#
+#     j = slice(jstr, chars=128, chars=132)
+#     log(datastr=j)
 
     # log(self.buf[0])
 
