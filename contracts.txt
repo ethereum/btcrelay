@@ -47,3 +47,13 @@ which equals
 '8a83665f3798727f14f92ad0e6c99fdab08ee731d6cd644c131223fd2f4fed2a'
 >>> 0x8a83665f3798727f14f92ad0e6c99fdab08ee731d6cd644c131223fd2f4fed2a
 62651336615153925163103325988602101547623601588345450199677643885368533052714L
+
+This is same:
+mystr = text("11111111111111111111111111111111")
+  save(self.buf[0], mystr, chars=32)
+
+  myarr = load(self.buf[0], items=1)
+  log(data=myarr)
+
+  res = sha256(myarr, chars=32)
+  return(res)
