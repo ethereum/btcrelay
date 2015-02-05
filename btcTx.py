@@ -96,7 +96,7 @@ def parseAndStoreHeader(rawHeader:str):
 
 
 def storeRawBlockHeader(rawBlockHeader:str):
-    self.__setupForParsingTx(rawBlockHeader)
+    self.__setupForParsing(rawBlockHeader)
 
     res = self.parseAndStoreHeader(rawBlockHeader)
     return(res)
@@ -115,7 +115,7 @@ def logBlockchainHead():
 # instead of needing 2 functions, one that returns array size, then calling to get the actual array
 # TODO 2nd param size isn't needed anymore
 def parseTransaction(rawTx:str, size, outNum):
-    self.__setupForParsingTx(rawTx)
+    self.__setupForParsing(rawTx)
     meta = self.__getMetaForOutput(outNum, outsz=2)
     return(meta, items=2)
 
@@ -153,7 +153,7 @@ def __getMetaForOutput(outNum):
     return(satAndSize:arr)
 
 
-def __setupForParsingTx(hexStr:str):
+def __setupForParsing(hexStr:str):
     self.pos = 0
     save(self.gStr[0], hexStr, chars=len(hexStr))
 
