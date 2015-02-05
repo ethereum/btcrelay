@@ -18,12 +18,10 @@ def txinParse():
     # log(outputIndex)
 
     scriptSize = self.readVarintNum()
-    log(1777)
-    log(scriptSize)
 
     if scriptSize > 0:
         dblSize = scriptSize*2
-        self.readSimple(scriptSize)
+        self.readSimple(scriptSize, outsz=dblSize)  # return value is ignored
 
         # scriptStr = self.readSimple(scriptSize, outsz=dblSize)
 
