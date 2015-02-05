@@ -3,6 +3,7 @@ data pos
 data buf[]
 
 data gStr[]
+data gScript[]
 
 data tmpScriptLen
 data tmpScriptArr[]  # 'id' is 2
@@ -38,16 +39,27 @@ def copyToBuf(myarr:arr, size):
 
 # return an array with the contents of self.buf[] starting for index self.pos
 def initFromBuf(size):
-    myarr = array(size)
     offset = self.pos * 2
-    i = 0
-    # log(size)
-    # log(self.pos)
-    while i < size:
-        myarr[i] = self.buf[offset + i]
-        # log(myarr[i])
-        i += 1
-    return(myarr:arr)
+    endIndex = offset + size
+
+    jstr = load(self.gStr[0], chars=endIndex)
+
+    currStr = slice(jstr, chars=offset, chars=endIndex)
+
+    return(currStr:str)
+
+
+    # myarr = array(size)
+    # offset = self.pos * 2
+    # i = 0
+    # # log(size)
+    # # log(self.pos)
+    # while i < size:
+    #     myarr[i] = self.buf[offset + i]
+    #     # log(myarr[i])
+    #     i += 1
+    # return(myarr:arr)
+
 
 
 
@@ -61,7 +73,7 @@ def txinFromBuf():
 
     if scriptSize > 0:
         dblSize = scriptSize*2
-        scriptArr = self.readSimple(scriptSize, outsz=dblSize)
+        scriptStr = self.readSimple(scriptSize)
 
     seqNum = readUInt32LE()
     # log(seqNum)
@@ -78,8 +90,11 @@ def txoutFromBuf():
 
     if scriptSize > 0:
         dblSize = scriptSize*2
-        scriptArr = self.readSimple(scriptSize, outsz=dblSize)
-        self.copyToArr(scriptArr, dblSize, 2)
+        scriptStr = self.readSimple(scriptSize)
+        #TODO log?
+        save(self.gScript[0], scriptStr, chars=len(scriptStr))
+
+        # self.copyToArr(scriptArr, dblSize, 2)  #TODO
 
         # self.tmpScriptArr = scriptArr
         #log(data=scriptArr)
@@ -94,10 +109,12 @@ def txoutFromBuf():
 # make sure caller uses outsz=len*2
 def readSimple(len):
     size = len * 2
-    bb = self.initFromBuf(size, outsz=size)
+    currStr = self.initFromBuf(size)
     self.pos += len # note: len NOT size
     # log(data=bb)
-    return(bb:arr)
+    # return(bb:arr)
+    log(datastr=currStr)
+    return(currStr:str)
 
 
 # tested via twip()
@@ -215,27 +232,53 @@ def __getMetaForOutput(outNum):
     return(satAndSize:arr)
 
 
-def __setupForParsingTx(rawTx:str, size):
-    bb = self.str2a(rawTx, size, outsz=size)
-    self.copyToBuf(bb, size)
+def __setupForParsingTx(hexStr:str, size):
+    # bb = self.str2a(rawTx, size, outsz=size)
+    # self.copyToBuf(bb, size)
+    # self.pos = 0
+
     self.pos = 0
+    save(self.gStr[0], hexStr, chars=len(hexStr))
 
 
 def getScriptForTxOut(rawTx:str, size, outNum):
     meta = self.getMetaForTxOut(rawTx, size, outNum, outsz=2)
-    scriptArr = self.__getOutScriptFromTmpArr(outsz=self.tmpScriptLen)
-    return(scriptArr:arr)
+
+    # scriptArr = self.__getOutScriptFromTmpArr(outsz=self.tmpScriptLen)
+    # return(scriptArr:arr)
+
+
+
+def doCheckOutputScript(rawTx:str, size, outNum, expHashOfOutputScript):
+    self.getScriptForTxOut(rawTx, size, outNum)
+
+    # scriptStr = self.a2str(scriptArr, self.tmpScriptLen, outsz=self.tmpScriptLen)
+    # log(datastr=scriptStr)
+    hash = sha256(self.gStr[0]:str)
+    # log(hash)
+    return(hash == expHashOfOutputScript)
 
 
 # assumes that scriptArr size is less than 2000
 def __checkOutputScript(rawTx:str, size, outNum, expHashOfOutputScript):
-    scriptArr = self.getScriptForTxOut(rawTx, size, outNum, outsz=2000)  # hardcoded outsz limit
+    self.getScriptForTxOut(rawTx, size, outNum)
 
-    scriptStr = self.a2str(scriptArr, self.tmpScriptLen, outsz=self.tmpScriptLen)
+    # scriptStr = self.a2str(scriptArr, self.tmpScriptLen, outsz=self.tmpScriptLen)
     # log(datastr=scriptStr)
-    hash = sha256(scriptStr:str)
+    hash = sha256(self.gStr[0]:str)
     # log(hash)
     return(hash == expHashOfOutputScript)
+
+    #old
+    # scriptArr = self.getScriptForTxOut(rawTx, size, outNum, outsz=2000)  # hardcoded outsz limit
+    #
+    # scriptStr = self.a2str(scriptArr, self.tmpScriptLen, outsz=self.tmpScriptLen)
+    # # log(datastr=scriptStr)
+    # hash = sha256(scriptStr:str)
+    # # log(hash)
+    # return(hash == expHashOfOutputScript)
+
+
 
 
 
