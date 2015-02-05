@@ -96,6 +96,27 @@ def str_rev(mystring:str):
         i += 1
     return(mystring:str)
 
+# string to array
+def str2a(mystring:str, size):
+    myarr = array(size)
+    i = 0
+    while i < size:
+        myarr[i] = getch(mystring, i)
+        i += 1
+    return(myarr:arr)
+
+
+
+def a2str(myarr:arr, size):
+    mystr = string(size)
+
+    i = 0
+    while i < size:
+        setch(mystr, i, myarr[i])
+        i += 1
+
+    return(mystr:str)
+
 
 # TESTS
 
@@ -147,4 +168,3 @@ def test_strRev2a():
 def test_str_rev():
     res = self.str_rev("abc")
     return(res)
-    

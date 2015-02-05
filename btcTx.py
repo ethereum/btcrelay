@@ -30,14 +30,6 @@ def initFromArr(size, id):
         i += 1
     return(myarr:arr)
 
-# copy 'arr' to global self.buf[]
-def copyToBuf(myarr:arr, size):
-    i = 0
-    while i < size:
-        self.buf[i] = myarr[i]
-        i += 1
-
-
 
 def txinFromBuf():
     prevTxId = self.readUnsignedBitsLE(256)
@@ -245,10 +237,6 @@ def __getMetaForOutput(outNum):
 
 
 def __setupForParsingTx(hexStr:str, size):
-    # bb = self.str2a(rawTx, size, outsz=size)
-    # self.copyToBuf(bb, size)
-    # self.pos = 0
-
     self.pos = 0
     save(self.gStr[0], hexStr, chars=len(hexStr))
 
@@ -381,27 +369,6 @@ macro readUInt32LE():
 
 macro readUInt64LE():
     self.readUnsignedBitsLE(64)
-
-
-# string to array
-def str2a(mystring:str, size):
-    myarr = array(size)
-    i = 0
-    while i < size:
-        myarr[i] = getch(mystring, i)
-        i += 1
-    return(myarr:arr)
-
-
-def a2str(myarr:arr, size):
-    mystr = string(size)
-
-    i = 0
-    while i < size:
-        setch(mystr, i, myarr[i])
-        i += 1
-
-    return(mystr:str)
 
 
 
