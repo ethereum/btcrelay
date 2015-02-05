@@ -103,8 +103,8 @@ def storeRawBlockHeader(rawBlockHeader:str):
 
 
 # heaviestBlock is in btcrelay.py
-def logBlockchainHead():
-    log(self.heaviestBlock)
+# def logBlockchainHead():
+#     log(self.heaviestBlock)
 
 
 

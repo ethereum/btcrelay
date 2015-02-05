@@ -39,6 +39,17 @@ def code():
     return(ret)
 
 
+# for testing only
+def testStoreB(blockHash, hashPrevBlock):
+    self.block[blockHash]._blockHeader._prevBlock = hashPrevBlock
+
+def testSetHeaviest(blockHash):
+    self.heaviestBlock = blockHash
+
+
+
+def logBlockchainHead():
+    log(self.heaviestBlock)
 
 
 def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
