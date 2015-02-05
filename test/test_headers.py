@@ -1,6 +1,6 @@
 from pyethereum import tester
+from datetime import datetime, date
 
-import datetime
 import pytest
 slow = pytest.mark.slow
 
@@ -28,18 +28,17 @@ class TestBtcTx(object):
         print("jstart")
         i = 1
         with open("test/headers/bh80k.txt") as f:
-
-            print("*************************"+str(datetime.datetime.now().time()))
+            startTime = datetime.now().time()
 
             for header in f:
                 # print(header)
                 res = self.c.storeRawBlockHeader(header)
-                if i==10:
+                if i==20:
                     break
                 assert res == [i]
                 i += 1
 
-            print("*************************"+str(datetime.datetime.now().time()))
+            endTime = datetime.now().time()
 
         # with open("test/headers/bh80_100k.txt") as f:
         #     for header in f:
@@ -59,6 +58,8 @@ class TestBtcTx(object):
         self.c.logBlockchainHead()
 
         print "gas used: ", self.s.block.gas_used
+        duration = datetime.combine(date.today(), endTime) - datetime.combine(date.today(), startTime)
+        print("************************* duration: "+str(duration))
         print("jend")
 
         # h = "0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c"
