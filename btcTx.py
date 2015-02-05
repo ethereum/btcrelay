@@ -37,30 +37,6 @@ def copyToBuf(myarr:arr, size):
         self.buf[i] = myarr[i]
         i += 1
 
-# return an array with the contents of self.buf[] starting for index self.pos
-def initFromBuf(size):
-    offset = self.pos * 2
-    endIndex = offset + size
-
-    jstr = load(self.gStr[0], chars=endIndex)
-
-    currStr = slice(jstr, chars=offset, chars=endIndex)
-
-    return(currStr:str)
-
-
-    # myarr = array(size)
-    # offset = self.pos * 2
-    # i = 0
-    # # log(size)
-    # # log(self.pos)
-    # while i < size:
-    #     myarr[i] = self.buf[offset + i]
-    #     # log(myarr[i])
-    #     i += 1
-    # return(myarr:arr)
-
-
 
 
 def txinFromBuf():
@@ -69,11 +45,16 @@ def txinFromBuf():
     # log(outputIndex)
 
     scriptSize = self.readVarintNum()
-    # log(scriptSize)
+    log(1777)
+    log(scriptSize)
 
     if scriptSize > 0:
         dblSize = scriptSize*2
-        scriptStr = self.readSimple(scriptSize)
+        self.readSimple(scriptSize)
+
+        # scriptStr = self.readSimple(scriptSize, outsz=dblSize)
+
+    log(27777777777777777777777777777)
 
     seqNum = readUInt32LE()
     # log(seqNum)
@@ -81,6 +62,7 @@ def txinFromBuf():
 
 # returns satoshis and sets self.tmpScriptLen and self.tmpScriptArr
 def txoutFromBuf():
+    log(8989)
     satoshis = readUInt64LE()
     # log(satoshis)
 
@@ -90,9 +72,12 @@ def txoutFromBuf():
 
     if scriptSize > 0:
         dblSize = scriptSize*2
-        scriptStr = self.readSimple(scriptSize)
+        scriptStr = self.readSimple(scriptSize, outsz=dblSize)
         #TODO log?
-        save(self.gScript[0], scriptStr, chars=len(scriptStr))
+        log(904)
+        log(datastr=scriptStr)
+        save(self.gScript[0], scriptStr, chars=dblSize)
+        log(909)
 
         # self.copyToArr(scriptArr, dblSize, 2)  #TODO
 
@@ -109,12 +94,45 @@ def txoutFromBuf():
 # make sure caller uses outsz=len*2
 def readSimple(len):
     size = len * 2
-    currStr = self.initFromBuf(size)
+    currStr = self.initFromBuf(size, outsz=size)
+    log(903333333333333)
     self.pos += len # note: len NOT size
     # log(data=bb)
     # return(bb:arr)
     log(datastr=currStr)
     return(currStr:str)
+
+# return an array with the contents of self.buf[] starting for index self.pos
+def initFromBuf(size):
+
+    log(9000)
+
+    offset = self.pos * 2
+    endIndex = offset + size
+
+    jstr = load(self.gStr[0], chars=endIndex)
+
+    log(90011)
+    log(datastr=jstr)
+
+    currStr = slice(jstr, chars=offset, chars=endIndex)
+
+    log(90022)
+    log(datastr=currStr)
+
+    return(currStr:str)
+
+
+    # myarr = array(size)
+    # offset = self.pos * 2
+    # i = 0
+    # # log(size)
+    # # log(self.pos)
+    # while i < size:
+    #     myarr[i] = self.buf[offset + i]
+    #     # log(myarr[i])
+    #     i += 1
+    # return(myarr:arr)
 
 
 # tested via twip()
@@ -217,17 +235,24 @@ def __getMetaForOutput(outNum):
     # log(numIns)
     # log(self.pos)
 
+    log(44)
+
     i = 0
     while i < numIns:
         self.txinFromBuf()
         i += 1
 
+    log(555)
+
     numOuts = self.readVarintNum()
+    log(numOuts)
 
     i = 0
     while i <= outNum:
         satAndSize = self.txoutFromBuf(outsz=2)
         i += 1
+
+    log(899)
 
     return(satAndSize:arr)
 
@@ -243,6 +268,7 @@ def __setupForParsingTx(hexStr:str, size):
 
 def getScriptForTxOut(rawTx:str, size, outNum):
     meta = self.getMetaForTxOut(rawTx, size, outNum, outsz=2)
+    log(data=meta)
 
     # scriptArr = self.__getOutScriptFromTmpArr(outsz=self.tmpScriptLen)
     # return(scriptArr:arr)
