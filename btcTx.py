@@ -1,34 +1,15 @@
 
-data pos
-data buf[]
-
+# contains the string to be deserialized/parse (currently a tx or blockheader)
 data gStr[]
+
+# index to gStr
+data pos
+
+# contains a script, currently only used for outputScripts since input scripts are ignored
 data gScript[]
 
+# length of gScript
 data tmpScriptLen
-data tmpScriptArr[]  # 'id' is 2
-
-
-# copy 'arr' to global array with given 'id'
-def copyToArr(myarr:arr, size, id):
-    i = 0
-    while i < size:
-        if id == 2:
-            self.tmpScriptArr[i] = myarr[i]
-        i += 1
-
-# returns array
-def initFromArr(size, id):
-    myarr = array(size)
-    i = 0
-    # log(size)
-    # log(self.pos)
-    while i < size:
-        if id == 2:
-            myarr[i] = self.tmpScriptArr[i]
-        # log(myarr[i])
-        i += 1
-    return(myarr:arr)
 
 
 def txinFromBuf():
@@ -178,17 +159,6 @@ def storeRawBlockHeader(rawBlockHeader:str):
 # heaviestBlock is in btcrelay.py
 def logBlockchainHead():
     log(self.heaviestBlock)
-
-
-# unoptimized
-# to get the scriptArr, do this:
-# res = self.__getMetaForOutput(0, outsz=2)
-# dblSize = res[1]*2   # #res[1] is the scriptSize
-# scriptArr = self.__getOutScriptFromTmpArr(dblSize, 2, outsz=dblSize)
-# the (standard) output script should be of form 76a914 <hashAddr> 88ac
-def __getOutScriptFromTmpArr():
-    scriptArr = self.initFromArr(self.tmpScriptLen, 2, outsz=self.tmpScriptLen)  # 2 is the id for tmpScriptArr
-    return(scriptArr:arr)
 
 
 
