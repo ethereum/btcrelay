@@ -12,7 +12,7 @@ data gScript[]
 data tmpScriptLen
 
 
-def txinFromBuf():
+def txinParse():
     prevTxId = self.readUnsignedBitsLE(256)
     outputIndex = readUInt32LE()
     # log(outputIndex)
@@ -34,7 +34,7 @@ def txinFromBuf():
 
 
 # returns satoshis and sets self.tmpScriptLen and self.tmpScriptArr
-def txoutFromBuf():
+def txoutParse():
 
     satoshis = readUInt64LE()
     # log(satoshis)
@@ -144,7 +144,7 @@ def logBlockchainHead():
 #
 # this is needed until can figure out how a dynamically sized array can be returned from a function
 # instead of needing 2 functions, one that returns array size, then calling to get the actual array
-def parseTxOut(rawTx:str, size, outNum):
+def parseTransaction(rawTx:str, size, outNum):
     self.__setupForParsingTx(rawTx, size)
     meta = self.__getMetaForOutput(outNum, outsz=2)
     return(meta, items=2)
@@ -165,7 +165,7 @@ def __getMetaForOutput(outNum):
 
     i = 0
     while i < numIns:
-        self.txinFromBuf()
+        self.txinParse()
         i += 1
 
     log(555)
@@ -175,7 +175,7 @@ def __getMetaForOutput(outNum):
 
     i = 0
     while i <= outNum:
-        satAndSize = self.txoutFromBuf(outsz=2)
+        satAndSize = self.txoutParse(outsz=2)
         i += 1
 
     log(899)
@@ -189,7 +189,7 @@ def __setupForParsingTx(hexStr:str, size):
 
 
 def doCheckOutputScript(rawTx:str, size, outNum, expHashOfOutputScript):
-    self.parseTxOut(rawTx, size, outNum)
+    self.parseTransaction(rawTx, size, outNum)
 
     # scriptStr = self.a2str(scriptArr, self.tmpScriptLen, outsz=self.tmpScriptLen)
     # log(datastr=scriptStr)
