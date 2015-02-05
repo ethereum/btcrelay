@@ -23,15 +23,12 @@ def txinParse():
         dblSize = scriptSize*2
         self.readSimple(scriptSize, outsz=dblSize)  # return value is ignored
 
-        # scriptStr = self.readSimple(scriptSize, outsz=dblSize)
-
-    log(27777777777777777777777777777)
-
     seqNum = readUInt32LE()
     # log(seqNum)
 
 
-# returns satoshis and sets self.tmpScriptLen and self.tmpScriptArr
+# returns satoshis, scriptSize and sets self.tmpScriptLen
+# eventually, self.tmpScriptLen can probably be removed and also returned by this function
 def txoutParse():
 
     satoshis = readUInt64LE()
@@ -39,26 +36,12 @@ def txoutParse():
 
     scriptSize = self.readVarintNum()
     # log(scriptSize)
-    self.tmpScriptLen = scriptSize * 2
-    log(8989)
-    log(self.tmpScriptLen)
 
     if scriptSize > 0:
-        dblSize = scriptSize*2
+        self.tmpScriptLen = scriptSize * 2  # self.tmpScriptLen can probably be a return value
+        dblSize = self.tmpScriptLen  # needed because compiler complains that save() cannot use self.tmpScriptLen directly
         scriptStr = self.readSimple(scriptSize, outsz=dblSize)
-        #TODO log?
-        log(904)
-        log(datastr=scriptStr)
         save(self.gScript[0], scriptStr, chars=dblSize)
-        log(909)
-
-        # self.copyToArr(scriptArr, dblSize, 2)  #TODO
-
-        # self.tmpScriptArr = scriptArr
-        #log(data=scriptArr)
-
-
-    # mcopy( , scriptArr, scriptSize)
 
     return([satoshis, scriptSize], items=2)
 
