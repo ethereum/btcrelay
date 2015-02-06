@@ -32,30 +32,8 @@ def testStoreB(number, blockHash, hashPrevBlock):
             self.block[blockHash]._ancestor[i] = self.block[hashPrevBlock]._ancestor[i] # or i-1?
         i += 1
 
-def logAnc(blockHash):
-    log(11111)
-    log(blockHash)
-    i = 0
-    while i < 8:
-        anc = self.block[blockHash]._ancestor[i]
-        log(anc)
-        i += 1
-    log(22222)
-
 
 def test2():
     self.initAncestorDepths()
-
     self.testStoreB(45, 45, 44)
     self.testStoreB(46, 46, 45)
-
-
-
-def testSetHeaviest(blockHash):
-    self.heaviestBlock = blockHash
-
-
-
-
-def logBlockchainHead():
-    log(self.heaviestBlock)
