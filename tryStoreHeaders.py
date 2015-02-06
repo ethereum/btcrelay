@@ -23,8 +23,8 @@ def testStoreB(number, blockHash, hashPrevBlock):
         depth = self.ancestor_depths[i]
         self.block[blockHash]._ancestor[i] = self.block[blockHash]._height - depth
 
-        log(3333333333333)
-        log(self.block[blockHash]._ancestor[i])
+        # log(3333333333333)
+        # log(self.block[blockHash]._ancestor[i])
 
         # log(3333333333333)
         # log(depth)
@@ -52,6 +52,27 @@ def testStoreB(number, blockHash, hashPrevBlock):
             #     log(self.block[blockHash]._ancestor[i])
 
         i += 1
+
+# in chain:
+#     b = head
+#     anc_index = ancestor_count - 1
+#     while b.number > block.number:
+#         while b.number - block.number < ancestor_depths[anc_index] and anc_index > 0:
+#             anc_index -= 1
+#         b = b.ancestors[anc_index]
+#     return b == block
+
+def inMainChain(txBlockHash):
+    blockHash = self.heaviestBlock
+
+    anc_index = self.numAncestorDepths - 1
+    while self.block[blockHash]._height > txBlockHash:
+        while self.block[blockHash]._height - txBlockHash < self.ancestor_depths[anc_index] && anc_index > 0:
+            anc_index -= 1
+        blockHash = self.block[blockHash]._ancestor[anc_index]
+
+    return(blockHash == txBlockHash)
+
 
 def logAnc(blockHash):
     log(11111)

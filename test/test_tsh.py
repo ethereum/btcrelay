@@ -25,20 +25,22 @@ class TestBtcTx(object):
     @slow
     # @pytest.mark.skipif(True,reason='skip')
     def test2(self):
-        heaviest = 66
+        heaviest = 5
         self.c.initAncestorDepths()
 
         for i in range(1, heaviest+1):
           self.c.testStoreB(i, i, i-1)
         self.c.testSetHeaviest(heaviest)
 
-        # # self.c.testStoreB(30, 30, 2)
-        # # self.c.testStoreB(31, 31, 30)
-        # # self.c.testStoreB(32, 32, 31)
+        self.c.testStoreB(30, 30, 2)
+        self.c.testStoreB(31, 31, 30)
+        self.c.testStoreB(32, 32, 31)
 
+        res = self.c.inMainChain(3)
+        print('RES: '+str(res))
 
-        for i in range(1, heaviest+1):
-            self.c.logAnc(i)
+        # for i in range(1, heaviest+1):
+        #     self.c.logAnc(i)
 
         # # self.c.logAnc(63)
         # # self.c.logAnc(64)
