@@ -31,13 +31,13 @@ class TestBtcTx(object):
         for i in range(1, heaviest+1):
           self.c.testStoreB(i, i, i-1)
         self.c.testSetHeaviest(heaviest)
-        #
+
         # # self.c.testStoreB(30, 30, 2)
         # # self.c.testStoreB(31, 31, 30)
         # # self.c.testStoreB(32, 32, 31)
 
 
-        for i in range(63, heaviest+1):
+        for i in range(1, heaviest+1):
             self.c.logAnc(i)
 
         # # self.c.logAnc(63)

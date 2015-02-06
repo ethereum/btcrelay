@@ -1,14 +1,17 @@
 
 data numAncestorDepths
-self.numAncestorDepths = 8
-data ancestor_depths[8]
+self.numAncestorDepths = 9  # if change, look at defn of ancestor_depths and block structures
+data ancestor_depths[9]
+# note: _ancestor[9]
+data block[2^256](_height, _score, _ancestor[9], _blockHeader(_version, _prevBlock, _mrklRoot, _time, _bits, _nonce))
+
 
 data heaviestBlock
 
 # highest score among all blocks (so far)
 data highScore
 
-data block[2^256](_height, _score, _ancestor[], _blockHeader(_version, _prevBlock, _mrklRoot, _time, _bits, _nonce))
+
 
 
 def testStoreB(number, blockHash, hashPrevBlock):
@@ -18,18 +21,24 @@ def testStoreB(number, blockHash, hashPrevBlock):
     i = 0
     while i < self.numAncestorDepths:
         depth = self.ancestor_depths[i]
+        self.block[blockHash]._ancestor[i] = self.block[blockHash]._height - depth
+
+        log(3333333333333)
+        log(self.block[blockHash]._ancestor[i])
+
         # log(3333333333333)
         # log(depth)
         # log(blockHash * 1000000)
         # log(self.block[blockHash]._height % depth)
-        if self.block[blockHash]._height % depth == 1:
-            # log(444444444)
-            # log(self.block[blockHash]._height)
-            # log(depth)
-            self.block[blockHash]._ancestor[i] = hashPrevBlock
-        else:
-            # log(77777777777)
-            self.block[blockHash]._ancestor[i] = self.block[hashPrevBlock]._ancestor[i] # or i-1?
+        # if self.block[blockHash]._height % depth == 1:
+        #     log(444444444)
+        #     log(hashPrevBlock)
+        #     # log(self.block[blockHash]._height)
+        #     # log(depth)
+        #     self.block[blockHash]._ancestor[i] = hashPrevBlock
+        # else:
+        #     # log(77777777777)
+        #     self.block[blockHash]._ancestor[i] = self.block[hashPrevBlock]._ancestor[i] # or i-1?
 
             # if self.block[blockHash]._ancestor[i] == 45:
                 # log(88888888)
@@ -48,7 +57,7 @@ def logAnc(blockHash):
     log(11111)
     log(blockHash)
     i = 0
-    while i < 8:
+    while i < self.numAncestorDepths:
         anc = self.block[blockHash]._ancestor[i]
         log(anc)
         i += 1
@@ -59,10 +68,10 @@ def testSetHeaviest(blockHash):
 
 
 def initAncestorDepths():
-    i = 1
-    while i <= self.numAncestorDepths:
-        self.ancestor_depths[i - 1] = 4 ^ i
-        log(self.ancestor_depths[i - 1])
+    i = 0
+    while i < self.numAncestorDepths:
+        self.ancestor_depths[i] = 4 ^ i
+        log(self.ancestor_depths[i])
         i += 1
 
 
