@@ -22,7 +22,51 @@ class TestBtcTx(object):
         tester.seed = self.seed
 
 
-    # @pytest.mark.skipif(True,reason='skip')
+    @pytest.mark.skipif(True,reason='skip')
+    def testSomeSkipping(self):
+        heaviest = 260
+        self.c.initAncestorDepths()
+
+        for i in range(1, heaviest+1):
+            self.c.testStoreB(i, i, i-1)
+        self.c.testSetHeaviest(heaviest)
+
+
+        forkStartBlock = 999000
+        parentOfFork = 2
+        for i in range(3):
+            self.c.testStoreB(forkStartBlock+i, forkStartBlock+i, parentOfFork)
+            parentOfFork = forkStartBlock
+
+        assert self.c.inMainChain(3) == [1]
+
+        assert self.c.inMainChain(30) == [0]
+        assert self.c.inMainChain(31) == [0]
+        assert self.c.inMainChain(32) == [0]
+
+    def testSmallChain(self):
+        heaviest = 5
+        self.c.initAncestorDepths()
+
+        for i in range(1, heaviest+1):
+            self.c.testStoreB(i, i, i-1)
+        self.c.testSetHeaviest(heaviest)
+
+        forkStartBlock = 999000
+        parentOfFork = 2
+        numBlocksInFork = 3
+        for i in range(numBlocksInFork):
+            self.c.testStoreB(forkStartBlock+i, forkStartBlock+i, parentOfFork)
+            parentOfFork = forkStartBlock
+
+        for i in range(1, heaviest+1):
+            assert self.c.inMainChain(i) == [1]
+
+        for i in range(numBlocksInFork):
+            assert self.c.inMainChain(forkStartBlock+i) == [0]
+
+
+    @pytest.mark.skipif(True,reason='skip')
     def testShortFork(self):
         heaviest = 5
         self.c.initAncestorDepths()
