@@ -9,10 +9,7 @@ def testStoreB(number, blockHash, hashPrevBlock):
     self.block[blockHash]._blockHeader._prevBlock = hashPrevBlock
     self.block[blockHash]._height = number
 
-    log(self.numAncestorDepths*1000)
-    i = 0
-    while i < self.numAncestorDepths:
-        i += 1
+    log(self.numAncestorDepths)
 
 
 def test2():
