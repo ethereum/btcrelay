@@ -1,4 +1,8 @@
 
+data numAncestorDepths
+self.numAncestorDepths = 8
+data ancestor_depths[8]
+
 data heaviestBlock
 
 # highest score among all blocks (so far)
@@ -14,9 +18,9 @@ def testStoreB(number, blockHash, hashPrevBlock):
     i = 0
     while i < self.numAncestorDepths:
         depth = self.ancestor_depths[i]
-        log(3333333333333)
-        log(depth)
-        log(blockHash * 1000000)
+        # log(3333333333333)
+        # log(depth)
+        # log(blockHash * 1000000)
         # log(self.block[blockHash]._height % depth)
         if self.block[blockHash]._height % depth == 1:
             # log(444444444)
@@ -53,9 +57,7 @@ def logAnc(blockHash):
 def testSetHeaviest(blockHash):
     self.heaviestBlock = blockHash
 
-data numAncestorDepths
-self.numAncestorDepths = 8
-data ancestor_depths[8]
+
 def initAncestorDepths():
     i = 1
     while i <= self.numAncestorDepths:
