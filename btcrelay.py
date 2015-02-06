@@ -80,7 +80,7 @@ def initAncestorDepths():
 #         if block.number % depth == 1:
 #             block.ancestors[i] = block.parent
 #         else:
-#             block.ancestors[i] = block.parent.ancestors[i-1]
+#             block.ancestors[i] = block.parent.ancestors[i]  # or i-1?
 
 
 # def is_in_chain(head, block):
