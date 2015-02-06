@@ -1,5 +1,5 @@
 
-data block[2^256](_height, _ancestor[], _blockHeader(_prevBlock))
+data block[2^256](_blockHeader(_prevBlock))
 
 data numAncestorDepths
 def initAncestorDepths():
@@ -7,7 +7,6 @@ def initAncestorDepths():
 
 def testStoreB(number, blockHash, hashPrevBlock):
     self.block[blockHash]._blockHeader._prevBlock = hashPrevBlock
-    self.block[blockHash]._height = number
 
     log(self.numAncestorDepths)
 
@@ -15,4 +14,4 @@ def testStoreB(number, blockHash, hashPrevBlock):
 def test2():
     self.initAncestorDepths()
     self.testStoreB(45, 45, 44)
-    self.testStoreB(46, 46, 45)
+    self.testStoreB(46, 46, 45)  # this will log 45 (expected is to still log 2)
