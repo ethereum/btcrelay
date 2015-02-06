@@ -14,19 +14,23 @@ def testStoreB(number, blockHash, hashPrevBlock):
     i = 0
     while i < self.numAncestorDepths:
         depth = self.ancestor_depths[i]
-        # log(depth)
-        # log(3333333333333)
+        log(3333333333333)
+        log(depth)
         # log(blockHash * 1000000)
         # log(self.block[blockHash]._height % depth)
         if self.block[blockHash]._height % depth == 1:
             # log(444444444)
+            # log(self.block[blockHash]._height)
+            # log(depth)
             self.block[blockHash]._ancestor[i] = hashPrevBlock
         else:
             # log(77777777777)
             self.block[blockHash]._ancestor[i] = self.block[hashPrevBlock]._ancestor[i] # or i-1?
 
             # if self.block[blockHash]._ancestor[i] == 45:
-            #     log(88888888)
+                # log(88888888)
+                # log(self.block[blockHash]._height)
+                # log(depth)
             #     log(blockHash)
             #     log(hashPrevBlock)
             #     log(i)
