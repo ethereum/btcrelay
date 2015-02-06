@@ -1,12 +1,12 @@
 
-data heaviestBlock
+# data heaviestBlock
 
 data block[2^256](_height, _ancestor[], _blockHeader(_prevBlock))
 
 data numAncestorDepths
-self.numAncestorDepths = 8
 data ancestor_depths[8]
 def initAncestorDepths():
+    self.numAncestorDepths = 8
     i = 1
     while i <= self.numAncestorDepths:
         self.ancestor_depths[i - 1] = 4 ^ i
@@ -23,14 +23,12 @@ def testStoreB(number, blockHash, hashPrevBlock):
         depth = self.ancestor_depths[i]
         # log(3333333333333)
         log(depth)
-        # log(blockHash * 1000000)
         if self.block[blockHash]._height % depth == 1:
-            # log(444444444)
             self.block[blockHash]._ancestor[i] = hashPrevBlock
         else:
-            # log(77777777777)
             self.block[blockHash]._ancestor[i] = self.block[hashPrevBlock]._ancestor[i] # or i-1?
         i += 1
+    log(self.numAncestorDepths*1000000000000)
 
 
 def test2():
