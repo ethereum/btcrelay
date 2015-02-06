@@ -25,9 +25,40 @@ class TestBtcTx(object):
         self.s.revert(self.snapshot)
         tester.seed = self.seed
 
-
+    @slow
     # @pytest.mark.skipif(True,reason='skip')
-    def testSomeSkipping(self):
+    def testAroundMoreDepths(self):
+        heaviest = 260
+        self.c.initAncestorDepths()
+
+        for i in range(1, heaviest+1):
+            self.c.testStoreB(i, i, i-1)
+        self.c.testSetHeaviest(heaviest)
+
+
+        forkStartBlock = 999000
+        parentOfFork = 2
+        numBlocksInFork = 3
+        for i in range(numBlocksInFork):
+            self.c.testStoreB(forkStartBlock+i, forkStartBlock+i, parentOfFork)
+            parentOfFork = forkStartBlock
+
+
+        finalAncIndex = int(math.ceil(math.log(heaviest) / math.log(4))) # log base 4 of heaviest
+        # start at 1, instead of 0
+        for i in range(1, finalAncIndex):
+            depth = self.ANC_DEPTHS[i]
+            print('@@@@@@@@@@@@@@@@@@@ depth: '+str(depth))
+            assert self.c.inMainChain(depth-1) == [1]
+            assert self.c.inMainChain(depth) == [1]
+            assert self.c.inMainChain(depth+1) == [1]
+
+        for i in range(numBlocksInFork):
+            assert self.c.inMainChain(forkStartBlock+i) == [0]
+
+
+    @pytest.mark.skipif(True,reason='skip')
+    def testAroundSomeDepths(self):
         heaviest = 20
         self.c.initAncestorDepths()
 
