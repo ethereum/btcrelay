@@ -16,7 +16,7 @@ def testStoreB(number, blockHash, hashPrevBlock):
         depth = self.ancestor_depths[i]
         log(3333333333333)
         log(depth)
-        # log(blockHash * 1000000)
+        log(blockHash * 1000000)
         # log(self.block[blockHash]._height % depth)
         if self.block[blockHash]._height % depth == 1:
             # log(444444444)

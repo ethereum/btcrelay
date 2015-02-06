@@ -28,7 +28,7 @@ class TestBtcTx(object):
         self.c.initAncestorDepths()
 
         heaviest = 46
-        for i in range(1, heaviest+1):
+        for i in range(45, heaviest+1):
           self.c.testStoreB(i, i, i-1)
         self.c.testSetHeaviest(heaviest)
 
