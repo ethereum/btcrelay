@@ -26,7 +26,7 @@ class TestBtcTx(object):
         tester.seed = self.seed
 
     @slow
-    # @pytest.mark.skipif(True,reason='skip')
+    @pytest.mark.skipif(True,reason='skip')
     def testAroundMoreDepths(self):
         heaviest = 260
         self.c.initAncestorDepths()
@@ -140,3 +140,26 @@ class TestBtcTx(object):
         # # self.c.logAnc(66)
         #
         # self.c.logBlockchainHead()
+
+
+    # @pytest.mark.skipif(True,reason='skip')
+    # heaviest is the "fork"
+    def testAltShortFork(self):
+        heaviest = 5
+        self.c.initAncestorDepths()
+
+        for i in range(1, heaviest+1):
+            self.c.testStoreB(i, i, i-1)
+
+        self.c.testStoreB(30, 30, 2)
+        self.c.testStoreB(31, 31, 30)
+        self.c.testStoreB(32, 32, 31)
+
+        self.c.testSetHeaviest(32)
+
+        for i in range(3, heaviest+1):
+            assert self.c.inMainChain(i) == [0]
+
+        assert self.c.inMainChain(30) == [1]
+        assert self.c.inMainChain(31) == [1]
+        assert self.c.inMainChain(32) == [1]
