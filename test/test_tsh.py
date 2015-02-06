@@ -1,5 +1,6 @@
 from pyethereum import tester
 from datetime import datetime, date
+import math
 
 import pytest
 slow = pytest.mark.slow
@@ -10,6 +11,9 @@ class TestBtcTx(object):
     CONTRACT_GAS = 55000
 
     ETHER = 10 ** 18
+
+    ANC_DEPTHS = [1, 4, 16, 64, 256, 1024, 4096, 16384, 65536]
+
 
     def setup_class(cls):
         cls.s = tester.state()
@@ -22,9 +26,9 @@ class TestBtcTx(object):
         tester.seed = self.seed
 
 
-    @pytest.mark.skipif(True,reason='skip')
+    # @pytest.mark.skipif(True,reason='skip')
     def testSomeSkipping(self):
-        heaviest = 260
+        heaviest = 20
         self.c.initAncestorDepths()
 
         for i in range(1, heaviest+1):
@@ -34,16 +38,26 @@ class TestBtcTx(object):
 
         forkStartBlock = 999000
         parentOfFork = 2
-        for i in range(3):
+        numBlocksInFork = 3
+        for i in range(numBlocksInFork):
             self.c.testStoreB(forkStartBlock+i, forkStartBlock+i, parentOfFork)
             parentOfFork = forkStartBlock
 
-        assert self.c.inMainChain(3) == [1]
 
-        assert self.c.inMainChain(30) == [0]
-        assert self.c.inMainChain(31) == [0]
-        assert self.c.inMainChain(32) == [0]
+        finalAncIndex = int(math.ceil(math.log(heaviest) / math.log(4))) # log base 4 of heaviest
+        # start at 1, instead of 0
+        for i in range(1, finalAncIndex):
+            depth = self.ANC_DEPTHS[i]
+            # print('@@@@@@@@@@@@@@@@@@@ depth: '+str(depth))
+            assert self.c.inMainChain(depth-1) == [1]
+            assert self.c.inMainChain(depth) == [1]
+            assert self.c.inMainChain(depth+1) == [1]
 
+        for i in range(numBlocksInFork):
+            assert self.c.inMainChain(forkStartBlock+i) == [0]
+
+
+    @pytest.mark.skipif(True,reason='skip')
     def testSmallChain(self):
         heaviest = 5
         self.c.initAncestorDepths()
