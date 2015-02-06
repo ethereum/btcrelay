@@ -1,10 +1,7 @@
 
 data heaviestBlock
 
-# highest score among all blocks (so far)
-data highScore
-
-data block[2^256](_height, _score, _ancestor[], _blockHeader(_prevBlock))
+data block[2^256](_height, _ancestor[], _blockHeader(_prevBlock))
 
 
 def testStoreB(number, blockHash, hashPrevBlock):
