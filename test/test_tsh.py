@@ -27,7 +27,7 @@ class TestBtcTx(object):
     def test2(self):
         self.c.initAncestorDepths()
 
-        heaviest = 100
+        heaviest = 46
         for i in range(1, heaviest+1):
           self.c.testStoreB(i, i, i-1)
         self.c.testSetHeaviest(heaviest)
@@ -37,6 +37,12 @@ class TestBtcTx(object):
         # self.c.testStoreB(32, 32, 31)
         #
 
-        self.c.logAnc(heaviest)
+        for i in range(1, heaviest+1):
+            self.c.logAnc(i)
+
+        # self.c.logAnc(63)
+        # self.c.logAnc(64)
+        # self.c.logAnc(65)
+        # self.c.logAnc(66)
 
         self.c.logBlockchainHead()

@@ -15,20 +15,36 @@ def testStoreB(number, blockHash, hashPrevBlock):
     while i < self.numAncestorDepths:
         depth = self.ancestor_depths[i]
         # log(depth)
-        if self.block[blockHash]._height % depth:
-            # log('44')
+        # log(3333333333333)
+        # log(blockHash * 1000000)
+        # log(self.block[blockHash]._height % depth)
+        if self.block[blockHash]._height % depth == 1:
+            # log(444444444)
             self.block[blockHash]._ancestor[i] = hashPrevBlock
         else:
-            # log('77')
+            # log(77777777777)
             self.block[blockHash]._ancestor[i] = self.block[hashPrevBlock]._ancestor[i] # or i-1?
+
+            # if self.block[blockHash]._ancestor[i] == 45:
+            #     log(88888888)
+            #     log(blockHash)
+            #     log(hashPrevBlock)
+            #     log(i)
+            #     log(self.block[blockHash]._ancestor[i-2])
+            #     log(self.block[blockHash]._ancestor[i-1])
+            #     log(self.block[blockHash]._ancestor[i])
+
         i += 1
 
 def logAnc(blockHash):
+    log(11111)
+    log(blockHash)
     i = 0
     while i < 8:
         anc = self.block[blockHash]._ancestor[i]
         log(anc)
         i += 1
+    log(22222)
 
 def testSetHeaviest(blockHash):
     self.heaviestBlock = blockHash
@@ -40,6 +56,7 @@ def initAncestorDepths():
     i = 1
     while i <= self.numAncestorDepths:
         self.ancestor_depths[i - 1] = 4 ^ i
+        log(self.ancestor_depths[i - 1])
         i += 1
 
 
