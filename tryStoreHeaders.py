@@ -16,7 +16,7 @@ data highScore
 
 
 
-def testStoreB(number, blockHash, hashPrevBlock):
+def testStoreB(blockHash, hashPrevBlock):
     self.block[blockHash]._blockHeader._prevBlock = hashPrevBlock
 
     # this is a test; separate genesis function could help later
