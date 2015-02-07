@@ -5,6 +5,7 @@ data ancestor_depths[9]
 # note: _ancestor[9]
 data block[2^256](_height, _score, _ancestor[9], _blockHeader(_version, _prevBlock, _mrklRoot, _time, _bits, _nonce))
 
+
 # data blockNumToHash[]
 
 data heaviestBlock
@@ -18,19 +19,38 @@ data highScore
 def testStoreB(number, blockHash, hashPrevBlock):
     self.block[blockHash]._blockHeader._prevBlock = hashPrevBlock
 
-    # self.block[blockHash]._height = number
-
     # this is a test; separate genesis function could help later
     if blockHash == 1:
         self.block[blockHash]._height = 1
     else:
         self.block[blockHash]._height = self.block[hashPrevBlock]._height + 1
 
+    self.blockNumToHash[ self.block[blockHash]._height ] = blockHash
+
+    # log(555555)
+    # log(self.blockNumToHash[ self.block[blockHash]._height ])
+
 
     i = 0
     while i < self.numAncestorDepths:
         depth = self.ancestor_depths[i]
+
+        # log(6000)
+        # log(depth)
+        #
+        # blockNum = self.block[blockHash]._height - depth
+        # if blockNum < 1:
+        #     blockNum = 1
+        # log(666666)
+        # log(blockNum)
+
+        # self.block[blockHash]._ancestor[i] = self.blockNumToHash[blockNum]
+
         self.block[blockHash]._ancestor[i] = self.block[blockHash]._height - depth
+
+        # log(777777)
+        # log(self.block[blockHash]._ancestor[i])
+
         i += 1
 
 # in chain:
