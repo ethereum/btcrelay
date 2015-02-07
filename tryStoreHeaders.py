@@ -25,7 +25,7 @@ def testStoreB(number, blockHash, hashPrevBlock):
     else:
         self.block[blockHash]._height = self.block[hashPrevBlock]._height + 1
 
-    self.blockNumToHash[ self.block[blockHash]._height ] = blockHash
+    # self.blockNumToHash[ self.block[blockHash]._height ] = blockHash
 
     # log(555555)
     # log(self.blockNumToHash[ self.block[blockHash]._height ])
