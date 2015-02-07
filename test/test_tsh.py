@@ -152,7 +152,7 @@ class TestBtcTx(object):
         # self.c.logBlockchainHead()
 
 
-    @pytest.mark.skipif(True,reason='skip')
+    # @pytest.mark.skipif(True,reason='skip')
     # heaviest is the "fork"
     def testAltShortFork(self):
         heaviest = 5

@@ -6,7 +6,7 @@ data ancestor_depths[9]
 data block[2^256](_height, _score, _ancestor[9], _blockHeader(_version, _prevBlock, _mrklRoot, _time, _bits, _nonce))
 
 
-# data blockNumToHash[]
+data blockNumToHash[]
 
 data heaviestBlock
 
@@ -25,7 +25,7 @@ def testStoreB(number, blockHash, hashPrevBlock):
     else:
         self.block[blockHash]._height = self.block[hashPrevBlock]._height + 1
 
-    # self.blockNumToHash[ self.block[blockHash]._height ] = blockHash
+    self.blockNumToHash[ self.block[blockHash]._height ] = blockHash
 
     # log(555555)
     # log(self.blockNumToHash[ self.block[blockHash]._height ])
@@ -38,15 +38,15 @@ def testStoreB(number, blockHash, hashPrevBlock):
         # log(6000)
         # log(depth)
         #
-        # blockNum = self.block[blockHash]._height - depth
+        blockNum = self.block[blockHash]._height - depth
         # if blockNum < 1:
         #     blockNum = 1
         # log(666666)
         # log(blockNum)
 
-        # self.block[blockHash]._ancestor[i] = self.blockNumToHash[blockNum]
+        self.block[blockHash]._ancestor[i] = self.blockNumToHash[blockNum]
 
-        self.block[blockHash]._ancestor[i] = self.block[blockHash]._height - depth
+        # self.block[blockHash]._ancestor[i] = self.block[blockHash]._height - depth
 
         # log(777777)
         # log(self.block[blockHash]._ancestor[i])
@@ -64,11 +64,13 @@ def testStoreB(number, blockHash, hashPrevBlock):
 
 #TODO add txBlockHeight
 def inMainChain(txBlockHash):
+    txBlockHeight = self.block[txBlockHash]._height
+
     blockHash = self.heaviestBlock
 
     anc_index = self.numAncestorDepths - 1
-    while self.block[blockHash]._height > txBlockHash:
-        while self.block[blockHash]._height - txBlockHash < self.ancestor_depths[anc_index] && anc_index > 0:
+    while self.block[blockHash]._height > txBlockHeight:
+        while self.block[blockHash]._height - txBlockHeight < self.ancestor_depths[anc_index] && anc_index > 0:
             anc_index -= 1
         blockHash = self.block[blockHash]._ancestor[anc_index]
 
