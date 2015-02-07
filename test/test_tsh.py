@@ -97,6 +97,13 @@ class TestBtcTx(object):
         assert self.c.inMainChain(1) == [1]
         assert self.c.inMainChain(2) == [1]
 
+    def testNonExistingBlock(self):
+        self.c.initAncestorDepths()
+        self.c.testStoreB(987, 1, 0)
+        self.c.testStoreB(987, 2, 1)
+        self.c.testSetHeaviest(2)
+
+        assert self.c.inMainChain(9876) == [0]
 
     # @pytest.mark.skipif(True,reason='skip')
     def testSmallChain(self):

@@ -65,6 +65,8 @@ def testStoreB(number, blockHash, hashPrevBlock):
 
 def inMainChain(txBlockHash):
     txBlockHeight = self.block[txBlockHash]._height
+    if !txBlockHeight:
+        return(0)
 
     blockHash = self.heaviestBlock
 
