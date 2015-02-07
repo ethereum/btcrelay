@@ -184,7 +184,6 @@ class TestBtcTx(object):
 
         for i in range(1, heaviest+1):
             self.c.testStoreB(i, i, i-1)
-        self.c.testSetHeaviest(heaviest)
 
         # first fork
         self.c.testStoreB(30, 30, 2)
@@ -196,6 +195,7 @@ class TestBtcTx(object):
         self.c.testStoreB(310, 310, 300)
         self.c.testStoreB(320, 320, 310)
 
+        self.c.testSetHeaviest(heaviest)
         for i in range(1, heaviest+1):
             assert self.c.inMainChain(i) == [1]
 
@@ -206,3 +206,30 @@ class TestBtcTx(object):
         assert self.c.inMainChain(300) == [0]
         assert self.c.inMainChain(310) == [0]
         assert self.c.inMainChain(320) == [0]
+
+
+
+        self.c.testSetHeaviest(32)
+        for i in range(3, heaviest+1):
+            assert self.c.inMainChain(i) == [0]
+
+        assert self.c.inMainChain(30) == [1]
+        assert self.c.inMainChain(31) == [1]
+        assert self.c.inMainChain(32) == [1]
+
+        assert self.c.inMainChain(300) == [0]
+        assert self.c.inMainChain(310) == [0]
+        assert self.c.inMainChain(320) == [0]
+
+
+        self.c.testSetHeaviest(320)
+        for i in range(3, heaviest+1):
+            assert self.c.inMainChain(i) == [0]
+
+        assert self.c.inMainChain(30) == [0]
+        assert self.c.inMainChain(31) == [0]
+        assert self.c.inMainChain(32) == [0]
+
+        assert self.c.inMainChain(300) == [1]
+        assert self.c.inMainChain(310) == [1]
+        assert self.c.inMainChain(320) == [1]

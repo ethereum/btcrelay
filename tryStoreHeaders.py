@@ -5,7 +5,7 @@ data ancestor_depths[9]
 # note: _ancestor[9]
 data block[2^256](_height, _score, _ancestor[9], _blockHeader(_version, _prevBlock, _mrklRoot, _time, _bits, _nonce))
 
-
+# put a big limit on this?
 data blockNumToHash[]
 
 data heaviestBlock
@@ -62,7 +62,7 @@ def testStoreB(number, blockHash, hashPrevBlock):
 #         b = b.ancestors[anc_index]
 #     return b == block
 
-#TODO add txBlockHeight
+
 def inMainChain(txBlockHash):
     txBlockHeight = self.block[txBlockHash]._height
 
