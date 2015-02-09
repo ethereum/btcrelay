@@ -74,6 +74,19 @@ def readVarintNum():
         return(first)
 
 
+# calls btcrelay hashHeader
+def hashBlock(rawBlockHeader:str):
+    self.__setupForParsing(rawBlockHeader)
+    version = readUInt32LE()
+    hashPrevBlock = self.readUnsignedBitsLE(256)
+    hashMerkleRoot = self.readUnsignedBitsLE(256)
+    time = readUInt32LE()
+    bits = readUInt32LE()
+    nonce = readUInt32LE()
+
+    res = self.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+    return(res)
+
 def callBtcRelayToStoreHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
     res = self.storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
     return(res)
