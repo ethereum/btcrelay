@@ -14,7 +14,42 @@ data heaviestBlock
 data highScore
 
 
-
+# def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
+#     # this check can be removed to allow older block headers to be added, but it
+#     # may provide an attack vector where the contract can be spammed with valid
+#     # headers that will not be used and simply take up memory storage
+#     if hashPrevBlock != self.heaviestBlock:  # special case for genesis prev block of 0 is not needed since self.heaviestBlock is 0 initially
+#         return(0)
+#
+#     blockHash = self.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+#     target = self.targetFromBits(bits)
+#
+#     log(target)
+#
+#     difficulty = DIFFICULTY_1 / target # https://en.bitcoin.it/wiki/Difficulty
+#
+#     # TODO other validation of block?  eg timestamp
+#
+#     if gt(blockHash, 0) && lt(blockHash, target):
+#         self.block[blockHash]._blockHeader._version = version
+#         self.block[blockHash]._blockHeader._prevBlock = hashPrevBlock
+#         self.block[blockHash]._blockHeader._mrklRoot = hashMerkleRoot
+#         self.block[blockHash]._blockHeader._time = time
+#         self.block[blockHash]._blockHeader._bits = bits
+#         self.block[blockHash]._blockHeader._nonce = nonce
+#
+#         self.block[blockHash]._score = self.block[hashPrevBlock]._score + difficulty
+#
+#
+#         self.block[blockHash]._height = self.block[hashPrevBlock]._height + 1
+#
+#         if gt(self.block[blockHash]._score, highScore):
+#             self.heaviestBlock = blockHash
+#             highScore = self.block[blockHash]._score
+#
+#         return(self.block[blockHash]._height)
+#
+#     return(0)
 
 def testStoreB(blockHash, hashPrevBlock):
     self.block[blockHash]._blockHeader._prevBlock = hashPrevBlock
@@ -25,33 +60,45 @@ def testStoreB(blockHash, hashPrevBlock):
     else:
         self.block[blockHash]._height = self.block[hashPrevBlock]._height + 1
 
-    self.blockNumToHash[ self.block[blockHash]._height ] = blockHash
-
-    # log(555555)
-    # log(self.blockNumToHash[ self.block[blockHash]._height ])
-
-
-    i = 0
+    self.block[blockHash]._ancestor[0] = hashPrevBlock
+    i = 1
     while i < self.numAncestorDepths:
         depth = self.ancestor_depths[i]
 
-        # log(6000)
-        # log(depth)
-        #
-        blockNum = self.block[blockHash]._height - depth
-        # if blockNum < 1:
-        #     blockNum = 1
-        # log(666666)
-        # log(blockNum)
-
-        self.block[blockHash]._ancestor[i] = self.blockNumToHash[blockNum]
-
-        # self.block[blockHash]._ancestor[i] = self.block[blockHash]._height - depth
-
-        # log(777777)
-        # log(self.block[blockHash]._ancestor[i])
-
+        if self.block[blockHash]._height % depth == 1:
+            self.block[blockHash]._ancestor[i] = hashPrevBlock
+        else:
+            self.block[blockHash]._ancestor[i] = self.block[hashPrevBlock]._ancestor[i]
         i += 1
+
+
+    # self.blockNumToHash[ self.block[blockHash]._height ] = blockHash
+    #
+    # # log(555555)
+    # # log(self.blockNumToHash[ self.block[blockHash]._height ])
+    #
+    #
+    # i = 0
+    # while i < self.numAncestorDepths:
+    #     depth = self.ancestor_depths[i]
+    #
+    #     # log(6000)
+    #     # log(depth)
+    #     #
+    #     blockNum = self.block[blockHash]._height - depth
+    #     # if blockNum < 1:
+    #     #     blockNum = 1
+    #     # log(666666)
+    #     # log(blockNum)
+    #
+    #     self.block[blockHash]._ancestor[i] = self.blockNumToHash[blockNum]
+    #
+    #     # self.block[blockHash]._ancestor[i] = self.block[blockHash]._height - depth
+    #
+    #     # log(777777)
+    #     # log(self.block[blockHash]._ancestor[i])
+    #
+    #     i += 1
 
 # in chain:
 #     b = head
