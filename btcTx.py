@@ -21,7 +21,7 @@ def txinParse():
 
     if scriptSize > 0:
         dblSize = scriptSize*2
-        self.readSimple(scriptSize, outsz=dblSize)  # return value is ignored
+        self.readSimple(scriptSize, outchars=dblSize)  # return value is ignored
 
     seqNum = readUInt32LE()
     # log(seqNum)
@@ -40,7 +40,7 @@ def txoutParse():
     if scriptSize > 0:
         self.tmpScriptLen = scriptSize * 2  # self.tmpScriptLen can probably be a return value
         dblSize = self.tmpScriptLen  # needed because compiler complains that save() cannot use self.tmpScriptLen directly
-        scriptStr = self.readSimple(scriptSize, outsz=dblSize)
+        scriptStr = self.readSimple(scriptSize, outchars=dblSize)
         save(self.gScript[0], scriptStr, chars=dblSize)
 
     return([satoshis, scriptSize], items=2)
@@ -165,7 +165,7 @@ def __setupForParsing(hexStr:str):
 
 
 def doCheckOutputScript(rawTx:str, size, outNum, expHashOfOutputScript):
-    self.parseTransaction(rawTx, size, outNum)  # TODO we are not using the return value, so conceivably self.tmpScriptLen could be returned here and global removed
+    self.parseTransaction(rawTx, size, outNum, outitems=2)  # TODO we are not using the return value, so conceivably self.tmpScriptLen could be returned here and global removed
     cnt = self.tmpScriptLen
 
     # TODO using load() until it can be figured out how to use gScript directly with sha256

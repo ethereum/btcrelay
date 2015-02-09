@@ -19,7 +19,7 @@ data highScore
 
 data block[2^256](_height, _score, _ancestor[], _blockHeader(_version, _prevBlock, _mrklRoot, _time, _bits, _nonce))
 
-extern btc_eth: [processTransfer]
+extern btc_eth: [processTransfer:i:i]
 
 
 #self.block.blockHeader[]
@@ -74,6 +74,11 @@ def initAncestorDepths():
     while i <= self.numAncestorDepths:
         self.ancestor_depths[i - 1] = 4 ^ i
         i += 1
+
+
+# def accept(block):
+#     for i, depth in enumerate(ancestor_depths):
+#         block.ancestors[i] = block.number - ancestor_depths[i]
 
 # def accept(block):
 #     for i, depth in enumerate(ancestor_depths):
@@ -235,7 +240,7 @@ def verifyTx(tx, proofLen, hash:arr, path:arr, txBlockHash):
 
 def relayTx(tx, proofLen, hash:arr, path:arr, txBlockHash, contract):
     if self.verifyTx(tx, proofLen, hash, path, txBlockHash) == 1:
-        res = contract.processTransfer(13, as=btc_eth)
+        res = contract.processTransfer(13)
         return(res)
         # return(call(contract, tx))
     return(0)
