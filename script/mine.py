@@ -1,6 +1,6 @@
 
 # based on http://www.righto.com/2014/02/bitcoin-mining-hard-way-algorithms.html
-# 
+#
 import hashlib, struct
 
 # EASIEST_DIFFICULTY_TARGET = 0x1d00ffff
@@ -26,13 +26,21 @@ mant = bits & 0xffffff
 target_hexstr = '%064x' % (mant * (1<<(8*(exp - 3))))
 target_str = target_hexstr.decode('hex')
 
-nonce = 0
-while nonce < 0x100000000:
-    header = ( struct.pack("<L", ver) + prev_block.decode('hex')[::-1] +
-          mrkl_root.decode('hex')[::-1] + struct.pack("<LLL", time_, bits, nonce))
-    hash = hashlib.sha256(hashlib.sha256(header).digest()).digest()
-    # print nonce, hash[::-1].encode('hex')
-    if hash[::-1] < target_str:
-        print 'success: ' + str(nonce)
-        break
-    nonce += 1
+
+
+for i in range(2):
+
+    nonce = 0
+    while nonce < 0x100000000:
+        header = ( struct.pack("<L", ver) + prev_block.decode('hex')[::-1] +
+              mrkl_root.decode('hex')[::-1] + struct.pack("<LLL", time_, bits, nonce))
+        hash = hashlib.sha256(hashlib.sha256(header).digest()).digest()
+        # print nonce, hash[::-1].encode('hex')
+        if hash[::-1] < target_str:
+            print 'success: ' + str(nonce) + ' blockhash: ' + hash[::-1].encode('hex')
+            break
+        nonce += 1
+
+    prev_block = str(hash[::-1].encode('hex'))
+    print('prev_block: '+prev_block)
+    # prev_block = str(hash[::-1])
