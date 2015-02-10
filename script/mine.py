@@ -28,7 +28,7 @@ target_str = target_hexstr.decode('hex')
 
 
 
-for i in range(6):
+for i in range(7):
 
     nonce = 0
     while nonce < 0x100000000:

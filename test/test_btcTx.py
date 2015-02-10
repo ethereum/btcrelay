@@ -26,6 +26,29 @@ class TestBtcTx(object):
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
         self.c.testingonlySetGenesis(block100kPrev)
 
+
+        # insert (fake) blocks that will not be on main chain
+        EASIEST_DIFFICULTY_TARGET = 0x207fFFFFL
+
+        version = 1
+        # hashMerkleRoot = 0x13
+        hashMerkleRoot = 0x871714dcbae6c8193a2bb9b2a69fe1c0440399f38d94b3a0f1b447275a29978a
+        time = 1293623863  # from block100k
+        bits = EASIEST_DIFFICULTY_TARGET
+        nonce = 1
+        hashPrevBlock = block100kPrev
+
+        for i in range(7):
+            nonce = 1 if (i in [0,5,6]) else 0
+            res = self.c.storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+            hashPrevBlock = self.c.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+            assert res == i+2
+            # print("@@@@@@@@@@@@@@@ " + str(i))
+
+
+
+        # self.c.testingonlySetGenesis(block100kPrev)
+
         headers = [
             "0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710",
             "0100000006e533fd1ada86391f3f6c343204b0d278d4aaec1c0b20aa27ba0300000000006abbb3eb3d733a9fe18967fd7d4c117e4ccbbac5bec4d910d900b3ae0793e77f54241b4d4c86041b4089cc9b",
@@ -38,6 +61,16 @@ class TestBtcTx(object):
         for i in range(7):
             res = self.c.storeRawBlockHeader(headers[i])
             assert res == i+2
+
+
+        # block hashes
+        b0 = 0x000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506
+        b1 = 0x00000000000080b66c911bd5ba14a74260057311eaeb1982802f7010f1a9f090 # block #100001
+        b2 = 0x0000000000013b8ab2cd513b0261a14096412195a72a0c4827d229dcc7e0f7af
+        b3 = 0x000000000002a0a74129007b1481d498d0ff29725e9f403837d517683abac5e1
+        b4 = 0x000000000000b0b8b4e8105d62300d63c8ec1a1df0af1c2cdbd943b156a8cd79
+        b5 = 0x000000000000dab0130bbcc991d3d7ae6b81aa6f50a798888dfe62337458dc45
+        b6 = 0x0000000000009b958a82c10804bd667722799cc3b457bc061cd4b7779110cd60
 
         # values are from block 100K
         tx = 0x8c14f0db3df150123e6f3dbbf30f8b955a8249b62ac1d1ff16284aefa3d06d87
@@ -52,14 +85,14 @@ class TestBtcTx(object):
         hash[1] = 0x8e30899078ca1813be036a073bbf80b86cdddde1c96e9e9c99e9e3782df4ae49
         path[1] = RIGHT_HASH
 
-        # # txBlockHash = 0xdead
-        # # expFake = 0 == self.verifyTx(tx, proofLen, hash, path, txBlockHash)
-        # #
-        # # txBlockHash = b1
-        # # expB1 = 0 == self.verifyTx(tx, proofLen, hash, path, txBlockHash)
+        # txBlockHash = 0xdead
+        # expFake = 0 == self.verifyTx(tx, proofLen, hash, path, txBlockHash)
         #
-        # verifyTx should only return 1 for block100k
-        txBlockHash = 0x000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506
+        # txBlockHash = b1
+        # expB1 = 0 == self.verifyTx(tx, proofLen, hash, path, txBlockHash)
+
+        # verifyTx should only return 1 for b0
+        txBlockHash = b0
         res = self.c.verifyTx(tx, proofLen, hash, path, txBlockHash)
         assert res == 1
 
