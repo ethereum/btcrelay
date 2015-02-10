@@ -23,7 +23,6 @@ class TestBtcTx(object):
         tester.seed = self.seed
 
 
-
     @pytest.mark.skipif(True,reason='skip')
     def testtq(self):
         self.c.initAncestorDepths()  # important
@@ -57,27 +56,6 @@ class TestBtcTx(object):
 
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
         self.c.testingonlySetGenesis(block100kPrev)
-
-
-        # insert (fake) blocks that will not be on main chain
-        EASIEST_DIFFICULTY_TARGET = 0x207fFFFFL
-
-        version = 1
-        # hashMerkleRoot = 0x13
-        hashMerkleRoot = 0x871714dcbae6c8193a2bb9b2a69fe1c0440399f38d94b3a0f1b447275a29978a
-        time = 1293623863  # from block100k
-        bits = EASIEST_DIFFICULTY_TARGET
-        nonce = 1
-        hashPrevBlock = block100kPrev
-
-        for i in range(7):
-            nonce = 1 if (i in [0,5,6]) else 0
-            res = self.c.storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
-            hashPrevBlock = self.c.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
-            assert res == i+2
-            # print("@@@@@@@@@@@@@@@ " + str(i))
-
-
 
         # self.c.testingonlySetGenesis(block100kPrev)
 
@@ -127,6 +105,30 @@ class TestBtcTx(object):
         txBlockHash = b0
         res = self.c.verifyTx(tx, proofLen, hash, path, txBlockHash)
         assert res == 1
+
+
+        # insert (fake) blocks that will not be on main chain
+        EASIEST_DIFFICULTY_TARGET = 0x207fFFFFL
+
+        version = 1
+        # real merkle of block100k
+        hashMerkleRoot = 0xf3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766
+        time = 1293623863  # from block100k
+        bits = EASIEST_DIFFICULTY_TARGET
+        nonce = 1
+        hashPrevBlock = block100kPrev
+
+        for i in range(7):
+            nonce = 1 if (i in [4,5]) else 0
+            res = self.c.storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+            hashPrevBlock = self.c.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+            assert res == i+2
+
+        # forked block should NOT verify
+        txBlockHash = 0x11bb7c5555b8eab7801b1c4384efcab0d869230fcf4a8f043abad255c99105f8
+        res = self.c.verifyTx(tx, proofLen, hash, path, txBlockHash)
+        assert res == 0
+
 
 
     def storeGenesisBlock(self):
