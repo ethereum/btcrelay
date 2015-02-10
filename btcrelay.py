@@ -59,17 +59,15 @@ def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
     # TODO other validation of block?  eg timestamp
 
     if gt(blockHash, 0) && lt(blockHash, target):
+        self.saveAncestors(blockHash, hashPrevBlock)
+
         self.block[blockHash]._blockHeader._version = version
-        self.block[blockHash]._blockHeader._prevBlock = hashPrevBlock
         self.block[blockHash]._blockHeader._mrklRoot = hashMerkleRoot
         self.block[blockHash]._blockHeader._time = time
         self.block[blockHash]._blockHeader._bits = bits
         self.block[blockHash]._blockHeader._nonce = nonce
 
         self.block[blockHash]._score = self.block[hashPrevBlock]._score + difficulty
-
-
-        self.block[blockHash]._height = self.block[hashPrevBlock]._height + 1
 
         if gt(self.block[blockHash]._score, highScore):
             self.heaviestBlock = blockHash
