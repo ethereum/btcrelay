@@ -41,7 +41,8 @@ data ancestor_depths[9]
 #
 #     return(0)
 
-def testStoreB(blockHash, hashPrevBlock):
+# save the ancestors for a block, as well as updating the height
+def saveAncestors(blockHash, hashPrevBlock):
     self.block[blockHash]._blockHeader._prevBlock = hashPrevBlock
 
     # this is a test; separate genesis function could help later
@@ -97,6 +98,7 @@ def logAnc(blockHash):
         i += 1
     log(22222)
 
+# for testing only
 def testSetHeaviest(blockHash):
     self.heaviestBlock = blockHash
 
@@ -105,7 +107,7 @@ def initAncestorDepths():
     i = 0
     while i < self.numAncestorDepths:
         self.ancestor_depths[i] = 4 ^ i
-        log(self.ancestor_depths[i])
+        # log(self.ancestor_depths[i])
         i += 1
 
 
