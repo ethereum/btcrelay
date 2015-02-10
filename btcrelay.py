@@ -51,6 +51,11 @@ def init333k():
 def testingonlySetHeaviest(blockHash):
     self.heaviestBlock = blockHash
 
+#TODO for testing only
+def testingonlySetGenesis(blockHash):
+    self.heaviestBlock = blockHash
+    self.block[blockHash]._height = 1
+
 
 
 def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
@@ -62,8 +67,6 @@ def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
 
     blockHash = self.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
     target = self.targetFromBits(bits)
-
-    log(target)
 
     difficulty = DIFFICULTY_1 / target # https://en.bitcoin.it/wiki/Difficulty
 

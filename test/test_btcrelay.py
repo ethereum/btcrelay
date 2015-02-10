@@ -23,45 +23,6 @@ class TestBtcTx(object):
 
 
 
-    def testHeadersFrom100K(self):
-        block100k = 0x000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506
-        self.c.testingonlySetHeaviest(block100k)
-
-        # 100k + 1
-        rawBlockHeader = "0100000006e533fd1ada86391f3f6c343204b0d278d4aaec1c0b20aa27ba0300000000006abbb3eb3d733a9fe18967fd7d4c117e4ccbbac5bec4d910d900b3ae0793e77f54241b4d4c86041b4089cc9b"
-        res = self.c.storeRawBlockHeader(rawBlockHeader)
-
-        # repeat
-        #
-
-
-        # values are from block 100K
-        # tx = 0x8c14f0db3df150123e6f3dbbf30f8b955a8249b62ac1d1ff16284aefa3d06d87
-        # proofLen = 2
-        # hash = array(proofLen)
-        # path = array(proofLen)
-        #
-        # hash[0] = 0xfff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4
-        # path[0] = RIGHT_HASH
-        #
-        # hash[1] = 0x8e30899078ca1813be036a073bbf80b86cdddde1c96e9e9c99e9e3782df4ae49
-        # path[1] = RIGHT_HASH
-        #
-        # # txBlockHash = 0xdead
-        # # expFake = 0 == self.verifyTx(tx, proofLen, hash, path, txBlockHash)
-        # #
-        # # txBlockHash = b1
-        # # expB1 = 0 == self.verifyTx(tx, proofLen, hash, path, txBlockHash)
-        #
-        # # verifyTx should only return 1 for b0
-        # txBlockHash = b0
-        # res = self.c.verifyTx(tx, proofLen, hash, path, txBlockHash)
-        # assert res == 1
-
-
-
-
-
     def testStoreBlockHeader(self):
         self.c.init333k()
         version = 2
