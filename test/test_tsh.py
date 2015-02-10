@@ -33,7 +33,7 @@ class TestBtcTx(object):
 
         for i in range(1, heaviest+1):
             self.c.saveAncestors(i, i-1)
-        self.c.testSetHeaviest(heaviest)
+        self.c.testingonlySetHeaviest(heaviest)
 
 
         forkStartBlock = 999000
@@ -64,7 +64,7 @@ class TestBtcTx(object):
 
         for i in range(1, heaviest+1):
             self.c.saveAncestors(i, i-1)
-        self.c.testSetHeaviest(heaviest)
+        self.c.testingonlySetHeaviest(heaviest)
 
 
         forkStartBlock = 999000
@@ -92,7 +92,7 @@ class TestBtcTx(object):
         self.c.initAncestorDepths()
         self.c.saveAncestors(1, 0)
         self.c.saveAncestors(2, 1)
-        self.c.testSetHeaviest(2)
+        self.c.testingonlySetHeaviest(2)
 
         assert self.c.inMainChain(1) == 1
         assert self.c.inMainChain(2) == 1
@@ -101,7 +101,7 @@ class TestBtcTx(object):
         self.c.initAncestorDepths()
         self.c.saveAncestors(1, 0)
         self.c.saveAncestors(2, 1)
-        self.c.testSetHeaviest(2)
+        self.c.testingonlySetHeaviest(2)
 
         assert self.c.inMainChain(9876) == 0
 
@@ -112,7 +112,7 @@ class TestBtcTx(object):
 
         for i in range(1, heaviest+1):
             self.c.saveAncestors(i, i-1)
-        self.c.testSetHeaviest(heaviest)
+        self.c.testingonlySetHeaviest(heaviest)
 
         self.c.logAnc(heaviest)
 
@@ -124,7 +124,7 @@ class TestBtcTx(object):
 
         for i in range(1, heaviest+1):
             self.c.saveAncestors(i, i-1)
-        self.c.testSetHeaviest(heaviest)
+        self.c.testingonlySetHeaviest(heaviest)
 
         forkStartBlock = 999000
         parentOfFork = 2
@@ -147,7 +147,7 @@ class TestBtcTx(object):
 
         for i in range(1, heaviest+1):
             self.c.saveAncestors(i, i-1)
-        self.c.testSetHeaviest(heaviest)
+        self.c.testingonlySetHeaviest(heaviest)
 
         self.c.saveAncestors(30, 2)
         self.c.saveAncestors(31, 30)
@@ -184,7 +184,7 @@ class TestBtcTx(object):
         self.c.saveAncestors(31, 30)
         self.c.saveAncestors(32, 31)
 
-        self.c.testSetHeaviest(32)
+        self.c.testingonlySetHeaviest(32)
 
         for i in range(3, heaviest+1):
             assert self.c.inMainChain(i) == 0
@@ -214,7 +214,7 @@ class TestBtcTx(object):
         self.c.saveAncestors(310, 300)
         self.c.saveAncestors(320, 310)
 
-        self.c.testSetHeaviest(heaviest)
+        self.c.testingonlySetHeaviest(heaviest)
         for i in range(1, heaviest+1):
             assert self.c.inMainChain(i) == 1
 
@@ -228,7 +228,7 @@ class TestBtcTx(object):
 
 
 
-        self.c.testSetHeaviest(32)
+        self.c.testingonlySetHeaviest(32)
         for i in range(3, heaviest+1):
             assert self.c.inMainChain(i) == 0
 
@@ -241,7 +241,7 @@ class TestBtcTx(object):
         assert self.c.inMainChain(320) == 0
 
 
-        self.c.testSetHeaviest(320)
+        self.c.testingonlySetHeaviest(320)
         for i in range(3, heaviest+1):
             assert self.c.inMainChain(i) == 0
 

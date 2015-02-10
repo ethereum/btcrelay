@@ -35,11 +35,22 @@ def shared():
     RIGHT_HASH = 2
 
 def init():
+    # TODO what to init
     self.init333k()
 
-def code():
-    ret = self.shiftLeft(2,4)
-    return(ret)
+
+#TODO for testing only
+def init333k():
+    self.heaviestBlock = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
+    trustedBlock = self.heaviestBlock
+    self.block[trustedBlock]._height = 333000
+    self.block[trustedBlock]._blockHeader._version = 2
+
+
+#TODO for testing only
+def testingonlySetHeaviest(blockHash):
+    self.heaviestBlock = blockHash
+
 
 
 def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
@@ -215,10 +226,3 @@ def concatHash(tx1, tx2):
     hash2 = sha256([hash1], items=1)
 
     return(self.flipBytes(hash2, 32))
-
-
-def init333k():
-    self.heaviestBlock = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
-    trustedBlock = self.heaviestBlock
-    self.block[trustedBlock]._height = 333000
-    self.block[trustedBlock]._blockHeader._version = 2

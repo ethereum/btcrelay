@@ -98,10 +98,6 @@ def logAnc(blockHash):
         i += 1
     log(22222)
 
-# for testing only
-def testSetHeaviest(blockHash):
-    self.heaviestBlock = blockHash
-
 
 def initAncestorDepths():
     i = 0
