@@ -201,47 +201,9 @@ def testHashHeader():
     return(blockHash == expBlockHash)
 
 
-def test__rawHashBlockHeader():
-    # https://en.bitcoin.it/wiki/Block_hashing_algorithm
-    version = 0x01000000
-    hashPrevBlock = 0x81cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a308000000000000
-    hashMerkleRoot = 0xe320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0f1fc122b
-    time = 0xc7f5d74d
-    bits = 0xf2b9441a
-    nonce = 0x42a14695
-
-    # these should be the intermediate b1,b2,b3 values inside __rawHashBlockHeader()
-    # b1 = 0x0100000081cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a3080000
-    # b2 = 0x00000000e320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0
-    # b3 = 0xf1fc122bc7f5d74df2b9441a42a1469500000000000000000000000000000000
-    # hash1 = sha256([b1,b2,b3], chars=80)
-    # hash2 = sha256([hash1], 1)
-    # return(hash2)
-
-    res = self.__rawHashBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
-    # log(res)
-
-    expHash = 0x1dbd981fe6985776b644b173a4d0385ddc1aa2a829688d1e0000000000000000
-    return res == expHash
 
 
 
-def testIsNonceValid():
-    ver = 2
-    prev_block = 0x000000000000000117c80378b8da0e33559b5997f2ad55e2f7d18ec1975b9717
-    mrkl_root = 0x871714dcbae6c8193a2bb9b2a69fe1c0440399f38d94b3a0f1b447275a29978a
-    time_ = 0x53058b35 # 2014-02-20 04:57:25
-    bits = 0x19015f53
-    nonce = 856192328
 
-    res = self.isNonceValid(ver, prev_block, mrkl_root, time_, bits, nonce)
-    return(res)
-
-# http://www.righto.com/2014/02/bitcoin-mining-hard-way-algorithms.html#ref3
-def testTargetFromBits():
-    bits = 0x19015f53
-    exp = 8614444778121073626993210829679478604092861119379437256704
-    res = self.targetFromBits(bits)
-    return(res == exp)
 
 inset('btcrelay.py')
