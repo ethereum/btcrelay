@@ -1,43 +1,4 @@
 
-
-def runTests():
-    ALL_GOOD = 99999
-    i = 100
-    if self.testIsNonceValid() != 1:
-        return(i)
-    i += 1
-
-    if self.test__rawHashBlockHeader() != 1:
-        return(i)
-    i += 1
-
-    if self.testHashHeader() != 1:
-        return(i)
-    i += 1
-
-    if self.testStoreBlockHeader() != 1:
-        return(i)
-    i += 1
-
-    if self.testConcatHash() != 1:
-        return(i)
-    i += 1
-
-    if self.testWithin6Confirms() != 1:
-        return(i)
-    i += 1
-
-    if self.testComputeMerkle() != 1:
-        return(i)
-    i += 1
-
-    if self.testVerifyTx() != 1:
-        return(i)
-    i += 1
-
-    return(ALL_GOOD)
-
-
 def testRelayTx():
     # this is duped from testVerifyTx since there seems to be issues with accessing arrays
     # returned by a function (see setupProof branch)
@@ -125,22 +86,6 @@ def testVerifyTx():
 
     return(expFake and expB1 and expB0)
 
-def testComputeMerkle():
-    # values are from block 100K
-    tx = 0x8c14f0db3df150123e6f3dbbf30f8b955a8249b62ac1d1ff16284aefa3d06d87
-    proofLen = 2
-    hash = array(proofLen)
-    path = array(proofLen)
-
-    hash[0] = 0xfff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4
-    path[0] = RIGHT_HASH
-
-    hash[1] = 0x8e30899078ca1813be036a073bbf80b86cdddde1c96e9e9c99e9e3782df4ae49
-    path[1] = RIGHT_HASH
-
-    r = self.computeMerkle(tx, proofLen, hash, path)
-    expMerkle = 0xf3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766
-    return(r == expMerkle)
 
 def testWithin6Confirms():
     self.init333k()
@@ -167,42 +112,6 @@ def testWithin6Confirms():
     expB0 = self.within6Confirms(b0) == 0
 
     return(expB6 and expB5 and expB1 and expB0)
-
-def testConcatHash():
-    tx1 = 0x8c14f0db3df150123e6f3dbbf30f8b955a8249b62ac1d1ff16284aefa3d06d87
-    tx2 = 0xfff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4
-    r = self.concatHash(tx1, tx2)
-    return(r == 0xccdafb73d8dcd0173d5d5c3c9a0770d0b3953db889dab99ef05b1907518cb815)
-
-
-def testStoreBlockHeader():
-    self.init333k()
-    version = 2
-    hashPrevBlock = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
-    hashMerkleRoot = 0xf6f8bc90fd41f626705ac8de7efe7ac723ba02f6d00eab29c6fe36a757779ddd
-    time = 1417792088
-    bits = 0x181b7b74
-    nonce = 796195988
-    blockNumber = 333001
-
-    return(blockNumber == self.storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce))
-
-
-def testHashHeader():
-    version = 2
-    hashPrevBlock = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
-    hashMerkleRoot = 0xf6f8bc90fd41f626705ac8de7efe7ac723ba02f6d00eab29c6fe36a757779ddd
-    time = 1417792088
-    bits = 0x181b7b74
-    nonce = 796195988
-
-    expBlockHash = 0x000000000000000010e318d0c61da0b84246481d9cc097fda9327fe90b1538c1
-    blockHash = self.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
-    return(blockHash == expBlockHash)
-
-
-
-
 
 
 

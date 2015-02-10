@@ -22,6 +22,38 @@ class TestBtcTx(object):
         tester.seed = self.seed
 
 
+    def testStoreBlockHeader(self):
+        self.c.init333k()
+        version = 2
+        hashPrevBlock = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
+        hashMerkleRoot = 0xf6f8bc90fd41f626705ac8de7efe7ac723ba02f6d00eab29c6fe36a757779ddd
+        time = 1417792088
+        bits = 0x181b7b74
+        nonce = 796195988
+        blockNumber = 333001
+
+        assert blockNumber == self.c.storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+
+    def testComputeMerkle(self):
+        # values are from block 100K
+        tx = 0x8c14f0db3df150123e6f3dbbf30f8b955a8249b62ac1d1ff16284aefa3d06d87
+        proofLen = 2
+        hash = [None] * proofLen
+        path = [None] * proofLen
+
+        RIGHT_HASH = 2  # from btcrelay.py
+
+        hash[0] = 0xfff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4
+        path[0] = RIGHT_HASH
+
+        hash[1] = 0x8e30899078ca1813be036a073bbf80b86cdddde1c96e9e9c99e9e3782df4ae49
+        path[1] = RIGHT_HASH
+
+        r = self.c.computeMerkle(tx, proofLen, hash, path)
+        expMerkle = 0xf3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766
+        return(r == expMerkle)
+
+
     # @pytest.mark.skipif(True,reason='skip')
     def testHashHeader(self):
         version = 2
@@ -37,8 +69,8 @@ class TestBtcTx(object):
 
 
 
-    @pytest.mark.skipif(True,reason='skip')
-    def test__rawHashBlockHeader():
+    # @pytest.mark.skipif(True,reason='skip')
+    def testDoRawHashBlockHeader(self):
         # https://en.bitcoin.it/wiki/Block_hashing_algorithm
         version = 0x01000000
         hashPrevBlock = 0x81cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a308000000000000
@@ -55,14 +87,14 @@ class TestBtcTx(object):
         # hash2 = sha256([hash1], 1)
         # return(hash2)
 
-        res = self.c__rawHashBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+        res = self.c.doRawHashBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
         # log(res)
 
         expHash = 0x1dbd981fe6985776b644b173a4d0385ddc1aa2a829688d1e0000000000000000
         assert res == expHash
 
 
-    @pytest.mark.skipif(True,reason='skip')
+    # @pytest.mark.skipif(True,reason='skip')
     def testIsNonceValid(self):
         ver = 2
         prev_block = 0x000000000000000117c80378b8da0e33559b5997f2ad55e2f7d18ec1975b9717

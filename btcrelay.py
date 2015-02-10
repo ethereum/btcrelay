@@ -204,10 +204,10 @@ def hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
     bits = self.flipBytes(bits, 4)
     nonce = self.flipBytes(nonce, 4)
 
-    hash = self.__rawHashBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+    hash = self.doRawHashBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
     return(self.flipBytes(hash, 32))
 
-def __rawHashBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
+def doRawHashBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
     verPart = self.shiftLeft(version, 28*8)
     hpb28 = self.shiftRight(hashPrevBlock, 4*8)  # 81cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a3080000
     b1 = verPart | hpb28
