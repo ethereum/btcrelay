@@ -45,10 +45,10 @@ def testStoreB(blockHash, hashPrevBlock):
     self.block[blockHash]._blockHeader._prevBlock = hashPrevBlock
 
     # this is a test; separate genesis function could help later
-    if blockHash == 1:
-        self.block[blockHash]._height = 1
-    else:
-        self.block[blockHash]._height = self.block[hashPrevBlock]._height + 1
+    # if blockHash == 1:
+    #     self.block[blockHash]._height = 1
+    # else:
+    self.block[blockHash]._height = self.block[hashPrevBlock]._height + 1
 
     self.block[blockHash]._ancestor[0] = hashPrevBlock
     i = 1
