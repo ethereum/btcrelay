@@ -1,14 +1,7 @@
 
 data numAncestorDepths
-self.numAncestorDepths = 9  # if change, look at defn of ancestor_depths and block structures
+self.numAncestorDepths = 9  # if change, look at defn of ancestor_depths and block in btcrelay.py
 data ancestor_depths[9]
-# note: _ancestor[9]
-data block[2^256](_height, _score, _ancestor[9], _blockHeader(_version, _prevBlock, _mrklRoot, _time, _bits, _nonce))
-
-data heaviestBlock
-
-# highest score among all blocks (so far)
-data highScore
 
 
 # def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):

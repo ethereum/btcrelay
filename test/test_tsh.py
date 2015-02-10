@@ -7,7 +7,7 @@ slow = pytest.mark.slow
 
 class TestBtcTx(object):
 
-    CONTRACT = 'tryStoreHeaders.py'
+    CONTRACT = 'btcrelay.py'
     CONTRACT_GAS = 55000
 
     ETHER = 10 ** 18
@@ -26,7 +26,7 @@ class TestBtcTx(object):
         tester.seed = self.seed
 
     @slow
-    # @pytest.mark.skipif(True,reason='skip')
+    @pytest.mark.skipif(True,reason='skip')
     def testAroundMoreDepths(self):
         heaviest = 260
         self.c.initAncestorDepths()
