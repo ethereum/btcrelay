@@ -25,13 +25,13 @@ class TestBtcTx(object):
     def storeGenesisBlock(self):
         rawBlockHeader = ("0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c")
         res = self.c.storeRawBlockHeader(rawBlockHeader)
-        assert res == [1]
+        assert res == 1
 
     def storeBlock1(self):
         # block 1
         rawBlockHeader = ("010000006fe28c0ab6f1b372c1a6a246ae63f74f931e8365e15a089c68d6190000000000982051fd1e4ba744bbbe680e1fee14677ba1a3c3540bf7b1cdb606e857233e0e61bc6649ffff001d01e36299")
         res = self.c.storeRawBlockHeader(rawBlockHeader)
-        assert res == [2]
+        assert res == 2
 
 
     def testStoringHeaders(self):
@@ -43,7 +43,7 @@ class TestBtcTx(object):
         rawBlockHeader = "0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710"
         res = self.c.hashBlock(rawBlockHeader)
         exp = 0x000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506
-        assert res == [exp]
+        assert res == exp
 
 
 
@@ -56,7 +56,7 @@ class TestBtcTx(object):
         # exp hash is untested
         expHashOfOutputScript = 56502271141207574289324577080259466406131090189524790551966501267826601078627
         res = self.c.doCheckOutputScript(rawTx, len(rawTx), outNum, expHashOfOutputScript)
-        assert res == [1]
+        assert res == 1
 
 
     def test_getOutput0Script(self):
@@ -66,7 +66,7 @@ class TestBtcTx(object):
         # exp hash is untested
         expHashOfOutputScript = 15265305399265587892204941549768278966163359751228226364149342078721216369579
         res = self.c.doCheckOutputScript(rawTx, len(rawTx), outNum, expHashOfOutputScript)
-        assert res == [1]
+        assert res == 1
 
     def test_getOutput1Script(self):
         # 1 ins, 1 outs
@@ -75,4 +75,4 @@ class TestBtcTx(object):
         # exp hash is untested
         expHashOfOutputScript = 115071730706014548547567659794968118611083380235397871058495281758347510448362
         res = self.c.doCheckOutputScript(rawTx, len(rawTx), outNum, expHashOfOutputScript)
-        assert res == [1]
+        assert res == 1
