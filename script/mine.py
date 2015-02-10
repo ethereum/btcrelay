@@ -28,7 +28,7 @@ target_str = target_hexstr.decode('hex')
 
 
 
-for i in range(2):
+for i in range(6):
 
     nonce = 0
     while nonce < 0x100000000:
@@ -42,5 +42,5 @@ for i in range(2):
         nonce += 1
 
     prev_block = str(hash[::-1].encode('hex'))
-    print('prev_block: '+prev_block)
+    # print('prev_block: '+prev_block)
     # prev_block = str(hash[::-1])
