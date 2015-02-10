@@ -1,3 +1,4 @@
+inset('btcrelay.py')
 
 def testRelayTx():
     # this is duped from testVerifyTx since there seems to be issues with accessing arrays
@@ -112,7 +113,3 @@ def testWithin6Confirms():
     expB0 = self.within6Confirms(b0) == 0
 
     return(expB6 and expB5 and expB1 and expB0)
-
-
-
-inset('btcrelay.py')
