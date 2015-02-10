@@ -26,7 +26,7 @@ class TestBtcTx(object):
         tester.seed = self.seed
 
     @slow
-    @pytest.mark.skipif(True,reason='skip')
+    # @pytest.mark.skipif(True,reason='skip')
     def testAroundMoreDepths(self):
         heaviest = 260
         self.c.initAncestorDepths()
@@ -104,6 +104,18 @@ class TestBtcTx(object):
         self.c.testSetHeaviest(2)
 
         assert self.c.inMainChain(9876) == 0
+
+    @pytest.mark.skipif(True,reason='skip')
+    def testPerfOfStore(self):
+        heaviest = 260
+        self.c.initAncestorDepths()
+
+        for i in range(1, heaviest+1):
+            self.c.testStoreB(i, i-1)
+        self.c.testSetHeaviest(heaviest)
+
+        self.c.logAnc(heaviest)
+
 
     # @pytest.mark.skipif(True,reason='skip')
     def testSmallChain(self):
