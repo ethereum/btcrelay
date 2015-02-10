@@ -49,12 +49,12 @@ class TestBtcTx(object):
         for i in range(1, finalAncIndex):
             depth = self.ANC_DEPTHS[i]
             print('@@@@@@@@@@@@@@@@@@@ depth: '+str(depth))
-            assert self.c.inMainChain(depth-1) == [1]
-            assert self.c.inMainChain(depth) == [1]
-            assert self.c.inMainChain(depth+1) == [1]
+            assert self.c.inMainChain(depth-1) == 1
+            assert self.c.inMainChain(depth) == 1
+            assert self.c.inMainChain(depth+1) == 1
 
         for i in range(numBlocksInFork):
-            assert self.c.inMainChain(forkStartBlock+i) == [0]
+            assert self.c.inMainChain(forkStartBlock+i) == 0
 
 
     # @pytest.mark.skipif(True,reason='skip')
@@ -80,12 +80,12 @@ class TestBtcTx(object):
         for i in range(1, finalAncIndex):
             depth = self.ANC_DEPTHS[i]
             # print('@@@@@@@@@@@@@@@@@@@ depth: '+str(depth))
-            assert self.c.inMainChain(depth-1) == [1]
-            assert self.c.inMainChain(depth) == [1]
-            assert self.c.inMainChain(depth+1) == [1]
+            assert self.c.inMainChain(depth-1) == 1
+            assert self.c.inMainChain(depth) == 1
+            assert self.c.inMainChain(depth+1) == 1
 
         for i in range(numBlocksInFork):
-            assert self.c.inMainChain(forkStartBlock+i) == [0]
+            assert self.c.inMainChain(forkStartBlock+i) == 0
 
     # @pytest.mark.skipif(True,reason='skip')
     def testSmall(self):
@@ -94,8 +94,8 @@ class TestBtcTx(object):
         self.c.testStoreB(2, 1)
         self.c.testSetHeaviest(2)
 
-        assert self.c.inMainChain(1) == [1]
-        assert self.c.inMainChain(2) == [1]
+        assert self.c.inMainChain(1) == 1
+        assert self.c.inMainChain(2) == 1
 
     def testNonExistingBlock(self):
         self.c.initAncestorDepths()
@@ -103,7 +103,7 @@ class TestBtcTx(object):
         self.c.testStoreB(2, 1)
         self.c.testSetHeaviest(2)
 
-        assert self.c.inMainChain(9876) == [0]
+        assert self.c.inMainChain(9876) == 0
 
     # @pytest.mark.skipif(True,reason='skip')
     def testSmallChain(self):
@@ -122,10 +122,10 @@ class TestBtcTx(object):
             parentOfFork = forkStartBlock
 
         for i in range(1, heaviest+1):
-            assert self.c.inMainChain(i) == [1]
+            assert self.c.inMainChain(i) == 1
 
         for i in range(numBlocksInFork):
-            assert self.c.inMainChain(forkStartBlock+i) == [0]
+            assert self.c.inMainChain(forkStartBlock+i) == 0
 
 
     # @pytest.mark.skipif(True,reason='skip')
@@ -142,11 +142,11 @@ class TestBtcTx(object):
         self.c.testStoreB(32, 31)
 
         for i in range(1, heaviest+1):
-            assert self.c.inMainChain(i) == [1]
+            assert self.c.inMainChain(i) == 1
 
-        assert self.c.inMainChain(30) == [0]
-        assert self.c.inMainChain(31) == [0]
-        assert self.c.inMainChain(32) == [0]
+        assert self.c.inMainChain(30) == 0
+        assert self.c.inMainChain(31) == 0
+        assert self.c.inMainChain(32) == 0
 
         # for i in range(1, heaviest+1):
         #     self.c.logAnc(i)
@@ -175,11 +175,11 @@ class TestBtcTx(object):
         self.c.testSetHeaviest(32)
 
         for i in range(3, heaviest+1):
-            assert self.c.inMainChain(i) == [0]
+            assert self.c.inMainChain(i) == 0
 
-        assert self.c.inMainChain(30) == [1]
-        assert self.c.inMainChain(31) == [1]
-        assert self.c.inMainChain(32) == [1]
+        assert self.c.inMainChain(30) == 1
+        assert self.c.inMainChain(31) == 1
+        assert self.c.inMainChain(32) == 1
 
 
 
@@ -204,39 +204,39 @@ class TestBtcTx(object):
 
         self.c.testSetHeaviest(heaviest)
         for i in range(1, heaviest+1):
-            assert self.c.inMainChain(i) == [1]
+            assert self.c.inMainChain(i) == 1
 
-        assert self.c.inMainChain(30) == [0]
-        assert self.c.inMainChain(31) == [0]
-        assert self.c.inMainChain(32) == [0]
+        assert self.c.inMainChain(30) == 0
+        assert self.c.inMainChain(31) == 0
+        assert self.c.inMainChain(32) == 0
 
-        assert self.c.inMainChain(300) == [0]
-        assert self.c.inMainChain(310) == [0]
-        assert self.c.inMainChain(320) == [0]
+        assert self.c.inMainChain(300) == 0
+        assert self.c.inMainChain(310) == 0
+        assert self.c.inMainChain(320) == 0
 
 
 
         self.c.testSetHeaviest(32)
         for i in range(3, heaviest+1):
-            assert self.c.inMainChain(i) == [0]
+            assert self.c.inMainChain(i) == 0
 
-        assert self.c.inMainChain(30) == [1]
-        assert self.c.inMainChain(31) == [1]
-        assert self.c.inMainChain(32) == [1]
+        assert self.c.inMainChain(30) == 1
+        assert self.c.inMainChain(31) == 1
+        assert self.c.inMainChain(32) == 1
 
-        assert self.c.inMainChain(300) == [0]
-        assert self.c.inMainChain(310) == [0]
-        assert self.c.inMainChain(320) == [0]
+        assert self.c.inMainChain(300) == 0
+        assert self.c.inMainChain(310) == 0
+        assert self.c.inMainChain(320) == 0
 
 
         self.c.testSetHeaviest(320)
         for i in range(3, heaviest+1):
-            assert self.c.inMainChain(i) == [0]
+            assert self.c.inMainChain(i) == 0
 
-        assert self.c.inMainChain(30) == [0]
-        assert self.c.inMainChain(31) == [0]
-        assert self.c.inMainChain(32) == [0]
+        assert self.c.inMainChain(30) == 0
+        assert self.c.inMainChain(31) == 0
+        assert self.c.inMainChain(32) == 0
 
-        assert self.c.inMainChain(300) == [1]
-        assert self.c.inMainChain(310) == [1]
-        assert self.c.inMainChain(320) == [1]
+        assert self.c.inMainChain(300) == 1
+        assert self.c.inMainChain(310) == 1
+        assert self.c.inMainChain(320) == 1
