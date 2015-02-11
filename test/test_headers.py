@@ -47,7 +47,7 @@ class TestBtcTx(object):
         path = self.indexToPath(index, nSibling)
         txBlockHash = int(header['hash'], 16)
         res = self.c.verifyTx(tx, len(siblings), siblings, path, txBlockHash)
-        assert res == 1
+        return res
 
 
     def test100from300K(self):
@@ -89,7 +89,7 @@ class TestBtcTx(object):
 
         res = self.randomTxVerify(100000)
         assert res == 1
-        
+
 
     def randomTxMerkleCheck(self, blocknum):
         header = get_block_header_data(blocknum)
