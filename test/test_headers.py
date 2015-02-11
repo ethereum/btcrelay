@@ -66,19 +66,15 @@ class TestBtcTx(object):
                 i += 1
                 assert res == i
 
+        for i in range(5):
+            randBlock = random.randrange(startBlockNum, startBlockNum+numBlock)
+            res = self.randomTxVerify(randBlock)
 
-
-        assert self.randomTxVerify(300001) == 1
-
-        # for i in range(5):
-        #     randBlock = random.randrange(startBlockNum, startBlockNum+numBlock)
-        #     res = self.randomTxVerify(randBlock)
-        #
-        #     # should only verify when more than 6 confirmations
-        #     if randBlock < startBlockNum+numBlock-6:
-        #         assert res == 1
-        #     else:
-        #         assert res == 0
+            # should only verify when more than 6 confirmations
+            if randBlock < startBlockNum+numBlock-6:
+                assert res == 1
+            else:
+                assert res == 0
 
 
     # this fails and shows that the correct way to set things up is:
