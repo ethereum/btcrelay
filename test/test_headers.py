@@ -79,10 +79,12 @@ class TestBtcTx(object):
         #         assert res == 0
 
 
-    def testRandomTxVerify(self):
-        # block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
-        # self.c.testingonlySetGenesis(block100kPrev)
-
+    # this fails and shows that the correct way to set things up is:
+    # 1. call testingonlySetGenesis() first
+    # 2. call storeRawBlockHeader() of blocks AFTER the genesis
+    # the correct was is done in testRandomTxVerify()
+    @pytest.mark.skipif(True,reason='skip')
+    def testBadSetupTxVerify(self):
         headers = [
             "01000000d153ecc827a531652c430d8895b07f6896091967d21079630321000000000000907a54a1d714ac57d8c43c8cc5b57006032fc3a5de6d97943a1e8a552fd90e11b3211b4d4c86041bb28803e8",
             "0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710",
@@ -93,18 +95,18 @@ class TestBtcTx(object):
             "0100000079cda856b143d9db2c1caff01d1aecc8630d30625d10e8b4b8b0000000000000b50cc069d6a3e33e3ff84a5c41d9d3febe7c770fdcc96b2c3ff60abe184f196367291b4d4c86041b8fa45d63",
             "0100000045dc58743362fe8d8898a7506faa816baed7d391c9bc0b13b0da00000000000021728a2f4f975cc801cb3c672747f1ead8a946b2702b7bd52f7b86dd1aa0c975c02a1b4d4c86041b7b47546d"
         ]
-        for i in range(7):
+        for i in range(8):  # different from testRandomTxVerify()
             res = self.c.storeRawBlockHeader(headers[i])
-            assert res == i+2
+            assert res == i+1
 
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
-        self.c.testingonlySetGenesis(block100kPrev)
+        self.c.testingonlySetGenesis(block100kPrev) # even changing this to testingonlySetHeaviest doesn't make test pass
 
         res = self.randomTxVerify(100000)
         assert res == 1
 
     # original
-    def testRandom2TxVerify(self):
+    def testRandomTxVerify(self):
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
         self.c.testingonlySetGenesis(block100kPrev)
 
