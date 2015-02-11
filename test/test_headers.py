@@ -54,17 +54,19 @@ class TestBtcTx(object):
         startBlockNum = 300000
         numBlock = 10
 
+        block300kPrev = 0x000000000000000067ecc744b5ae34eebbde14d21ca4db51652e4d67e155f07e
+        self.c.testingonlySetGenesis(block300kPrev)
+
         i = 1
         with open("test/headers/100from300k.txt") as f:
             for header in f:
                 res = self.c.storeRawBlockHeader(header)
                 if i==numBlock:
                     break
-                assert res == i
                 i += 1
+                assert res == i
 
-        block300k = 0x000000000000000082ccf8f1557c5d40b21edabb18d2d691cfbf87118bac7254
-        self.c.testingonlySetGenesis(block300k)
+
 
         assert self.randomTxVerify(300001) == 1
 
