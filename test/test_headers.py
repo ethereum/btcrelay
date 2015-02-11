@@ -33,6 +33,8 @@ class TestBtcTx(object):
         return(int_type & mask)
 
 
+    # for now, read the bits of n in order (from least significant)
+    # and convert 0 -> 2 and 1 -> 1
     def indexToPath(self, n, nSibling):
         ret = []
         if n == 0:
@@ -50,6 +52,7 @@ class TestBtcTx(object):
         return ret
 
 
+    @pytest.mark.skipif(True,reason='skip')
     def testToPath(self):
         assert self.indexToPath(0, 2) == [2,2]
         assert self.indexToPath(1, 2) == [1,2]
@@ -57,7 +60,7 @@ class TestBtcTx(object):
         assert self.indexToPath(3, 2) == [1,1]
 
 
-    @pytest.mark.skipif(True,reason='skip')
+    # @pytest.mark.skipif(True,reason='skip')
     def testProof(self):
         blocknum = 100000
         header = get_block_header_data(blocknum)
@@ -67,7 +70,9 @@ class TestBtcTx(object):
 
         tx = int(hashes[index], 16)
         siblings = map(partial(int,base=16), proof['siblings'])
-        merkle = self.c.computeMerkle(tx, len(siblings), siblings, [2, 2])
+        nSibling = len(siblings)
+        path = self.indexToPath(index, nSibling)
+        merkle = self.c.computeMerkle(tx, len(siblings), siblings, path)
         merkle %= 2 ** 256
         assert merkle == int(proof['header']['merkle_root'], 16)
 
