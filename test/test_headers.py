@@ -1,5 +1,8 @@
 from pyethereum import tester
 from datetime import datetime, date
+from functools import partial
+
+from bitcoin import *
 
 import pytest
 slow = pytest.mark.slow
@@ -20,6 +23,21 @@ class TestBtcTx(object):
     def setup_method(self, method):
         self.s.revert(self.snapshot)
         tester.seed = self.seed
+
+
+    def testProof(self):
+        blocknum = 100000
+        header = get_block_header_data(blocknum)
+        hashes = get_txs_in_block(blocknum)
+        index = 0
+        proof = mk_merkle_proof(header, hashes, index)
+
+        tx = int(hashes[index], 16)
+        siblings = map(partial(int,base=16), proof['siblings'])
+        merkle = self.c.computeMerkle(tx, len(siblings), siblings, [2, 2])
+        merkle %= 2 ** 256
+        assert merkle == int(proof['header']['merkle_root'], 16)
+
 
 
     @slow
