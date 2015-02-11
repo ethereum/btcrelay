@@ -37,6 +37,7 @@ def shared():
 def init():
     # TODO what to init
     self.init333k()
+    self.initAncestorDepths()
 
 
 #TODO for testing only
@@ -55,6 +56,11 @@ def testingonlySetHeaviest(blockHash):
 def testingonlySetGenesis(blockHash):
     self.heaviestBlock = blockHash
     self.block[blockHash]._height = 1
+    ancLen = self.numAncestorDepths
+    i = 0
+    while i < ancLen:
+        self.block[blockHash]._ancestor[i] = blockHash
+        i += 1
 
 
 def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
@@ -166,7 +172,7 @@ def doRawHashBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, non
 
 
 def verifyTx(tx, proofLen, hash:arr, path:arr, txBlockHash):
-    if self.within6Confirms(txBlockHash):
+    if self.within6Confirms(txBlockHash) || !self.inMainChain(txBlockHash):
         return(0)
 
     merkle = self.computeMerkle(tx, proofLen, hash, path)
