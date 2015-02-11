@@ -4,6 +4,8 @@ from functools import partial
 
 from bitcoin import *
 
+import math
+
 import pytest
 slow = pytest.mark.slow
 
@@ -30,24 +32,21 @@ class TestBtcTx(object):
         mask = 1 << offset
         return(int_type & mask)
 
-    def bitCount(self, int_type):
-        count = 0
-        while(int_type):
-            int_type &= int_type - 1
-            count += 1
-        return(count)
 
     def indexToPath(self, n, nSibling):
         ret = []
         if n == 0:
             ret = [2] * nSibling
         else:
-            bits = self.bitCount(n)
+            bits = int(math.log(n, 2)+1)
             for i in range(bits):
                 if self.checkBit(n, i) == 0:
                     ret.append(2)
                 else:
                     ret.append(1)
+
+            if bits < nSibling:
+                ret = ret + ([2] * (nSibling - bits))
         return ret
 
 
