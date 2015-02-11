@@ -30,10 +30,16 @@ class TestBtcTx(object):
     def randomTx(self, blocknum):
         header = get_block_header_data(blocknum)
         hashes = get_txs_in_block(blocknum)
-        index = random.randrange(len(hashes))
+
+        numTx = len(hashes)
+        if numTx == 0:
+            print('@@@@ empty blocknum='+str(blocknum))
+            return
+
+        index = random.randrange(numTx)
         proof = mk_merkle_proof(header, hashes, index)
 
-        print('blocknum='+str(blocknum)+'\ttxIndex='+str(index))
+        print('@@@@@@@@@@@@@@@@ blocknum='+str(blocknum)+'\ttxIndex='+str(index))
 
         tx = int(hashes[index], 16)
         siblings = map(partial(int,base=16), proof['siblings'])
@@ -44,18 +50,23 @@ class TestBtcTx(object):
         assert merkle == int(proof['header']['merkle_root'], 16)
 
     def test100from300K(self):
+        startBlockNum = 300000
+        numBlock = 10
 
         i = 1
         with open("test/headers/100from300k.txt") as f:
             for header in f:
                 res = self.c.storeRawBlockHeader(header)
-                if i==10:
+                if i==numBlock:
                     break
-                assert res == i 
+                assert res == i
                 i += 1
 
-            block300k = 0x000000000000000082ccf8f1557c5d40b21edabb18d2d691cfbf87118bac7254
-            self.c.testingonlySetGenesis(block300k)
+        block300k = 0x000000000000000082ccf8f1557c5d40b21edabb18d2d691cfbf87118bac7254
+        self.c.testingonlySetGenesis(block300k)
+        for i in range(5):
+            randBlock = random.randrange(startBlockNum, startBlockNum+numBlock)
+            self.randomTx(randBlock)
 
 
 
