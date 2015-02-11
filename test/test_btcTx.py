@@ -84,8 +84,15 @@ class TestBtcTx(object):
 
 
         # insert (fake) blocks that will not be on main chain
+        # using script/mine.py these are the next 7 blocks
+        # nonce: 0 blockhash: 11bb7c5555b8eab7801b1c4384efcab0d869230fcf4a8f043abad255c99105f8
+        # nonce: 0 blockhash: 178930a916fa91dd29b2716387b7e024a6b3b2d2efa86bc45c86be223b07a4e5
+        # nonce: 0 blockhash: 7b3c348edbb3645b34b30259105a941890e95e0ecc0a1c243ff48260d746e456
+        # nonce: 0 blockhash: 02c67135bd91986f9aaf3f0818baab439202fe5c34400c2c10bff6cd1336d436
+        # nonce: 1 blockhash: 6e60065cc981914c23897143c75f0cde6e456df65f23afd41ddc6e6ce86b2b63
+        # nonce: 1 blockhash: 38a052cdf4ef0fddf2de88e687163db7f39cb8de738fa9f5e871a72fc74c57c1
+        # nonce: 0 blockhash: 2b80a2f4b68e9ebfd4975f5f14a340501d24c3adf041ad9be4cd2576e827328c
         EASIEST_DIFFICULTY_TARGET = 0x207fFFFFL
-
         version = 1
         # real merkle of block100k
         hashMerkleRoot = 0xf3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766
@@ -93,7 +100,6 @@ class TestBtcTx(object):
         bits = EASIEST_DIFFICULTY_TARGET
         nonce = 1
         hashPrevBlock = block100kPrev
-
         for i in range(7):
             nonce = 1 if (i in [4,5]) else 0
             res = self.c.storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
@@ -118,37 +124,6 @@ class TestBtcTx(object):
         self.c.testingonlySetGenesis(block100kPrev)
 
 
-        # insert (easy) blocks
-        # using script/mine.py these are the next 7 blocks
-        # nonce: 0 blockhash: 11bb7c5555b8eab7801b1c4384efcab0d869230fcf4a8f043abad255c99105f8
-        # nonce: 0 blockhash: 178930a916fa91dd29b2716387b7e024a6b3b2d2efa86bc45c86be223b07a4e5
-        # nonce: 0 blockhash: 7b3c348edbb3645b34b30259105a941890e95e0ecc0a1c243ff48260d746e456
-        # nonce: 0 blockhash: 02c67135bd91986f9aaf3f0818baab439202fe5c34400c2c10bff6cd1336d436
-        # nonce: 1 blockhash: 6e60065cc981914c23897143c75f0cde6e456df65f23afd41ddc6e6ce86b2b63
-        # nonce: 1 blockhash: 38a052cdf4ef0fddf2de88e687163db7f39cb8de738fa9f5e871a72fc74c57c1
-        # nonce: 0 blockhash: 2b80a2f4b68e9ebfd4975f5f14a340501d24c3adf041ad9be4cd2576e827328c
-
-        EASIEST_DIFFICULTY_TARGET = 0x207fFFFFL
-
-        version = 1
-        # real merkle of block100k
-        hashMerkleRoot = 0xf3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766
-        time = 1293623863  # from block100k
-        bits = EASIEST_DIFFICULTY_TARGET
-        nonce = 1
-        hashPrevBlock = block100kPrev
-
-        for i in range(7):
-            nonce = 1 if (i in [4,5]) else 0
-            res = self.c.storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
-            hashPrevBlock = self.c.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
-            assert res == i+2
-
-        # if we compute the proof using the first easy block
-        # 11bb7c5555b8eab7801b1c4384efcab0d869230fcf4a8f043abad255c99105f8
-        # then we could add a verification of a tx in the easy block, here
-        # ...
-
 
         # tx for verification: values are from block 100K
         tx = 0x8c14f0db3df150123e6f3dbbf30f8b955a8249b62ac1d1ff16284aefa3d06d87
@@ -162,6 +137,41 @@ class TestBtcTx(object):
 
         hash[1] = 0x8e30899078ca1813be036a073bbf80b86cdddde1c96e9e9c99e9e3782df4ae49
         path[1] = RIGHT_HASH
+
+
+
+        # insert (easy) blocks
+        # using script/mine.py these are the next 7 blocks
+        # nonce: 0 blockhash: 11bb7c5555b8eab7801b1c4384efcab0d869230fcf4a8f043abad255c99105f8
+        # nonce: 0 blockhash: 178930a916fa91dd29b2716387b7e024a6b3b2d2efa86bc45c86be223b07a4e5
+        # nonce: 0 blockhash: 7b3c348edbb3645b34b30259105a941890e95e0ecc0a1c243ff48260d746e456
+        # nonce: 0 blockhash: 02c67135bd91986f9aaf3f0818baab439202fe5c34400c2c10bff6cd1336d436
+        # nonce: 1 blockhash: 6e60065cc981914c23897143c75f0cde6e456df65f23afd41ddc6e6ce86b2b63
+        # nonce: 1 blockhash: 38a052cdf4ef0fddf2de88e687163db7f39cb8de738fa9f5e871a72fc74c57c1
+        # nonce: 0 blockhash: 2b80a2f4b68e9ebfd4975f5f14a340501d24c3adf041ad9be4cd2576e827328c
+        EASIEST_DIFFICULTY_TARGET = 0x207fFFFFL
+        version = 1
+        # real merkle of block100k
+        hashMerkleRoot = 0xf3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766
+        time = 1293623863  # from block100k
+        bits = EASIEST_DIFFICULTY_TARGET
+        nonce = 1
+        hashPrevBlock = block100kPrev
+        for i in range(7):
+            nonce = 1 if (i in [4,5]) else 0
+            res = self.c.storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+            hashPrevBlock = self.c.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+            assert res == i+2
+
+        # testingonlySetHeaviest is needed because the difficulty from
+        # EASIEST_DIFFICULTY_TARGET becomes 0 and so the score does not
+        # increase, meaning that heaviesBlock also does not change
+        self.c.testingonlySetHeaviest(0x2b80a2f4b68e9ebfd4975f5f14a340501d24c3adf041ad9be4cd2576e827328c)
+
+        firstEasyBlock = 0x11bb7c5555b8eab7801b1c4384efcab0d869230fcf4a8f043abad255c99105f8
+        res = self.c.verifyTx(tx, proofLen, hash, path, firstEasyBlock)
+        assert res == 1
+
 
 
         # add headers one by one and tx should only be verified when the
