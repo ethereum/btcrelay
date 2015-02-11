@@ -43,6 +43,20 @@ class TestBtcTx(object):
         merkle %= 2 ** 256
         assert merkle == int(proof['header']['merkle_root'], 16)
 
+    def test100from300K(self):
+
+        i = 1
+        with open("test/headers/100from300k.txt") as f:
+            for header in f:
+                res = self.c.storeRawBlockHeader(header)
+                if i==10:
+                    break
+                assert res == i 
+                i += 1
+
+            block300k = 0x000000000000000082ccf8f1557c5d40b21edabb18d2d691cfbf87118bac7254
+            self.c.testingonlySetGenesis(block300k)
+
 
 
     def testRandomTx(self):
