@@ -27,40 +27,29 @@ class TestBtcTx(object):
         tester.seed = self.seed
 
 
+    def randomTx(self, blocknum):
+        header = get_block_header_data(blocknum)
+        hashes = get_txs_in_block(blocknum)
+        index = random.randrange(len(hashes))
+        proof = mk_merkle_proof(header, hashes, index)
 
-    def checkBit(self, int_type, offset):
-        mask = 1 << offset
-        return(int_type & mask)
+        print('blocknum='+str(blocknum)+'\ttxIndex='+str(index))
+
+        tx = int(hashes[index], 16)
+        siblings = map(partial(int,base=16), proof['siblings'])
+        nSibling = len(siblings)
+        path = self.indexToPath(index, nSibling)
+        merkle = self.c.computeMerkle(tx, len(siblings), siblings, path)
+        merkle %= 2 ** 256
+        assert merkle == int(proof['header']['merkle_root'], 16)
 
 
-    # for now, read the bits of n in order (from least significant)
-    # and convert 0 -> 2 and 1 -> 1
-    def indexToPath(self, n, nSibling):
-        ret = []
-        if n == 0:
-            ret = [2] * nSibling
-        else:
-            bits = int(math.log(n, 2)+1)
-            for i in range(bits):
-                if self.checkBit(n, i) == 0:
-                    ret.append(2)
-                else:
-                    ret.append(1)
 
-            if bits < nSibling:
-                ret = ret + ([2] * (nSibling - bits))
-        return ret
+    def testRandomTx(self):
+        self.randomTx(100000)
 
 
     @pytest.mark.skipif(True,reason='skip')
-    def testToPath(self):
-        assert self.indexToPath(0, 2) == [2,2]
-        assert self.indexToPath(1, 2) == [1,2]
-        assert self.indexToPath(2, 2) == [2,1]
-        assert self.indexToPath(3, 2) == [1,1]
-
-
-    # @pytest.mark.skipif(True,reason='skip')
     def testProof(self):
         blocknum = 100000
         header = get_block_header_data(blocknum)
@@ -121,3 +110,36 @@ class TestBtcTx(object):
         # h = "0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c"
         # res = self.c.storeRawBlockHeader(h)
         # assert res == [1]
+
+
+
+    @pytest.mark.skipif(True,reason='skip')
+    def testToPath(self):
+        assert self.indexToPath(0, 2) == [2,2]
+        assert self.indexToPath(1, 2) == [1,2]
+        assert self.indexToPath(2, 2) == [2,1]
+        assert self.indexToPath(3, 2) == [1,1]
+
+
+    # for now, read the bits of n in order (from least significant)
+    # and convert 0 -> 2 and 1 -> 1
+    def indexToPath(self, n, nSibling):
+        ret = []
+        if n == 0:
+            ret = [2] * nSibling
+        else:
+            bits = int(math.log(n, 2)+1)
+            for i in range(bits):
+                if self.checkBit(n, i) == 0:
+                    ret.append(2)
+                else:
+                    ret.append(1)
+
+            if bits < nSibling:
+                ret = ret + ([2] * (nSibling - bits))
+        return ret
+
+
+    def checkBit(self, int_type, offset):
+        mask = 1 << offset
+        return(int_type & mask)
