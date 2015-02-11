@@ -59,14 +59,23 @@ class TestBtcTx(object):
 
         i = 1
         with open("test/headers/100from300k.txt") as f:
+
+            startTime = datetime.now().time()
+
             for header in f:
                 res = self.c.storeRawBlockHeader(header)
-                if i==numBlock:
-                    break
+                # if i==numBlock:
+                #     break
                 i += 1
                 assert res == i
 
-        for i in range(5):
+            endTime = datetime.now().time()
+
+        duration = datetime.combine(date.today(), endTime) - datetime.combine(date.today(), startTime)
+        print("********** duration: "+str(duration)+" ********** start:"+str(startTime)+" end:"+str(endTime))
+
+        nChecks = 10
+        for i in range(nChecks):
             randBlock = random.randrange(startBlockNum, startBlockNum+numBlock)
             res = self.randomTxVerify(randBlock)
 
