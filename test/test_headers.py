@@ -25,6 +25,40 @@ class TestBtcTx(object):
         tester.seed = self.seed
 
 
+
+    def checkBit(self, int_type, offset):
+        mask = 1 << offset
+        return(int_type & mask)
+
+    def bitCount(self, int_type):
+        count = 0
+        while(int_type):
+            int_type &= int_type - 1
+            count += 1
+        return(count)
+
+    def indexToPath(self, n, nSibling):
+        ret = []
+        if n == 0:
+            ret = [2] * nSibling
+        else:
+            bits = self.bitCount(n)
+            for i in range(bits):
+                if self.checkBit(n, i) == 0:
+                    ret.append(2)
+                else:
+                    ret.append(1)
+        return ret
+
+
+    def testToPath(self):
+        assert self.indexToPath(0, 2) == [2,2]
+        assert self.indexToPath(1, 2) == [1,2]
+        assert self.indexToPath(2, 2) == [2,1]
+        assert self.indexToPath(3, 2) == [1,1]
+
+
+    @pytest.mark.skipif(True,reason='skip')
     def testProof(self):
         blocknum = 100000
         header = get_block_header_data(blocknum)
