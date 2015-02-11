@@ -30,8 +30,6 @@ class TestBtcTx(object):
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
         self.c.testingonlySetGenesis(block100kPrev)
 
-        # self.c.testingonlySetGenesis(block100kPrev)
-
         headers = [
             "0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710",
             "0100000006e533fd1ada86391f3f6c343204b0d278d4aaec1c0b20aa27ba0300000000006abbb3eb3d733a9fe18967fd7d4c117e4ccbbac5bec4d910d900b3ae0793e77f54241b4d4c86041b4089cc9b",
@@ -111,6 +109,82 @@ class TestBtcTx(object):
         txBlockHash = b0
         res = self.c.verifyTx(tx, proofLen, hash, path, txBlockHash)
         assert res == 1
+
+
+    def testReorg(self):
+        self.c.initAncestorDepths()  # important
+
+        block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
+        self.c.testingonlySetGenesis(block100kPrev)
+
+
+        # insert (easy) blocks
+        # using script/mine.py these are the next 7 blocks
+        # nonce: 0 blockhash: 11bb7c5555b8eab7801b1c4384efcab0d869230fcf4a8f043abad255c99105f8
+        # nonce: 0 blockhash: 178930a916fa91dd29b2716387b7e024a6b3b2d2efa86bc45c86be223b07a4e5
+        # nonce: 0 blockhash: 7b3c348edbb3645b34b30259105a941890e95e0ecc0a1c243ff48260d746e456
+        # nonce: 0 blockhash: 02c67135bd91986f9aaf3f0818baab439202fe5c34400c2c10bff6cd1336d436
+        # nonce: 1 blockhash: 6e60065cc981914c23897143c75f0cde6e456df65f23afd41ddc6e6ce86b2b63
+        # nonce: 1 blockhash: 38a052cdf4ef0fddf2de88e687163db7f39cb8de738fa9f5e871a72fc74c57c1
+        # nonce: 0 blockhash: 2b80a2f4b68e9ebfd4975f5f14a340501d24c3adf041ad9be4cd2576e827328c
+
+        EASIEST_DIFFICULTY_TARGET = 0x207fFFFFL
+
+        version = 1
+        # real merkle of block100k
+        hashMerkleRoot = 0xf3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766
+        time = 1293623863  # from block100k
+        bits = EASIEST_DIFFICULTY_TARGET
+        nonce = 1
+        hashPrevBlock = block100kPrev
+
+        for i in range(7):
+            nonce = 1 if (i in [4,5]) else 0
+            res = self.c.storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+            hashPrevBlock = self.c.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+            assert res == i+2
+
+        # if we compute the proof using the first easy block
+        # 11bb7c5555b8eab7801b1c4384efcab0d869230fcf4a8f043abad255c99105f8
+        # then we could add a verification of a tx in the easy block, here
+        # ...
+
+
+        # tx for verification: values are from block 100K
+        tx = 0x8c14f0db3df150123e6f3dbbf30f8b955a8249b62ac1d1ff16284aefa3d06d87
+        proofLen = 2
+        hash = [None] * proofLen
+        path = [None] * proofLen
+
+        RIGHT_HASH = 2
+        hash[0] = 0xfff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4
+        path[0] = RIGHT_HASH
+
+        hash[1] = 0x8e30899078ca1813be036a073bbf80b86cdddde1c96e9e9c99e9e3782df4ae49
+        path[1] = RIGHT_HASH
+
+
+        # add headers one by one and tx should only be verified when the
+        # last header is added, ie tx has enough confirmations
+        headers = [
+            "0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710",
+            "0100000006e533fd1ada86391f3f6c343204b0d278d4aaec1c0b20aa27ba0300000000006abbb3eb3d733a9fe18967fd7d4c117e4ccbbac5bec4d910d900b3ae0793e77f54241b4d4c86041b4089cc9b",
+            "0100000090f0a9f110702f808219ebea1173056042a714bad51b916cb6800000000000005275289558f51c9966699404ae2294730c3c9f9bda53523ce50e9b95e558da2fdb261b4d4c86041b1ab1bf93",
+            "01000000aff7e0c7dc29d227480c2aa79521419640a161023b51cdb28a3b0100000000003779fc09d638c4c6da0840c41fa625a90b72b125015fd0273f706d61f3be175faa271b4d4c86041b142dca82",
+            "01000000e1c5ba3a6817d53738409f5e7229ffd098d481147b002941a7a002000000000077ed2af87aa4f9f450f8dbd15284720c3fd96f565a13c9de42a3c1440b7fc6a50e281b4d4c86041b08aecda2",
+            "0100000079cda856b143d9db2c1caff01d1aecc8630d30625d10e8b4b8b0000000000000b50cc069d6a3e33e3ff84a5c41d9d3febe7c770fdcc96b2c3ff60abe184f196367291b4d4c86041b8fa45d63",
+            "0100000045dc58743362fe8d8898a7506faa816baed7d391c9bc0b13b0da00000000000021728a2f4f975cc801cb3c672747f1ead8a946b2702b7bd52f7b86dd1aa0c975c02a1b4d4c86041b7b47546d"
+        ]
+        block100k = 0x000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506
+        for i in range(7):
+            res = self.c.storeRawBlockHeader(headers[i])
+            assert res == i+2
+
+            res = self.c.verifyTx(tx, proofLen, hash, path, block100k)
+            exp = 1 if i==6 else 0
+            assert res == exp
+
+
 
 
     def testWithin6Confirms(self):
