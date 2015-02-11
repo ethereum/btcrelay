@@ -117,6 +117,8 @@ class TestBtcTx(object):
         assert res == 1
 
 
+    # test that a tx that verifies, does not verify after a reorg causes it to
+    # no longer be on the main chain
     def testReorg(self):
         self.c.initAncestorDepths()  # important
 
@@ -173,7 +175,7 @@ class TestBtcTx(object):
         assert res == 1
 
 
-
+        # reorg: add headers with more PoW (difficulty)
         # add headers one by one and tx should only be verified when the
         # last header is added, ie tx has enough confirmations
         headers = [
@@ -190,10 +192,14 @@ class TestBtcTx(object):
             res = self.c.storeRawBlockHeader(headers[i])
             assert res == i+2
 
+            # firstEasyBlock should no longer verify since it is no longer on the main chain
+            res = self.c.verifyTx(tx, proofLen, hash, path, firstEasyBlock)
+            assert res == 0
+
+            # block100k should only verify when it has enough confirmations
             res = self.c.verifyTx(tx, proofLen, hash, path, block100k)
             exp = 1 if i==6 else 0
             assert res == exp
-
 
 
 
