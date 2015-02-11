@@ -3,43 +3,16 @@ data numAncestorDepths
 self.numAncestorDepths = 9  # if change, look at defn of ancestor_depths and block in btcrelay.py
 data ancestor_depths[9]
 
+self.ancestor_depths[0] = 1
+self.ancestor_depths[1] = 4
+self.ancestor_depths[2] = 16
+self.ancestor_depths[3] = 64
+self.ancestor_depths[4] = 256
+self.ancestor_depths[5] = 1024
+self.ancestor_depths[6] = 4096
+self.ancestor_depths[7] = 16384
+self.ancestor_depths[8] = 65536
 
-# def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
-#     # this check can be removed to allow older block headers to be added, but it
-#     # may provide an attack vector where the contract can be spammed with valid
-#     # headers that will not be used and simply take up memory storage
-#     if hashPrevBlock != self.heaviestBlock:  # special case for genesis prev block of 0 is not needed since self.heaviestBlock is 0 initially
-#         return(0)
-#
-#     blockHash = self.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
-#     target = self.targetFromBits(bits)
-#
-#     log(target)
-#
-#     difficulty = DIFFICULTY_1 / target # https://en.bitcoin.it/wiki/Difficulty
-#
-#     # TODO other validation of block?  eg timestamp
-#
-#     if gt(blockHash, 0) && lt(blockHash, target):
-#         self.block[blockHash]._blockHeader._version = version
-#         self.block[blockHash]._blockHeader._prevBlock = hashPrevBlock
-#         self.block[blockHash]._blockHeader._mrklRoot = hashMerkleRoot
-#         self.block[blockHash]._blockHeader._time = time
-#         self.block[blockHash]._blockHeader._bits = bits
-#         self.block[blockHash]._blockHeader._nonce = nonce
-#
-#         self.block[blockHash]._score = self.block[hashPrevBlock]._score + difficulty
-#
-#
-#         self.block[blockHash]._height = self.block[hashPrevBlock]._height + 1
-#
-#         if gt(self.block[blockHash]._score, highScore):
-#             self.heaviestBlock = blockHash
-#             highScore = self.block[blockHash]._score
-#
-#         return(self.block[blockHash]._height)
-#
-#     return(0)
 
 # save the ancestors for a block, as well as updating the height
 def saveAncestors(blockHash, hashPrevBlock):
@@ -97,14 +70,6 @@ def logAnc(blockHash):
         log(anc)
         i += 1
     log(22222)
-
-
-def initAncestorDepths():
-    i = 0
-    while i < self.numAncestorDepths:
-        self.ancestor_depths[i] = 4 ^ i
-        # log(self.ancestor_depths[i])
-        i += 1
 
 
 def logBlockchainHead():

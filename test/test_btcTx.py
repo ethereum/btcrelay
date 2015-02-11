@@ -25,8 +25,6 @@ class TestBtcTx(object):
 
     # also tests a (fake) fork
     def testHeadersFrom100K(self):
-        self.c.initAncestorDepths()  # important
-
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
         self.c.testingonlySetGenesis(block100kPrev)
 
@@ -120,8 +118,6 @@ class TestBtcTx(object):
     # test that a tx that verifies, does not verify after a reorg causes it to
     # no longer be on the main chain
     def testReorg(self):
-        self.c.initAncestorDepths()  # important
-
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
         self.c.testingonlySetGenesis(block100kPrev)
 
@@ -204,8 +200,6 @@ class TestBtcTx(object):
 
 
     def testWithin6Confirms(self):
-        self.c.initAncestorDepths()  # important
-
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
         self.c.testingonlySetGenesis(block100kPrev)
 
@@ -299,7 +293,6 @@ class TestBtcTx(object):
     # this was for debugging a bug that was caused by a missing initAncestorDepths()
     @pytest.mark.skipif(True,reason='skip')
     def testtq(self):
-        self.c.initAncestorDepths()  # important
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
         self.c.testingonlySetGenesis(block100kPrev)
 

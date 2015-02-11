@@ -37,7 +37,6 @@ def shared():
 def init():
     # TODO what to init
     self.init333k()
-    self.initAncestorDepths()
 
 
 #TODO for testing only

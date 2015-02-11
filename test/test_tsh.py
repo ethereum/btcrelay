@@ -29,7 +29,7 @@ class TestBtcTx(object):
     @pytest.mark.skipif(True,reason='skip')
     def testAroundMoreDepths(self):
         heaviest = 260
-        self.c.initAncestorDepths()
+
 
         for i in range(1, heaviest+1):
             self.c.saveAncestors(i, i-1)
@@ -60,7 +60,7 @@ class TestBtcTx(object):
     # @pytest.mark.skipif(True,reason='skip')
     def testAroundSomeDepths(self):
         heaviest = 20
-        self.c.initAncestorDepths()
+
 
         for i in range(1, heaviest+1):
             self.c.saveAncestors(i, i-1)
@@ -88,8 +88,8 @@ class TestBtcTx(object):
             assert self.c.inMainChain(forkStartBlock+i) == 0
 
     # @pytest.mark.skipif(True,reason='skip')
-    def testSmall(self):
-        self.c.initAncestorDepths()
+    def testTiny(self):
+
         self.c.saveAncestors(1, 0)
         self.c.saveAncestors(2, 1)
         self.c.testingonlySetHeaviest(2)
@@ -98,7 +98,7 @@ class TestBtcTx(object):
         assert self.c.inMainChain(2) == 1
 
     def testNonExistingBlock(self):
-        self.c.initAncestorDepths()
+
         self.c.saveAncestors(1, 0)
         self.c.saveAncestors(2, 1)
         self.c.testingonlySetHeaviest(2)
@@ -108,7 +108,7 @@ class TestBtcTx(object):
     @pytest.mark.skipif(True,reason='skip')
     def testPerfOfStore(self):
         heaviest = 260
-        self.c.initAncestorDepths()
+
 
         for i in range(1, heaviest+1):
             self.c.saveAncestors(i, i-1)
@@ -120,7 +120,7 @@ class TestBtcTx(object):
     # @pytest.mark.skipif(True,reason='skip')
     def testSmallChain(self):
         heaviest = 5
-        self.c.initAncestorDepths()
+
 
         for i in range(1, heaviest+1):
             self.c.saveAncestors(i, i-1)
@@ -143,7 +143,7 @@ class TestBtcTx(object):
     # @pytest.mark.skipif(True,reason='skip')
     def testShortFork(self):
         heaviest = 5
-        self.c.initAncestorDepths()
+
 
         for i in range(1, heaviest+1):
             self.c.saveAncestors(i, i-1)
@@ -175,7 +175,7 @@ class TestBtcTx(object):
     # heaviest is the "fork"
     def testAltShortFork(self):
         heaviest = 5
-        self.c.initAncestorDepths()
+
 
         for i in range(1, heaviest+1):
             self.c.saveAncestors(i, i-1)
@@ -199,7 +199,7 @@ class TestBtcTx(object):
     # 2 forks from block2
     def testMultiShortFork(self):
         heaviest = 5
-        self.c.initAncestorDepths()
+
 
         for i in range(1, heaviest+1):
             self.c.saveAncestors(i, i-1)
