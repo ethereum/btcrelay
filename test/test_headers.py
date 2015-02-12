@@ -56,7 +56,7 @@ class TestBtcTx(object):
 
     def test100from300K(self):
         startBlockNum = 300000
-        numBlock = 10
+        numBlock = 40
 
         block300kPrev = 0x000000000000000067ecc744b5ae34eebbde14d21ca4db51652e4d67e155f07e
         self.c.testingonlySetGenesis(block300kPrev)
@@ -68,8 +68,8 @@ class TestBtcTx(object):
 
             for header in f:
                 res = self.c.storeRawBlockHeader(header)
-                # if i==numBlock:
-                #     break
+                if i==numBlock:
+                    break
                 i += 1
                 assert res == i
 
@@ -89,6 +89,22 @@ class TestBtcTx(object):
             else:
                 assert res == 0
 
+
+        res = self.randomTxVerify(300017, 2)
+        assert res == 0
+
+
+
+    def test17index2(self):
+        blockPrev = 0x00000000000000002ec86a542e2cefe62dcec8ac2317a1dc92fbb094f9d30941
+        self.c.testingonlySetGenesis(blockPrev)
+
+        # block 300017
+        header = "020000004109d3f994b0fb92dca11723acc8ce2de6ef2c2e546ac82e0000000000000000c912a609440e2d74cf4c01704d9c3852261dc3ba10938a74c52c8dba9642cb2fc1da6d536c89001952559278"
+        self.c.storeRawBlockHeader(header)
+
+        res = self.randomTxVerify(300017, 2)
+        assert res == 0
 
     # this fails and shows that the correct way to set things up is:
     # 1. call testingonlySetGenesis() first
