@@ -70,7 +70,7 @@ def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
     #     return(0)
 
     blockHash = self.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
-    target = self.targetFromBits(bits)
+    target = targetFromBits(bits)
 
     difficulty = DIFFICULTY_1 / target # https://en.bitcoin.it/wiki/Difficulty
 
@@ -122,7 +122,7 @@ macro shiftRight($n, $x):
 
 
 def isNonceValid(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
-    target = self.targetFromBits(bits)
+    target = targetFromBits(bits)
 
     hash = self.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
 
@@ -132,11 +132,11 @@ def isNonceValid(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
         return(0)
 
 
-def targetFromBits(bits):
-    exp = div(bits, TWO_POW_24)
-    mant = bits & 0xffffff
+macro targetFromBits($bits):
+    exp = div($bits, TWO_POW_24)
+    mant = $bits & 0xffffff
     target = mant * shiftLeft(1, (8*(exp - 3)))
-    return(target)
+    target
 
 
 def hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):

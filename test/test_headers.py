@@ -56,9 +56,9 @@ class TestBtcTx(object):
 
 
     # @pytest.mark.skipif(True,reason='skip')
-    def test40from300K(self):
+    def test80from300K(self):
         startBlockNum = 300000
-        numBlock = 40
+        numBlock = 80
 
         block300kPrev = 0x000000000000000067ecc744b5ae34eebbde14d21ca4db51652e4d67e155f07e
         self.c.testingonlySetGenesis(block300kPrev)
