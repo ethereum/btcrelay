@@ -83,18 +83,19 @@ def stringReadUnsignedBitsLE(inStr:str, bits, pos):
 
     # TODO ideally, getting a slice of gStr would be done in 1 step, but Serpent limitation
     # tmpStr = load(self.gStr[0], chars=endIndex)
-    currStr = slice(inStr, chars=offset, chars=endIndex)  #TODO optimize away?
+    # currStr = slice(inStr, chars=offset, chars=endIndex)  #TODO optimize away?
 
     result = 0
-    j = 0
-    while j < size:
+    exponent = 0
+    j = offset
+    while j < endIndex:
         # "01 23 45" want it to read "10 32 54"
         if j % 2 == 0:
             i = j + 1
         else:
             i = j - 1
 
-        char = getch(currStr, i)
+        char = getch(inStr, i)
         # log(char)
         if (char >= 97 && char <= 102):  # only handles lowercase a-f
             numeric = char - 87
@@ -103,10 +104,11 @@ def stringReadUnsignedBitsLE(inStr:str, bits, pos):
 
         # log(numeric)
 
-        result += numeric * 16^j
+        result += numeric * 16^exponent
         # log(result)
 
         j += 1
+        exponent += 1
 
 
     # important
