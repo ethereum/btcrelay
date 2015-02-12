@@ -5,6 +5,7 @@ from functools import partial
 from bitcoin import *
 
 import math
+import time
 
 import pytest
 slow = pytest.mark.slow
@@ -56,7 +57,7 @@ class TestBtcTx(object):
 
     def test100from300K(self):
         startBlockNum = 300000
-        numBlock = 50
+        numBlock = 40
 
         block300kPrev = 0x000000000000000067ecc744b5ae34eebbde14d21ca4db51652e4d67e155f07e
         self.c.testingonlySetGenesis(block300kPrev)
@@ -78,8 +79,11 @@ class TestBtcTx(object):
         duration = datetime.combine(date.today(), endTime) - datetime.combine(date.today(), startTime)
         print("********** duration: "+str(duration)+" ********** start:"+str(startTime)+" end:"+str(endTime))
 
-        nChecks = 20
+        nChecks = 40
         for i in range(nChecks):
+            if i > 20:
+                time.sleep(1)
+
             randBlock = random.randrange(startBlockNum, startBlockNum+numBlock)
             res = self.randomTxVerify(randBlock)
 
