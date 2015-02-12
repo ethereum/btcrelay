@@ -74,15 +74,68 @@ def readVarintNum():
         return(first)
 
 
+# only handles lowercase a-f
+# tested via hashBlock()
+def stringReadUnsignedBitsLE(inStr:str, bits, pos):
+    size = bits / 4
+    offset = pos * 2  #TODO remove the *2?
+    endIndex = offset + size
+
+    # TODO ideally, getting a slice of gStr would be done in 1 step, but Serpent limitation
+    # tmpStr = load(self.gStr[0], chars=endIndex)
+    currStr = slice(inStr, chars=offset, chars=endIndex)  #TODO optimize away?
+
+    result = 0
+    j = 0
+    while j < size:
+        # "01 23 45" want it to read "10 32 54"
+        if j % 2 == 0:
+            i = j + 1
+        else:
+            i = j - 1
+
+        char = getch(currStr, i)
+        # log(char)
+        if (char >= 97 && char <= 102):  # only handles lowercase a-f
+            numeric = char - 87
+        else:
+            numeric = char - 48
+
+        # log(numeric)
+
+        result += numeric * 16^j
+        # log(result)
+
+        j += 1
+
+
+    # important
+    # self.pos += size / 2
+
+    return(result)
+
+
+def getBlockVersion(rawBlockHeader:str):
+    version = self.stringReadUnsignedBitsLE(rawBlockHeader, 32, 0)
+    return(version)
+
 # calls btcrelay hashHeader
 def hashBlock(rawBlockHeader:str):
     self.__setupForParsing(rawBlockHeader)
-    version = readUInt32LE()
-    hashPrevBlock = self.readUnsignedBitsLE(256)
-    hashMerkleRoot = self.readUnsignedBitsLE(256)
-    time = readUInt32LE()
-    bits = readUInt32LE()
-    nonce = readUInt32LE()
+
+    version = self.stringReadUnsignedBitsLE(rawBlockHeader, 32, 0)
+    hashPrevBlock = self.stringReadUnsignedBitsLE(rawBlockHeader, 256, 4)
+    hashMerkleRoot = self.stringReadUnsignedBitsLE(rawBlockHeader, 256, 36)
+    time = self.stringReadUnsignedBitsLE(rawBlockHeader, 32, 68)
+    bits = self.stringReadUnsignedBitsLE(rawBlockHeader, 32, 72)
+    nonce = self.stringReadUnsignedBitsLE(rawBlockHeader, 32, 76)
+
+    # version = readUInt32LE()
+    # hashPrevBlock = self.readUnsignedBitsLE(256)
+    # hashMerkleRoot = self.readUnsignedBitsLE(256)
+    # time = readUInt32LE()
+    # bits = readUInt32LE()
+    # nonce = readUInt32LE()
 
     res = self.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
     return(res)
