@@ -121,8 +121,6 @@ def getBlockVersion(rawBlockHeader:str):
 
 # calls btcrelay hashHeader
 def hashBlock(rawBlockHeader:str):
-    self.__setupForParsing(rawBlockHeader)
-
     version = self.stringReadUnsignedBitsLE(rawBlockHeader, 32, 0)
     hashPrevBlock = self.stringReadUnsignedBitsLE(rawBlockHeader, 256, 4)
     hashMerkleRoot = self.stringReadUnsignedBitsLE(rawBlockHeader, 256, 36)
@@ -130,6 +128,7 @@ def hashBlock(rawBlockHeader:str):
     bits = self.stringReadUnsignedBitsLE(rawBlockHeader, 32, 72)
     nonce = self.stringReadUnsignedBitsLE(rawBlockHeader, 32, 76)
 
+    # self.__setupForParsing(rawBlockHeader)
     # version = readUInt32LE()
     # hashPrevBlock = self.readUnsignedBitsLE(256)
     # hashMerkleRoot = self.readUnsignedBitsLE(256)
@@ -145,25 +144,23 @@ def callBtcRelayToStoreHeader(version, hashPrevBlock, hashMerkleRoot, time, bits
     return(res)
 
 
-def parseAndStoreHeader(rawHeader:str):
-    version = readUInt32LE()
-    prevHash = self.readUnsignedBitsLE(256)
-    merkleRoot = self.readUnsignedBitsLE(256)
-    time = readUInt32LE()
-    bits = readUInt32LE()
-    nonce = readUInt32LE()
+def parseAndStoreHeader(rawBlockHeader:str):
+    version = self.stringReadUnsignedBitsLE(rawBlockHeader, 32, 0)
+    hashPrevBlock = self.stringReadUnsignedBitsLE(rawBlockHeader, 256, 4)
+    hashMerkleRoot = self.stringReadUnsignedBitsLE(rawBlockHeader, 256, 36)
+    time = self.stringReadUnsignedBitsLE(rawBlockHeader, 32, 68)
+    bits = self.stringReadUnsignedBitsLE(rawBlockHeader, 32, 72)
+    nonce = self.stringReadUnsignedBitsLE(rawBlockHeader, 32, 76)
 
     # log(version)
     # log(merkleRoot)
 
-    res = self.callBtcRelayToStoreHeader(version, prevHash, merkleRoot, time, bits, nonce)
+    res = self.callBtcRelayToStoreHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
     return(res)
 
 
 
 def storeRawBlockHeader(rawBlockHeader:str):
-    self.__setupForParsing(rawBlockHeader)
-
     res = self.parseAndStoreHeader(rawBlockHeader)
     return(res)
 
