@@ -55,6 +55,32 @@ class TestBtcTx(object):
         return res
 
 
+    def test40from300K(self):
+        startBlockNum = 300000
+        numBlock = 40
+
+        block300kPrev = 0x000000000000000067ecc744b5ae34eebbde14d21ca4db51652e4d67e155f07e
+        self.c.testingonlySetGenesis(block300kPrev)
+
+        i = 1
+        with open("test/headers/100from300k.txt") as f:
+
+            startTime = datetime.now().time()
+
+            for header in f:
+                res = self.c.storeRawBlockHeader(header)
+                if i==numBlock:
+                    break
+                i += 1
+                assert res == i
+
+            endTime = datetime.now().time()
+
+        duration = datetime.combine(date.today(), endTime) - datetime.combine(date.today(), startTime)
+        print("********** duration: "+str(duration)+" ********** start:"+str(startTime)+" end:"+str(endTime))
+
+
+    @pytest.mark.skipif(True,reason='skip')
     def test100from300K(self):
         startBlockNum = 300000
         numBlock = 400
@@ -97,6 +123,7 @@ class TestBtcTx(object):
 
 
     # this was fine, the assertion was wrong, so need to carefully check the assert
+    @pytest.mark.skipif(True,reason='skip')
     def test17index2(self):
         startBlockNum = 300000
         numBlock = 30
@@ -176,6 +203,8 @@ class TestBtcTx(object):
             else:
                 assert res == 0
 
+    # was used to find merkle_prove issue in pybitcointools
+    @pytest.mark.skipif(True,reason='skip')
     def testIndexOutOfRange(self):
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
         self.c.testingonlySetGenesis(block100kPrev)
