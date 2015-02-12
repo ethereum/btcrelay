@@ -56,7 +56,7 @@ class TestBtcTx(object):
 
     def test100from300K(self):
         startBlockNum = 300000
-        numBlock = 40
+        numBlock = 50
 
         block300kPrev = 0x000000000000000067ecc744b5ae34eebbde14d21ca4db51652e4d67e155f07e
         self.c.testingonlySetGenesis(block300kPrev)
