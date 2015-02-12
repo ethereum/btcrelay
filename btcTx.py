@@ -131,12 +131,9 @@ def hashBlock(rawBlockHeader:str):
     res = self.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
     return(res)
 
-def callBtcRelayToStoreHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
-    res = self.storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
-    return(res)
 
 
-def parseAndStoreHeader(rawBlockHeader:str):
+def storeRawBlockHeader(rawBlockHeader:str):
     version = stringReadUnsignedBitsLE(rawBlockHeader, 32, 0)
     hashPrevBlock = stringReadUnsignedBitsLE(rawBlockHeader, 256, 4)
     hashMerkleRoot = stringReadUnsignedBitsLE(rawBlockHeader, 256, 36)
@@ -147,14 +144,10 @@ def parseAndStoreHeader(rawBlockHeader:str):
     # log(version)
     # log(merkleRoot)
 
-    res = self.callBtcRelayToStoreHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+    # calls btcrelay.py function
+    res = self.storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
     return(res)
 
-
-
-def storeRawBlockHeader(rawBlockHeader:str):
-    res = self.parseAndStoreHeader(rawBlockHeader)
-    return(res)
 
 
 # heaviestBlock is in btcrelay.py
