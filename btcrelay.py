@@ -147,27 +147,27 @@ def hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
     bits = flipBytes(bits, 4)
     nonce = flipBytes(nonce, 4)
 
-    hash = self.doRawHashBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+    hash = doRawHashBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
     return(flipBytes(hash, 32))
 
-def doRawHashBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
-    verPart = shiftLeft(version, 28*8)
-    hpb28 = shiftRight(hashPrevBlock, 4*8)  # 81cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a3080000
+macro doRawHashBlockHeader($version, $hashPrevBlock, $hashMerkleRoot, $time, $bits, $nonce):
+    verPart = shiftLeft($version, 28*8)
+    hpb28 = shiftRight($hashPrevBlock, 4*8)  # 81cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a3080000
     b1 = verPart | hpb28
 
-    hpbLast4 = shiftLeft(hashPrevBlock, 28*8)  # 000000000
-    hm28 = shiftRight(hashMerkleRoot, 4*8)  # e320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0
+    hpbLast4 = shiftLeft($hashPrevBlock, 28*8)  # 000000000
+    hm28 = shiftRight($hashMerkleRoot, 4*8)  # e320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0
     b2 = hpbLast4 | hm28
 
-    hmLast4 = shiftLeft(hashMerkleRoot, 28*8)
-    timePart = ZEROS | shiftLeft(time, 24*8)
-    bitsPart = ZEROS | shiftLeft(bits, 20*8)
-    noncePart = ZEROS | shiftLeft(nonce, 16*8)
+    hmLast4 = shiftLeft($hashMerkleRoot, 28*8)
+    timePart = ZEROS | shiftLeft($time, 24*8)
+    bitsPart = ZEROS | shiftLeft($bits, 20*8)
+    noncePart = ZEROS | shiftLeft($nonce, 16*8)
     b3 = hmLast4 | timePart | bitsPart | noncePart
 
     hash1 = sha256([b1,b2,b3], chars=80)
     hash2 = sha256([hash1], items=1)
-    return(hash2)
+    hash2
 
 
 def verifyTx(tx, proofLen, hash:arr, path:arr, txBlockHash):
