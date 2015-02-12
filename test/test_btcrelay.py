@@ -87,11 +87,3 @@ class TestBtcTx(object):
         r = self.c.concatHash(tx1, tx2)
         r = r % 2 ** 256
         assert r == 0xccdafb73d8dcd0173d5d5c3c9a0770d0b3953db889dab99ef05b1907518cb815
-
-
-    # http://www.righto.com/2014/02/bitcoin-mining-hard-way-algorithms.html#ref3
-    def testTargetFromBits(self):
-        bits = 0x19015f53
-        exp = 8614444778121073626993210829679478604092861119379437256704
-        res = self.c.targetFromBits(bits)
-        assert res == exp

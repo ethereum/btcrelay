@@ -132,11 +132,12 @@ def isNonceValid(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
         return(0)
 
 
+# http://www.righto.com/2014/02/bitcoin-mining-hard-way-algorithms.html#ref3
 macro targetFromBits($bits):
-    exp = div($bits, TWO_POW_24)
-    mant = $bits & 0xffffff
-    target = mant * shiftLeft(1, (8*(exp - 3)))
-    target
+    $exp = div($bits, TWO_POW_24)
+    $mant = $bits & 0xffffff
+    $target = $mant * shiftLeft(1, (8*($exp - 3)))
+    $target
 
 
 def hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):

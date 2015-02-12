@@ -25,6 +25,13 @@ def testDoRawHashBlockHeader():
     return(res == expHash)
 
 
+def testTargetFromBits():
+    bits = 0x19015f53
+    exp = 8614444778121073626993210829679478604092861119379437256704
+    res = targetFromBits(bits)
+    return(res == exp)
+
+
 # this will need fixing.  for ideas see test/test_btcTx.py
 def testRelayTx():
     # this is duped from testVerifyTx since there seems to be issues with accessing arrays
