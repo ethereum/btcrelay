@@ -11,7 +11,7 @@
 # 17: score
 #
 
-inset('tryStoreHeaders.py')
+inset('btcChain.py')
 
 # block with the highest score (the end of the blockchain)
 data heaviestBlock
