@@ -22,7 +22,7 @@ def testStoreGenesisBlock():
 def testStoreBlock1():
     # block 1
     rawBlockHeader = text("010000006fe28c0ab6f1b372c1a6a246ae63f74f931e8365e15a089c68d6190000000000982051fd1e4ba744bbbe680e1fee14677ba1a3c3540bf7b1cdb606e857233e0e61bc6649ffff001d01e36299")
-    res = self.storeRawBlockHeader(rawBlockHeader)
+    res = self.storeRawBlockHeader(rawBlockHeader, profiling=True)
     return(res)
 
 
@@ -45,7 +45,7 @@ def test_getOutputScriptWithMultipleInputs():
     outNum = 0
     # exp hash is untested
     expHashOfOutputScript = 56502271141207574289324577080259466406131090189524790551966501267826601078627
-    res = self.__checkOutputScript(rawTx, len(rawTx), outNum, expHashOfOutputScript)
+    res = self.doCheckOutputScript(rawTx, len(rawTx), outNum, expHashOfOutputScript)
     return(res)
 
 def test_getOutput0Script():
@@ -53,7 +53,7 @@ def test_getOutput0Script():
     outNum = 0
     # exp hash is untested
     expHashOfOutputScript = 15265305399265587892204941549768278966163359751228226364149342078721216369579
-    res = self.__checkOutputScript(rawTx, len(rawTx), outNum, expHashOfOutputScript)
+    res = self.doCheckOutputScript(rawTx, len(rawTx), outNum, expHashOfOutputScript)
     return(res)
 
 def test_getOutput1Script():
@@ -61,129 +61,130 @@ def test_getOutput1Script():
     outNum = 1
     # exp hash is untested
     expHashOfOutputScript = 115071730706014548547567659794968118611083380235397871058495281758347510448362
-    res = self.__checkOutputScript(rawTx, len(rawTx), outNum, expHashOfOutputScript)
+    res = self.doCheckOutputScript(rawTx, len(rawTx), outNum, expHashOfOutputScript)
     return(res)
 
 
+# these tests could be moved to test/test_btcTx.py
+# def test_readUInt8_simple():
+#     rawTx = text("02")
+#     size = len(rawTx)
+#     bb = self.str2a(rawTx, size, outsz=size)
+#     self.copyToBuf(bb, size)
+#
+#     self.pos = 0
+#     res = readUInt8()
+#     exp = 2
+#     return(res == exp)
+#
+# def test_readUInt8():
+#     t1 = self.test_readUInt8_simple()
+#     t2 = self.test_readUInt8_hex()
+#     return(t1 == 1 && t2 == 1)
+#
+# def test_readUInt8_hex():
+#     rawTx = text("3c")
+#     size = len(rawTx)
+#     bb = self.str2a(rawTx, size, outsz=size)
+#     self.copyToBuf(bb, size)
+#
+#     self.pos = 0
+#     res = readUInt8()
+#     exp = 60
+#     return(res == exp)
+#
+#
+# def test_readUInt16LE_hex():
+#     rawTx = text("89ab")
+#     save(self.gStr[0], rawTx, chars=len(rawTx))
+#     self.pos = 0
+#
+#     res = readUInt16LE()
+#     exp = 0xab89
+#     return(res == exp)
+#
+#
+# def test_readUInt32LE():
+#     t1 = self.test_readUInt32LE_simple()
+#     t2 = self.test_readUInt32LE_hex()
+#     t3 = self.test_readUInt32LE_nodejs()
+#     return(t1 == 1 && t2 == 1 && t3 == 1)
+#
+# def test_readUInt32LE_simple():
+#     rawTx = text("01000000")
+#     size = len(rawTx)
+#     bb = self.str2a(rawTx, size, outsz=size)
+#     self.copyToBuf(bb, size)
+#
+#     self.pos = 0
+#     res = readUInt32LE()
+#     exp = 1
+#     return(res == exp)
+#
+#
+# def test_readUInt32LE_hex():
+#     # rawTx = text("03042342")
+#     rawTx = text("0f000000")
+#     size = len(rawTx)
+#     bb = self.str2a(rawTx, size, outsz=size)
+#     self.copyToBuf(bb, size)
+#
+#     self.pos = 0
+#     res = readUInt32LE()
+#     exp = 15
+#     return(res == exp)
+#
+# # test from http://nodejs.org/api/buffer.html#buffer_buf_readuint32le_offset_noassert
+# def test_readUInt32LE_nodejs():
+#     rawTx = text("03042342")
+#     save(self.gStr[0], rawTx, chars=len(rawTx))
+#     self.pos = 0
+#
+#     res = readUInt32LE()
+#     exp = 0x42230403
+#     return(res == exp)
+#
+#
+#
+# def test_readUInt64LE_hex():
+#     rawTx = text("abcdef0123456789")
+#     size = len(rawTx)
+#     bb = self.str2a(rawTx, size, outsz=size)
+#     self.copyToBuf(bb, size)
+#
+#     self.pos = 0
+#     res = readUInt64LE()
+#     exp = 0x8967452301efcdab
+#     return(res == exp)
+#
+#
+#
+# def test_str2a():
+#     mystring = text("abcdef")
+#     size = len(mystring)
+#     b = self.str2a(mystring, size, outsz=size)
+#     return(b:arr)
+#
+# def test_initFromBuf():
+#     size = 3
+#     self.buf[0] = 1
+#     self.buf[1] = 3
+#     self.buf[2] = 5
+#     bb = self.initFromBuf(size, outsz=size)
+#     return(bb:arr)
+#
+# def test_a2str():
+#     # mystr = text("cow")
+#     # log(datastr=mystr)
+#
+#     myarr = array(3)
+#     myarr[0] = 99
+#     myarr[1] = 111
+#     myarr[2] = 119
+#
+#     mystr = self.a2str(myarr, 3, outsz=3)
+#     log(datastr=mystr)
 
-def test_readUInt8_simple():
-    rawTx = text("02")
-    size = len(rawTx)
-    bb = self.str2a(rawTx, size, outsz=size)
-    self.copyToBuf(bb, size)
-
-    self.pos = 0
-    res = readUInt8()
-    exp = 2
-    return(res == exp)
-
-def test_readUInt8():
-    t1 = self.test_readUInt8_simple()
-    t2 = self.test_readUInt8_hex()
-    return(t1 == 1 && t2 == 1)
-
-def test_readUInt8_hex():
-    rawTx = text("3c")
-    size = len(rawTx)
-    bb = self.str2a(rawTx, size, outsz=size)
-    self.copyToBuf(bb, size)
-
-    self.pos = 0
-    res = readUInt8()
-    exp = 60
-    return(res == exp)
-
-
-def test_readUInt16LE_hex():
-    rawTx = text("89ab")
-    save(self.gStr[0], rawTx, chars=len(rawTx))
-    self.pos = 0
-
-    res = readUInt16LE()
-    exp = 0xab89
-    return(res == exp)
-
-
-def test_readUInt32LE():
-    t1 = self.test_readUInt32LE_simple()
-    t2 = self.test_readUInt32LE_hex()
-    t3 = self.test_readUInt32LE_nodejs()
-    return(t1 == 1 && t2 == 1 && t3 == 1)
-
-def test_readUInt32LE_simple():
-    rawTx = text("01000000")
-    size = len(rawTx)
-    bb = self.str2a(rawTx, size, outsz=size)
-    self.copyToBuf(bb, size)
-
-    self.pos = 0
-    res = readUInt32LE()
-    exp = 1
-    return(res == exp)
-
-
-def test_readUInt32LE_hex():
-    # rawTx = text("03042342")
-    rawTx = text("0f000000")
-    size = len(rawTx)
-    bb = self.str2a(rawTx, size, outsz=size)
-    self.copyToBuf(bb, size)
-
-    self.pos = 0
-    res = readUInt32LE()
-    exp = 15
-    return(res == exp)
-
-# test from http://nodejs.org/api/buffer.html#buffer_buf_readuint32le_offset_noassert
-def test_readUInt32LE_nodejs():
-    rawTx = text("03042342")
-    save(self.gStr[0], rawTx, chars=len(rawTx))
-    self.pos = 0
-
-    res = readUInt32LE()
-    exp = 0x42230403
-    return(res == exp)
-
-
-
-def test_readUInt64LE_hex():
-    rawTx = text("abcdef0123456789")
-    size = len(rawTx)
-    bb = self.str2a(rawTx, size, outsz=size)
-    self.copyToBuf(bb, size)
-
-    self.pos = 0
-    res = readUInt64LE()
-    exp = 0x8967452301efcdab
-    return(res == exp)
-
-
-
-def test_str2a():
-    mystring = text("abcdef")
-    size = len(mystring)
-    b = self.str2a(mystring, size, outsz=size)
-    return(b:arr)
-
-def test_initFromBuf():
-    size = 3
-    self.buf[0] = 1
-    self.buf[1] = 3
-    self.buf[2] = 5
-    bb = self.initFromBuf(size, outsz=size)
-    return(bb:arr)
-
-def test_a2str():
-    # mystr = text("cow")
-    # log(datastr=mystr)
-
-    myarr = array(3)
-    myarr[0] = 99
-    myarr[1] = 111
-    myarr[2] = 119
-
-    mystr = self.a2str(myarr, 3, outsz=3)
-    log(datastr=mystr)
 
 
 inset('btcTx.py')
