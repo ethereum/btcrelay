@@ -73,7 +73,7 @@ def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce, 
 
     # log(333)
     # log(blockHash)
-    
+
     target = targetFromBits(bits)
 
     difficulty = DIFFICULTY_1 / target # https://en.bitcoin.it/wiki/Difficulty
@@ -102,7 +102,7 @@ def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce, 
 def fastHashBlock(blockHeaderBinary:str):
     hash1 = sha256(blockHeaderBinary:str)
     hash2 = sha256(hash1)
-    res = flipBytes(hash2, 32)
+    res = flip32Bytes(hash2)
     return(res)
 
 # eg 0x6162 will be 0x6261
@@ -118,13 +118,13 @@ macro flipBytes($n, $numByte):
 
     $b
 
-# macro optFlip($a):
-#     $o = 0
-#     with $i = 0:
-#         while $i < 32:
-#             mstore8(ref($o) + $i, byte(31 - $i, $a))
-#             $i += 1
-#     $o
+macro flip32Bytes($a):
+    $o = 0
+    with $i = 0:
+        while $i < 32:
+            mstore8(ref($o) + $i, byte(31 - $i, $a))
+            $i += 1
+    $o
 
 # fast string flip bytes
 # macro vflip($x, $L):
