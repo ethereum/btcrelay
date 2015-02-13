@@ -26,17 +26,21 @@ class TestBtcTx(object):
 
     def getBlockHeaderBinary(self, ver, prev_block, mrkl_root, time_, bits, nonce):
         # print('@@@@ mrkl_root: ' + str(mrkl_root))
-        bytesPrevBlock = hex(prev_block)[2:-1]
-        bytesPrevBlock = '0' + bytesPrevBlock if len(bytesPrevBlock) % 2 else bytesPrevBlock
+        bytesPrevBlock = format(prev_block, '64x').replace(' ', '0')
+        print('@@@@@ bytesPrevBlock: ' + bytesPrevBlock)
+        # bytesPrevBlock = '0' + bytesPrevBlock if len(bytesPrevBlock) % 2 else bytesPrevBlock
         bytesPrevBlock = bytesPrevBlock.decode('hex')[::-1]
 
-        bytesMerkle = hex(mrkl_root)[2:-1]
-        bytesMerkle = '0' + bytesMerkle if len(bytesMerkle) % 2 else bytesMerkle
+        bytesMerkle = format(mrkl_root, '64x').replace(' ', '0')
+        # bytesMerkle = '0' + bytesMerkle if len(bytesMerkle) % 2 else bytesMerkle
+        print('@@@@@ bytesMerkle: ' + bytesMerkle)
         bytesMerkle = bytesMerkle.decode('hex')[::-1]
+
+        print('@@@@@ nonce: ' + str(nonce))
 
         header = ( struct.pack("<L", ver) + bytesPrevBlock +
               bytesMerkle + struct.pack("<LLL", time_, bits, nonce))
-        print('@@@@ header: ' + str(header))
+        print('@@@@ header: ' + header.encode('hex'))
         return header
 
     # also tests a (fake) fork
