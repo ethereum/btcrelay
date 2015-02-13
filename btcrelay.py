@@ -96,21 +96,19 @@ def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
     return(0)
 
 
-
+# eg 0x6162 will be 0x6261
 macro flipBytes($n, $numByte):
-    mask = 0xff
+    $b = byte(31, $n)
 
-    result = 0
-    i = 0
-    while i < $numByte:
-        b = $n & mask
-        b = div(b, 2^(i*8))
-        b *= 2^(($numByte-i-1)*8)
-        mask *= 256
-        result = result | b
-        i += 1
+    $i = 30
+    $j = 1
+    while $j < $numByte:
+        $b = ($b * 256) | byte($i, $n)
+        $i -= 1
+        $j += 1
 
-    result
+    $b
+
 
 # shift left
 macro shiftLeft($n, $x):
