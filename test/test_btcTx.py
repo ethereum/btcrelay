@@ -25,22 +25,14 @@ class TestBtcTx(object):
 
 
     def getBlockHeaderBinary(self, ver, prev_block, mrkl_root, time_, bits, nonce):
-        # print('@@@@ mrkl_root: ' + str(mrkl_root))
         bytesPrevBlock = format(prev_block, '64x').replace(' ', '0')
-        print('@@@@@ bytesPrevBlock: ' + bytesPrevBlock)
-        # bytesPrevBlock = '0' + bytesPrevBlock if len(bytesPrevBlock) % 2 else bytesPrevBlock
         bytesPrevBlock = bytesPrevBlock.decode('hex')[::-1]
 
         bytesMerkle = format(mrkl_root, '64x').replace(' ', '0')
-        # bytesMerkle = '0' + bytesMerkle if len(bytesMerkle) % 2 else bytesMerkle
-        print('@@@@@ bytesMerkle: ' + bytesMerkle)
         bytesMerkle = bytesMerkle.decode('hex')[::-1]
-
-        print('@@@@@ nonce: ' + str(nonce))
 
         header = ( struct.pack("<L", ver) + bytesPrevBlock +
               bytesMerkle + struct.pack("<LLL", time_, bits, nonce))
-        print('@@@@ header: ' + header.encode('hex'))
         return header
 
     # also tests a (fake) fork
@@ -179,8 +171,9 @@ class TestBtcTx(object):
         hashPrevBlock = block100kPrev
         for i in range(7):
             nonce = 1 if (i in [4,5]) else 0
-            res = self.c.storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
-            hashPrevBlock = self.c.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+            blockHeaderBinary = self.getBlockHeaderBinary(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+            res = self.c.storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce, blockHeaderBinary)
+            hashPrevBlock = self.c.fastHashBlock(blockHeaderBinary)
             assert res == i+2
 
         # testingonlySetHeaviest is needed because the difficulty from
@@ -205,9 +198,10 @@ class TestBtcTx(object):
             "0100000079cda856b143d9db2c1caff01d1aecc8630d30625d10e8b4b8b0000000000000b50cc069d6a3e33e3ff84a5c41d9d3febe7c770fdcc96b2c3ff60abe184f196367291b4d4c86041b8fa45d63",
             "0100000045dc58743362fe8d8898a7506faa816baed7d391c9bc0b13b0da00000000000021728a2f4f975cc801cb3c672747f1ead8a946b2702b7bd52f7b86dd1aa0c975c02a1b4d4c86041b7b47546d"
         ]
+        blockHeaderBinary = map(lambda x: x.decode('hex'), headers)
         block100k = 0x000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506
         for i in range(7):
-            res = self.c.storeRawBlockHeader(headers[i])
+            res = self.c.storeRawBlockHeader(headers[i], blockHeaderBinary[i])
             assert res == i+2
 
             # firstEasyBlock should no longer verify since it is no longer on the main chain
