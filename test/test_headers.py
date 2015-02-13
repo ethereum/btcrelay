@@ -191,8 +191,9 @@ class TestBtcTx(object):
             "0100000079cda856b143d9db2c1caff01d1aecc8630d30625d10e8b4b8b0000000000000b50cc069d6a3e33e3ff84a5c41d9d3febe7c770fdcc96b2c3ff60abe184f196367291b4d4c86041b8fa45d63",
             "0100000045dc58743362fe8d8898a7506faa816baed7d391c9bc0b13b0da00000000000021728a2f4f975cc801cb3c672747f1ead8a946b2702b7bd52f7b86dd1aa0c975c02a1b4d4c86041b7b47546d"
         ]
+        blockHeaderBinary = map(lambda x: x.decode('hex'), headers)
         for i in range(7):
-            res = self.c.storeRawBlockHeader(headers[i])
+            res = self.c.storeRawBlockHeader(headers[i], blockHeaderBinary[i])
             assert res == i+2
 
         startBlockNum = 100000
