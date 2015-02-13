@@ -133,14 +133,7 @@ def hashBlock(rawBlockHeader:str):
 
 
 
-def fastHashBlock(blockHeaderBinary:str):
-    hash1 = sha256(blockHeaderBinary:str)
-    hash2 = sha256(hash1)
-    res = flipBytes(hash2, 32)
-    return(res)
-
-
-def storeRawBlockHeader(rawBlockHeader:str):
+def storeRawBlockHeader(rawBlockHeader:str, blockHeaderBinary:str):
     version = stringReadUnsignedBitsLE(rawBlockHeader, 32, 0)
     hashPrevBlock = stringReadUnsignedBitsLE(rawBlockHeader, 256, 4)
     hashMerkleRoot = stringReadUnsignedBitsLE(rawBlockHeader, 256, 36)
@@ -152,7 +145,7 @@ def storeRawBlockHeader(rawBlockHeader:str):
     # log(merkleRoot)
 
     # calls btcrelay.py function
-    res = self.storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+    res = self.storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce, blockHeaderBinary)
     return(res)
 
 

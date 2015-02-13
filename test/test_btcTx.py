@@ -1,6 +1,7 @@
 from pyethereum import tester
 
 import datetime
+import struct
 import pytest
 slow = pytest.mark.slow
 
@@ -23,6 +24,21 @@ class TestBtcTx(object):
         tester.seed = self.seed
 
 
+    def getBlockHeaderBinary(self, ver, prev_block, mrkl_root, time_, bits, nonce):
+        # print('@@@@ mrkl_root: ' + str(mrkl_root))
+        bytesPrevBlock = hex(prev_block)[2:-1]
+        bytesPrevBlock = '0' + bytesPrevBlock if len(bytesPrevBlock) % 2 else bytesPrevBlock
+        bytesPrevBlock = bytesPrevBlock.decode('hex')[::-1]
+
+        bytesMerkle = hex(mrkl_root)[2:-1]
+        bytesMerkle = '0' + bytesMerkle if len(bytesMerkle) % 2 else bytesMerkle
+        bytesMerkle = bytesMerkle.decode('hex')[::-1]
+
+        header = ( struct.pack("<L", ver) + bytesPrevBlock +
+              bytesMerkle + struct.pack("<LLL", time_, bits, nonce))
+        print('@@@@ header: ' + str(header))
+        return header
+
     # also tests a (fake) fork
     def testHeadersFrom100K(self):
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
@@ -37,8 +53,9 @@ class TestBtcTx(object):
             "0100000079cda856b143d9db2c1caff01d1aecc8630d30625d10e8b4b8b0000000000000b50cc069d6a3e33e3ff84a5c41d9d3febe7c770fdcc96b2c3ff60abe184f196367291b4d4c86041b8fa45d63",
             "0100000045dc58743362fe8d8898a7506faa816baed7d391c9bc0b13b0da00000000000021728a2f4f975cc801cb3c672747f1ead8a946b2702b7bd52f7b86dd1aa0c975c02a1b4d4c86041b7b47546d"
         ]
+        blockHeaderBinary = map(lambda x: x.decode('hex'), headers)
         for i in range(7):
-            res = self.c.storeRawBlockHeader(headers[i])
+            res = self.c.storeRawBlockHeader(headers[i], blockHeaderBinary[i])
             assert res == i+2
 
 
@@ -100,8 +117,9 @@ class TestBtcTx(object):
         hashPrevBlock = block100kPrev
         for i in range(7):
             nonce = 1 if (i in [4,5]) else 0
-            res = self.c.storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
-            hashPrevBlock = self.c.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+            blockHeaderBinary = self.getBlockHeaderBinary(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+            res = self.c.storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce, blockHeaderBinary)
+            hashPrevBlock = self.c.fastHashBlock(blockHeaderBinary)
             assert res == i+2
 
         # forked block should NOT verify
@@ -234,14 +252,16 @@ class TestBtcTx(object):
 
 
     def storeGenesisBlock(self):
-        rawBlockHeader = ("0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c")
-        res = self.c.storeRawBlockHeader(rawBlockHeader)
+        blockHeaderStr = ("0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c")
+        bhBinary = blockHeaderStr.decode('hex')
+        res = self.c.storeRawBlockHeader(blockHeaderStr, bhBinary)
         assert res == 1
 
     def storeBlock1(self):
         # block 1
-        rawBlockHeader = ("010000006fe28c0ab6f1b372c1a6a246ae63f74f931e8365e15a089c68d6190000000000982051fd1e4ba744bbbe680e1fee14677ba1a3c3540bf7b1cdb606e857233e0e61bc6649ffff001d01e36299")
-        res = self.c.storeRawBlockHeader(rawBlockHeader)
+        blockHeaderStr = ("010000006fe28c0ab6f1b372c1a6a246ae63f74f931e8365e15a089c68d6190000000000982051fd1e4ba744bbbe680e1fee14677ba1a3c3540bf7b1cdb606e857233e0e61bc6649ffff001d01e36299")
+        bhBinary = blockHeaderStr.decode('hex')
+        res = self.c.storeRawBlockHeader(blockHeaderStr, bhBinary)
         assert res == 2
 
 

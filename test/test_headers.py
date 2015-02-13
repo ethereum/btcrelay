@@ -55,7 +55,7 @@ class TestBtcTx(object):
         return res
 
 
-    # @pytest.mark.skipif(True,reason='skip')
+    @pytest.mark.skipif(True,reason='skip')
     def test80from300K(self):
         startBlockNum = 300000
         numBlock = 80

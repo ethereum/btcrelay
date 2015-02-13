@@ -62,14 +62,18 @@ def testingonlySetGenesis(blockHash):
         i += 1
 
 
-def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
+def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce, blockHeaderBinary:str):
     # this check can be removed to allow older block headers to be added, but it
     # may provide an attack vector where the contract can be spammed with valid
     # headers that will not be used and simply take up memory storage
     # if hashPrevBlock != self.heaviestBlock:  # special case for genesis prev block of 0 is not needed since self.heaviestBlock is 0 initially
     #     return(0)
 
-    blockHash = hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+    blockHash = self.fastHashBlock(blockHeaderBinary)
+
+    # log(333)
+    # log(blockHash)
+    
     target = targetFromBits(bits)
 
     difficulty = DIFFICULTY_1 / target # https://en.bitcoin.it/wiki/Difficulty
@@ -95,6 +99,11 @@ def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
 
     return(0)
 
+def fastHashBlock(blockHeaderBinary:str):
+    hash1 = sha256(blockHeaderBinary:str)
+    hash2 = sha256(hash1)
+    res = flipBytes(hash2, 32)
+    return(res)
 
 # eg 0x6162 will be 0x6261
 macro flipBytes($n, $numByte):

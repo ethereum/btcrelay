@@ -33,7 +33,10 @@ class TestBtcTx(object):
         nonce = 796195988
         blockNumber = 333001
 
-        assert blockNumber == self.c.storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+        blockHeaderStr = '0200000059c786bb379b65487f373279354f8ccc91ffcea2200c36080000000000000000dd9d7757a736fec629ab0ed0f602ba23c77afe7edec85a7026f641fd90bcf8f658ca8154747b1b1894fc742f'
+        bhBinary = blockHeaderStr.decode('hex')
+
+        assert blockNumber == self.c.storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce, bhBinary)
 
     def testComputeMerkle(self):
         # values are from block 100K
