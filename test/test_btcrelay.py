@@ -80,10 +80,3 @@ class TestBtcTx(object):
 
         res = self.c.isNonceValid(ver, prev_block, mrkl_root, time_, bits, nonce)
         assert res == 1
-
-    def testConcatHash(self):
-        tx1 = 0x8c14f0db3df150123e6f3dbbf30f8b955a8249b62ac1d1ff16284aefa3d06d87
-        tx2 = 0xfff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4
-        r = self.c.concatHash(tx1, tx2)
-        r = r % 2 ** 256
-        assert r == 0xccdafb73d8dcd0173d5d5c3c9a0770d0b3953db889dab99ef05b1907518cb815

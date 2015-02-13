@@ -203,7 +203,7 @@ def computeMerkle(tx, proofLen, hash:arr, path:arr):
             left = resultHash
             right = proofHex
 
-        resultHash = self.concatHash(left, right)
+        resultHash = concatHash(left, right)
 
         i += 1
 
@@ -226,11 +226,11 @@ def within6Confirms(txBlockHash):
 
     return(0)
 
-def concatHash(tx1, tx2):
-    left = flipBytes(tx1, 32)
-    right = flipBytes(tx2, 32)
+macro concatHash($tx1, $tx2):
+    $left = flipBytes($tx1, 32)
+    $right = flipBytes($tx2, 32)
 
-    hash1 = sha256([left, right], chars=64)
-    hash2 = sha256([hash1], items=1)
+    $hash1 = sha256([$left, $right], chars=64)
+    $hash2 = sha256([$hash1], items=1)
 
-    return(flipBytes(hash2, 32))
+    flipBytes($hash2, 32)
