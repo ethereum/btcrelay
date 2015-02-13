@@ -110,6 +110,17 @@ macro flipBytes($n, $numByte):
     $b
 
 
+# macro flipBytes(x):
+#     $a = x
+#     $o = 0
+#     with $i = 0:
+#         while $i < 32:
+#             mstore8(ref($o) + $i, byte(31 - $i, $a))
+#             $i += 1
+#     $o
+
+
+
 # shift left bytes
 macro shiftLeftBytes($n, $x):
     $n * 256^$x  # set the base to 2 (instead of 256) if we want a macro to shift only bits

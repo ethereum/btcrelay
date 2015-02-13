@@ -132,6 +132,16 @@ def hashBlock(rawBlockHeader:str):
     return(res)
 
 
+def fastHashBlock(rawBlockHeader:str):
+    hash1 = sha256(rawBlockHeader:str)
+    log(1111111)
+    log(hash1)
+    hash2 = sha256(hash1)
+    log(hash2)
+    res = flipBytes(hash2, 80)
+    log(res)
+    return(res)
+
 
 def storeRawBlockHeader(rawBlockHeader:str):
     version = stringReadUnsignedBitsLE(rawBlockHeader, 32, 0)
