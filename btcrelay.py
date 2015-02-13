@@ -110,13 +110,13 @@ macro flipBytes($n, $numByte):
     $b
 
 
-# shift left
-macro shiftLeft($n, $x):
-    $n * 2^$x
+# shift left bytes
+macro shiftLeftBytes($n, $x):
+    $n * 256^$x  # set the base to 2 (instead of 256) if we want a macro to shift only bits
 
 # shift right
-macro shiftRight($n, $x):
-    div($n, 2^$x)
+macro shiftRightBytes($n, $x):
+    div($n, 256^$x)
 
 
 def isNonceValid(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
@@ -134,7 +134,7 @@ def isNonceValid(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
 macro targetFromBits($bits):
     $exp = div($bits, TWO_POW_24)
     $mant = $bits & 0xffffff
-    $target = $mant * shiftLeft(1, (8*($exp - 3)))
+    $target = $mant * shiftLeftBytes(1, ($exp - 3))
     $target
 
 
@@ -150,18 +150,18 @@ def hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
     return(flipBytes(hash, 32))
 
 macro doRawHashBlockHeader($version, $hashPrevBlock, $hashMerkleRoot, $time, $bits, $nonce):
-    verPart = shiftLeft($version, 28*8)
-    hpb28 = shiftRight($hashPrevBlock, 4*8)  # 81cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a3080000
+    verPart = shiftLeftBytes($version, 28)
+    hpb28 = shiftRightBytes($hashPrevBlock, 4)  # 81cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a3080000
     b1 = verPart | hpb28
 
-    hpbLast4 = shiftLeft($hashPrevBlock, 28*8)  # 000000000
-    hm28 = shiftRight($hashMerkleRoot, 4*8)  # e320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0
+    hpbLast4 = shiftLeftBytes($hashPrevBlock, 28)  # 000000000
+    hm28 = shiftRightBytes($hashMerkleRoot, 4)  # e320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0
     b2 = hpbLast4 | hm28
 
-    hmLast4 = shiftLeft($hashMerkleRoot, 28*8)
-    timePart = ZEROS | shiftLeft($time, 24*8)
-    bitsPart = ZEROS | shiftLeft($bits, 20*8)
-    noncePart = ZEROS | shiftLeft($nonce, 16*8)
+    hmLast4 = shiftLeftBytes($hashMerkleRoot, 28)
+    timePart = ZEROS | shiftLeftBytes($time, 24)
+    bitsPart = ZEROS | shiftLeftBytes($bits, 20)
+    noncePart = ZEROS | shiftLeftBytes($nonce, 16)
     b3 = hmLast4 | timePart | bitsPart | noncePart
 
     hash1 = sha256([b1,b2,b3], chars=80)
