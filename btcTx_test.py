@@ -16,7 +16,7 @@ inset('btcTx.py')
 def testStoreGenesisBlock():
     # genesis
     rawBlockHeader = text("0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c")
-    res = self.storeRawBlockHeader(rawBlockHeader)
+    res = self.storeRawBlockHeader(rawBlockHeader, rawBlockHeader)
     return(res)
 
 
