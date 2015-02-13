@@ -109,15 +109,40 @@ macro flipBytes($n, $numByte):
 
     $b
 
-
-# macro flipBytes(x):
-#     $a = x
+# macro optFlip($a):
 #     $o = 0
 #     with $i = 0:
 #         while $i < 32:
 #             mstore8(ref($o) + $i, byte(31 - $i, $a))
 #             $i += 1
 #     $o
+
+# fast string flip bytes
+# macro vflip($x, $L):
+#     with $o = alloc($L + 32):
+#         with $lim = $o + 2:
+#             $o += $L
+#             with $y = $x - 31:
+#                 while $o > $lim:
+#                     mstore($o, mload($y))
+#                     $o -= 1
+#                     $y += 1
+#                     mstore($o, mload($y))
+#                     $o -= 1
+#                     $y += 1
+#                     mstore($o, mload($y))
+#                     $o -= 1
+#                     $y += 1
+#                 if $o > $lim - 2:
+#                     mstore($o, mload($y))
+#                     $o -= 1
+#                     $y += 1
+#                 if $o > $lim - 2:
+#                     mstore($o, mload($y))
+#                     $o -= 1
+#                     $y += 1
+#         mstore($o, $L)
+#         $o + 32
 
 
 

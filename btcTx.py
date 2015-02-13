@@ -132,14 +132,11 @@ def hashBlock(rawBlockHeader:str):
     return(res)
 
 
-def fastHashBlock(rawBlockHeader:str):
-    hash1 = sha256(rawBlockHeader:str)
-    log(1111111)
-    log(hash1)
+
+def fastHashBlock(blockHeaderBinary:str):
+    hash1 = sha256(blockHeaderBinary:str)
     hash2 = sha256(hash1)
-    log(hash2)
-    res = flipBytes(hash2, 80)
-    log(res)
+    res = flipBytes(hash2, 32)
     return(res)
 
 
