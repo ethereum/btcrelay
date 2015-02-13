@@ -128,7 +128,7 @@ def hashBlock(rawBlockHeader:str):
     # bits = readUInt32LE()
     # nonce = readUInt32LE()
 
-    res = self.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+    res = hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
     return(res)
 
 

@@ -69,7 +69,7 @@ def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
     # if hashPrevBlock != self.heaviestBlock:  # special case for genesis prev block of 0 is not needed since self.heaviestBlock is 0 initially
     #     return(0)
 
-    blockHash = self.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+    blockHash = hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
     target = targetFromBits(bits)
 
     difficulty = DIFFICULTY_1 / target # https://en.bitcoin.it/wiki/Difficulty
@@ -122,7 +122,7 @@ macro shiftRightBytes($n, $x):
 def isNonceValid(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
     target = targetFromBits(bits)
 
-    hash = self.hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+    hash = hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
 
     if lt(hash, target):
         return(1)
@@ -138,16 +138,18 @@ macro targetFromBits($bits):
     $target
 
 
-def hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
-    version = flipBytes(version, 4)
-    hashPrevBlock = flipBytes(hashPrevBlock, 32)
-    hashMerkleRoot = flipBytes(hashMerkleRoot, 32)
-    time = flipBytes(time, 4)
-    bits = flipBytes(bits, 4)
-    nonce = flipBytes(nonce, 4)
+macro hashHeader($version, $hashPrevBlock, $hashMerkleRoot, $time, $bits, $nonce):
+    $_version = flipBytes($version, 4)
+    $_hashPrevBlock = flipBytes($hashPrevBlock, 32)
+    $_hashMerkleRoot = flipBytes($hashMerkleRoot, 32)
+    $_time = flipBytes($time, 4)
+    $_bits = flipBytes($bits, 4)
+    $_nonce = flipBytes($nonce, 4)
 
-    hash = doRawHashBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
-    return(flipBytes(hash, 32))
+    $hash = doRawHashBlockHeader($_version, $_hashPrevBlock, $_hashMerkleRoot, $_time, $_bits, $_nonce)
+    $retHash = flipBytes($hash, 32)
+    $retHash
+
 
 macro doRawHashBlockHeader($version, $hashPrevBlock, $hashMerkleRoot, $time, $bits, $nonce):
     verPart = shiftLeftBytes($version, 28)
