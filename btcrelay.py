@@ -86,10 +86,12 @@ def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce, 
 
         self.saveAncestors(blockHash, hashPrevBlock)
 
-        save(self.block[blockHash]._blockHeader[0], blockHeaderBinary, chars=160) # or 160?
+        log(datastr=blockHeaderBinary)
+        save(self.block[blockHash]._blockHeader[0], blockHeaderBinary, chars=80) # or 160?
 
-        tmpStr = load(self.block[blockHash]._blockHeader[0], chars=160)
-        realMerkleRoot = stringReadUnsignedBitsLE(tmpStr, 256, 36)
+        tmpStr = load(self.block[blockHash]._blockHeader[0], chars=80)
+        log(datastr=tmpStr)
+        realMerkleRoot = jjj(tmpStr, 32, 36)
         log(44444)
         log(realMerkleRoot)
 
@@ -184,7 +186,7 @@ def verifyTx(tx, proofLen, hash:arr, path:arr, txBlockHash):
     merkle = self.computeMerkle(tx, proofLen, hash, path)
 
     tmpStr = load(self.block[txBlockHash]._blockHeader[0], chars=160)
-    realMerkleRoot = stringReadUnsignedBitsLE(tmpStr, 256, 36)
+    realMerkleRoot = jjj(tmpStr, 32, 36)
 
     log(999)
     log(merkle)
@@ -240,6 +242,42 @@ def within6Confirms(txBlockHash):
     return(0)
 
 
+macro jjj($inStr, $bytes, $pos):
+    $size = $bits
+    $offset = $pos
+    $endIndex = $offset + $size
+
+    $result = 0
+    $exponent = 0
+    $j = $offset
+    while $j < $endIndex:
+        # "01 23 45" want it to read "10 32 54"
+        if $j % 2 == 0:
+            $i = $j + 1
+        else:
+            $i = $j - 1
+
+        $char = getch($inStr, $i)
+        # log($char)
+        
+        # if ($char >= 97 && $char <= 102):  # only handles lowercase a-f
+        #     $numeric = $char - 87
+        # else:
+        #     $numeric = $char - 48
+
+        # log(numeric)
+
+        $result += $char * 16^$exponent
+        # log(result)
+
+        $j += 1
+        $exponent += 1
+
+    # return(result)
+
+    $result
+
+
 # only handles lowercase a-f
 # tested via hashBlock()
 macro stringReadUnsignedBitsLE($inStr, $bits, $pos):
@@ -258,7 +296,7 @@ macro stringReadUnsignedBitsLE($inStr, $bits, $pos):
             $i = $j - 1
 
         $char = getch($inStr, $i)
-        # log($char)
+        log($char)
         if ($char >= 97 && $char <= 102):  # only handles lowercase a-f
             $numeric = $char - 87
         else:
