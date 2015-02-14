@@ -86,14 +86,7 @@ def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce, 
 
         self.saveAncestors(blockHash, hashPrevBlock)
 
-        log(datastr=blockHeaderBinary)
         save(self.block[blockHash]._blockHeader[0], blockHeaderBinary, chars=80) # or 160?
-
-        tmpStr = load(self.block[blockHash]._blockHeader[0], chars=80)
-        log(datastr=tmpStr)
-        realMerkleRoot = jjj(tmpStr, 32, 36)
-        log(44444)
-        log(realMerkleRoot)
 
         self.block[blockHash]._score = self.block[hashPrevBlock]._score + difficulty
 
@@ -185,16 +178,19 @@ def verifyTx(tx, proofLen, hash:arr, path:arr, txBlockHash):
 
     merkle = self.computeMerkle(tx, proofLen, hash, path)
 
-    tmpStr = load(self.block[txBlockHash]._blockHeader[0], chars=160)
+    tmpStr = load(self.block[txBlockHash]._blockHeader[0], chars=80)
     realMerkleRoot = jjj(tmpStr, 32, 36)
 
     log(999)
     log(merkle)
     log(realMerkleRoot)
+    log(merkle == realMerkleRoot)
 
     if merkle == realMarkleRoot:
+        log(1111)
         return(1)
     else:
+        log(2222)
         return(0)
 
 def relayTx(tx, proofLen, hash:arr, path:arr, txBlockHash, contract):
@@ -298,7 +294,7 @@ macro stringReadUnsignedBitsLE($inStr, $bits, $pos):
             $i = $j - 1
 
         $char = getch($inStr, $i)
-        log($char)
+        # log($char)
         if ($char >= 97 && $char <= 102):  # only handles lowercase a-f
             $numeric = $char - 87
         else:
