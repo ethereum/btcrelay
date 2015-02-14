@@ -81,6 +81,9 @@ def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce, 
     # TODO other validation of block?  eg timestamp
 
     if gt(blockHash, 0) && lt(blockHash, target):  #TODO should sgt and slt be used?
+
+        # hashPrevBlock = stringReadUnsignedBitsLE(rawBlockHeader, 256, 4)
+
         self.saveAncestors(blockHash, hashPrevBlock)
 
         self.block[blockHash]._blockHeader._version = version

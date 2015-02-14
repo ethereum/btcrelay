@@ -56,16 +56,3 @@ class TestBtcTx(object):
         r = self.c.computeMerkle(tx, proofLen, hash, path)
         expMerkle = 0xf3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766
         return(r == expMerkle)
-
-
-    # @pytest.mark.skipif(True,reason='skip')
-    def testIsNonceValid(self):
-        ver = 2
-        prev_block = 0x000000000000000117c80378b8da0e33559b5997f2ad55e2f7d18ec1975b9717
-        mrkl_root = 0x871714dcbae6c8193a2bb9b2a69fe1c0440399f38d94b3a0f1b447275a29978a
-        time_ = 0x53058b35 # 2014-02-20 04:57:25
-        bits = 0x19015f53
-        nonce = 856192328
-
-        res = self.c.isNonceValid(ver, prev_block, mrkl_root, time_, bits, nonce)
-        assert res == 1

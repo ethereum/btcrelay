@@ -1,5 +1,27 @@
 inset('btczzz.py')
 
+# TODO needs fix
+def testIsNonceValid(self):
+    ver = 2
+    prev_block = 0x000000000000000117c80378b8da0e33559b5997f2ad55e2f7d18ec1975b9717
+    mrkl_root = 0x871714dcbae6c8193a2bb9b2a69fe1c0440399f38d94b3a0f1b447275a29978a
+    time_ = 0x53058b35 # 2014-02-20 04:57:25
+    bits = 0x19015f53
+    nonce = 856192328
+
+    res = self.c.isNonceValid(ver, prev_block, mrkl_root, time_, bits, nonce)
+    assert res == 1
+
+
+# TODO needs fix
+def testHashBlock(self):
+    rawBlockHeader = "0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710"
+    res = self.c.hashBlock(rawBlockHeader)
+    exp = 0x000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506
+    assert res == exp
+
+
+
 # test macro doRawHashBlockHeader
 def testDoRawHashBlockHeader():
     # https://en.bitcoin.it/wiki/Block_hashing_algorithm
