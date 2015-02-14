@@ -9,7 +9,7 @@ def foo():
     # save(self.buf[0], headStr, chars=160)
     # tmpStr = load(self.buf[0], chars=160)
 
-    blockHash = 1
+    blockHash = 0x000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506
     save(self.block[blockHash]._blockHeader[0], headStr, chars=160)
     tmpStr = load(self.block[blockHash]._blockHeader[0], chars=160)
 
