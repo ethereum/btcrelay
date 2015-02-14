@@ -75,18 +75,8 @@ def readVarintNum():
 
 
 def storeRawBlockHeader(rawBlockHeader:str, blockHeaderBinary:str):
-    version = stringReadUnsignedBitsLE(rawBlockHeader, 32, 0)
-    hashPrevBlock = stringReadUnsignedBitsLE(rawBlockHeader, 256, 4)
-    hashMerkleRoot = stringReadUnsignedBitsLE(rawBlockHeader, 256, 36)
-    time = stringReadUnsignedBitsLE(rawBlockHeader, 32, 68)
-    bits = stringReadUnsignedBitsLE(rawBlockHeader, 32, 72)
-    nonce = stringReadUnsignedBitsLE(rawBlockHeader, 32, 76)
-
-    # log(version)
-    # log(merkleRoot)
-
     # calls btcrelay.py function
-    res = self.storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce, blockHeaderBinary)
+    res = self.storeBlockHeader(blockHeaderBinary)
     return(res)
 
 

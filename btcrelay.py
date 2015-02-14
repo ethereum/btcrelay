@@ -62,7 +62,7 @@ def testingonlySetGenesis(blockHash):
         i += 1
 
 
-def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce, blockHeaderBinary:str):
+def storeBlockHeader(blockHeaderBinary:str):
     # this check can be removed to allow older block headers to be added, but it
     # may provide an attack vector where the contract can be spammed with valid
     # headers that will not be used and simply take up memory storage
@@ -74,6 +74,7 @@ def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce, 
     # log(333)
     # log(blockHash)
 
+    bits = getBytes(blockHeaderBinary, 4, 72)
     target = targetFromBits(bits)
 
     difficulty = DIFFICULTY_1 / target # https://en.bitcoin.it/wiki/Difficulty
@@ -82,7 +83,7 @@ def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce, 
 
     if gt(blockHash, 0) && lt(blockHash, target):  #TODO should sgt and slt be used?
 
-        # hashPrevBlock = stringReadUnsignedBitsLE(rawBlockHeader, 256, 4)
+        hashPrevBlock = getBytes(blockHeaderBinary, 32, 4)
 
         self.saveAncestors(blockHash, hashPrevBlock)
 
@@ -90,7 +91,7 @@ def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce, 
 
         self.block[blockHash]._score = self.block[hashPrevBlock]._score + difficulty
 
-        if gt(self.block[blockHash]._score, highScore):
+        if gt(self.block[blockHash]._score, highScore):  #TODO use sgt?
             self.heaviestBlock = blockHash
             highScore = self.block[blockHash]._score
 
@@ -248,43 +249,6 @@ macro getBytes($inStr, $bytes, $pos):
 
         $j += 1
         $exponent += 1
-
-    $result
-
-
-# only handles lowercase a-f
-# tested via hashBlock()
-macro stringReadUnsignedBitsLE($inStr, $bits, $pos):
-    $size = $bits / 4
-    $offset = $pos * 2  #TODO remove the *2?
-    $endIndex = $offset + $size
-
-    $result = 0
-    $exponent = 0
-    $j = $offset
-    while $j < $endIndex:
-        # "01 23 45" want it to read "10 32 54"
-        if $j % 2 == 0:
-            $i = $j + 1
-        else:
-            $i = $j - 1
-
-        $char = getch($inStr, $i)
-        # log($char)
-        if ($char >= 97 && $char <= 102):  # only handles lowercase a-f
-            $numeric = $char - 87
-        else:
-            $numeric = $char - 48
-
-        # log(numeric)
-
-        $result += $numeric * 16^$exponent
-        # log(result)
-
-        $j += 1
-        $exponent += 1
-
-    # return(result)
 
     $result
 
