@@ -181,16 +181,10 @@ def verifyTx(tx, proofLen, hash:arr, path:arr, txBlockHash):
     tmpStr = load(self.block[txBlockHash]._blockHeader[0], chars=80)
     realMerkleRoot = jjj(tmpStr, 32, 36)
 
-    log(999)
-    log(merkle)
-    log(realMerkleRoot)
-    log(merkle == realMerkleRoot)
-
-    if merkle == realMarkleRoot:
-        log(1111)
+    if merkle == realMerkleRoot:
         return(1)
     else:
-        log(2222)
+        log(merkle == realMerkleRoot)
         return(0)
 
 def relayTx(tx, proofLen, hash:arr, path:arr, txBlockHash, contract):
