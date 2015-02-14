@@ -3,15 +3,16 @@ data buf[]
 data block[2^256](_height, _score, _ancestor[9], _blockHeader[], _prevBlock)
 
 def foo():
-    headStr = text("0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710")
-    merkleExp = 0xf3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766
+    myStr = text("0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710")
 
     # save(self.buf[0], headStr, chars=160)
     # tmpStr = load(self.buf[0], chars=160)
 
+    res = self.g(myStr)
+    return(res)
+    
 
-
-
+def g(headStr:str):
     blockHash = 0x000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506
     hashPrevBlock = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
 
@@ -37,6 +38,7 @@ def foo():
 
 
     gotMerkle = stringReadUnsignedBitsLE(tmpStr, 256, 36)
+    merkleExp = 0xf3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766
     log(merkleExp)
     log(gotMerkle)
 
