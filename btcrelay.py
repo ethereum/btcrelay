@@ -164,17 +164,6 @@ macro shiftRightBytes($n, $x):
     div($n, 256^$x)
 
 
-def isNonceValid(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
-    target = targetFromBits(bits)
-
-    hash = hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
-
-    if lt(hash, target):
-        return(1)
-    else:
-        return(0)
-
-
 # http://www.righto.com/2014/02/bitcoin-mining-hard-way-algorithms.html#ref3
 macro targetFromBits($bits):
     $exp = div($bits, TWO_POW_24)
@@ -182,38 +171,6 @@ macro targetFromBits($bits):
     $target = $mant * shiftLeftBytes(1, ($exp - 3))
     $target
 
-
-macro hashHeader($version, $hashPrevBlock, $hashMerkleRoot, $time, $bits, $nonce):
-    $_version = flipBytes($version, 4)
-    $_hashPrevBlock = flipBytes($hashPrevBlock, 32)
-    $_hashMerkleRoot = flipBytes($hashMerkleRoot, 32)
-    $_time = flipBytes($time, 4)
-    $_bits = flipBytes($bits, 4)
-    $_nonce = flipBytes($nonce, 4)
-
-    $hash = doRawHashBlockHeader($_version, $_hashPrevBlock, $_hashMerkleRoot, $_time, $_bits, $_nonce)
-    $retHash = flipBytes($hash, 32)
-    $retHash
-
-
-macro doRawHashBlockHeader($version, $hashPrevBlock, $hashMerkleRoot, $time, $bits, $nonce):
-    verPart = shiftLeftBytes($version, 28)
-    hpb28 = shiftRightBytes($hashPrevBlock, 4)  # 81cd02ab7e569e8bcd9317e2fe99f2de44d49ab2b8851ba4a3080000
-    b1 = verPart | hpb28
-
-    hpbLast4 = shiftLeftBytes($hashPrevBlock, 28)  # 000000000
-    hm28 = shiftRightBytes($hashMerkleRoot, 4)  # e320b6c2fffc8d750423db8b1eb942ae710e951ed797f7affc8892b0
-    b2 = hpbLast4 | hm28
-
-    hmLast4 = shiftLeftBytes($hashMerkleRoot, 28)
-    timePart = ZEROS | shiftLeftBytes($time, 24)
-    bitsPart = ZEROS | shiftLeftBytes($bits, 20)
-    noncePart = ZEROS | shiftLeftBytes($nonce, 16)
-    b3 = hmLast4 | timePart | bitsPart | noncePart
-
-    hash1 = sha256([b1,b2,b3], chars=80)
-    hash2 = sha256([hash1], items=1)
-    hash2
 
 
 def verifyTx(tx, proofLen, hash:arr, path:arr, txBlockHash):
@@ -272,10 +229,10 @@ def within6Confirms(txBlockHash):
     return(0)
 
 macro concatHash($tx1, $tx2):
-    $left = flipBytes($tx1, 32)
-    $right = flipBytes($tx2, 32)
+    $left = flip32Bytes($tx1)
+    $right = flip32Bytes($tx2)
 
     $hash1 = sha256([$left, $right], chars=64)
     $hash2 = sha256([$hash1], items=1)
 
-    flipBytes($hash2, 32)
+    flip32Bytes($hash2)

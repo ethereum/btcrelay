@@ -1,5 +1,37 @@
 # old functions / macros
 
+
+# calls btcrelay hashHeader
+def hashBlock(rawBlockHeader:str):
+    version = stringReadUnsignedBitsLE(rawBlockHeader, 32, 0)
+    hashPrevBlock = stringReadUnsignedBitsLE(rawBlockHeader, 256, 4)
+    hashMerkleRoot = stringReadUnsignedBitsLE(rawBlockHeader, 256, 36)
+    time = stringReadUnsignedBitsLE(rawBlockHeader, 32, 68)
+    bits = stringReadUnsignedBitsLE(rawBlockHeader, 32, 72)
+    nonce = stringReadUnsignedBitsLE(rawBlockHeader, 32, 76)
+
+    # self.__setupForParsing(rawBlockHeader)
+    # version = readUInt32LE()
+    # hashPrevBlock = self.readUnsignedBitsLE(256)
+    # hashMerkleRoot = self.readUnsignedBitsLE(256)
+    # time = readUInt32LE()
+    # bits = readUInt32LE()
+    # nonce = readUInt32LE()
+
+    res = hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+    return(res)
+
+# def isNonceValid(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce):
+#     target = targetFromBits(bits)
+#
+#     hash = hashHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+#
+#     if lt(hash, target):
+#         return(1)
+#     else:
+#         return(0)
+
+
 macro hashHeader($version, $hashPrevBlock, $hashMerkleRoot, $time, $bits, $nonce):
     $_version = flipBytes($version, 4)
     $_hashPrevBlock = flipBytes($hashPrevBlock, 32)
@@ -46,7 +78,7 @@ macro flipBytes($n, $numByte):
 
     $b
 
-    
+
 # shift left bytes
 macro shiftLeftBytes($n, $x):
     $n * 256^$x  # set the base to 2 (instead of 256) if we want a macro to shift only bits
