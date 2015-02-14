@@ -20,7 +20,8 @@ data heaviestBlock
 data highScore
 
 # note: _ancestor[9]
-data block[2^256](_height, _score, _ancestor[9], _blockHeader(_version, _prevBlock, _mrklRoot, _time, _bits, _nonce))
+#TODO _prevBlock is redundant but may save on gas instead of repeated lookups for it inside of _blockHeader
+data block[2^256](_height, _score, _ancestor[9], _blockHeader, _prevBlock)
 
 extern btc_eth: [processTransfer:i:i]
 
@@ -44,7 +45,6 @@ def init333k():
     self.heaviestBlock = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
     trustedBlock = self.heaviestBlock
     self.block[trustedBlock]._height = 333000
-    self.block[trustedBlock]._blockHeader._version = 2
 
 
 #TODO for testing only
@@ -86,11 +86,7 @@ def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce, 
 
         self.saveAncestors(blockHash, hashPrevBlock)
 
-        self.block[blockHash]._blockHeader._version = version
-        self.block[blockHash]._blockHeader._mrklRoot = hashMerkleRoot
-        self.block[blockHash]._blockHeader._time = time
-        self.block[blockHash]._blockHeader._bits = bits
-        self.block[blockHash]._blockHeader._nonce = nonce
+        self.block[blockHash]._blockHeader = blockHeaderBinary
 
         self.block[blockHash]._score = self.block[hashPrevBlock]._score + difficulty
 
@@ -182,7 +178,13 @@ def verifyTx(tx, proofLen, hash:arr, path:arr, txBlockHash):
 
     merkle = self.computeMerkle(tx, proofLen, hash, path)
 
-    if merkle == self.block[txBlockHash]._blockHeader._mrklRoot:
+    realMerkleRoot = stringReadUnsignedBitsLE(self.block[txBlockHash]._blockHeader, 256, 36)
+
+    log(999)
+    log(merkle)
+    log(realMerkleRoot)
+
+    if merkle == realMarkleRoot:
         return(1)
     else:
         return(0)
@@ -226,7 +228,7 @@ def within6Confirms(txBlockHash):
         if txBlockHash == blockHash:
             return(1)
 
-        blockHash = self.block[blockHash]._blockHeader._prevBlock
+        blockHash = self.block[blockHash]._prevBlock
         i += 1
 
     return(0)
