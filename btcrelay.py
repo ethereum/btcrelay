@@ -243,7 +243,7 @@ def within6Confirms(txBlockHash):
 
 
 macro jjj($inStr, $bytes, $pos):
-    $size = $bits
+    $size = $bytes
     $offset = $pos
     $endIndex = $offset + $size
 
@@ -252,14 +252,16 @@ macro jjj($inStr, $bytes, $pos):
     $j = $offset
     while $j < $endIndex:
         # "01 23 45" want it to read "10 32 54"
-        if $j % 2 == 0:
-            $i = $j + 1
-        else:
-            $i = $j - 1
+        # if $j % 2 == 0:
+        #     $i = $j + 1
+        # else:
+        #     $i = $j - 1
+
+        $i = $j
 
         $char = getch($inStr, $i)
         # log($char)
-        
+
         # if ($char >= 97 && $char <= 102):  # only handles lowercase a-f
         #     $numeric = $char - 87
         # else:
@@ -267,7 +269,7 @@ macro jjj($inStr, $bytes, $pos):
 
         # log(numeric)
 
-        $result += $char * 16^$exponent
+        $result += $char * 256^$exponent
         # log(result)
 
         $j += 1
