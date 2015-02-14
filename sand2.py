@@ -15,9 +15,24 @@ def foo():
     blockHash = 0x000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506
     hashPrevBlock = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
 
+    # save ancestors
     self.block[blockHash]._prevBlock = hashPrevBlock
+    self.block[blockHash]._height = hashPrevBlock+1# self.block[hashPrevBlock]._height + 1
+
+    self.block[blockHash]._ancestor[0] = hashPrevBlock+2
+    i = 1
+    while i < 9:
+        self.block[blockHash]._ancestor[i] = hashPrevBlock+(2*i)
+        i += 1
+
+
+
+
 
     save(self.block[blockHash]._blockHeader[0], headStr, chars=160)
+
+    self.block[blockHash]._score = self.block[hashPrevBlock]._score + 0x123456
+
     tmpStr = load(self.block[blockHash]._blockHeader[0], chars=160)
 
 
