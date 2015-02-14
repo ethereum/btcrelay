@@ -233,9 +233,7 @@ def within6Confirms(txBlockHash):
     return(0)
 
 
-macro getBytes($inStr, $bytes, $pos):
-    $size = $bytes
-    $offset = $pos
+macro getBytes($inStr, $size, $offset):
     $endIndex = $offset + $size
 
     $result = 0
