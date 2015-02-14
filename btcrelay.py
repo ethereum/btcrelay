@@ -21,7 +21,7 @@ data highScore
 
 # note: _ancestor[9]
 #TODO _prevBlock is redundant but may save on gas instead of repeated lookups for it inside of _blockHeader
-data block[2^256](_height, _score, _ancestor[9], _blockHeader, _prevBlock)
+data block[2^256](_height, _score, _ancestor[9], _blockHeader[], _prevBlock)
 
 extern btc_eth: [processTransfer:i:i]
 
@@ -86,7 +86,12 @@ def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce, 
 
         self.saveAncestors(blockHash, hashPrevBlock)
 
-        self.block[blockHash]._blockHeader = blockHeaderBinary
+        save(self.block[blockHash]._blockHeader[0], blockHeaderBinary, chars=160) # or 160?
+
+        tmpStr = load(self.block[blockHash]._blockHeader[0], chars=160)
+        realMerkleRoot = stringReadUnsignedBitsLE(tmpStr, 256, 36)
+        log(44444)
+        log(realMerkleRoot)
 
         self.block[blockHash]._score = self.block[hashPrevBlock]._score + difficulty
 
@@ -178,7 +183,8 @@ def verifyTx(tx, proofLen, hash:arr, path:arr, txBlockHash):
 
     merkle = self.computeMerkle(tx, proofLen, hash, path)
 
-    realMerkleRoot = stringReadUnsignedBitsLE(self.block[txBlockHash]._blockHeader, 256, 36)
+    tmpStr = load(self.block[txBlockHash]._blockHeader[0], chars=160)
+    realMerkleRoot = stringReadUnsignedBitsLE(tmpStr, 256, 36)
 
     log(999)
     log(merkle)
@@ -237,40 +243,40 @@ def within6Confirms(txBlockHash):
 # only handles lowercase a-f
 # tested via hashBlock()
 macro stringReadUnsignedBitsLE($inStr, $bits, $pos):
-    size = $bits / 4
-    offset = $pos * 2  #TODO remove the *2?
-    endIndex = offset + size
+    $size = $bits / 4
+    $offset = $pos * 2  #TODO remove the *2?
+    $endIndex = $offset + $size
 
-    result = 0
-    exponent = 0
-    j = offset
-    while j < endIndex:
+    $result = 0
+    $exponent = 0
+    $j = $offset
+    while $j < $endIndex:
         # "01 23 45" want it to read "10 32 54"
-        if j % 2 == 0:
-            i = j + 1
+        if $j % 2 == 0:
+            $i = $j + 1
         else:
-            i = j - 1
+            $i = $j - 1
 
-        char = getch($inStr, i)
-        # log(char)
-        if (char >= 97 && char <= 102):  # only handles lowercase a-f
-            numeric = char - 87
+        $char = getch($inStr, $i)
+        # log($char)
+        if ($char >= 97 && $char <= 102):  # only handles lowercase a-f
+            $numeric = $char - 87
         else:
-            numeric = char - 48
+            $numeric = $char - 48
 
         # log(numeric)
 
-        result += numeric * 16^exponent
+        $result += $numeric * 16^$exponent
         # log(result)
 
-        j += 1
-        exponent += 1
+        $j += 1
+        $exponent += 1
 
     # return(result)
 
-    result
+    $result
 
-    
+
 macro concatHash($tx1, $tx2):
     $left = flip32Bytes($tx1)
     $right = flip32Bytes($tx2)
