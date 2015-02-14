@@ -179,7 +179,7 @@ def verifyTx(tx, proofLen, hash:arr, path:arr, txBlockHash):
     merkle = self.computeMerkle(tx, proofLen, hash, path)
 
     tmpStr = load(self.block[txBlockHash]._blockHeader[0], chars=80)
-    realMerkleRoot = jjj(tmpStr, 32, 36)
+    realMerkleRoot = getBytes(tmpStr, 32, 36)
 
     if merkle == realMerkleRoot:
         return(1)
@@ -232,7 +232,7 @@ def within6Confirms(txBlockHash):
     return(0)
 
 
-macro jjj($inStr, $bytes, $pos):
+macro getBytes($inStr, $bytes, $pos):
     $size = $bytes
     $offset = $pos
     $endIndex = $offset + $size
@@ -241,31 +241,13 @@ macro jjj($inStr, $bytes, $pos):
     $exponent = 0
     $j = $offset
     while $j < $endIndex:
-        # "01 23 45" want it to read "10 32 54"
-        # if $j % 2 == 0:
-        #     $i = $j + 1
-        # else:
-        #     $i = $j - 1
-
-        $i = $j
-
-        $char = getch($inStr, $i)
+        $char = getch($inStr, $j)
         # log($char)
-
-        # if ($char >= 97 && $char <= 102):  # only handles lowercase a-f
-        #     $numeric = $char - 87
-        # else:
-        #     $numeric = $char - 48
-
-        # log(numeric)
-
         $result += $char * 256^$exponent
         # log(result)
 
         $j += 1
         $exponent += 1
-
-    # return(result)
 
     $result
 
