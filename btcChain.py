@@ -16,7 +16,7 @@ self.ancestor_depths[8] = 65536
 
 # save the ancestors for a block, as well as updating the height
 def saveAncestors(blockHash, hashPrevBlock):
-    self.block[blockHash]._blockHeader._prevBlock = hashPrevBlock
+    # self.block[blockHash]._prevBlock = hashPrevBlock
 
     # this is a test; separate genesis function could help later
     # if blockHash == 1:

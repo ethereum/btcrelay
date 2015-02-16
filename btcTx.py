@@ -74,57 +74,9 @@ def readVarintNum():
         return(first)
 
 
-# only handles lowercase a-f
-# tested via hashBlock()
-macro stringReadUnsignedBitsLE($inStr, $bits, $pos):
-    size = $bits / 4
-    offset = $pos * 2  #TODO remove the *2?
-    endIndex = offset + size
-
-    result = 0
-    exponent = 0
-    j = offset
-    while j < endIndex:
-        # "01 23 45" want it to read "10 32 54"
-        if j % 2 == 0:
-            i = j + 1
-        else:
-            i = j - 1
-
-        char = getch($inStr, i)
-        # log(char)
-        if (char >= 97 && char <= 102):  # only handles lowercase a-f
-            numeric = char - 87
-        else:
-            numeric = char - 48
-
-        # log(numeric)
-
-        result += numeric * 16^exponent
-        # log(result)
-
-        j += 1
-        exponent += 1
-
-    # return(result)
-
-    result
-
-
-
 def storeRawBlockHeader(rawBlockHeader:str, blockHeaderBinary:str):
-    version = stringReadUnsignedBitsLE(rawBlockHeader, 32, 0)
-    hashPrevBlock = stringReadUnsignedBitsLE(rawBlockHeader, 256, 4)
-    hashMerkleRoot = stringReadUnsignedBitsLE(rawBlockHeader, 256, 36)
-    time = stringReadUnsignedBitsLE(rawBlockHeader, 32, 68)
-    bits = stringReadUnsignedBitsLE(rawBlockHeader, 32, 72)
-    nonce = stringReadUnsignedBitsLE(rawBlockHeader, 32, 76)
-
-    # log(version)
-    # log(merkleRoot)
-
     # calls btcrelay.py function
-    res = self.storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce, blockHeaderBinary)
+    res = self.storeBlockHeader(blockHeaderBinary)
     return(res)
 
 

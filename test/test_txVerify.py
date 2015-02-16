@@ -169,7 +169,7 @@ class TestBtcTx(object):
         txBlockHash = int(header['hash'], 16)
         res = self.c.verifyTx(tx, len(siblings), siblings, path, txBlockHash, profiling=profiling)
         print('GAS: '+str(res['gas']))
-        return res['output'] == 1
+        return res['output']
 
 
     # this fails and shows that the correct way to set things up is:

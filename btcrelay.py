@@ -20,7 +20,8 @@ data heaviestBlock
 data highScore
 
 # note: _ancestor[9]
-data block[2^256](_height, _score, _ancestor[9], _blockHeader(_version, _prevBlock, _mrklRoot, _time, _bits, _nonce))
+#TODO _prevBlock is redundant but may save on gas instead of repeated lookups for it inside of _blockHeader
+data block[2^256](_height, _score, _ancestor[9], _blockHeader[])
 
 extern btc_eth: [processTransfer:i:i]
 
@@ -44,7 +45,6 @@ def init333k():
     self.heaviestBlock = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
     trustedBlock = self.heaviestBlock
     self.block[trustedBlock]._height = 333000
-    self.block[trustedBlock]._blockHeader._version = 2
 
 
 #TODO for testing only
@@ -62,7 +62,7 @@ def testingonlySetGenesis(blockHash):
         i += 1
 
 
-def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce, blockHeaderBinary:str):
+def storeBlockHeader(blockHeaderBinary:str):
     # this check can be removed to allow older block headers to be added, but it
     # may provide an attack vector where the contract can be spammed with valid
     # headers that will not be used and simply take up memory storage
@@ -74,6 +74,7 @@ def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce, 
     # log(333)
     # log(blockHash)
 
+    bits = getBytes(blockHeaderBinary, 4, 72)
     target = targetFromBits(bits)
 
     difficulty = DIFFICULTY_1 / target # https://en.bitcoin.it/wiki/Difficulty
@@ -82,19 +83,15 @@ def storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce, 
 
     if gt(blockHash, 0) && lt(blockHash, target):  #TODO should sgt and slt be used?
 
-        # hashPrevBlock = stringReadUnsignedBitsLE(rawBlockHeader, 256, 4)
+        hashPrevBlock = getBytes(blockHeaderBinary, 32, 4)
 
         self.saveAncestors(blockHash, hashPrevBlock)
 
-        self.block[blockHash]._blockHeader._version = version
-        self.block[blockHash]._blockHeader._mrklRoot = hashMerkleRoot
-        self.block[blockHash]._blockHeader._time = time
-        self.block[blockHash]._blockHeader._bits = bits
-        self.block[blockHash]._blockHeader._nonce = nonce
+        save(self.block[blockHash]._blockHeader[0], blockHeaderBinary, chars=80) # or 160?
 
         self.block[blockHash]._score = self.block[hashPrevBlock]._score + difficulty
 
-        if gt(self.block[blockHash]._score, highScore):
+        if gt(self.block[blockHash]._score, highScore):  #TODO use sgt?
             self.heaviestBlock = blockHash
             highScore = self.block[blockHash]._score
 
@@ -175,16 +172,27 @@ macro targetFromBits($bits):
     $target
 
 
+macro getPrevBlock($blockHash):
+    $tmpStr = load(self.block[$blockHash]._blockHeader[0], chars=80)
+    getBytes($tmpStr, 32, 4)
+
+
+macro getMerkleRoot($blockHash):
+    $tmpStr = load(self.block[$blockHash]._blockHeader[0], chars=80)
+    getBytes($tmpStr, 32, 36)
+
 
 def verifyTx(tx, proofLen, hash:arr, path:arr, txBlockHash):
     if self.within6Confirms(txBlockHash) || !self.inMainChain(txBlockHash):
         return(0)
 
     merkle = self.computeMerkle(tx, proofLen, hash, path)
+    realMerkleRoot = getMerkleRoot(txBlockHash)
 
-    if merkle == self.block[txBlockHash]._blockHeader._mrklRoot:
+    if merkle == realMerkleRoot:
         return(1)
     else:
+        log(merkle == realMerkleRoot)
         return(0)
 
 def relayTx(tx, proofLen, hash:arr, path:arr, txBlockHash, contract):
@@ -226,10 +234,30 @@ def within6Confirms(txBlockHash):
         if txBlockHash == blockHash:
             return(1)
 
-        blockHash = self.block[blockHash]._blockHeader._prevBlock
+        # blockHash = self.block[blockHash]._prevBlock
+        blockHash = getPrevBlock(blockHash)
         i += 1
 
     return(0)
+
+
+macro getBytes($inStr, $size, $offset):
+    $endIndex = $offset + $size
+
+    $result = 0
+    $exponent = 0
+    $j = $offset
+    while $j < $endIndex:
+        $char = getch($inStr, $j)
+        # log($char)
+        $result += $char * 256^$exponent
+        # log(result)
+
+        $j += 1
+        $exponent += 1
+
+    $result
+
 
 macro concatHash($tx1, $tx2):
     $left = flip32Bytes($tx1)
