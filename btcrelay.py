@@ -74,7 +74,7 @@ def storeBlockHeader(blockHeaderBinary:str):
     # log(333)
     # log(blockHash)
 
-    bits = getBytes(blockHeaderBinary, 4, 72)
+    bits = getBytesLE(blockHeaderBinary, 4, 72)
     target = targetFromBits(bits)
 
     difficulty = DIFFICULTY_1 / target # https://en.bitcoin.it/wiki/Difficulty
@@ -83,7 +83,7 @@ def storeBlockHeader(blockHeaderBinary:str):
 
     if gt(blockHash, 0) && lt(blockHash, target):  #TODO should sgt and slt be used?
 
-        hashPrevBlock = getBytes(blockHeaderBinary, 32, 4)
+        hashPrevBlock = getBytesLE(blockHeaderBinary, 32, 4)
 
         self.saveAncestors(blockHash, hashPrevBlock)
 
@@ -174,12 +174,12 @@ macro targetFromBits($bits):
 
 macro getPrevBlock($blockHash):
     $tmpStr = load(self.block[$blockHash]._blockHeader[0], chars=80)
-    getBytes($tmpStr, 32, 4)
+    getBytesLE($tmpStr, 32, 4)
 
 
 macro getMerkleRoot($blockHash):
     $tmpStr = load(self.block[$blockHash]._blockHeader[0], chars=80)
-    getBytes($tmpStr, 32, 36)
+    getBytesLE($tmpStr, 32, 36)
 
 
 def verifyTx(tx, proofLen, hash:arr, path:arr, txBlockHash):
@@ -241,7 +241,8 @@ def within6Confirms(txBlockHash):
     return(0)
 
 
-macro getBytes($inStr, $size, $offset):
+# little endian get $size bytes from $inStr with $offset
+macro getBytesLE($inStr, $size, $offset):
     $endIndex = $offset + $size
 
     $result = 0
