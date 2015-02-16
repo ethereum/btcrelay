@@ -21,7 +21,7 @@ data highScore
 
 # note: _ancestor[9]
 #TODO _prevBlock is redundant but may save on gas instead of repeated lookups for it inside of _blockHeader
-data block[2^256](_height, _score, _ancestor[9], _blockHeader[], _prevBlock)
+data block[2^256](_height, _score, _ancestor[9], _blockHeader[])
 
 extern btc_eth: [processTransfer:i:i]
 
