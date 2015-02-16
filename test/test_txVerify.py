@@ -69,7 +69,7 @@ class TestBtcTx(object):
             startTime = datetime.now().time()
 
             for header in f:
-                res = self.c.storeRawBlockHeader(header)
+                res = self.c.storeRawBlockHeader(header, header[:-1].decode('hex'))  # [:-1] to remove trailing \n
                 if i==numBlock:
                     break
                 i += 1
@@ -79,6 +79,7 @@ class TestBtcTx(object):
 
         duration = datetime.combine(date.today(), endTime) - datetime.combine(date.today(), startTime)
         print("********** duration: "+str(duration)+" ********** start:"+str(startTime)+" end:"+str(endTime))
+        print "GAS: ", self.s.block.gas_used
 
 
     @pytest.mark.skipif(True,reason='skip')
