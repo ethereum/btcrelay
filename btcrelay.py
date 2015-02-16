@@ -177,14 +177,17 @@ macro getPrevBlock($blockHash):
     getBytes($tmpStr, 32, 4)
 
 
+macro getMerkleRoot($blockHash):
+    $tmpStr = load(self.block[$blockHash]._blockHeader[0], chars=80)
+    getBytes($tmpStr, 32, 36)
+
+
 def verifyTx(tx, proofLen, hash:arr, path:arr, txBlockHash):
     if self.within6Confirms(txBlockHash) || !self.inMainChain(txBlockHash):
         return(0)
 
     merkle = self.computeMerkle(tx, proofLen, hash, path)
-
-    tmpStr = load(self.block[txBlockHash]._blockHeader[0], chars=80)
-    realMerkleRoot = getBytes(tmpStr, 32, 36)
+    realMerkleRoot = getMerkleRoot(txBlockHash)
 
     if merkle == realMerkleRoot:
         return(1)
