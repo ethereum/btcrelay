@@ -172,6 +172,10 @@ macro targetFromBits($bits):
     $target
 
 
+macro getPrevBlock($blockHash):
+    $tmpStr = load(self.block[$blockHash]._blockHeader[0], chars=80)
+    getBytes($tmpStr, 32, 4)
+
 
 def verifyTx(tx, proofLen, hash:arr, path:arr, txBlockHash):
     if self.within6Confirms(txBlockHash) || !self.inMainChain(txBlockHash):
@@ -227,7 +231,8 @@ def within6Confirms(txBlockHash):
         if txBlockHash == blockHash:
             return(1)
 
-        blockHash = self.block[blockHash]._prevBlock
+        # blockHash = self.block[blockHash]._prevBlock
+        blockHash = getPrevBlock(blockHash)
         i += 1
 
     return(0)
