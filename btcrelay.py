@@ -195,8 +195,11 @@ def verifyTx(tx, proofLen, hash:arr, path:arr, txBlockHash):
         log(merkle == realMerkleRoot)
         return(0)
 
-def relayTx(tx, proofLen, hash:arr, path:arr, txBlockHash, contract):
-    if self.verifyTx(tx, proofLen, hash, path, txBlockHash) == 1:
+
+#TODO txHash can eventually be computed (dbl sha256 then flip32Bytes) when
+# txStr becomes txBinary
+def relayTx(txStr:str, txHash, proofLen, hash:arr, path:arr, txBlockHash, contract):
+    if self.verifyTx(txHash, proofLen, hash, path, txBlockHash) == 1:
         res = contract.processTransfer(13)
         return(res)
         # return(call(contract, tx))
