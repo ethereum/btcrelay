@@ -16,11 +16,22 @@ def processTransfer(txStr:str):
     log(numSatoshi)
 
     # TODO using load() until it can be figured out how to use gScript directly with sha256
-    myarr = load(self.gScript[0], items=(cnt/32)+1)  # if cnt is say 50, we want 2 chunks of 32bytes
-    # log(data=myarr)
+    scriptArr = load(self.gScript[0], items=(cnt/32)+1)  # if cnt is say 50, we want 2 chunks of 32bytes
+    log(data=scriptArr)
 
-    myBtcAddr = text("76a914c398efa9c392ba6013c5e04ee729755ef7f58b3288ac")
+    scriptedBtcAddr = text("76a914c398efa9c392ba6013c5e04ee729755ef7f58b3288ac")
+    myBtcAddr = text("c398efa9c392ba6013c5e04ee729755ef7f58b32")
 
-    res = myarr == myBtcAddr
+    res = compareScriptWithAddr(scriptArr, myBtcAddr)
 
     return(res)  # expected 1
+
+
+macro compareScriptWithAddr($scriptArr, $addrStr):
+    $i = 6
+    while $i < 26:
+        if getch($scriptArr, $i) != getch($addrStr, $i-6):
+            $i = 9999 #TODO better way ?
+        else:
+            $i += 1
+    $i == 26
