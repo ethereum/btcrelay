@@ -57,12 +57,9 @@ macro getEthAddr($inStr, $size, $offset):
             $numeric = $char - 87
         else:
             $numeric = $char - 48
-
-        log($numeric)
+        # log($numeric)
 
         $result += $numeric * 16^$exponent
-
-        # $result += $char * 256^$exponent
         # log(result)
 
         $j += 1

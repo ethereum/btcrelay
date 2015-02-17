@@ -114,7 +114,7 @@ class TestBtcTx(object):
         for i in range(7):
             nonce = 1 if (i in [4,5]) else 0
             blockHeaderBinary = self.getBlockHeaderBinary(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
-            res = self.c.storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce, blockHeaderBinary)
+            res = self.c.storeBlockHeader(blockHeaderBinary)
             hashPrevBlock = self.c.fastHashBlock(blockHeaderBinary)
             assert res == i+2
 
@@ -172,7 +172,7 @@ class TestBtcTx(object):
         for i in range(7):
             nonce = 1 if (i in [4,5]) else 0
             blockHeaderBinary = self.getBlockHeaderBinary(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
-            res = self.c.storeBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce, blockHeaderBinary)
+            res = self.c.storeBlockHeader(blockHeaderBinary)
             hashPrevBlock = self.c.fastHashBlock(blockHeaderBinary)
             assert res == i+2
 
