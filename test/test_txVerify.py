@@ -153,7 +153,7 @@ class TestBtcTx(object):
         res = self.doRelayTx(txStr, header, hashes, 1, BTC_ETH.address, profiling=True)
 
 
-        ethAddrBin = '948c765a6914d43f2a7ac177da2c2f6b52de3d7c'.decode('hex')
+        ethAddrBin = txStr[-52:-12].decode('hex')
 
         userEthBalance = self.s.block.get_balance(ethAddrBin)
         print('USER ETH BALANCE: '+str(userEthBalance))
@@ -191,8 +191,7 @@ class TestBtcTx(object):
         BTC_ETH = self.s.abi_contract('btc-eth.py', endowment=2000*self.ETHER)
         res = self.doRelayTx(txStr, header, hashes, 2, BTC_ETH.address, profiling=True)
 
-        #TODO needs update
-        ethAddrBin = '948c765a6914d43f2a7ac177da2c2f6b52de3d7c'.decode('hex')
+        ethAddrBin = txStr[-52:-12].decode('hex')
 
         userEthBalance = self.s.block.get_balance(ethAddrBin)
         print('USER ETH BALANCE: '+str(userEthBalance))
