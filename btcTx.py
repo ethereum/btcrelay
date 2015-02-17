@@ -8,9 +8,6 @@ data pos
 # contains a script, currently only used for outputScripts since input scripts are ignored
 data gScript[]
 
-# length of gScript
-data tmpScriptLen
-
 
 def txinParse():
     prevTxId = self.readUnsignedBitsLE(256)
@@ -27,8 +24,7 @@ def txinParse():
     # log(seqNum)
 
 
-# returns satoshis, scriptSize and sets self.tmpScriptLen
-# TODO eventually, self.tmpScriptLen can probably be removed and also returned by this function
+# returns satoshis, scriptSize
 def txoutParse():
 
     satoshis = readUInt64LE()
@@ -38,8 +34,7 @@ def txoutParse():
     # log(scriptSize)
 
     if scriptSize > 0:
-        self.tmpScriptLen = scriptSize * 2  # self.tmpScriptLen can probably be a return value
-        dblSize = self.tmpScriptLen  # needed because compiler complains that save() cannot use self.tmpScriptLen directly
+        dblSize = scriptSize * 2
         scriptStr = self.readSimple(scriptSize, outchars=dblSize)
         save(self.gScript[0], scriptStr, chars=dblSize)
 
@@ -88,7 +83,7 @@ def storeRawBlockHeader(rawBlockHeader:str, blockHeaderBinary:str):
 
 
 # returns an array [satoshis, outputScriptSize] and writes the
-# outputScript to self.tmpScriptArr, and outputScriptSize to self.tmpScriptLen
+# outputScript to self.tmpScriptArr
 #
 # this is needed until can figure out how a dynamically sized array can be returned from a function
 # instead of needing 2 functions, one that returns array size, then calling to get the actual array
@@ -101,7 +96,7 @@ def parseTransaction(rawTx:str, size, outNum):
 
 
 # returns an array [satoshis, outputScriptSize] and writes the
-# outputScript to self.tmpScriptArr, and outputScriptSize to self.tmpScriptLen
+# outputScript to self.tmpScriptArr
 def __getMetaForOutput(outNum):
     version = readUInt32LE()
     # log(version)
@@ -131,8 +126,8 @@ def __setupForParsing(hexStr:str):
 
 
 def doCheckOutputScript(rawTx:str, size, outNum, expHashOfOutputScript):
-    self.parseTransaction(rawTx, size, outNum, outitems=2)  # TODO we are not using the return value, so conceivably self.tmpScriptLen could be returned here and global removed
-    cnt = self.tmpScriptLen
+    satoshiAndScriptSize = self.parseTransaction(rawTx, size, outNum, outitems=2)
+    cnt = satoshiAndScriptSize[1] * 2  # note: *2
 
     # TODO using load() until it can be figured out how to use gScript directly with sha256
     myarr = load(self.gScript[0], items=(cnt/32)+1)  # if cnt is say 50, we want 2 chunks of 32bytes
