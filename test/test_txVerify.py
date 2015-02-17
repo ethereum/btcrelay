@@ -150,6 +150,13 @@ class TestBtcTx(object):
 
         BTC_ETH = self.s.abi_contract('btc-eth.py', endowment=2000*self.ETHER)
         res = self.doRelayTx(txStr, header, hashes, 1, BTC_ETH.address, profiling=True)
+
+
+        ethAddrBin = '948c765a6914d43f2a7ac177da2c2f6b52de3d7c'.decode('hex')
+
+        userEthBalance = self.s.block.get_balance(ethAddrBin)
+        print('USER ETH BALANCE: '+str(userEthBalance))
+
         assert res == 1  # adjust according to numBlock and the block that the tx belongs to
 
 
