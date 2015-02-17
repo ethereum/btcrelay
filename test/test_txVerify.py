@@ -69,7 +69,7 @@ class TestBtcTx(object):
             startTime = datetime.now().time()
 
             for header in f:
-                res = self.c.storeRawBlockHeader(header, header[:-1].decode('hex'))  # [:-1] to remove trailing \n
+                res = self.c.storeBlockHeader(header[:-1].decode('hex'))  # [:-1] to remove trailing \n
                 if i==numBlock:
                     break
                 i += 1
@@ -96,7 +96,7 @@ class TestBtcTx(object):
             startTime = datetime.now().time()
 
             for header in f:
-                res = self.c.storeRawBlockHeader(header)
+                res = self.c.storeBlockHeader(header[:-1].decode('hex'))  # [:-1] to remove trailing \n
                 if i==numBlock:
                     break
                 i += 1
@@ -139,7 +139,7 @@ class TestBtcTx(object):
         ]
         blockHeaderBinary = map(lambda x: x.decode('hex'), headers)
         for i in range(7):
-            res = self.c.storeRawBlockHeader(headers[i], blockHeaderBinary[i])
+            res = self.c.storeBlockHeader(blockHeaderBinary[i])
             assert res == i+2
 
         # block 100000
@@ -178,7 +178,7 @@ class TestBtcTx(object):
         ]
         blockHeaderBinary = map(lambda x: x.decode('hex'), headers)
         for i in range(7):
-            res = self.c.storeRawBlockHeader(headers[i], blockHeaderBinary[i])
+            res = self.c.storeBlockHeader(blockHeaderBinary[i])
             assert res == i+2
 
         # block 100000
@@ -215,7 +215,7 @@ class TestBtcTx(object):
         ]
         blockHeaderBinary = map(lambda x: x.decode('hex'), headers)
         for i in range(7):
-            res = self.c.storeRawBlockHeader(headers[i], blockHeaderBinary[i])
+            res = self.c.storeBlockHeader(blockHeaderBinary[i])
             assert res == i+2
 
         # block 100000
@@ -239,7 +239,7 @@ class TestBtcTx(object):
             startTime = datetime.now().time()
 
             for header in f:
-                res = self.c.storeRawBlockHeader(header, header[:-1].decode('hex'))  # [:-1] to remove \n
+                res = self.c.storeBlockHeader(header[:-1].decode('hex'))  # [:-1] to remove \n
                 if i==numBlock:
                     break
                 i += 1
@@ -333,7 +333,7 @@ class TestBtcTx(object):
         ]
         blockHeaderBinary = map(lambda x: x.decode('hex'), headers)
         for i in range(7):
-            res = self.c.storeRawBlockHeader(headers[i], blockHeaderBinary[i])
+            res = self.c.storeBlockHeader(blockHeaderBinary[i])
             assert res == i+2
 
         startBlockNum = 100000
