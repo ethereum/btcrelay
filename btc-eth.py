@@ -1,5 +1,7 @@
 inset('btcTx.py')
 
+BTC_NEED = 5 * 10**8 # satoshis
+
 def processTransfer(txStr:str):
     #matches test_2ndTxBlock100K
     # expHashOfOutputScript = 56805804292683358736007883811890392312689386233413306235613681413184995558674
@@ -38,10 +40,10 @@ def processTransfer(txStr:str):
 
     # expEthAddr = text("948c765a6914d43f2a7ac177da2c2f6b52de3d7c")
 
-    send(ethAddr, 13)
+    if (numSatoshi >= BTC_NEED):
+        send(ethAddr, 13)
 
 
-    #TODO check numSatoshi
     return(res)  # expected 1
 
 
