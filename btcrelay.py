@@ -62,6 +62,11 @@ def testingonlySetGenesis(blockHash):
         i += 1
 
 
+def storeRawBlockHeader(rawBlockHeader:str, blockHeaderBinary:str):
+    # calls btcrelay.py function
+    res = self.storeBlockHeader(blockHeaderBinary)
+    return(res)
+    
 def storeBlockHeader(blockHeaderBinary:str):
     # this check can be removed to allow older block headers to be added, but it
     # may provide an attack vector where the contract can be spammed with valid

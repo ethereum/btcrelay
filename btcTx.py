@@ -69,13 +69,6 @@ def readVarintNum():
         return(first)
 
 
-def storeRawBlockHeader(rawBlockHeader:str, blockHeaderBinary:str):
-    # calls btcrelay.py function
-    res = self.storeBlockHeader(blockHeaderBinary)
-    return(res)
-
-
-
 # heaviestBlock is in btcrelay.py
 # def logBlockchainHead():
 #     log(self.heaviestBlock)
@@ -201,8 +194,3 @@ macro readUInt32LE():
 
 macro readUInt64LE():
     self.readUnsignedBitsLE(64)
-
-
-
-# needs to be at bottom, for now https://github.com/ethereum/serpent/issues/44
-inset('btcrelay.py')
