@@ -1,6 +1,8 @@
 inset('btcTx.py')
 
 BTC_NEED = 5 * 10**8 # satoshis
+MY_BTC_ADDR = text("c398efa9c392ba6013c5e04ee729755ef7f58b32")  # testable with tx[1] from block100K
+ETH_TO_SEND = 13
 
 def processTransfer(txStr:str):
     satoshiAndScriptSize = self.parseTransaction(txStr, len(txStr), 0, outitems=2)
@@ -15,11 +17,9 @@ def processTransfer(txStr:str):
     scriptArr = load(self.gScript[0], items=(cnt/32)+1)  # if cnt is say 50, we want 2 chunks of 32bytes
     # log(data=scriptArr)
 
-    myBtcAddr = text("c398efa9c392ba6013c5e04ee729755ef7f58b32")
-
     #TODO strictly compare the script because an attacker may have a script that mentions
     #our BTC address, but the BTC is not spendable by our private key (only spendable by attacker's key)
-    btcWasSentToMe = compareScriptWithAddr(scriptArr, myBtcAddr)
+    btcWasSentToMe = compareScriptWithAddr(scriptArr, MY_BTC_ADDR)
 
 
 
@@ -34,7 +34,7 @@ def processTransfer(txStr:str):
     # expEthAddr = text("948c765a6914d43f2a7ac177da2c2f6b52de3d7c")
 
     if (btcWasSentToMe && numSatoshi >= BTC_NEED):
-        send(ethAddr, 13)
+        send(ethAddr, ETH_TO_SEND)
         return(1)
 
 
