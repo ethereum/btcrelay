@@ -26,7 +26,6 @@ class TestBtcTx(object):
         tester.seed = self.seed
 
     @slow
-    @pytest.mark.skipif(True,reason='skip')
     def testAroundMoreDepths(self):
         heaviest = 260
 
