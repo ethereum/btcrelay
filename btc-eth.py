@@ -3,12 +3,6 @@ inset('btcTx.py')
 BTC_NEED = 5 * 10**8 # satoshis
 
 def processTransfer(txStr:str):
-    #matches test_2ndTxBlock100K
-    # expHashOfOutputScript = 56805804292683358736007883811890392312689386233413306235613681413184995558674
-    # res = self.doCheckOutputScript(txStr, len(txStr), 0, expHashOfOutputScript)
-
-
-
     satoshiAndScriptSize = self.parseTransaction(txStr, len(txStr), 0, outitems=2)
     cnt = satoshiAndScriptSize[1] * 2  # note: *2
 
@@ -23,9 +17,8 @@ def processTransfer(txStr:str):
 
     myBtcAddr = text("c398efa9c392ba6013c5e04ee729755ef7f58b32")
 
-    #TODO strictly compare the script because an attacker may get a BTC address with prefix of ours
-    #eg our addr is abcd, attacker sends to his addr of abcde and this contract would still
-    #grant the ether
+    #TODO strictly compare the script because an attacker may have a script that mentions
+    #our BTC address, but the BTC is not spendable by our private key (only spendable by attacker's key)
     btcWasSentToMe = compareScriptWithAddr(scriptArr, myBtcAddr)
 
 
