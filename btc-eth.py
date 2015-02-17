@@ -26,7 +26,7 @@ def processTransfer(txStr:str):
     #TODO strictly compare the script because an attacker may get a BTC address with prefix of ours
     #eg our addr is abcd, attacker sends to his addr of abcde and this contract would still
     #grant the ether
-    res = compareScriptWithAddr(scriptArr, myBtcAddr)
+    btcWasSentToMe = compareScriptWithAddr(scriptArr, myBtcAddr)
 
 
 
@@ -40,11 +40,12 @@ def processTransfer(txStr:str):
 
     # expEthAddr = text("948c765a6914d43f2a7ac177da2c2f6b52de3d7c")
 
-    if (numSatoshi >= BTC_NEED):
+    if (btcWasSentToMe && numSatoshi >= BTC_NEED):
         send(ethAddr, 13)
+        return(1)
 
 
-    return(res)  # expected 1
+    return(0)
 
 
 macro getEthAddr($inStr, $size, $offset):

@@ -156,7 +156,8 @@ class TestBtcTx(object):
 
         userEthBalance = self.s.block.get_balance(ethAddrBin)
         print('USER ETH BALANCE: '+str(userEthBalance))
-
+        expEtherBalance = 13
+        assert userEthBalance == expEtherBalance
         assert res == 1  # adjust according to numBlock and the block that the tx belongs to
 
 
