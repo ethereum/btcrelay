@@ -23,7 +23,7 @@ data highScore
 #TODO _prevBlock is redundant but may save on gas instead of repeated lookups for it inside of _blockHeader
 data block[2^256](_height, _score, _ancestor[9], _blockHeader[])
 
-extern btc_eth: [processTransfer:i:i]
+extern btc_eth: [processTransfer:s:i]
 
 
 #self.block.blockHeader[]
@@ -200,7 +200,7 @@ def verifyTx(tx, proofLen, hash:arr, path:arr, txBlockHash):
 # txStr becomes txBinary
 def relayTx(txStr:str, txHash, proofLen, hash:arr, path:arr, txBlockHash, contract):
     if self.verifyTx(txHash, proofLen, hash, path, txBlockHash) == 1:
-        res = contract.processTransfer(13)
+        res = contract.processTransfer(txStr)
         return(res)
         # return(call(contract, tx))
     return(0)

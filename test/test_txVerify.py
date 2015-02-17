@@ -233,7 +233,7 @@ class TestBtcTx(object):
         # print('txStr='+hashes[index])
 
         proof = mk_merkle_proof(header, hashes, index)
-        
+
         txHash = int(hashes[index], 16)  #TODO should be removable in future when txStr becomes txBinary
 
         siblings = map(partial(int,base=16), proof['siblings'])
