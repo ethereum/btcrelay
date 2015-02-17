@@ -85,6 +85,7 @@ class TestBtcTx(object):
 
     # @pytest.mark.skipif(True,reason='skip')
     @slow
+    @pytest.mark.veryslow
     def test100from300K(self):
         startBlockNum = 300000
         numBlock = 400
