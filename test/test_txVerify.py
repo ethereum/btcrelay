@@ -12,7 +12,7 @@ slow = pytest.mark.slow
 
 class TestBtcTx(object):
 
-    CONTRACT = 'btcTx.py'
+    CONTRACT = 'btcrelay.py'
     CONTRACT_GAS = 55000
 
     ETHER = 10 ** 18
