@@ -56,7 +56,6 @@ class TestBtcTx(object):
             assert self.c.inMainChain(forkStartBlock+i) == 0
 
 
-    # @pytest.mark.skipif(True,reason='skip')
     def testAroundSomeDepths(self):
         heaviest = 20
 
@@ -86,7 +85,6 @@ class TestBtcTx(object):
         for i in range(numBlocksInFork):
             assert self.c.inMainChain(forkStartBlock+i) == 0
 
-    # @pytest.mark.skipif(True,reason='skip')
     def testTiny(self):
 
         self.c.saveAncestors(1, 0)
@@ -116,7 +114,6 @@ class TestBtcTx(object):
         self.c.logAnc(heaviest)
 
 
-    # @pytest.mark.skipif(True,reason='skip')
     def testSmallChain(self):
         heaviest = 5
 
@@ -139,7 +136,6 @@ class TestBtcTx(object):
             assert self.c.inMainChain(forkStartBlock+i) == 0
 
 
-    # @pytest.mark.skipif(True,reason='skip')
     def testShortFork(self):
         heaviest = 5
 
@@ -170,7 +166,6 @@ class TestBtcTx(object):
         # self.c.logBlockchainHead()
 
 
-    # @pytest.mark.skipif(True,reason='skip')
     # heaviest is the "fork"
     def testAltShortFork(self):
         heaviest = 5
@@ -194,7 +189,6 @@ class TestBtcTx(object):
 
 
 
-    # @pytest.mark.skipif(True,reason='skip')
     # 2 forks from block2
     def testMultiShortFork(self):
         heaviest = 5

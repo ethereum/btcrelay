@@ -55,7 +55,6 @@ class TestBtcTx(object):
         return res
 
 
-    # @pytest.mark.skipif(True,reason='skip')
     @slow
     def test80from300K(self):
         startBlockNum = 300000
@@ -83,7 +82,6 @@ class TestBtcTx(object):
         print "GAS: ", self.s.block.gas_used
 
 
-    # @pytest.mark.skipif(True,reason='skip')
     @slow
     @pytest.mark.veryslow
     # check params such as timeoutSecs
