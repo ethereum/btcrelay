@@ -86,7 +86,8 @@ class TestBtcTx(object):
     # @pytest.mark.skipif(True,reason='skip')
     @slow
     @pytest.mark.veryslow
-    def test100from300K(self):
+    # check params such as timeoutSecs
+    def test400from300K(self):
         startBlockNum = 300000
         numBlock = 400
 
@@ -110,12 +111,13 @@ class TestBtcTx(object):
         duration = datetime.combine(date.today(), endTime) - datetime.combine(date.today(), startTime)
         print("********** duration: "+str(duration)+" ********** start:"+str(startTime)+" end:"+str(endTime))
 
-        nChecks = 5
+        nChecks = 40000
+        timeoutSecs = 1  # may need longer to avoid termination by blockchain.info (BCI)
         for i in range(nChecks):
             if i > 20:
-                time.sleep(1)
+                time.sleep(timeoutSecs)
             if i%60 == 0:
-                print(i)
+                print('BCI nth check '+str(i))
 
             randBlock = random.randrange(startBlockNum, startBlockNum+numBlock)
             res = self.randomTxVerify(randBlock)
