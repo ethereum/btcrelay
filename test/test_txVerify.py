@@ -277,19 +277,15 @@ class TestBtcTx(object):
         return res['output']
 
 
-    # for now, largely duplicated from doVerifyTx()
     def doRelayTx(self, txStr, header, hashes, index, contract, profiling=False):
-        numTx = len(hashes)
-        # print('txStr='+hashes[index])
-
         proof = mk_merkle_proof(header, hashes, index)
+        proof['path'] = self.indexToPath(index, len(proof['siblings']))
 
-        txHash = int(hashes[index], 16)  #TODO should be removable in future when txStr becomes txBinary
+        txHash = int(proof['hash'], 16)  #TODO should be removable in future when txStr becomes txBinary
 
         siblings = map(partial(int,base=16), proof['siblings'])
-        nSibling = len(siblings)
-        path = self.indexToPath(index, nSibling)
-        txBlockHash = int(header['hash'], 16)
+        path = proof['path']
+        txBlockHash = int(proof['header']['hash'], 16)
         res = self.c.relayTx(txStr, txHash, len(siblings), siblings, path, txBlockHash, contract, profiling=profiling)
         print('GAS: '+str(res['gas']))
         return res['output']
