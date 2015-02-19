@@ -5,47 +5,39 @@
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js">;
 
 
-<!-- script src="https://es6-promises.s3.amazonaws.com/es6-promise-2.0.0.min.js">
-window.Promise = window.ES6Promise;
-console.log('jtest: ', Promise)
-</script -->
 
-<!-- // <script src="es6-promise-2.0.1.min.js">
-var Promise = require('es6-promise').Promise;
-console.log(Promise);
-console.log('jtest')
-</script> -->
-
-<script src="es6-promise-2.0.1.min.js"></script>
-
+<script src="bignumber.js"></script>
 <script src="ethereum.min.js"></script>
 
 <script type="text/javascript">
 var web3 = require('web3');
-web3.setProvider(new web3.providers.AutoProvider());
+    web3.setProvider(new web3.providers.HttpSyncProvider());
+    // web3.setProvider(new web3.providers.HttpSyncProvider("http://localhost:8545"))
+
+// web3.setProvider(new web3.providers.AutoProvider());
 // web3.setProvider(new web3.providers.WebSocketProvider('ws://localhost:40404/eth'));
 
 ///First web3.eth.watch code to monitor coinbase
-web3.eth.watch({altered: web3.eth.coinbase}).changed(function(){
-  	web3.eth.coinbase.then(function(result) {
-  		document.getElementById('coinbase').innerText = result;
-  	});
-  	web3.eth.balanceAt(web3.eth.coinbase).then(function(result){
-    	document.getElementById('balance').innerText = result;
-    });
+web3.eth.watch('pending').changed(function(){
+    var coinbase = web3.eth.coinbase;
+  	document.getElementById('coinbase').innerText = coinbase;
+
+    var balance = web3.eth.balanceAt(coinbase);
+  	document.getElementById('balance').innerText = balance;
 });
 
 ///Insert your contract address var here:
 
 
 ///Second web3.eth.watch code to monitor block number
-web3.eth.watch().changed(function(){
-	web3.eth.block(web3.eth.number).then(function(result){
-    	document.getElementById('latestBlock').innerText = web3.eth.number._result;
-    	document.getElementById('latestBlockHash').innerText = result.hash;
-    	document.getElementById('latestBlockTimestamp').innerText = Date(result.timestamp);
-  	})
-});
+// web3.eth.watch().changed(function(){
+// 	web3.eth.block(web3.eth.number).then(function(result){
+//     	document.getElementById('latestBlock').innerText = web3.eth.number._result;
+//     	document.getElementById('latestBlockHash').innerText = result.hash;
+//     	document.getElementById('latestBlockTimestamp').innerText = Date(result.timestamp);
+//   	})
+// });
+
 
 // curl -X POST --data '{"jsonrpc":"2.0","method":"eth_balanceAt","params":["0x205215f022af4950618730bcfae161b28397bc41"],"id":1}' http://localhost:8080
 
