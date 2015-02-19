@@ -129,7 +129,7 @@ web3.eth.watch('pending').changed(function(){
 var bethAddress = '0x01c64ba40b13ed3e43d7efebb748d5da7548ea7e';
 var bethAbi = [
   {
-    'name': 'test',
+    'name': 'btest',
     'constant': false,
     'inputs': [{
       'name': 'str',
@@ -180,7 +180,7 @@ function callExampleContract() {
   // param = 9;
   var param = parseInt(document.getElementById('value').value);
   // 34 chars
-  contract.test('1234567890123456789012345678901234').transact().then(function(res) {
+  contract.btest('1234567890123456789012345678901234').transact().then(function(res) {
           document.getElementById('result').innerText = res[0];
       });
 
