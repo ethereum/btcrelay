@@ -1,5 +1,13 @@
 
-205215f022af4950618730bcfae161b28397bc41 is sampleContractA.py
+
+02f653a05dc68a7df9a74c8eb9a50a15e98bed6e is sampleContractA.py
+
+To get data to paste in AZ:
+from pyepm import api
+api.abi_data('processTransfer', 'i', [42])
+
+
+
 
 46509d73e9d86ecffba01a13288b98366586c669 is sampleContractcallsA.py
 sample msg to it:
