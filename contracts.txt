@@ -5,6 +5,10 @@
 To get data to paste in AZ:
 from pyepm import api
 api.abi_data('processTransfer', 'i', [42])
+Block 2161 was the creation
+Block 2162 stored 42 using pyepm above
+Block 2178 was failed contract.transact().processTransfer(33).toString(10)
+  it failed because the abi was using uint256 and it should be int256 since Serpent is now using signed ints
 
 
 

@@ -42,23 +42,23 @@ web3.eth.watch('pending').changed(function(){
 // curl -X POST --data '{"jsonrpc":"2.0","method":"eth_balanceAt","params":["0x205215f022af4950618730bcfae161b28397bc41"],"id":1}' http://localhost:8080
 
 
-// var bethAddress = '0x205215f022af4950618730bcfae161b28397bc41';
-// var bethAbi = [
-//   {
-//     'name': 'processTransfer',
-//     'constant': false,
-//     'inputs': [{
-//       'name': 'n',
-//       'type': 'uint256'
-//     }],
-//     'outputs': [
-//         {
-//             "name": "d",
-//             "type": "uint256"
-//         }
-//     ]
-//   }
-// ];
+var bethAddress = '0x02f653a05dc68a7df9a74c8eb9a50a15e98bed6e';
+var bethAbi = [
+  {
+    'name': 'processTransfer(int256)',
+    'type': 'function',
+    'inputs': [{
+      'name': 'n',
+      'type': 'int256'
+    }],
+    'outputs': [
+        {
+            "name": "d",
+            "type": "int256"
+        }
+    ]
+  }
+];
 
 
 // var bethAddress = '0x82a05f47635daab083ee267b4a1f20f949d9392f';
@@ -126,23 +126,23 @@ web3.eth.watch('pending').changed(function(){
 
 
 
-var bethAddress = '0x01c64ba40b13ed3e43d7efebb748d5da7548ea7e';
-var bethAbi = [
-  {
-    'name': 'btest',
-    'constant': false,
-    'inputs': [{
-      'name': 'str',
-      'type': 'string'
-    }],
-    'outputs': [
-        {
-            "name": "d",
-            "type": "uint256"
-        }
-    ]
-  }
-];
+// var bethAddress = '0x01c64ba40b13ed3e43d7efebb748d5da7548ea7e';
+// var bethAbi = [
+//   {
+//     'name': 'btest',
+//     'constant': false,
+//     'inputs': [{
+//       'name': 'str',
+//       'type': 'string'
+//     }],
+//     'outputs': [
+//         {
+//             "name": "d",
+//             "type": "uint256"
+//         }
+//     ]
+//   }
+// ];
 
 
 // var bethAddress = '0xb2790180f2bf3fdc2b496b576814de183661a51f';
@@ -179,10 +179,16 @@ var padLeft = function (string, chars) {
 function callExampleContract() {
   // param = 9;
   var param = parseInt(document.getElementById('value').value);
+
+  var res = contract.call().processTransfer(param);
+  // var res = contract.transact().processTransfer('1300');
+  document.getElementById('result').innerText = res.toString(10);
+
+
   // 34 chars
-  contract.btest('1234567890123456789012345678901234').transact().then(function(res) {
-          document.getElementById('result').innerText = res[0];
-      });
+  // contract.btest('1234567890123456789012345678901234').transact().then(function(res) {
+  //         document.getElementById('result').innerText = res[0];
+  //     });
 
   // contract.callsA(['0x77'], '0x205215f022af4950618730bcfae161b28397bc41').transact().then(function(res) {
   //           document.getElementById('result').innerText = res[0];
