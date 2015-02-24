@@ -349,6 +349,7 @@ class TestBtcTx(object):
         siblings = map(partial(int,base=16), proof['siblings'])
         path = proof['path']
         txBlockHash = int(proof['header']['hash'], 16)
+        # print(txStr, txHash, len(siblings), siblings, path, txBlockHash, contract)
         res = self.c.relayTx(txStr, txHash, len(siblings), siblings, path, txBlockHash, contract, profiling=profiling)
         print('GAS: '+str(res['gas']))
         return res['output']
