@@ -26,6 +26,13 @@ Here is the info on storing the genesis block:
 We would send 'data' to the contract, but it wasn't able to be created in AZ.
 
 
+After storing the genesis, here's ABI data for storing block1:
+>>> b1str = '010000006fe28c0ab6f1b372c1a6a246ae63f74f931e8365e15a089c68d6190000000000982051fd1e4ba744bbbe680e1fee14677ba1a3c3540bf7b1cdb606e857233e0e61bc6649ffff001d01e36299'
+>>> api.abi_data('storeBlockHeader','s', [b1str.decode('hex')])
+'0x91d0ded50000000000000000000000000000000000000000000000000000000000000050010000006fe28c0ab6f1b372c1a6a246ae63f74f931e8365e15a089c68d6190000000000982051fd1e4ba744bbbe680e1fee14677ba1a3c3540bf7b1cdb606e857233e0e61bc6649ffff001d01e36299'
+
+
+
 
 
 
