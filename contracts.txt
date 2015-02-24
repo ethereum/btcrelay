@@ -11,6 +11,23 @@ Block 2178 was failed contract.transact().processTransfer(33).toString(10)
   it failed because the abi was using uint256 and it should be int256 since Serpent is now using signed ints
 
 
+btcrelay.py contract is:
+d82829ef90ed0f0d1c3f8f9e82cb4e923b7ba24c
+(Doesn't show up in Contracts pane perhaps https://github.com/ethereum/serpent/issues/62
+and when you try to send a message to it, AZ says Destination not a contract)
+
+Here is the info on storing the genesis block:
+>>> bstr = '0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c'
+>>> bb = bstr.decode('hex')
+>>> data = api.abi_data('storeBlockHeader','s', [bb])
+>>> data
+'0x91d0ded500000000000000000000000000000000000000000000000000000000000000500100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c'
+
+We would send 'data' to the contract, but it wasn't able to be created in AZ.
+
+
+
+
 
 
 46509d73e9d86ecffba01a13288b98366586c669 is sampleContractcallsA.py
