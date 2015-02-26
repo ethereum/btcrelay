@@ -52,8 +52,10 @@ class TestBtcTx(object):
         blockHeaderBinary = map(lambda x: x.decode('hex'), headers)
         for i in range(7):
             res = self.c.storeBlockHeader(blockHeaderBinary[i])
+            # print('@@@@ real chain score: ' + str(self.c.getChainScore()))
             assert res == i+2
 
+        realScore = self.c.getChainScore()
 
         # block hashes
         b0 = 0x000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506
@@ -93,6 +95,8 @@ class TestBtcTx(object):
         res = self.c.verifyTx(tx, proofLen, hash, path, txBlockHash)
         assert res == 1
 
+        assert b6 == self.c.getBlockchainHead()
+
 
         # insert (fake) blocks that will not be on main chain
         # using script/mine.py these are the next 7 blocks
@@ -116,7 +120,12 @@ class TestBtcTx(object):
             blockHeaderBinary = self.getBlockHeaderBinary(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
             res = self.c.storeBlockHeader(blockHeaderBinary)
             hashPrevBlock = self.c.fastHashBlock(blockHeaderBinary)
+
+            # print('@@@@ fake chain score: ' + str(self.c.getChainScore()))
             assert res == i+2
+
+        assert self.c.getChainScore() == realScore
+        assert b6 == self.c.getBlockchainHead()
 
         # forked block should NOT verify
         txBlockHash = 0x11bb7c5555b8eab7801b1c4384efcab0d869230fcf4a8f043abad255c99105f8

@@ -92,9 +92,9 @@ def storeBlockHeader(blockHeaderBinary:str):
 
         self.block[blockHash]._score = self.block[hashPrevBlock]._score + difficulty
 
-        if gt(self.block[blockHash]._score, highScore):  #TODO use sgt?
+        if gt(self.block[blockHash]._score, self.highScore):  #TODO use sgt?
             self.heaviestBlock = blockHash
-            highScore = self.block[blockHash]._score
+            self.highScore = self.block[blockHash]._score
 
         return(self.block[blockHash]._height)
 

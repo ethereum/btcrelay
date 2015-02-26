@@ -72,5 +72,11 @@ def logAnc(blockHash):
     log(22222)
 
 
-def logBlockchainHead():
-    log(self.heaviestBlock)
+def getBlockchainHead():
+    # log(self.heaviestBlock)
+    return(self.heaviestBlock)
+
+def getChainScore():
+    score = self.block[self.heaviestBlock]._score
+    # log(score)
+    return(score)
