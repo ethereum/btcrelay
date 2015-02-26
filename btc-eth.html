@@ -178,13 +178,14 @@ var padLeft = function (string, chars) {
     return new Array(chars - string.length + 1).join("0") + string;
 };
 
-function callExampleContract() {
+function callContract() {
+  console.log('@@@ in callContract')
   // param = 9;
-  var param = parseInt(document.getElementById('value').value);
-
-  var res = contract.call().processTransfer(param);
-  // var res = contract.transact().processTransfer('1300');
-  document.getElementById('result').innerText = res.toString(10);
+  // var param = parseInt(document.getElementById('value').value);
+  //
+  // var res = contract.call().processTransfer(param);
+  // // var res = contract.transact().processTransfer('1300');
+  // document.getElementById('result').innerText = res.toString(10);
 
 
   // 34 chars
@@ -240,12 +241,9 @@ function callExampleContract() {
 
         <!-- TODO field for the address of the exchange contract -->
       </div>
+      <button type="button" class="btn btn-default" onclick="callContract();">Submit</button>
     </form>
 
-    <div id='call'>
-      <input type="number" id="value"></input>
-      <button type="button" onClick="callExampleContract();">transact()</button>
-    </div>
     <div id="result"></div>
 
     <div class="jumbotron">
