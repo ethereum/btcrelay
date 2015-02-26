@@ -1,4 +1,5 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <title>JavaScript API</title>
   <link rel="stylesheet" href="./css/bootstrap.min.css">
@@ -222,42 +223,41 @@ function callExampleContract() {
 
 <body>
 
-  <div class="header">
-    <h3>JavaScript API</h3>
-  </div>
+  <div class="container">
+    <form>
+      <h3>Get Ether with BTC</h2>
+      <div class="form-group">
+        <textarea class="form-control" name="textarea" rows="10" cols="50">Raw Tx</textarea>
 
-  <form>
-    <div class="form-group">
-      <textarea name="textarea" rows="10" cols="50">Raw Tx</textarea>
+        <label for="txHash">tx hash</label>
+        <input type="text" class="form-control" id="txHash"></input>
+        <label for="txBlockHash">block hash that tx belongs to</label>
+        <input type="text" class="form-control" id="txBlockHash"></input>
+        <label for="proofSiblings">Merkle Proof siblings</label>
+        <input type="text" class="form-control" id="proofSiblings"></input>
+        <label for="proofPaths">Merkle Proof paths</label>
+        <input type="text" class="form-control" id="proofPaths"></input>
 
-      <label for="txHash">tx hash</label>
-      <input type="text" id="txHash"></input>
-      <label for="txBlockHash">block hash that tx belongs to</label>
-      <input type="text" id="txBlockHash"></input>
-      <label for="proofSiblings">Merkle Proof siblings</label>
-      <input type="text" id="proofSiblings"></input>
-      <label for="proofPaths">Merkle Proof paths</label>
-      <input type="text" id="proofPaths"></input>
+        <!-- TODO field for the address of the exchange contract -->
+      </div>
+    </form>
 
-      <!-- TODO field for the address of the exchange contract -->
+    <div id='call'>
+      <input type="number" id="value"></input>
+      <button type="button" onClick="callExampleContract();">transact()</button>
     </div>
-  </form>
+    <div id="result"></div>
 
-  <div id='call'>
-    <input type="number" id="value"></input>
-    <button type="button" onClick="callExampleContract();">transact()</button>
-  </div>
-  <div id="result"></div>
-
-  <div class="jumbotron">
-    <h5>Coinbase Address: <strong id="coinbase"></strong></h5>
-    <h5>Balance: <strong id="balance"></strong></h5>
-    <h5>Latest Block Number: <strong id="latestBlock"></strong></h5>
-    <h5>Latest Block Timestamp: <strong id="latestBlockTimestamp"></strong></h5>
-    <h5>Latest Block Hash: <strong id="latestBlockHash"></strong></h5>
-    <h5>Contract String: <strong id="contractString"></strong></h5>
-    <h5>Favourite Python: <strong id="favouritePython"></strong></h5>
-    <br>
+    <div class="jumbotron">
+      <h5>Coinbase Address: <strong id="coinbase"></strong></h5>
+      <h5>Balance: <strong id="balance"></strong></h5>
+      <h5>Latest Block Number: <strong id="latestBlock"></strong></h5>
+      <h5>Latest Block Timestamp: <strong id="latestBlockTimestamp"></strong></h5>
+      <h5>Latest Block Hash: <strong id="latestBlockHash"></strong></h5>
+      <h5>Contract String: <strong id="contractString"></strong></h5>
+      <h5>Favourite Python: <strong id="favouritePython"></strong></h5>
+      <br>
+    </div>
   </div>
 
 </body>
