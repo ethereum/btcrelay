@@ -251,11 +251,13 @@ class TestBtcTx(object):
 
 
     def storeGenesisBlock(self):
+        self.c.testingonlySetGenesis(0)
+
         blockHeaderStr = ("0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c")
         bhBinary = blockHeaderStr.decode('hex')
         res = self.c.storeBlockHeader(bhBinary, profiling=True)
         print('GAS: '+str(res['gas']))
-        assert res['output'] == 1
+        assert res['output'] == 2 # since there's testingonlySetGenesis
 
     def storeBlock1(self):
         # block 1
@@ -263,7 +265,7 @@ class TestBtcTx(object):
         bhBinary = blockHeaderStr.decode('hex')
         res = self.c.storeBlockHeader(bhBinary, profiling=True)
         print('GAS: '+str(res['gas']))
-        assert res['output'] == 2
+        assert res['output'] == 3  # since there's 2 "genesis" blocks
 
 
     def testStoringHeaders(self):
