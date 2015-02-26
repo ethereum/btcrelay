@@ -60,9 +60,18 @@ function callContract() {
     new BigNumber('0x8e30899078ca1813be036a073bbf80b86cdddde1c96e9e9c99e9e3782df4ae49')];
   var merklePath = [1, 2];
   var proofLen = merkleSibling.length;
+  // var merklePath = [new BigNumber(1), new BigNumber(2)];
+  // var proofLen = new BigNumber(merkleSibling.length);
   var txBlockHash = new BigNumber('0x000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506');
 
-  var res = contract.call().verifyTx(txHash, proofLen, merkleSibling, merklePath, txBlockHash);
+
+  // var res = contract.call().verifyTx(txHash, proofLen, merkleSibling, merklePath, txBlockHash);
+
+  var res = contract.call().getBlockchainHead();
+
+  // var res = contract.call().getChainScore();
+
+  console.log('@@@@ res: ', res)
   document.getElementById('result').innerText = res.toString(10);
 
 
