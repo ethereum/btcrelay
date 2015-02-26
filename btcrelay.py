@@ -54,6 +54,7 @@ def testingonlySetHeaviest(blockHash):
 def testingonlySetGenesis(blockHash):
     self.heaviestBlock = blockHash
     self.block[blockHash]._height = 1
+    self.block[blockHash]._score = 1  # genesis has score of 1, since score0 means block does NOT exist. see check in storeBlockHeader()
     ancLen = self.numAncestorDepths
     i = 0
     while i < ancLen:
@@ -62,11 +63,10 @@ def testingonlySetGenesis(blockHash):
 
 
 def storeBlockHeader(blockHeaderBinary:str):
-    # this check can be removed to allow older block headers to be added, but it
-    # may provide an attack vector where the contract can be spammed with valid
-    # headers that will not be used and simply take up memory storage
-    # if hashPrevBlock != self.heaviestBlock:  # special case for genesis prev block of 0 is not needed since self.heaviestBlock is 0 initially
-    #     return(0)
+    hashPrevBlock = getBytesLE(blockHeaderBinary, 32, 4)
+
+    if self.block[hashPrevBlock]._score == 0:  # score0 means block does NOT exist; genesis has score of 1
+        return(0)
 
     blockHash = self.fastHashBlock(blockHeaderBinary)
 
@@ -81,9 +81,6 @@ def storeBlockHeader(blockHeaderBinary:str):
     # TODO other validation of block?  eg timestamp
 
     if gt(blockHash, 0) && lt(blockHash, target):  #TODO should sgt and slt be used?
-
-        hashPrevBlock = getBytesLE(blockHeaderBinary, 32, 4)
-
         self.saveAncestors(blockHash, hashPrevBlock)
 
         save(self.block[blockHash]._blockHeader[0], blockHeaderBinary, chars=80) # or 160?
