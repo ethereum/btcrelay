@@ -44,7 +44,7 @@ web3.eth.watch('pending').changed(function(){
 
 // def verifyTx(tx, proofLen, hash:arr, path:arr, txBlockHash):
 
-var bethAddress = '0x02f653a05dc68a7df9a74c8eb9a50a15e98bed6e';
+var bethAddress = '0x3432c7f5ca6552fca2f641575135578cb724eb1f';
 var contract = web3.eth.contract(bethAddress, btcRelayAbi);
 
 var padLeft = function (string, chars) {
@@ -54,6 +54,19 @@ var padLeft = function (string, chars) {
 function callContract() {
   console.log('@@@ in callContract')
   console.log('@@@ btcRelayAbi: ', btcRelayAbi)
+
+  var txHash = new BigNumber('0xfff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4');
+  var merkleSibling = [new BigNumber('0x8c14f0db3df150123e6f3dbbf30f8b955a8249b62ac1d1ff16284aefa3d06d87'),
+    new BigNumber('0x8e30899078ca1813be036a073bbf80b86cdddde1c96e9e9c99e9e3782df4ae49')];
+  var merklePath = [1, 2];
+  var proofLen = merkleSibling.length;
+  var txBlockHash = new BigNumber('0x000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506');
+
+  var res = contract.call().verifyTx(txHash, proofLen, merkleSibling, merklePath, txBlockHash);
+  document.getElementById('result').innerText = res.toString(10);
+
+
+
   // param = 9;
   // var param = parseInt(document.getElementById('value').value);
   //
