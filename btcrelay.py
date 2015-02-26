@@ -39,11 +39,16 @@ def init():
     self.init333k()
 
 
-#TODO for testing only
 def init333k():
     self.heaviestBlock = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
     trustedBlock = self.heaviestBlock
     self.block[trustedBlock]._height = 333000
+    self.block[trustedBlock]._score = 1
+    ancLen = self.numAncestorDepths
+    i = 0
+    while i < ancLen:
+        self.block[trustedBlock]._ancestor[i] = trustedBlock
+        i += 1
 
 
 #TODO for testing only
