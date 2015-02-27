@@ -73,8 +73,8 @@ function testCall() {
 }
 
 
-function callContract() {
-  console.log('@@@ in callContract')
+function testDirectProcessTransfer() {
+  console.log('@@@ in testDirectProcessTransfer')
   console.log('@@@ btcToEthAbi: ', btcToEthAbi)
 
   var addrExchContract = '0x1ddb229746359a5eb72317f9936411be1b589301';
@@ -87,7 +87,29 @@ function callContract() {
 }
 
 
-function c22() {
+function callContract() {
+  console.log('@@@ in callContract')
+
+  var addr = '0x18113bb455f73f2b079ea6e9883cc4d22f326cd0';
+  var abi =
+  [{
+      "name": "callsA(int256,int256)",
+      "type": "function",
+      "inputs": [{ "name": "x", "type": "int256" }, { "name": "n", "type": "int256" }],
+      "outputs": [{ "name": "out", "type": "int256" }]
+  }];
+
+  var conA = '0xb882e19a1f5ead51ac2551f8bef57587314b3257';
+
+  var ct = web3.eth.contract(addr, abi);
+  var res = ct.call().callsA(conA, 13);
+  console.log('@@@@ res: ', res)
+  document.getElementById('result').innerText = res.toString(10);
+}
+
+
+function c22allContract() {
+  console.log('@@@ in callContract')
   console.log('@@@ btcRelayAbi: ', btcRelayAbi)
 
   var bethAddress = '0x3432c7f5ca6552fca2f641575135578cb724eb1f';
