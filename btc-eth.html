@@ -44,6 +44,7 @@ web3.eth.watch('pending').changed(function(){
 
 // def verifyTx(tx, proofLen, hash:arr, path:arr, txBlockHash):
 
+// note this version of btcrelay does not getChainScore, or return blockChainHead...
 var bethAddress = '0x3432c7f5ca6552fca2f641575135578cb724eb1f';
 var contract = web3.eth.contract(bethAddress, btcRelayAbi);
 
@@ -65,11 +66,8 @@ function callContract() {
   var txBlockHash = new BigNumber('0x000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506');
 
 
-  // var res = contract.call().verifyTx(txHash, proofLen, merkleSibling, merklePath, txBlockHash);
+  var res = contract.call().verifyTx(txHash, proofLen, merkleSibling, merklePath, txBlockHash);
 
-  var res = contract.call().getBlockchainHead();
-
-  // var res = contract.call().getChainScore();
 
   console.log('@@@@ res: ', res)
   document.getElementById('result').innerText = res.toString(10);
