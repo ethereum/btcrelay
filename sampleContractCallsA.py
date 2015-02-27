@@ -1,5 +1,5 @@
-extern sampleContractA: [processTransfer:i:i]
+extern sampleContractA: [processTransfer:s:i]
 
-def callsA(x, n):
-    res = x.processTransfer(n)
+def callsA(x, txHex:str):
+    res = x.processTransfer(txHex)
     return(res)
