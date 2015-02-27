@@ -87,7 +87,7 @@ function testDirectProcessTransfer() {
 }
 
 
-function callContract() {
+function testSampleCallingProcessTransfer() {
   console.log('@@@ in callContract')
 
   var addr = '0xc0b70bcf0c0b60ba5e15de1f8980ae357196a34a';
@@ -108,7 +108,7 @@ function callContract() {
 }
 
 
-function c22allContract() {
+function callContract() {
   console.log('@@@ in callContract')
   console.log('@@@ btcRelayAbi: ', btcRelayAbi)
 
@@ -136,11 +136,9 @@ function c22allContract() {
   // var txBinaryStr = CryptoJS.enc.Latin1.stringify(words);
 
   var exchangeContractAddr = new BigNumber('0x1ddb229746359a5eb72317f9936411be1b589301');
-  // var res = contract.call().relayTx(txHex, txHash, proofLen, merkleSibling, merklePath, txBlockHash, exchangeContractAddr);
-
-  // var res = contract.transact().relayTx(txHex, txHash, proofLen, merkleSibling, merklePath, txBlockHash, exchangeContractAddr);
-  // console.log('@@@@ res: ', res)
-  // document.getElementById('result').innerText = res.toString(10);
+  var res = contract.call().relayTx(txHex, txHash, proofLen, merkleSibling, merklePath, txBlockHash, exchangeContractAddr);
+  console.log('@@@@ res: ', res)
+  document.getElementById('result').innerText = res.toString(10);
 
 
 
