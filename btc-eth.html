@@ -100,7 +100,7 @@ function getTxInfo() {
 
   var urlHexTx = "https://blockchain.info/rawtx/"+txid+"?format=hex&cors=true";
   $.ajax(urlHexTx).done(function(data) {
-      console.log('@@@ bd: ', data)
+      // console.log('@@@ hex: ', data)
       $('#txHexText').val(data);
   });
 
@@ -110,9 +110,11 @@ function getTxInfo() {
       console.log('@@@ bd: ', data)
       var blockNum = data.block_height;
 
-      var blockInfoUrl = "https://blockchain.info/block-index/"+blockNum+"?format=json&cors=true";
-      $.getJSON(blockInfoUrl, function(data) {
-          console.log('@@@ bd: ', data)
+      var blockInfoUrl = "http://btc.blockr.io/api/v1/block/raw/"+blockNum;
+      $.getJSON(blockInfoUrl, function(res) {
+          console.log('@@@ res: ', res)
+
+          $('#txBlockHash').val(res.data.hash)
       })
 
   })
