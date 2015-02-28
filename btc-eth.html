@@ -9,6 +9,7 @@
 
   <script src="./js/btc-ethAbi.js"></script>
 
+
   <!-- TODO may not all be needed -->
   <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/components/core-min.js"></script>
   <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/components/enc-utf16-min.js"></script>
@@ -16,6 +17,9 @@
 
   <script src="bignumber.js"></script>
   <script src="ethereum.min.js"></script>
+
+
+  <script src="./js/btcproof.js"></script>
 
 <script type="text/javascript">
 var web3 = require('web3');
@@ -33,6 +37,8 @@ web3.eth.watch('pending').changed(function(){
     var balance = web3.eth.balanceAt(coinbase);
   	document.getElementById('balance').innerText = balance;
 });
+
+var btcproof = require('btcproof');
 
 ///Insert your contract address var here:
 
@@ -115,6 +121,9 @@ function getTxInfo() {
           console.log('@@@ res: ', res)
 
           $('#txBlockHash').val(res.data.hash)
+
+          var merkleProof = btcproof.getProof(res.data.tx, 1);
+          console.log('@@@ mp: ', merkleProof)
       })
 
   })
