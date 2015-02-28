@@ -30,13 +30,13 @@ var web3 = require('web3');
 // web3.setProvider(new web3.providers.WebSocketProvider('ws://localhost:40404/eth'));
 
 ///First web3.eth.watch code to monitor coinbase
-web3.eth.watch('pending').changed(function(){
-    var coinbase = web3.eth.coinbase;
-  	document.getElementById('coinbase').innerText = coinbase;
-
-    var balance = web3.eth.balanceAt(coinbase);
-  	document.getElementById('balance').innerText = balance;
-});
+// web3.eth.watch('pending').changed(function(){
+//     var coinbase = web3.eth.coinbase;
+//   	document.getElementById('coinbase').innerText = coinbase;
+//
+//     var balance = web3.eth.balanceAt(coinbase);
+//   	document.getElementById('balance').innerText = balance;
+// });
 
 var btcproof = require('btcproof');
 
@@ -136,7 +136,7 @@ function getTxInfo() {
 }
 
 $(function() {
-  var ethBalance = web3.eth.balanceAt(gExchangeContractAddr);
+  var ethBalance = web3.fromWei(web3.eth.balanceAt(gExchangeContractAddr), 'ether');
   $('#exchBal').text(ethBalance);
 
   $('#transHex').val('fff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4');
@@ -156,7 +156,7 @@ $(function() {
 <body>
 
   <div class="container">
-    <h2>Get ether with BTC <small>&nbsp;&nbsp;&nbsp;Rate is 1000 ether per 1BTC</small></h2>
+    <h2>Get ether with BTC <small>&nbsp;&nbsp;&nbsp;Get 1000 ether per 1BTC</small></h2>
 
     <p class="lead">Contract at <span id="exchAddr"></span> has
       <span id="exchBal"></span> ether.  To get ether,
@@ -171,12 +171,12 @@ $(function() {
       <strong>Claim Ether</strong> below.
     </p>
 
-    <form>
+    <form class="form-inline">
       <div class="form-group">
         <label for="transHex">Transaction Hash</label>
-        <input type="text" class="form-control" id="transHex"></input>
-        <button type="button" class="btn btn-default" id="btn-get-tx">Lookup</button>
+        <input type="text" class="form-control" id="transHex" size="64" maxlength="64"></input>
       </div>
+      <button type="button" class="btn btn-default" id="btn-get-tx">Lookup</button>
     </form>
 
 
@@ -188,15 +188,13 @@ $(function() {
       </div>
     </form> -->
 
-    <div id="txList"></div>
-
     <form>
       <div class="form-group">
         <label for="txHexText">Raw Transaction</label>
-        <textarea class="form-control" name="textarea" id="txHexText" rows="10" cols="50"></textarea>
+        <textarea class="form-control" name="textarea" id="txHexText" rows="6" cols="50"></textarea>
 
         <label for="mProof">Merkle Proof</label>
-        <textarea class="form-control" name="textarea" id="mProof" rows="10" cols="50"></textarea>
+        <textarea class="form-control" name="textarea" id="mProof" rows="6" cols="50"></textarea>
 
         <label for="txBlockNum">Block Number</label>
         <input type="text" class="form-control" id="txBlockNum"></input>
@@ -212,16 +210,14 @@ $(function() {
 
     <div id="result"></div>
 
-    <div class="jumbotron">
+    <!-- <div class="jumbotron">
       <h5>Coinbase Address: <strong id="coinbase"></strong></h5>
       <h5>Balance: <strong id="balance"></strong></h5>
       <h5>Latest Block Number: <strong id="latestBlock"></strong></h5>
       <h5>Latest Block Timestamp: <strong id="latestBlockTimestamp"></strong></h5>
       <h5>Latest Block Hash: <strong id="latestBlockHash"></strong></h5>
-      <h5>Contract String: <strong id="contractString"></strong></h5>
-      <h5>Favourite Python: <strong id="favouritePython"></strong></h5>
       <br>
-    </div>
+    </div> -->
   </div>
 
 </body>
