@@ -101,16 +101,25 @@ function getTxInfo() {
   var urlHexTx = "https://blockchain.info/rawtx/"+txid+"?format=hex&cors=true";
   $.ajax(urlHexTx).done(function(data) {
       console.log('@@@ bd: ', data)
-  })
+      $('#txHexText').val(data);
+  });
 
-  // var blockInfoUrl = "https://blockchain.info/block-index/"+blockNum+"?format=json&cors=true";
-  // $.getJSON(blockInfoUrl, function(data) {
-  //     console.log('@@@ bd: ', data)
-  // })
+
+  var urlJsonTx = "https://blockchain.info/rawtx/"+txid+"?format=json&cors=true";
+  $.getJSON(urlJsonTx, function(data) {
+      console.log('@@@ bd: ', data)
+      var blockNum = data.block_height;
+
+      var blockInfoUrl = "https://blockchain.info/block-index/"+blockNum+"?format=json&cors=true";
+      $.getJSON(blockInfoUrl, function(data) {
+          console.log('@@@ bd: ', data)
+      })
+
+  })
 }
 
 $(function() {
-  
+
   $('#transHex').val('fff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4');
 
   $('#btn-get-tx').click(getTxInfo);
@@ -148,7 +157,7 @@ $(function() {
 
     <form>
       <div class="form-group">
-        <textarea class="form-control" name="textarea" rows="10" cols="50">Raw Tx</textarea>
+        <textarea class="form-control" name="textarea" id="txHexText" rows="10" cols="50">Raw Tx</textarea>
 
         <label for="txHash">tx hash</label>
         <input type="text" class="form-control" id="txHash"></input>
