@@ -59,6 +59,10 @@ var btcproof = require('btcproof');
 // def verifyTx(tx, proofLen, hash:arr, path:arr, txBlockHash):
 
 // note this version of btcrelay does not getChainScore, or return blockChainHead...
+// 0x3432c7f5ca6552fca2f641575135578cb724eb1f
+
+
+var gExchangeContractAddr = '0x1ddb229746359a5eb72317f9936411be1b589301';
 
 
 function callContract() {
@@ -91,7 +95,7 @@ function callContract() {
   // var words = CryptoJS.enc.Hex.parse(txHex);
   // var txBinaryStr = CryptoJS.enc.Latin1.stringify(words);
 
-  var exchangeContractAddr = new BigNumber('0x1ddb229746359a5eb72317f9936411be1b589301');
+  var exchangeContractAddr = new BigNumber(gExchangeContractAddr);
   // var res = contract.call().relayTx(txHex, txHash, proofLen, merkleSibling, merklePath, txBlockHash, exchangeContractAddr);
   // console.log('@@@@ res: ', res)
   // document.getElementById('result').innerText = res.toString(10);
@@ -136,6 +140,8 @@ $(function() {
   $('#transHex').val('fff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4');
 
   $('#btn-get-tx').click(getTxInfo);
+
+
 });
 
 
@@ -147,7 +153,19 @@ $(function() {
 <body>
 
   <div class="container">
-    <h3>Get Ether with BTC</h2>
+    <h2>Get ether with BTC <small>&nbsp;&nbsp;&nbsp;Rate is 1000 ether per 1BTC</small></h2>
+
+    <p class="lead">Contract at EADDR has X ether.  To get ether,
+      submit a Bitcoin transaction with 2 outputs:</p>
+    <ul>
+      <li>1st sending BTC to <strong>BTCADDR</strong></li>
+      <li>2nd 0.0001 BTC to <strong>your</strong> Ethereum Address</li>
+    </ul>
+
+    <p>After sending the BTC, <strong>Lookup</strong> the hash of your
+      Bitcoin transaction here, and then click
+      <strong>Claim Ether</strong> below.
+    </p>
 
     <form>
       <div class="form-group">
