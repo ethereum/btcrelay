@@ -119,13 +119,13 @@ function getTxInfo() {
   $.getJSON(urlJsonTx, function(data) {
       console.log('@@@ bd: ', data)
       var blockNum = data.block_height;
-      $('#txBlockNum').val(blockNum);
+      $('#txBlockNum').text(blockNum);
 
       var blockInfoUrl = "http://btc.blockr.io/api/v1/block/raw/"+blockNum;
       $.getJSON(blockInfoUrl, function(res) {
           console.log('@@@ res: ', res)
 
-          $('#txBlockHash').val(res.data.hash)
+          $('#txBlockHash').text(res.data.hash)
 
           var merkleProof = btcproof.getProof(res.data.tx, 1);
           console.log('@@@ mp: ', merkleProof)
@@ -196,17 +196,20 @@ $(function() {
         <label for="mProof">Merkle Proof</label>
         <textarea class="form-control" name="textarea" id="mProof" rows="6" cols="50"></textarea>
 
-        <label for="txBlockNum">Block Number</label>
-        <input type="text" class="form-control" id="txBlockNum"></input>
+        <label class="col-md-1 control-label">Block Number</label>
+        <div class="col-md-1">
+          <p class="form-control-static" id="txBlockNum">0</p>
+        </div>
 
-        <label for="txBlockHash">Block Hash</label>
-        <input type="text" class="form-control" id="txBlockHash"></input>
-
-
-        <!-- TODO field for the address of the exchange contract -->
+        <label class="col-md-1 control-label">Block Hash</label>
+        <div class="col-md-9">
+          <p class="form-control-static" id="txBlockHash">0</p>
+        </div>
       </div>
+      <br><br>
       <button type="button" class="btn btn-default" onclick="callContract();">Claim Ether</button>
     </form>
+
 
     <div id="result"></div>
 
