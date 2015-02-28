@@ -93,19 +93,27 @@ function callContract() {
 
 
 
+// fff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4
+function getTxInfo() {
+  var txid = $('#transHex').val();
+  console.log('@@@ txid: ', txid);
 
-function getTxInBlock() {
-  var blockNum = $('#blockNum').val();
-  console.log('@@@ blockNum: ', blockNum);
-
-  var blockInfoUrl = "https://blockchain.info/block-index/"+blockNum+"?format=json&cors=true";
-  $.getJSON(blockInfoUrl, function(data) {
+  var urlHexTx = "https://blockchain.info/rawtx/"+txid+"?format=hex&cors=true";
+  $.ajax(urlHexTx).done(function(data) {
       console.log('@@@ bd: ', data)
   })
+
+  // var blockInfoUrl = "https://blockchain.info/block-index/"+blockNum+"?format=json&cors=true";
+  // $.getJSON(blockInfoUrl, function(data) {
+  //     console.log('@@@ bd: ', data)
+  // })
 }
 
 $(function() {
-  $('#btn-get-tx').click(getTxInBlock);
+  
+  $('#transHex').val('fff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4');
+
+  $('#btn-get-tx').click(getTxInfo);
 });
 
 
@@ -121,11 +129,20 @@ $(function() {
 
     <form>
       <div class="form-group">
+        <label for="transHex">Transaction Hash</label>
+        <input type="text" class="form-control" id="transHex"></input>
+        <button type="button" class="btn btn-default" id="btn-get-tx">Submit</button>
+      </div>
+    </form>
+
+
+    <!-- <form>
+      <div class="form-group">
         <label for="blockNum">Choose block number</label>
         <input type="text" class="form-control" id="blockNum"></input>
         <button type="button" class="btn btn-default" id="btn-get-tx">Submit</button>
       </div>
-    </form>
+    </form> -->
 
     <div id="txList"></div>
 
