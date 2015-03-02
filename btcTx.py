@@ -118,7 +118,15 @@ def getFirst2Outputs(txStr:str):
 
     i = 0
     while i < numIns:
-        self.txinParse()
+
+        prevTxId = self.readUnsignedBitsLE(256)
+        outputIndex = readUInt32LE()
+        # log(outputIndex)
+
+        scriptSize = self.readVarintNum()
+        self.pos += scriptSize # skip reading the input scripts
+        seqNum = readUInt32LE()
+
         i += 1
 
     numOuts = self.readVarintNum()
