@@ -78,10 +78,10 @@ def readVarintNum():
 
 
 
-# precondition: setupForParsing() has been called
+# precondition: __setupForParsing() has been called
 # returns an array [satoshis, outputScriptSize] and writes the
 # outputScript to self.tmpScriptArr
-def getMetaForOutput(outNum):
+def __getMetaForOutput(outNum):
     version = readUInt32LE()
     # log(version)
     # log(self.pos)
@@ -106,7 +106,7 @@ def getMetaForOutput(outNum):
 
 
 def getFirst2Outputs(txStr:str):
-    self.setupForParsing(txStr)
+    self.__setupForParsing(txStr)
     version = readUInt32LE()
     # log(version)
     # log(self.pos)
@@ -165,14 +165,25 @@ def getFirst2Outputs(txStr:str):
     return([out1stSatoshis, out1stScriptSize, out2ndScriptSize], items=3)
 
 
-def setupForParsing(hexStr:str):
+# general function for getting a tx output; for something faster and
+# explicit, see getFirst2Outputs()
+#
+# this is needed until can figure out how a dynamically sized array can be
+# returned from a function instead of needing 2 functions, one that
+# returns array size, then calling to get the actual array
+def parseTransaction(rawTx:str, outNum):
+    self.__setupForParsing(rawTx)
+    meta = self.__getMetaForOutput(outNum, outsz=2)
+    return(meta, items=2)
+
+
+def __setupForParsing(hexStr:str):
     self.pos = 0  # important
     save(self.gStr[0], hexStr, chars=len(hexStr))
 
 
 def doCheckOutputScript(rawTx:str, size, outNum, expHashOfOutputScript):
-    self.setupForParsing(rawTx)
-    satoshiAndScriptSize = self.getMetaForOutput(outNum, outitems=2)
+    satoshiAndScriptSize = self.parseTransaction(rawTx, outNum, outitems=2)
     cnt = satoshiAndScriptSize[1] * 2  # note: *2
 
     # TODO using load() until it can be figured out how to use gScript directly with sha256
