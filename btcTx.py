@@ -102,7 +102,7 @@ def getMetaForOutput(outNum):
 
 
 def setupForParsing(hexStr:str):
-    self.pos = 0
+    self.pos = 0  # important
     save(self.gStr[0], hexStr, chars=len(hexStr))
 
 

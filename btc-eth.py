@@ -4,6 +4,10 @@ BTC_NEED = 5 * 10**8 # satoshis
 MY_BTC_ADDR = text("c398efa9c392ba6013c5e04ee729755ef7f58b32")  # testable with tx[1] from block100K
 ETH_TO_SEND = 13
 
+# returns 0 if contract conditions are not met.
+# returns the value of send() if they are met (typically send() returns 1 on success)
+# callers should probably explicitly check for a return value of 1 for success,
+# to protect against the possibility of send() returning non-zero error codes
 def processTransfer(txStr:str):
     self.setupForParsing(txStr)
 
@@ -26,6 +30,7 @@ def processTransfer(txStr:str):
 
 
     # 2nd output
+    self.pos = 0  # important, since we are avoiding a call to setupForParsing()
     satoshiAndScriptSize = self.getMetaForOutput(1, outitems=2)
     cnt = satoshiAndScriptSize[1] * 2  # note: *2
     scriptArr = load(self.gScript[0], items=(cnt/32)+1)
@@ -36,9 +41,8 @@ def processTransfer(txStr:str):
     # expEthAddr = text("948c765a6914d43f2a7ac177da2c2f6b52de3d7c")
 
     if (btcWasSentToMe && numSatoshi >= BTC_NEED):
-        send(ethAddr, ETH_TO_SEND)
-        return(1)
-
+        res = send(ethAddr, ETH_TO_SEND)
+        return(res)
 
     return(0)
 

@@ -198,6 +198,9 @@ def verifyTx(tx, proofLen, hash:arr, path:arr, txBlockHash):
 
 #TODO txHash can eventually be computed (dbl sha256 then flip32Bytes) when
 # txStr becomes txBinary
+#
+# returns the value of processTransfer().  callers should explicitly
+# check for a value of 1, since other non-zero values could be error codes
 def relayTx(txStr:str, txHash, proofLen, hash:arr, path:arr, txBlockHash, contract):
     if self.verifyTx(txHash, proofLen, hash, path, txBlockHash) == 1:
         res = contract.processTransfer(txStr)
