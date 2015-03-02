@@ -104,7 +104,9 @@ def __getMetaForOutput(outNum):
     return(satAndSize:arr)
 
 
-
+# return 0 if tx has less than 2 outputs
+# or other error, otherwise return array
+# of [out1stSatoshis, out1stScriptSize, out2ndScriptSize]
 def getFirst2Outputs(txStr:str):
     self.__setupForParsing(txStr)
     version = readUInt32LE()
@@ -120,12 +122,11 @@ def getFirst2Outputs(txStr:str):
         i += 1
 
     numOuts = self.readVarintNum()
+    if numOuts < 2:
+        return(0)
 
-    # i = 0
-    # while i <= outNum:
-    #     satAndSize = self.txoutParse(outsz=2)
-    #     i += 1
 
+    ###########################################################
     # 1st output
     satoshis = readUInt64LE()
     # log(satoshis)
@@ -133,17 +134,20 @@ def getFirst2Outputs(txStr:str):
     scriptSize = self.readVarintNum()
     # log(scriptSize)
 
-    if scriptSize > 0:
-        dblSize = scriptSize * 2
-        scriptStr = self.readSimple(scriptSize, outchars=dblSize)
-        save(self.gScript[0], scriptStr, chars=dblSize)
+    if scriptSize == 0:
+        return(0)
 
-    # return([satoshis, scriptSize], items=2)
+    dblSize = scriptSize * 2
+    scriptStr = self.readSimple(scriptSize, outchars=dblSize)
+    save(self.gScript[0], scriptStr, chars=dblSize)
 
     out1stSatoshis = satoshis
     out1stScriptSize = scriptSize
+    ###########################################################
 
 
+
+    ###########################################################
     # 2nd output
     satoshis = readUInt64LE()
     # log(satoshis)
@@ -151,16 +155,16 @@ def getFirst2Outputs(txStr:str):
     scriptSize = self.readVarintNum()
     # log(scriptSize)
 
-    if scriptSize > 0:
-        dblSize = scriptSize * 2
-        scriptStr = self.readSimple(scriptSize, outchars=dblSize)
-        save(self.g2ndScript[0], scriptStr, chars=dblSize)
+    if scriptSize == 0:
+        return(0)
 
-    # return([satoshis, scriptSize], items=2)
+    dblSize = scriptSize * 2
+    scriptStr = self.readSimple(scriptSize, outchars=dblSize)
+    save(self.g2ndScript[0], scriptStr, chars=dblSize)  # note: g2ndScript
 
     # no need for out2ndSatoshis
     out2ndScriptSize = scriptSize
-
+    ###########################################################
 
     return([out1stSatoshis, out1stScriptSize, out2ndScriptSize], items=3)
 

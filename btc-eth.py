@@ -11,11 +11,14 @@ ETH_TO_SEND = 13
 def processTransfer(txStr:str):
     outputData = self.getFirst2Outputs(txStr, outitems=3)
 
+    if outputData == 0:
+        return(0)
+
     numSatoshi = outputData[0]
 
     out1scriptSize = outputData[1] * 2
     # TODO using load() until it can be figured out how to use gScript directly with sha256
-    scriptArr = load(self.gScript[0], items=(out1scriptSize/32)+1)  # if cnt is say 50, we want 2 chunks of 32bytes
+    scriptArr = load(self.gScript[0], items=(out1scriptSize/32)+1)  # if out1scriptSize is say 50, we want 2 chunks of 32bytes
     # log(data=scriptArr)
 
     #TODO strictly compare the script because an attacker may have a script that mentions
@@ -25,7 +28,7 @@ def processTransfer(txStr:str):
 
 
     out2scriptSize = outputData[2] * 2
-    scriptArr = load(self.g2ndScript[0], items=(out2scriptSize/32)+1)
+    scriptArr = load(self.g2ndScript[0], items=(out2scriptSize/32)+1) # note: g2ndScript and out2scriptSize
 
     ethAddr = getEthAddr(scriptArr, 20, 6)
     log(ethAddr)  # exp 848063048424552597789830156546485564325215747452L
