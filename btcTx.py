@@ -8,6 +8,9 @@ data pos
 # contains a script, currently only used for outputScripts since input scripts are ignored
 data gScript[]
 
+# used by getFirst2Outputs, for storing the 2nd script of a txoutput
+data g2ndScript[]
+
 
 def txinParse():
     prevTxId = self.readUnsignedBitsLE(256)
@@ -102,8 +105,8 @@ def getMetaForOutput(outNum):
 
 
 
-data g2ndScript[]
-def getFirst2Outputs():
+def getFirst2Outputs(txStr:str):
+    self.setupForParsing(txStr)
     version = readUInt32LE()
     # log(version)
     # log(self.pos)
