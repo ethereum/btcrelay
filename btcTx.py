@@ -80,8 +80,7 @@ def readVarintNum():
 #
 # this is needed until can figure out how a dynamically sized array can be returned from a function
 # instead of needing 2 functions, one that returns array size, then calling to get the actual array
-# TODO 2nd param size isn't needed anymore
-def parseTransaction(rawTx:str, size, outNum):
+def parseTransaction(rawTx:str, outNum):
     self.__setupForParsing(rawTx)
     meta = self.__getMetaForOutput(outNum, outsz=2)
     return(meta, items=2)
@@ -119,7 +118,7 @@ def __setupForParsing(hexStr:str):
 
 
 def doCheckOutputScript(rawTx:str, size, outNum, expHashOfOutputScript):
-    satoshiAndScriptSize = self.parseTransaction(rawTx, size, outNum, outitems=2)
+    satoshiAndScriptSize = self.parseTransaction(rawTx, outNum, outitems=2)
     cnt = satoshiAndScriptSize[1] * 2  # note: *2
 
     # TODO using load() until it can be figured out how to use gScript directly with sha256

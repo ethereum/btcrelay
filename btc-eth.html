@@ -70,6 +70,8 @@ function callContract() {
   console.log('@@@ in callContract')
   console.log('@@@ btcRelayAbi: ', btcRelayAbi)
 
+  // TODO don't forget to update the ABI (btcRelayAbi.js & btcEthAbi.js)
+  // when the Serpent is updated
   var bethAddress = '0x3432c7f5ca6552fca2f641575135578cb724eb1f';
   var contract = web3.eth.contract(bethAddress, btcRelayAbi);
 
