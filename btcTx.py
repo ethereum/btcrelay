@@ -135,7 +135,7 @@ def getFirst2Outputs(txStr:str):
 
     ###########################################################
     # 1st output
-    satoshis = readUInt64LE()
+    out1stSatoshis = readUInt64LE()
     # log(satoshis)
 
     scriptSize = self.readVarintNum()
@@ -148,7 +148,6 @@ def getFirst2Outputs(txStr:str):
     scriptStr = self.readSimple(scriptSize, outchars=dblSize)
     save(self.gScript[0], scriptStr, chars=dblSize)
 
-    out1stSatoshis = satoshis
     out1stScriptSize = scriptSize
     ###########################################################
 
@@ -156,8 +155,7 @@ def getFirst2Outputs(txStr:str):
 
     ###########################################################
     # 2nd output
-    satoshis = readUInt64LE()
-    # log(satoshis)
+    self.pos += 8  # skip satoshis
 
     scriptSize = self.readVarintNum()
     # log(scriptSize)
@@ -169,7 +167,6 @@ def getFirst2Outputs(txStr:str):
     scriptStr = self.readSimple(scriptSize, outchars=dblSize)
     save(self.g2ndScript[0], scriptStr, chars=dblSize)  # note: g2ndScript
 
-    # no need for out2ndSatoshis
     out2ndScriptSize = scriptSize
     ###########################################################
 
