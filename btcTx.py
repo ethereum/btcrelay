@@ -109,23 +109,22 @@ def __getMetaForOutput(outNum):
 # of [out1stSatoshis, out1stScriptSize, out2ndScriptSize]
 def getFirst2Outputs(txStr:str):
     __setupForParsing(txStr)
-    version = readUInt32LE()
-    # log(version)
-    # log(self.pos)
+
+    self.pos += 4  # skip version
+
     numIns = self.readVarintNum()
     # log(numIns)
     # log(self.pos)
 
     i = 0
     while i < numIns:
-
-        prevTxId = self.readUnsignedBitsLE(256)
-        outputIndex = readUInt32LE()
-        # log(outputIndex)
+        self.pos += 32  # skip prevTxId
+        self.pos += 4  # skip outputIndex
 
         scriptSize = self.readVarintNum()
         self.pos += scriptSize # skip reading the input scripts
-        seqNum = readUInt32LE()
+
+        self.pos += 4  # skip seqNum
 
         i += 1
 
