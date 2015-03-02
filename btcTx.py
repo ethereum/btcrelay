@@ -101,6 +101,67 @@ def getMetaForOutput(outNum):
     return(satAndSize:arr)
 
 
+
+data g2ndScript[]
+def getFirst2Outputs():
+    version = readUInt32LE()
+    # log(version)
+    # log(self.pos)
+    numIns = self.readVarintNum()
+    # log(numIns)
+    # log(self.pos)
+
+    i = 0
+    while i < numIns:
+        self.txinParse()
+        i += 1
+
+    numOuts = self.readVarintNum()
+
+    # i = 0
+    # while i <= outNum:
+    #     satAndSize = self.txoutParse(outsz=2)
+    #     i += 1
+
+    # 1st output
+    satoshis = readUInt64LE()
+    # log(satoshis)
+
+    scriptSize = self.readVarintNum()
+    # log(scriptSize)
+
+    if scriptSize > 0:
+        dblSize = scriptSize * 2
+        scriptStr = self.readSimple(scriptSize, outchars=dblSize)
+        save(self.gScript[0], scriptStr, chars=dblSize)
+
+    # return([satoshis, scriptSize], items=2)
+
+    out1stSatoshis = satoshis
+    out1stScriptSize = scriptSize
+
+
+    # 2nd output
+    satoshis = readUInt64LE()
+    # log(satoshis)
+
+    scriptSize = self.readVarintNum()
+    # log(scriptSize)
+
+    if scriptSize > 0:
+        dblSize = scriptSize * 2
+        scriptStr = self.readSimple(scriptSize, outchars=dblSize)
+        save(self.g2ndScript[0], scriptStr, chars=dblSize)
+
+    # return([satoshis, scriptSize], items=2)
+
+    # no need for out2ndSatoshis
+    out2ndScriptSize = scriptSize
+
+
+    return([out1stSatoshis, out1stScriptSize, out2ndScriptSize], items=3)
+
+
 def setupForParsing(hexStr:str):
     self.pos = 0  # important
     save(self.gStr[0], hexStr, chars=len(hexStr))
