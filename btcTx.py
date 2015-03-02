@@ -108,7 +108,7 @@ def __getMetaForOutput(outNum):
 # or other error, otherwise return array
 # of [out1stSatoshis, out1stScriptSize, out2ndScriptSize]
 def getFirst2Outputs(txStr:str):
-    self.__setupForParsing(txStr)
+    __setupForParsing(txStr)
     version = readUInt32LE()
     # log(version)
     # log(self.pos)
@@ -176,14 +176,14 @@ def getFirst2Outputs(txStr:str):
 # returned from a function instead of needing 2 functions, one that
 # returns array size, then calling to get the actual array
 def parseTransaction(rawTx:str, outNum):
-    self.__setupForParsing(rawTx)
+    __setupForParsing(rawTx)
     meta = self.__getMetaForOutput(outNum, outsz=2)
     return(meta, items=2)
 
 
-def __setupForParsing(hexStr:str):
+macro __setupForParsing($hexStr):
     self.pos = 0  # important
-    save(self.gStr[0], hexStr, chars=len(hexStr))
+    save(self.gStr[0], $hexStr, chars=len($hexStr))
 
 
 def doCheckOutputScript(rawTx:str, size, outNum, expHashOfOutputScript):
