@@ -166,7 +166,7 @@ class TestBtcTx(object):
         # the tx outputs and send ether as appropriate
         BTC_ETH = self.s.abi_contract('btc-eth.py', endowment=2000*self.ETHER)
         res = self.doRelayTx(txStr, merkleProof, BTC_ETH.address, profiling=True)
-
+        assert(res == 1)
 
         ethAddrBin = txStr[-52:-12].decode('hex')
         userEthBalance = self.s.block.get_balance(ethAddrBin)

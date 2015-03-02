@@ -5,7 +5,9 @@ MY_BTC_ADDR = text("c398efa9c392ba6013c5e04ee729755ef7f58b32")  # testable with 
 ETH_TO_SEND = 13
 
 def processTransfer(txStr:str):
-    satoshiAndScriptSize = self.parseTransaction(txStr, 0, outitems=2)
+    self.setupForParsing(txStr)
+
+    satoshiAndScriptSize = self.getMetaForOutput(0, outitems=2)
     cnt = satoshiAndScriptSize[1] * 2  # note: *2
 
     numSatoshi = satoshiAndScriptSize[0]
@@ -24,7 +26,7 @@ def processTransfer(txStr:str):
 
 
     # 2nd output
-    satoshiAndScriptSize = self.parseTransaction(txStr, 1, outitems=2)
+    satoshiAndScriptSize = self.getMetaForOutput(1, outitems=2)
     cnt = satoshiAndScriptSize[1] * 2  # note: *2
     scriptArr = load(self.gScript[0], items=(cnt/32)+1)
 
