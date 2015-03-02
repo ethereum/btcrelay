@@ -17,7 +17,7 @@ def txinParse():
     outputIndex = readUInt32LE()
     # log(outputIndex)
 
-    scriptSize = self.readVarintNum()
+    scriptSize = readVarintNum()
 
     if scriptSize > 0:
         dblSize = scriptSize*2
@@ -33,7 +33,7 @@ def txoutParse():
     satoshis = readUInt64LE()
     # log(satoshis)
 
-    scriptSize = self.readVarintNum()
+    scriptSize = readVarintNum()
     # log(scriptSize)
 
     if scriptSize > 0:
@@ -60,16 +60,16 @@ def readSimple(len):
 
 
 
-def readVarintNum():
-    first = readUInt8()
-    if first == 0xfd:
-        return(readUInt16LE())
-    elif first == 0xfe:
-        return(readUInt32LE())
-    elif first == 0xff:
-        return(readUInt64LE())
-    else:
-        return(first)
+macro readVarintNum():
+    $ret = readUInt8()
+    if $ret == 0xfd:
+        $ret = readUInt16LE()
+    elif $ret == 0xfe:
+        $ret = readUInt32LE()
+    elif $ret == 0xff:
+        $ret = readUInt64LE()
+
+    $ret
 
 
 # heaviestBlock is in btcrelay.py
@@ -85,7 +85,7 @@ def __getMetaForOutput(outNum):
     version = readUInt32LE()
     # log(version)
     # log(self.pos)
-    numIns = self.readVarintNum()
+    numIns = readVarintNum()
     # log(numIns)
     # log(self.pos)
 
@@ -94,7 +94,7 @@ def __getMetaForOutput(outNum):
         self.txinParse()
         i += 1
 
-    numOuts = self.readVarintNum()
+    numOuts = readVarintNum()
 
     i = 0
     while i <= outNum:
@@ -112,7 +112,7 @@ def getFirst2Outputs(txStr:str):
 
     self.pos += 4  # skip version
 
-    numIns = self.readVarintNum()
+    numIns = readVarintNum()
     # log(numIns)
     # log(self.pos)
 
@@ -121,14 +121,14 @@ def getFirst2Outputs(txStr:str):
         self.pos += 32  # skip prevTxId
         self.pos += 4  # skip outputIndex
 
-        scriptSize = self.readVarintNum()
+        scriptSize = readVarintNum()
         self.pos += scriptSize # skip reading the input scripts
 
         self.pos += 4  # skip seqNum
 
         i += 1
 
-    numOuts = self.readVarintNum()
+    numOuts = readVarintNum()
     if numOuts < 2:
         return(0)
 
@@ -138,7 +138,7 @@ def getFirst2Outputs(txStr:str):
     out1stSatoshis = readUInt64LE()
     # log(satoshis)
 
-    scriptSize = self.readVarintNum()
+    scriptSize = readVarintNum()
     # log(scriptSize)
 
     if scriptSize == 0:
@@ -157,7 +157,7 @@ def getFirst2Outputs(txStr:str):
     # 2nd output
     self.pos += 8  # skip satoshis
 
-    scriptSize = self.readVarintNum()
+    scriptSize = readVarintNum()
     # log(scriptSize)
 
     if scriptSize == 0:
