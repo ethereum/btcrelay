@@ -31,3 +31,9 @@ class TestBtcEth(object):
         res = self.c.processTransfer(txStr, profiling=True)
         print('GAS: '+str(res['gas']))
         assert(res['output'] == 1)
+
+        expEtherAddr = '948c765a6914d43f2a7ac177da2c2f6b52de3d7c'
+        userEthBalance = self.s.block.get_balance(expEtherAddr)
+        print('USER ETH BALANCE: '+str(userEthBalance))
+        expEtherBalance = 13
+        assert userEthBalance == expEtherBalance
