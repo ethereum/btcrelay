@@ -39,10 +39,19 @@ set:
 
 # Set up
   transact:
-    TestOnlySetGenesis:
+    TestingOnlySetGenesis:
       to: $BtcRelay
       fun_name: testingonlySetGenesis
       sig: i
       data:
         - 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
+      wait: True
+
+  transact:
+    StoreBlock100K:
+      to: $BtcRelay
+      fun_name: storeBlockHeader
+      sig: i
+      data:
+        - \x01\x00\x00\x00P\x12\x01\x19\x17*a\x04!\xa6\xc3\x01\x1d\xd30\xd9\xdf\x07\xb66\x16\xc2\xcc\x1f\x1c\xd0\x02\x00\x00\x00\x00\x00fW\xa9%*\xac\xd5\xc0\xb2\x94\t\x96\xec\xff\x95"(\xc3\x06|\xc3\x8dH\x85\xef\xb5\xa4\xacBG\xe9\xf37"\x1bML\x86\x04\x1b\x0f+W\x10
       wait: True
