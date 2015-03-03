@@ -101,15 +101,20 @@ def __getMetaForOutput(outNum):
     return(satAndSize:arr)
 
 
+# read the VarInt and advance the cursor
+macro parseVarInt($txStr, $cursor):
+    $arr = getVarintNum($txStr, $cursor)
+    $cursor += $arr[0]
+    $arr[1]
+
+
 # return 0 if tx has less than 2 outputs
 # or other error, otherwise return array
 # of [out1stSatoshis, out1stScriptIndex, out2ndScriptSize]
 def getFirst2Outputs(txStr:str):
     cursor = 4  # skip version
 
-    numIns = getVarintNum(txStr, cursor)
-    cursor += numIns[0]
-    numIns = numIns[1]
+    numIns = parseVarInt(txStr, cursor)
     # log(numIns)
     # log(cursor)
 
@@ -118,35 +123,27 @@ def getFirst2Outputs(txStr:str):
         cursor += 32  # skip prevTxId
         cursor += 4  # skip outputIndex
 
-        scriptSize = getVarintNum(txStr, cursor)
-        cursor += scriptSize[0]
-        scriptSize = scriptSize[1]
-
-
+        scriptSize = parseVarInt(txStr, cursor)
         cursor += scriptSize # skip reading the input scripts
 
         cursor += 4  # skip seqNum
 
         i += 1
 
-    numOuts = getVarintNum(txStr, cursor)
-    cursor += numOuts[0]
-    numOuts = numOuts[1]
+    numOuts = parseVarInt(txStr, cursor)
     if numOuts < 2:
         return(0)
 
 
     ###########################################################
     # 1st output
-    out1stSatoshis = getUInt64LE(txStr, cursor)
-    cursor += out1stSatoshis[0]
-    out1stSatoshis = out1stSatoshis[1]
+    tmpArr = getUInt64LE(txStr, cursor)
+    cursor += tmpArr[0]
+    out1stSatoshis = tmpArr[1]
 
     # log(satoshis)
 
-    scriptSize = getVarintNum(txStr, cursor)
-    cursor += scriptSize[0]
-    scriptSize = scriptSize[1]
+    scriptSize = parseVarInt(txStr, cursor)
     # log(scriptSize)
 
     if scriptSize == 0:
@@ -162,9 +159,7 @@ def getFirst2Outputs(txStr:str):
     # 2nd output
     cursor += 8  # skip satoshis
 
-    scriptSize = getVarintNum(txStr, cursor)
-    cursor += scriptSize[0]
-    scriptSize = scriptSize[1]
+    scriptSize = parseVarInt(txStr, cursor)
     # log(scriptSize)
 
     if scriptSize == 0:
