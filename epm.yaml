@@ -8,39 +8,41 @@
   deploy:
     BtcRelay:
       contract: btcrelay.py
+      gas: 100000
       wait: True
 -
   deploy:
     BtcEth:
       contract: btc-eth.py
+      gas: 100000
       endowment: 64
       wait: True
 
 # Register with NameReg
--
-  transact:
-    NameReg:
-      to: $NameReg
-      fun_name: register
-      sig: i
-      data:
-        - $BtcRelay
-      gas: 10000
-      gas_price: 10000000000000
-      value: 0
-      wait: True
--
-  transact:
-    NameReg:
-      to: $NameReg
-      fun_name: register
-      sig: i
-      data:
-        - $BtcEth
-      gas: 10000
-      gas_price: 10000000000000
-      value: 0
-      wait: True
+# -
+#   transact:
+#     NameReg:
+#       to: $NameReg
+#       fun_name: register
+#       sig: i
+#       data:
+#         - $BtcRelay
+#       gas: 10000
+#       gas_price: 10000000000000
+#       value: 0
+#       wait: True
+# -
+#   transact:
+#     NameReg:
+#       to: $NameReg
+#       fun_name: register
+#       sig: i
+#       data:
+#         - $BtcEth
+#       gas: 10000
+#       gas_price: 10000000000000
+#       value: 0
+#       wait: True
 
 
 # Set up
