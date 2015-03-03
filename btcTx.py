@@ -106,7 +106,7 @@ def __getMetaForOutput(outNum):
 
 # return 0 if tx has less than 2 outputs
 # or other error, otherwise return array
-# of [out1stSatoshis, out1stScriptSize, out2ndScriptSize]
+# of [out1stSatoshis, out1stScriptIndex, out2ndScriptSize]
 def getFirst2Outputs(txStr:str):
     __setupForParsing(txStr)
 
@@ -145,9 +145,8 @@ def getFirst2Outputs(txStr:str):
         return(0)
 
 
-    indexScriptOne = self.pos
+    out1stScriptIndex = self.pos
     self.pos += scriptSize  # script can be skipped since we return the index to it
-    out1stScriptSize = scriptSize
     ###########################################################
 
 
@@ -169,7 +168,7 @@ def getFirst2Outputs(txStr:str):
     out2ndScriptSize = scriptSize
     ###########################################################
 
-    return([out1stSatoshis, out1stScriptSize, out2ndScriptSize, indexScriptOne], items=4)
+    return([out1stSatoshis, out1stScriptIndex, out2ndScriptSize], items=3)
 
 
 # general function for getting a tx output; for something faster and

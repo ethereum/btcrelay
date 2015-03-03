@@ -15,10 +15,10 @@ def processTransfer(txStr:str):
         return(0)
 
     numSatoshi = outputData[0]
+    indexScriptOne = outputData[1]
 
-    out1scriptSize = outputData[1] * 2
-
-    indexScriptOne = outputData[3]
+    #TODO strictly compare the script because an attacker may have a script that mentions
+    #our BTC address, but the BTC is not spendable by our private key (only spendable by attacker's key)
     btcWasSentToMe = compareScriptWithAddr(indexScriptOne, txStr, MY_BTC_ADDR)
 
 
@@ -70,10 +70,7 @@ macro getBEBytes($inStr, $size, $offset):
 macro compareScriptWithAddr($indexStart, $txStr, $addrStr):
     $i = 0
     $j = 6 + ($indexStart * 2)
-    log($indexStart)
     while $i < 26:
-        # log(getch($txStr, $j))
-        # log(getch($addrStr, $i))
         if getch($txStr, $j) != getch($addrStr, $i):
             $i = 9999 #TODO better way ?
         else:
