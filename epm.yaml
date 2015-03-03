@@ -10,13 +10,13 @@
       contract: btcrelay.py
       gas: 100000
       wait: True
--
-  deploy:
-    BtcEth:
-      contract: btc-eth.py
-      gas: 100000
-      endowment: 64
-      wait: True
+# -
+#   deploy:
+#     BtcEth:
+#       contract: btc-eth.py
+#       gas: 100000
+#       endowment: 64
+#       wait: True
 
 # Register with NameReg
 # -
@@ -55,6 +55,13 @@
       data:
         - 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
       wait: True
+
+# If pyepm complains that the data below
+# run a Python console in the directory where this file is, and run these:
+# import yaml
+# stream = open(<YAML filename>, 'r')
+# print yaml.load(stream)
+# Then try running pyepm again
 -
   transact:
     StoreBlock100K:
