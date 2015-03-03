@@ -1,5 +1,6 @@
 # This file is an optimized version of btcTx.py for retrieving
-# the first 2 outputs of a Bitcoin transaction
+# the first 2 outputs of a Bitcoin transaction.
+# It is tested via test_btc-eth.py
 
 # read the VarInt and advance the cursor
 macro parseVarInt($txStr, $cursor):
@@ -87,7 +88,6 @@ macro getUInt16LE($txStr, $pos):
     self.getUnsignedBitsLE($txStr, $pos, 16, outitems=2)
 
 
-# only handles lowercase a-f
 macro getUInt32LE($txStr, $pos):
     self.getUnsignedBitsLE($txStr, $pos, 32, outitems=2)
 
@@ -96,6 +96,7 @@ macro getUInt64LE($txStr, $pos):
     self.getUnsignedBitsLE($txStr, $pos, 64, outitems=2)
 
 
+# only handles lowercase a-f
 def getUnsignedBitsLE(txStr:str, pos, bits):
     size = bits / 4
     offset = pos * 2
