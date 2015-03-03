@@ -8,9 +8,6 @@ data pos
 # contains a script, currently only used for outputScripts since input scripts are ignored
 data gScript[]
 
-# used by getFirst2Outputs, for storing the 2nd script of a txoutput
-data g2ndScript[]
-
 
 def txinParse():
     prevTxId = self.readUnsignedBitsLE(256)
@@ -108,34 +105,32 @@ def __getMetaForOutput(outNum):
 # or other error, otherwise return array
 # of [out1stSatoshis, out1stScriptIndex, out2ndScriptSize]
 def getFirst2Outputs(txStr:str):
-    # __setupForParsing(txStr)
-    self.pos = 0
-    self.pos += 4  # skip version
+    cursor = 4  # skip version
 
-    numIns = getVarintNum(txStr, self.pos)
-    self.pos += numIns[0]
+    numIns = getVarintNum(txStr, cursor)
+    cursor += numIns[0]
     numIns = numIns[1]
     # log(numIns)
-    # log(self.pos)
+    # log(cursor)
 
     i = 0
     while i < numIns:
-        self.pos += 32  # skip prevTxId
-        self.pos += 4  # skip outputIndex
+        cursor += 32  # skip prevTxId
+        cursor += 4  # skip outputIndex
 
-        scriptSize = getVarintNum(txStr, self.pos)
-        self.pos += scriptSize[0]
+        scriptSize = getVarintNum(txStr, cursor)
+        cursor += scriptSize[0]
         scriptSize = scriptSize[1]
 
 
-        self.pos += scriptSize # skip reading the input scripts
+        cursor += scriptSize # skip reading the input scripts
 
-        self.pos += 4  # skip seqNum
+        cursor += 4  # skip seqNum
 
         i += 1
 
-    numOuts = getVarintNum(txStr, self.pos)
-    self.pos += numOuts[0]
+    numOuts = getVarintNum(txStr, cursor)
+    cursor += numOuts[0]
     numOuts = numOuts[1]
     if numOuts < 2:
         return(0)
@@ -143,39 +138,39 @@ def getFirst2Outputs(txStr:str):
 
     ###########################################################
     # 1st output
-    out1stSatoshis = getUInt64LE(txStr, self.pos)
-    self.pos += out1stSatoshis[0]
+    out1stSatoshis = getUInt64LE(txStr, cursor)
+    cursor += out1stSatoshis[0]
     out1stSatoshis = out1stSatoshis[1]
 
     # log(satoshis)
 
-    scriptSize = getVarintNum(txStr, self.pos)
-    self.pos += scriptSize[0]
+    scriptSize = getVarintNum(txStr, cursor)
+    cursor += scriptSize[0]
     scriptSize = scriptSize[1]
     # log(scriptSize)
 
     if scriptSize == 0:
         return(0)
 
-    out1stScriptIndex = self.pos
-    self.pos += scriptSize  # script can be skipped since we return the index to it
+    out1stScriptIndex = cursor
+    cursor += scriptSize  # script can be skipped since we return the index to it
     ###########################################################
 
 
 
     ###########################################################
     # 2nd output
-    self.pos += 8  # skip satoshis
+    cursor += 8  # skip satoshis
 
-    scriptSize = getVarintNum(txStr, self.pos)
-    self.pos += scriptSize[0]
+    scriptSize = getVarintNum(txStr, cursor)
+    cursor += scriptSize[0]
     scriptSize = scriptSize[1]
     # log(scriptSize)
 
     if scriptSize == 0:
         return(0)
 
-    out2ndScriptIndex = self.pos
+    out2ndScriptIndex = cursor
     ###########################################################
 
     return([out1stSatoshis, out1stScriptIndex, out2ndScriptIndex], items=3)
