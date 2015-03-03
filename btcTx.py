@@ -108,11 +108,13 @@ def __getMetaForOutput(outNum):
 # or other error, otherwise return array
 # of [out1stSatoshis, out1stScriptIndex, out2ndScriptSize]
 def getFirst2Outputs(txStr:str):
-    __setupForParsing(txStr)
-
+    # __setupForParsing(txStr)
+    self.pos = 0
     self.pos += 4  # skip version
 
-    numIns = readVarintNum()
+    numIns = getVarintNum(txStr, self.pos)
+    self.pos += numIns[0]
+    numIns = numIns[1]
     # log(numIns)
     # log(self.pos)
 
@@ -121,24 +123,35 @@ def getFirst2Outputs(txStr:str):
         self.pos += 32  # skip prevTxId
         self.pos += 4  # skip outputIndex
 
-        scriptSize = readVarintNum()
+        scriptSize = getVarintNum(txStr, self.pos)
+        self.pos += scriptSize[0]
+        scriptSize = scriptSize[1]
+
+
         self.pos += scriptSize # skip reading the input scripts
 
         self.pos += 4  # skip seqNum
 
         i += 1
 
-    numOuts = readVarintNum()
+    numOuts = getVarintNum(txStr, self.pos)
+    self.pos += numOuts[0]
+    numOuts = numOuts[1]
     if numOuts < 2:
         return(0)
 
 
     ###########################################################
     # 1st output
-    out1stSatoshis = readUInt64LE()
+    out1stSatoshis = getUInt64LE(txStr, self.pos)
+    self.pos += out1stSatoshis[0]
+    out1stSatoshis = out1stSatoshis[1]
+
     # log(satoshis)
 
-    scriptSize = readVarintNum()
+    scriptSize = getVarintNum(txStr, self.pos)
+    self.pos += scriptSize[0]
+    scriptSize = scriptSize[1]
     # log(scriptSize)
 
     if scriptSize == 0:
@@ -154,7 +167,9 @@ def getFirst2Outputs(txStr:str):
     # 2nd output
     self.pos += 8  # skip satoshis
 
-    scriptSize = readVarintNum()
+    scriptSize = getVarintNum(txStr, self.pos)
+    self.pos += scriptSize[0]
+    scriptSize = scriptSize[1]
     # log(scriptSize)
 
     if scriptSize == 0:
@@ -196,11 +211,72 @@ def doCheckOutputScript(rawTx:str, size, outNum, expHashOfOutputScript):
     return(hash == expHashOfOutputScript)
 
 
-# this may not be needed so holding off on it
-# returns an array
-# [ version, numIns, ins[ [prevTx, outputIndex, scriptSize, script, seqNumber] ],
-# numOuts, outs[ [satoshis, scriptSize, script] ], locktime ]
-# def deserialize():
+
+macro getVarintNum($txStr, $pos):
+    $ret = getUInt8($txStr, $pos)
+    if $ret == 0xfd:
+        $ret = getUInt16LE($txStr, $pos)
+    elif $ret == 0xfe:
+        $ret = getUInt32LE($txStr, $pos)
+    elif $ret == 0xff:
+        $ret = getUInt64LE($txStr, $pos)
+
+    $ret
+
+macro getUInt8($txStr, $pos):
+    self.getUnsignedBitsLE($txStr, $pos, 8, outitems=2)
+
+
+macro getUInt16LE($txStr, $pos):
+    self.getUnsignedBitsLE($txStr, $pos, 16, outitems=2)
+
+
+# only handles lowercase a-f
+macro getUInt32LE($txStr, $pos):
+    self.getUnsignedBitsLE($txStr, $pos, 32, outitems=2)
+
+
+macro getUInt64LE($txStr, $pos):
+    self.getUnsignedBitsLE($txStr, $pos, 64, outitems=2)
+
+
+def getUnsignedBitsLE(txStr:str, pos, bits):
+    size = bits / 4
+    offset = pos * 2
+    endIndex = offset + size
+
+    # TODO ideally, getting a slice of gStr would be done in 1 step, but Serpent limitation
+    # tmpStr = load(self.gStr[0], chars=endIndex)
+    currStr = slice(txStr, chars=offset, chars=endIndex)
+
+    result = 0
+    j = 0
+    while j < size:
+        # "01 23 45" want it to read "10 32 54"
+        if j % 2 == 0:
+            i = j + 1
+        else:
+            i = j - 1
+
+        char = getch(currStr, i)
+        # log(char)
+        if (char >= 97 && char <= 102):  # only handles lowercase a-f
+            numeric = char - 87
+        else:
+            numeric = char - 48
+
+        # log(numeric)
+
+        result += numeric * 16^j
+        # log(result)
+
+        j += 1
+
+
+    # important
+    # self.pos += size / 2
+
+    return([pos + size/2, result], items=2)
 
 
 
