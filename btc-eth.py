@@ -9,7 +9,7 @@ ETH_TO_SEND = 13
 # callers should probably explicitly check for a return value of 1 for success,
 # to protect against the possibility of send() returning non-zero error codes
 def processTransfer(txStr:str):
-    outputData = self.getFirst2Outputs(txStr, outitems=3)
+    outputData = self.getFirst2Outputs(txStr, outitems=4)
 
     if outputData == 0:
         return(0)
@@ -17,13 +17,9 @@ def processTransfer(txStr:str):
     numSatoshi = outputData[0]
 
     out1scriptSize = outputData[1] * 2
-    # TODO using load() until it can be figured out how to use gScript directly with sha256
-    scriptArr = load(self.gScript[0], items=(out1scriptSize/32)+1)  # if out1scriptSize is say 50, we want 2 chunks of 32bytes
-    # log(data=scriptArr)
 
-    #TODO strictly compare the script because an attacker may have a script that mentions
-    #our BTC address, but the BTC is not spendable by our private key (only spendable by attacker's key)
-    btcWasSentToMe = compareScriptWithAddr(scriptArr, MY_BTC_ADDR)
+    indexScriptOne = outputData[3]
+    btcWasSentToMe = compareScriptWithAddr(indexScriptOne, txStr, MY_BTC_ADDR)
 
 
 
@@ -71,11 +67,16 @@ macro getBEBytes($inStr, $size, $offset):
     div(mload($inStr + $offset), 256**(32 - $size))
 
 
-macro compareScriptWithAddr($scriptArr, $addrStr):
-    $i = 6
+macro compareScriptWithAddr($indexStart, $txStr, $addrStr):
+    $i = 0
+    $j = 6 + ($indexStart * 2)
+    log($indexStart)
     while $i < 26:
-        if getch($scriptArr, $i) != getch($addrStr, $i-6):
+        # log(getch($txStr, $j))
+        # log(getch($addrStr, $i))
+        if getch($txStr, $j) != getch($addrStr, $i):
             $i = 9999 #TODO better way ?
         else:
             $i += 1
+            $j += 1
     $i == 26
