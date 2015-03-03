@@ -1,0 +1,48 @@
+set:
+  NameReg: "0x72ba7d8e73fe8eb666ea66babc8116a41bfb10e2"
+
+# Deploy contracts
+  deploy:
+    BtcRelay:
+      contract: btcrelay.py
+      wait: True
+    BtcEth:
+      contract: btc-eth.py
+      endowment: 64
+      wait: True
+
+# Register with NameReg
+  transact:
+    NameReg:
+      to: $NameReg
+      fun_name: register
+      sig: i
+      data:
+        - $BtcRelay
+      gas: 10000
+      gas_price: 10000000000000
+      value: 0
+      wait: True
+
+  transact:
+    NameReg:
+      to: $NameReg
+      fun_name: register
+      sig: i
+      data:
+        - $BtcEth
+      gas: 10000
+      gas_price: 10000000000000
+      value: 0
+      wait: True
+
+
+# Set up
+  transact:
+    TestOnlySetGenesis:
+      to: $BtcRelay
+      fun_name: testingonlySetGenesis
+      sig: i
+      data:
+        - 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
+      wait: True
