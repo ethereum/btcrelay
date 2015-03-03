@@ -276,7 +276,7 @@ def getUnsignedBitsLE(txStr:str, pos, bits):
     # important
     # self.pos += size / 2
 
-    return([pos + size/2, result], items=2)
+    return([size/2, result], items=2)
 
 
 
