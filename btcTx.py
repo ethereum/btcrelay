@@ -144,7 +144,6 @@ def getFirst2Outputs(txStr:str):
     if scriptSize == 0:
         return(0)
 
-
     out1stScriptIndex = self.pos
     self.pos += scriptSize  # script can be skipped since we return the index to it
     ###########################################################
@@ -161,14 +160,10 @@ def getFirst2Outputs(txStr:str):
     if scriptSize == 0:
         return(0)
 
-    dblSize = scriptSize * 2
-    scriptStr = self.readSimple(scriptSize, outchars=dblSize)
-    save(self.g2ndScript[0], scriptStr, chars=dblSize)  # note: g2ndScript
-
-    out2ndScriptSize = scriptSize
+    out2ndScriptIndex = self.pos
     ###########################################################
 
-    return([out1stSatoshis, out1stScriptIndex, out2ndScriptSize], items=3)
+    return([out1stSatoshis, out1stScriptIndex, out2ndScriptIndex], items=3)
 
 
 # general function for getting a tx output; for something faster and

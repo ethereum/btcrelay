@@ -22,11 +22,8 @@ def processTransfer(txStr:str):
     btcWasSentToMe = compareScriptWithAddr(indexScriptOne, txStr, MY_BTC_ADDR)
 
 
-
-    out2scriptSize = outputData[2] * 2
-    scriptArr = load(self.g2ndScript[0], items=(out2scriptSize/32)+1) # note: g2ndScript and out2scriptSize
-
-    ethAddr = getEthAddr(scriptArr, 20, 6)
+    indexScriptTwo = outputData[2]
+    ethAddr = getEthAddr(indexScriptTwo, txStr, 20, 6)
     log(ethAddr)  # exp 848063048424552597789830156546485564325215747452L
 
     # expEthAddr = text("948c765a6914d43f2a7ac177da2c2f6b52de3d7c")
@@ -38,12 +35,12 @@ def processTransfer(txStr:str):
     return(0)
 
 
-macro getEthAddr($inStr, $size, $offset):
-    $endIndex = $offset + ($size * 2)
+macro getEthAddr($indexStart, $inStr, $size, $offset):
+    $endIndex = ($indexStart*2) + $offset + ($size * 2)
 
     $result = 0
     $exponent = 0
-    $j = $offset
+    $j = ($indexStart*2) + $offset
     while $j < $endIndex:
         $char = getch($inStr, $endIndex-1-$exponent)
         # log($char)
