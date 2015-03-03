@@ -120,13 +120,10 @@ def getFirst2Outputs(txStr:str):
 
     i = 0
     while i < numIns:
-        cursor += 32  # skip prevTxId
-        cursor += 4  # skip outputIndex
+        cursor += 36  # skip prevTxId (32) and outputIndex (4)
 
         scriptSize = parseVarInt(txStr, cursor)
-        cursor += scriptSize # skip reading the input scripts
-
-        cursor += 4  # skip seqNum
+        cursor += scriptSize + 4  # skip input script and seqNum (4)
 
         i += 1
 
@@ -138,7 +135,7 @@ def getFirst2Outputs(txStr:str):
     ###########################################################
     # 1st output
     tmpArr = getUInt64LE(txStr, cursor)
-    cursor += tmpArr[0]
+    cursor += 8
     out1stSatoshis = tmpArr[1]
 
     # log(satoshis)
@@ -150,14 +147,13 @@ def getFirst2Outputs(txStr:str):
         return(0)
 
     out1stScriptIndex = cursor
-    cursor += scriptSize  # script can be skipped since we return the index to it
+    cursor += scriptSize + 8  # skip script and 2nd output's satoshis (8)
     ###########################################################
 
 
 
     ###########################################################
-    # 2nd output
-    cursor += 8  # skip satoshis
+    # 2nd output (satoshis were already skipped in previous line)
 
     scriptSize = parseVarInt(txStr, cursor)
     # log(scriptSize)
