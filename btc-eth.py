@@ -1,4 +1,4 @@
-inset('btcTx.py')
+inset('btcSpecialTx.py')
 
 BTC_NEED = 5 * 10**8 # satoshis
 MY_BTC_ADDR = text("c398efa9c392ba6013c5e04ee729755ef7f58b32")  # testable with tx[1] from block100K
