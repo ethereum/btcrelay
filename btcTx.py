@@ -245,10 +245,6 @@ def getUnsignedBitsLE(txStr:str, pos, bits):
     offset = pos * 2
     endIndex = offset + size
 
-    # TODO ideally, getting a slice of gStr would be done in 1 step, but Serpent limitation
-    # tmpStr = load(self.gStr[0], chars=endIndex)
-    currStr = slice(txStr, chars=offset, chars=endIndex)
-
     result = 0
     j = 0
     while j < size:
@@ -258,7 +254,7 @@ def getUnsignedBitsLE(txStr:str, pos, bits):
         else:
             i = j - 1
 
-        char = getch(currStr, i)
+        char = getch(txStr, i+offset)
         # log(char)
         if (char >= 97 && char <= 102):  # only handles lowercase a-f
             numeric = char - 87
@@ -272,13 +268,14 @@ def getUnsignedBitsLE(txStr:str, pos, bits):
 
         j += 1
 
-
-    # important
-    # self.pos += size / 2
-
+    # need to return size/2 since we don't know the next offset with getVarintNum
     return([size/2, result], items=2)
 
 
+
+#
+# (original) functions/macros below use gStr
+#
 
 # only handles lowercase a-f
 # tested via tests for readUInt8, readUInt32LE, ...
