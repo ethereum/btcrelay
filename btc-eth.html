@@ -12,9 +12,11 @@
 
 
   <!-- TODO may not all be needed -->
+  <!--
   <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/components/core-min.js"></script>
   <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/components/enc-utf16-min.js"></script>
   <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/components/enc-base64-min.js"></script>
+  -->
 
   <script src="bignumber.js"></script>
   <script src="ethereum.min.js"></script>
@@ -63,13 +65,13 @@ var btcproof = require('btcproof');
 // 0x3432c7f5ca6552fca2f641575135578cb724eb1f
 
 
-var gExchangeContractAddr = '0x'+'ecc85239d4f9440396ea7c8184834293447c561f';
-// var gExchangeContractAddr = '0x'+'c978dfde41cdf7a3c8f12829147e5e9312132389';
+// var gExchangeContractAddr = '0x'+'old';
+var gExchangeContractAddr = '0x'+'c978dfde41cdf7a3c8f12829147e5e9312132389';
 var gOurBtcAddr = 'c398efa9c392ba6013c5e04ee729755ef7f58b32'
 
 function callContract() {
   console.log('@@@ in testDirectProcessTransfer')
-  console.log('@@@ btcToEthAbi: ', btcToEthAbi)
+  console.log('@@@ btcToEthAbi: ', btcToEthAbi, ' gExchangeContractAddr: ', gExchangeContractAddr)
 
 
   var addrExchContract = gExchangeContractAddr;
@@ -86,7 +88,7 @@ function callContract() {
 
 
   // web3.eth.filter({'address': gExchangeContractAddr, 'max': 10}).watch(function(res) {
-  //   console.log('@@@ in filter')
+  //   console.log('@@@ gExchangeContractAddr filter')
   //   console.log(res)
   // });
 
@@ -94,22 +96,22 @@ function callContract() {
 }
 
 
-// web3.eth.filter({'address': gExchangeContractAddr, 'max': 10}).watch(function(res) {
-//   console.log('@@@ in filter')
-//   console.log(res)
+web3.eth.filter({'address': gExchangeContractAddr, 'max': 10}).watch(function(res) {
+  console.log('@@@ gExchangeContractAddr filter')
+  console.log(res)
+});
+
+//
+// web3.eth.filter('pending').watch(function (log) {
+//   console.log('@@@ pending filter')
+//   console.log(log); //  {"address":"0x0000000000000000000000000000000000000000","data":"0x0000000000000000000000000000000000000000000000000000000000000000","number":0}
 // });
-
-
-web3.eth.filter('pending').watch(function (log) {
-  console.log('@@@ pending filter')
-  console.log(log); //  {"address":"0x0000000000000000000000000000000000000000","data":"0x0000000000000000000000000000000000000000000000000000000000000000","number":0}
-});
-
-
-web3.eth.filter('chain').watch(function (log) {
-  console.log('@@@ chain filter')
-  console.log(log); //  {"address":"0x0000000000000000000000000000000000000000","data":"0x0000000000000000000000000000000000000000000000000000000000000000","number":0}
-});
+//
+//
+// web3.eth.filter('chain').watch(function (log) {
+//   console.log('@@@ chain filter')
+//   console.log(log); //  {"address":"0x0000000000000000000000000000000000000000","data":"0x0000000000000000000000000000000000000000000000000000000000000000","number":0}
+// });
 
 
 
