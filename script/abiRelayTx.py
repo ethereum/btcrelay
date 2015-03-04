@@ -12,5 +12,6 @@ headers = [
 blockHeaderBinary = map(lambda x: x.decode('hex'), headers)
 
 for i, bhb in enumerate(blockHeaderBinary):
-    abiData = api.abi_data('storeBlockHeader', 's', [bhb])
-    print('header'+str(i)+':  '+abiData)
+    print(str(i)+':  '+bhb.encode('string_escape'))
+    # abiData = api.abi_data('storeBlockHeader', 's', [bhb])
+    # print('header'+str(i)+':  '+abiData)
