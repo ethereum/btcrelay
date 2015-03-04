@@ -63,7 +63,7 @@ var btcproof = require('btcproof');
 // 0x3432c7f5ca6552fca2f641575135578cb724eb1f
 
 
-var gExchangeContractAddr = '0x1ddb229746359a5eb72317f9936411be1b589301';
+var gExchangeContractAddr = '0x53db808dcc737a102d709c903885c9537aacaec0';
 var gOurBtcAddr = 'c398efa9c392ba6013c5e04ee729755ef7f58b32'
 
 function callContract() {
@@ -85,10 +85,12 @@ function callContract() {
   var txBlockHash = new BigNumber('0x000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506');
 
 
-
-  var res = contract.call().verifyTx(txHash, proofLen, merkleSibling, merklePath, txBlockHash);
-  console.log('@@@@ res: ', res)
-  document.getElementById('result').innerText = res.toString(10);
+  // var startTime = Date.now();
+  // var res = contract.call().verifyTx(txHash, proofLen, merkleSibling, merklePath, txBlockHash);
+  // var endTime = Date.now();
+  // var durationSec = (endTime - startTime) / 1000;
+  // console.log('@@@@ res: ', res, ' duration: ', durationSec)
+  // document.getElementById('result').innerText = res.toString(10) + "    " + durationSec+ "secs";
 
 
 
@@ -99,9 +101,14 @@ function callContract() {
   // var txBinaryStr = CryptoJS.enc.Latin1.stringify(words);
 
   var exchangeContractAddr = new BigNumber(gExchangeContractAddr);
-  // var res = contract.call().relayTx(txHex, txHash, proofLen, merkleSibling, merklePath, txBlockHash, exchangeContractAddr);
-  // console.log('@@@@ res: ', res)
-  // document.getElementById('result').innerText = res.toString(10);
+
+  var startTime = Date.now();
+  var res = contract.call().relayTx(txHex, txHash, proofLen, merkleSibling, merklePath, txBlockHash, exchangeContractAddr);
+  var endTime = Date.now();
+  var durationSec = (endTime - startTime) / 1000;
+  console.log('@@@@ res: ', res, ' duration: ', durationSec)
+  document.getElementById('result').innerText = res.toString(10) + "    " + durationSec+ "secs";
+
 }
 
 
