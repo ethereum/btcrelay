@@ -30,6 +30,7 @@ def processTransfer(txStr:str):
 
     if (btcWasSentToMe && numSatoshi >= BTC_NEED):
         res = send(ethAddr, ETH_TO_SEND)
+        log(msg.sender, data=[res])
         return(res)
 
     return(0)

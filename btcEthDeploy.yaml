@@ -1,0 +1,7 @@
+-
+  deploy:
+    BtcEth:
+      contract: btc-eth.py
+      gas: 100000
+      endowment: 64
+      wait: True
