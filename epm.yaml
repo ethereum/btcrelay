@@ -65,6 +65,7 @@
 -
   transact:
     StoreBlock100K:
+      gas: 100000
       to: $BtcRelay
       fun_name: storeBlockHeader
       sig: s
