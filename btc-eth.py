@@ -1,14 +1,25 @@
 inset('btcSpecialTx.py')
 
+data trustedBtcRelay
+
 BTC_NEED = 5 * 10**8 # satoshis
 MY_BTC_ADDR = text("c398efa9c392ba6013c5e04ee729755ef7f58b32")  # testable with tx[1] from block100K
 ETH_TO_SEND = 13
+
+
+# trustedRelayContract is the address of the trusted btcrelay contract
+def setTrustedBtcRelay(trustedRelayContract):
+    self.trustedBtcRelay = trustedRelayContract
+
 
 # returns 0 if contract conditions are not met.
 # returns the value of send() if they are met (typically send() returns 1 on success)
 # callers should probably explicitly check for a return value of 1 for success,
 # to protect against the possibility of send() returning non-zero error codes
 def processTransfer(txStr:str):
+    if msg.sender != self.trustedBtcRelay:
+        return(0)
+
     outputData = self.getFirst2Outputs(txStr, outitems=4)
 
     if outputData == 0:
