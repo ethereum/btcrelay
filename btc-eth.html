@@ -122,6 +122,10 @@ function callContract() {
   console.log('@@@ in callContract')
   console.log('@@@ btcRelayAbi: ', btcRelayAbi)
 
+  var verifyTx;
+  // verifyTx = true;  // if commented, it will call relayTx
+
+
   // TODO don't forget to update the ABI (btcRelayAbi.js & btcEthAbi.js)
   // when the Serpent is updated
   var bethAddress = '0x'+'02f653a05dc68a7df9a74c8eb9a50a15e98bed6e';
@@ -137,14 +141,15 @@ function callContract() {
   var txBlockHash = new BigNumber('0x000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506');
 
 
-  var startTime = Date.now();
-  var res = contract.call().verifyTx(txHash, proofLen, merkleSibling, merklePath, txBlockHash);
-  var endTime = Date.now();
-  var durationSec = (endTime - startTime) / 1000;
-  console.log('@@@@ res: ', res, ' duration: ', durationSec)
-  document.getElementById('result').innerText = res.toString(10) + "    " + durationSec+ "secs";
-  return
-
+  if (verifyTx) {
+    var startTime = Date.now();
+    var res = contract.call().verifyTx(txHash, proofLen, merkleSibling, merklePath, txBlockHash);
+    var endTime = Date.now();
+    var durationSec = (endTime - startTime) / 1000;
+    console.log('@@@@ res: ', res, ' duration: ', durationSec)
+    document.getElementById('result').innerText = res.toString(10) + "    " + durationSec+ "secs";
+    return
+  }
 
 
 
