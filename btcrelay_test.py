@@ -1,3 +1,6 @@
+# this is here because it tests macros inside btcrelay.py, without
+# requiring the macros to be wrapped inside btcrelay.py
+
 inset('btcrelay.py')
 
 def testTargetFromBits():

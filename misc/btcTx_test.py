@@ -1,3 +1,10 @@
+# these tests were previously run inside a python console using:
+# > from pyethereum import tester as t
+# > s = t.state()
+# > c = s.abi_contract(<path to this file>)
+# > c.test_readUInt8_simple()  etc
+#
+# use the full path to btcTx.py
 inset('btcTx.py')
 
 

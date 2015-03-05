@@ -1,4 +1,4 @@
-
+Notes during development (initially to keep track of address of contracts)
 
 02f653a05dc68a7df9a74c8eb9a50a15e98bed6e is sampleContractA.py
 
