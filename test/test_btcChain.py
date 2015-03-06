@@ -5,7 +5,7 @@ import math
 import pytest
 slow = pytest.mark.slow
 
-class TestBtcTx(object):
+class TestBtcChain(object):
 
     CONTRACT = 'btcrelay.py'
     CONTRACT_GAS = 55000

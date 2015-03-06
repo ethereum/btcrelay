@@ -10,7 +10,7 @@ import time
 import pytest
 slow = pytest.mark.slow
 
-class TestBtcTx(object):
+class TestTxVerify(object):
 
     CONTRACT = 'btcrelay.py'
     CONTRACT_GAS = 55000
@@ -165,6 +165,7 @@ class TestBtcTx(object):
         # verify the proof and then hand the proof to the btc-eth contract, which will check
         # the tx outputs and send ether as appropriate
         BTC_ETH = self.s.abi_contract('btc-eth.py', endowment=2000*self.ETHER)
+        BTC_ETH.setTrustedBtcRelay(self.c.address)
         res = self.doRelayTx(txStr, merkleProof, BTC_ETH.address, profiling=True)
         assert(res == 1)
 
@@ -217,6 +218,7 @@ class TestBtcTx(object):
 
     def testEachConfirmation(self):
         BTC_ETH = self.s.abi_contract('btc-eth.py', endowment=2000*self.ETHER)
+        BTC_ETH.setTrustedBtcRelay(self.c.address)
 
         #
         # make merkle proof of tx

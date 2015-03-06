@@ -5,7 +5,7 @@ import struct
 import pytest
 slow = pytest.mark.slow
 
-class TestBtcTx(object):
+class TestBtcRelay(object):
 
     CONTRACT = 'btcrelay.py'
     CONTRACT_GAS = 55000
