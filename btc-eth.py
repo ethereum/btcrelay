@@ -1,5 +1,6 @@
 inset('btcSpecialTx.py')
 
+data owner
 data trustedBtcRelay
 
 BTC_NEED = 5 * 10**8 # satoshis
@@ -7,9 +8,15 @@ MY_BTC_ADDR = text("c398efa9c392ba6013c5e04ee729755ef7f58b32")  # testable with 
 ETH_TO_SEND = 13
 
 
+def init():
+    self.owner = msg.sender
+
 # trustedRelayContract is the address of the trusted btcrelay contract
 def setTrustedBtcRelay(trustedRelayContract):
-    self.trustedBtcRelay = trustedRelayContract
+    if msg.sender == self.owner:
+        self.trustedBtcRelay = trustedRelayContract
+        return(1)
+    return(0)
 
 
 # returns 0 if contract conditions are not met.
@@ -35,7 +42,7 @@ def processTransfer(txStr:str):
 
     indexScriptTwo = outputData[2]
     ethAddr = getEthAddr(indexScriptTwo, txStr, 20, 6)
-    log(ethAddr)  # exp 848063048424552597789830156546485564325215747452L
+    # log(ethAddr)  # exp 848063048424552597789830156546485564325215747452L
 
     # expEthAddr = text("948c765a6914d43f2a7ac177da2c2f6b52de3d7c")
 
@@ -44,6 +51,13 @@ def processTransfer(txStr:str):
         log(msg.sender, data=[res])
         return(res)
 
+    return(0)
+
+
+def setOwner(newOwner):
+    if msg.sender == self.owner:
+        self.owner = newOwner
+        return(1)
     return(0)
 
 
