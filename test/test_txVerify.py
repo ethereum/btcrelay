@@ -176,6 +176,9 @@ class TestTxVerify(object):
         assert userEthBalance == expEtherBalance
         assert res == 1  # ether was transferred
 
+        assert 0 == self.doRelayTx(txStr, merkleProof, BTC_ETH.address)  # re-claim disallowed
+
+
 
     # tx[2] of block 100K does NOT send enough BTC, so ether should NOT be transferred
     def testInsufficientBTCSent(self):
@@ -353,8 +356,10 @@ class TestTxVerify(object):
         txBlockHash = int(proof['header']['hash'], 16)
         # print(txStr, txHash, len(siblings), siblings, path, txBlockHash, contract)
         res = self.c.relayTx(txStr, txHash, len(siblings), siblings, path, txBlockHash, contract, profiling=profiling)
-        print('GAS: '+str(res['gas']))
-        return res['output']
+        if profiling:
+            print('GAS: '+str(res['gas']))
+            return res['output']
+        return res
 
     def makeMerkleProof(self, header, hashes, index):
         proof = mk_merkle_proof(header, hashes, index)  # from pybitcointools
