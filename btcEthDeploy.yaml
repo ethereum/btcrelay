@@ -1,7 +1,24 @@
+# this deploys the btc-eth exchange contract alone
+
+# TODO you must update the address of BtcRelay to whatever your BtcRelay was mined to
+- set:
+    BtcRelay: "0x02f653a05dc68a7df9a74c8eb9a50a15e98bed6e"
+
 -
   deploy:
     BtcEth:
       contract: btc-eth.py
       gas: 100000
       endowment: 64
+      wait: True
+
+-
+  transact:
+    SetTrustedBtcRelay:
+      gas: 100000
+      to: $BtcEth
+      fun_name: setTrustedBtcRelay
+      sig: i
+      data:
+        - $BtcRelay
       wait: True
