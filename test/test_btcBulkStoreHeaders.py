@@ -1,4 +1,5 @@
 from pyethereum import tester
+from datetime import datetime, date
 
 import pytest
 slow = pytest.mark.slow
@@ -20,7 +21,7 @@ class TestBtcBulkStoreHeaders(object):
         self.s.revert(self.snapshot)
         tester.seed = self.seed
 
-    def testBSH(self):
+    def testBulkStore7(self):
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
         self.c.testingonlySetGenesis(block100kPrev)
 
@@ -43,3 +44,33 @@ class TestBtcBulkStoreHeaders(object):
 
         res = self.c.bulkStoreHeader(headerBins, count)
         assert res == 1 + count
+
+
+    @slow
+    # @pytest.mark.veryslow
+    def testBulkStore60(self):
+        startBlockNum = 300000
+        numBlock = 60
+
+        block300kPrev = 0x000000000000000067ecc744b5ae34eebbde14d21ca4db51652e4d67e155f07e
+        self.c.testingonlySetGenesis(block300kPrev)
+
+        strings = ""
+        i = 1
+        with open("test/headers/500from300k.txt") as f:
+            for header in f:
+                strings += header[:-1]
+                if i==numBlock:
+                    break
+                i += 1
+
+        headerBins = strings.decode('hex')  # [:-1] to remove trailing \n
+
+        startTime = datetime.now().time()
+        res = self.c.bulkStoreHeader(headerBins, numBlock)
+        endTime = datetime.now().time()
+
+        duration = datetime.combine(date.today(), endTime) - datetime.combine(date.today(), startTime)
+        print("********** duration: "+str(duration)+" ********** start:"+str(startTime)+" end:"+str(endTime))
+
+        assert res == 1 + numBlock
