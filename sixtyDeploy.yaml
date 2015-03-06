@@ -21,7 +21,8 @@
 -
   transact:
     Store60Headers:
-      gas: 100000
+      gas: 300000
+      gas_price: 10
       to: $BtcRelay
       fun_name: bulkStoreHeader
       sig: si
