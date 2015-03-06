@@ -21,6 +21,9 @@ class TestBtcBulkStoreHeaders(object):
         tester.seed = self.seed
 
     def testBSH(self):
+        block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
+        self.c.testingonlySetGenesis(block100kPrev)
+
         headers = [
             "0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710",
             "0100000006e533fd1ada86391f3f6c343204b0d278d4aaec1c0b20aa27ba0300000000006abbb3eb3d733a9fe18967fd7d4c117e4ccbbac5bec4d910d900b3ae0793e77f54241b4d4c86041b4089cc9b",
@@ -33,4 +36,5 @@ class TestBtcBulkStoreHeaders(object):
 
         strings = headers[0]+headers[1]
         headerBins = strings.decode('hex')
-        self.c.bulkStoreHeader(headerBins)
+        res = self.c.bulkStoreHeader(headerBins)
+        assert res == 1 + 2
