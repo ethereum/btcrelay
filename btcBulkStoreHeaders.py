@@ -10,9 +10,6 @@ def bulkStoreHeader(headersBinary:str, count):
     while i < count:
         currHeader = slice(headersBinary, chars=offset, chars=endIndex)
         res = self.storeBlockHeader(currHeader)
-        if res != 2 + i:
-            log(111111111111111222222222222222)
-            return(0)
 
         offset += HEADER_SIZE
         endIndex += HEADER_SIZE

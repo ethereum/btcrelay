@@ -24,9 +24,9 @@ class TestBtcBulkStoreHeaders(object):
 
     @slow
     # @pytest.mark.veryslow
-    def testBSH(self):
+    def testBulkStore120(self):
         startBlockNum = 300000
-        numBlock = 1
+        numBlock = 60
 
         block300kPrev = 0x000000000000000067ecc744b5ae34eebbde14d21ca4db51652e4d67e155f07e
         self.c.testingonlySetGenesis(block300kPrev)
@@ -44,7 +44,6 @@ class TestBtcBulkStoreHeaders(object):
                     i += 1
 
                 headerBins = strings.decode('hex')  # [:-1] to remove trailing \n
-                print('@@@@ hb: '+headerBins.encode('hex'))
                 res = self.c.bulkStoreHeader(headerBins, numBlock)
 
                 assert res == 1 + (numBlock * (j+1))
@@ -61,6 +60,9 @@ class TestBtcBulkStoreHeaders(object):
         # assert res == 1 + numBlock
 
 
+
+    # we generally want to skip this since it is covered by BulkStore60
+    @pytest.mark.veryslow
     def testBulkStore7(self):
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
         self.c.testingonlySetGenesis(block100kPrev)
@@ -86,8 +88,6 @@ class TestBtcBulkStoreHeaders(object):
         assert res == 1 + count
 
 
-    @slow
-    # @pytest.mark.veryslow
     def testBulkStore60(self):
         startBlockNum = 300000
         numBlock = 60
