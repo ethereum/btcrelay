@@ -34,7 +34,12 @@ class TestBtcBulkStoreHeaders(object):
             "0100000045dc58743362fe8d8898a7506faa816baed7d391c9bc0b13b0da00000000000021728a2f4f975cc801cb3c672747f1ead8a946b2702b7bd52f7b86dd1aa0c975c02a1b4d4c86041b7b47546d"
         ]
 
-        strings = headers[0]+headers[1]
+        count = 7
+        strings = ""
+        for i in range(count):
+            strings += headers[i]
+
         headerBins = strings.decode('hex')
-        res = self.c.bulkStoreHeader(headerBins, 2)
-        assert res == 1 + 2
+
+        res = self.c.bulkStoreHeader(headerBins, count)
+        assert res == 1 + count
