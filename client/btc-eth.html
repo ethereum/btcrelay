@@ -65,11 +65,13 @@ var btcproof = require('btcproof');
 // 0x3432c7f5ca6552fca2f641575135578cb724eb1f
 
 
-// var gExchangeContractAddr = '0x'+'old';
-var gExchangeContractAddr = '0x'+'b8e116ddf8b8d451e04c5733a96a853b9036e883';
+var gExchangeContractAddr = '0x'+'79add0b11f29130a8aca966124715dedfe6d418a';
 var gOurBtcAddr = 'c398efa9c392ba6013c5e04ee729755ef7f58b32'
 
-function callContract() {
+
+// this should no longer work because processTransfer can only
+// be called by the (trusted) BtcRelay contract
+function c44allContract() {
   console.log('@@@ in testDirectProcessTransfer')
   console.log('@@@ btcToEthAbi: ', btcToEthAbi, ' gExchangeContractAddr: ', gExchangeContractAddr)
 
@@ -85,14 +87,10 @@ function callContract() {
     document.getElementById('result').innerText = res.toString(10);
   }
 
-
-
   // web3.eth.filter({'address': gExchangeContractAddr, 'max': 10}).watch(function(res) {
   //   console.log('@@@ gExchangeContractAddr filter')
   //   console.log(res)
   // });
-
-
 }
 
 
@@ -118,7 +116,7 @@ function callContract() {
 
 
 
-function c222allContract() {
+function callContract() {
   console.log('@@@ in callContract')
   console.log('@@@ btcRelayAbi: ', btcRelayAbi)
 
@@ -146,7 +144,7 @@ function c222allContract() {
     var res = contract.call().verifyTx(txHash, proofLen, merkleSibling, merklePath, txBlockHash);
     var endTime = Date.now();
     var durationSec = (endTime - startTime) / 1000;
-    console.log('@@@@ res: ', res, ' duration: ', durationSec)
+    console.log('@@@@ verifyTx res: ', res, ' duration: ', durationSec)
     document.getElementById('result').innerText = res.toString(10) + "    " + durationSec+ "secs";
     return
   }
@@ -163,7 +161,7 @@ function c222allContract() {
   var res = contract.call().relayTx(txHex, txHash, proofLen, merkleSibling, merklePath, txBlockHash, exchangeContractAddr);
   var endTime = Date.now();
   var durationSec = (endTime - startTime) / 1000;
-  console.log('@@@@ res: ', res, ' duration: ', durationSec)
+  console.log('@@@@ relayTx res: ', res, ' duration: ', durationSec)
   document.getElementById('result').innerText = res.toString(10) + "    " + durationSec+ "secs";
 
 }
