@@ -36,5 +36,5 @@ class TestBtcBulkStoreHeaders(object):
 
         strings = headers[0]+headers[1]
         headerBins = strings.decode('hex')
-        res = self.c.bulkStoreHeader(headerBins)
+        res = self.c.bulkStoreHeader(headerBins, 2)
         assert res == 1 + 2
