@@ -26,30 +26,30 @@ class TestBtcBulkStoreHeaders(object):
     # @pytest.mark.veryslow
     def testBSH(self):
         startBlockNum = 300000
-        numBlock = 60
+        numBlock = 1
 
         block300kPrev = 0x000000000000000067ecc744b5ae34eebbde14d21ca4db51652e4d67e155f07e
         self.c.testingonlySetGenesis(block300kPrev)
 
         nLoop = 2
-        i = 1
         j = 0
-
-        while j < nLoop:
-            strings = ""
-            with open("test/headers/500from300k.txt") as f:
+        with open("test/headers/500from300k.txt") as f:
+            while j < nLoop:
+                i = 1
+                strings = ""
                 for header in f:
                     strings += header[:-1]
                     if i==numBlock:
                         break
                     i += 1
 
-            headerBins = strings.decode('hex')  # [:-1] to remove trailing \n
-            res = self.c.bulkStoreHeader(headerBins, numBlock)
+                headerBins = strings.decode('hex')  # [:-1] to remove trailing \n
+                print('@@@@ hb: '+headerBins.encode('hex'))
+                res = self.c.bulkStoreHeader(headerBins, numBlock)
 
-            assert res == 1 + (numBlock * (j+1))
+                assert res == 1 + (numBlock * (j+1))
 
-            j += 1
+                j += 1
 
 
         # startTime = datetime.now().time()
