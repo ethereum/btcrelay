@@ -60,6 +60,36 @@ class TestBtcBulkStoreHeaders(object):
         # assert res == 1 + numBlock
 
 
+    def testBulkStore60(self):
+        startBlockNum = 300000
+        numBlock = 60
+
+        block300kPrev = 0x000000000000000067ecc744b5ae34eebbde14d21ca4db51652e4d67e155f07e
+        self.c.testingonlySetGenesis(block300kPrev)
+
+        strings = ""
+        i = 1
+        with open("test/headers/500from300k.txt") as f:
+            for header in f:
+                strings += header[:-1]
+                if i==numBlock:
+                    break
+                i += 1
+
+        headerBins = strings.decode('hex')  # [:-1] to remove trailing \n
+        # print('@@@ hb: ', headerBins)
+
+        startTime = datetime.now().time()
+        res = self.c.bulkStoreHeader(headerBins, numBlock)
+        endTime = datetime.now().time()
+
+        duration = datetime.combine(date.today(), endTime) - datetime.combine(date.today(), startTime)
+        print("********** duration: "+str(duration)+" ********** start:"+str(startTime)+" end:"+str(endTime))
+
+        assert res == 1 + numBlock
+
+
+
 
     # we generally want to skip this since it is covered by BulkStore60
     @pytest.mark.veryslow
@@ -86,31 +116,3 @@ class TestBtcBulkStoreHeaders(object):
 
         res = self.c.bulkStoreHeader(headerBins, count)
         assert res == 1 + count
-
-
-    def testBulkStore60(self):
-        startBlockNum = 300000
-        numBlock = 60
-
-        block300kPrev = 0x000000000000000067ecc744b5ae34eebbde14d21ca4db51652e4d67e155f07e
-        self.c.testingonlySetGenesis(block300kPrev)
-
-        strings = ""
-        i = 1
-        with open("test/headers/500from300k.txt") as f:
-            for header in f:
-                strings += header[:-1]
-                if i==numBlock:
-                    break
-                i += 1
-
-        headerBins = strings.decode('hex')  # [:-1] to remove trailing \n
-
-        startTime = datetime.now().time()
-        res = self.c.bulkStoreHeader(headerBins, numBlock)
-        endTime = datetime.now().time()
-
-        duration = datetime.combine(date.today(), endTime) - datetime.combine(date.today(), startTime)
-        print("********** duration: "+str(duration)+" ********** start:"+str(startTime)+" end:"+str(endTime))
-
-        assert res == 1 + numBlock
