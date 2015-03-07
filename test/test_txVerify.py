@@ -169,7 +169,7 @@ class TestTxVerify(object):
         print('USER ETH BALANCE: '+str(userEthBalance))
         expEtherBalance = 13
         assert userEthBalance == expEtherBalance
-        assert(res['output'] == 1)  # ether was transferred
+        assert res['output'] == 1  # ether was transferred
 
         assert 0 == self.c.relayTx(txStr, txHash, len(siblings), siblings, path, txBlockHash, BTC_ETH.address)  # re-claim disallowed
 
@@ -177,6 +177,9 @@ class TestTxVerify(object):
 
     # tx[2] of block 100K does NOT send enough BTC, so ether should NOT be transferred
     def testInsufficientBTCSent(self):
+        BTC_ETH = self.s.abi_contract('btc-eth.py', endowment=2000*self.ETHER)
+        BTC_ETH.setTrustedBtcRelay(self.c.address)
+
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
         self.c.testingonlySetGenesis(block100kPrev)
 
@@ -194,19 +197,17 @@ class TestTxVerify(object):
             res = self.c.storeBlockHeader(blockHeaderBinary[i])
             assert res == i+2
 
+        # tx[2] 6359f0868171b1d194cbee1af2f16ea598ae8fad666d9b012c8ed2b79a236ec4
+        txStr = '0100000001c33ebff2a709f13d9f9a7569ab16a32786af7d7e2de09265e41c61d078294ecf010000008a4730440220032d30df5ee6f57fa46cddb5eb8d0d9fe8de6b342d27942ae90a3231e0ba333e02203deee8060fdc70230a7f5b4ad7d7bc3e628cbe219a886b84269eaeb81e26b4fe014104ae31c31bf91278d99b8377a35bbce5b27d9fff15456839e919453fc7b3f721f0ba403ff96c9deeb680e5fd341c0fc3a7b90da4631ee39560639db462e9cb850fffffffff0240420f00000000001976a914b0dcbf97eabf4404e31d952477ce822dadbe7e1088acc060d211000000001976a9146b1281eec25ab4e1e0793ff4e08ab1abb3409cd988ac00000000'
+
         # block 100000
         header = {'nonce': 274148111, 'hash': u'000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506', 'timestamp': 1293623863, 'merkle_root': u'f3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766', 'version': 1, 'prevhash': u'000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250', 'bits': 453281356}
         hashes = [u'8c14f0db3df150123e6f3dbbf30f8b955a8249b62ac1d1ff16284aefa3d06d87', u'fff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4', u'6359f0868171b1d194cbee1af2f16ea598ae8fad666d9b012c8ed2b79a236ec4', u'e9a66845e05d5abc0ad04ec80f774a7e585c6e8db975962d069a522137b80c1d']
+        [txHash, siblings, path, txBlockHash] = self.doRelayTx(header, hashes, 1)
 
-        # tx[2] 6359f0868171b1d194cbee1af2f16ea598ae8fad666d9b012c8ed2b79a236ec4
-        txStr = '0100000001c33ebff2a709f13d9f9a7569ab16a32786af7d7e2de09265e41c61d078294ecf010000008a4730440220032d30df5ee6f57fa46cddb5eb8d0d9fe8de6b342d27942ae90a3231e0ba333e02203deee8060fdc70230a7f5b4ad7d7bc3e628cbe219a886b84269eaeb81e26b4fe014104ae31c31bf91278d99b8377a35bbce5b27d9fff15456839e919453fc7b3f721f0ba403ff96c9deeb680e5fd341c0fc3a7b90da4631ee39560639db462e9cb850fffffffff0240420f00000000001976a914b0dcbf97eabf4404e31d952477ce822dadbe7e1088acc060d211000000001976a9146b1281eec25ab4e1e0793ff4e08ab1abb3409cd988ac00000000'
-        merkleProof = self.makeMerkleProof(header, hashes, 2)
-
-        BTC_ETH = self.s.abi_contract('btc-eth.py', endowment=2000*self.ETHER)
-        res = self.doRelayTx(txStr, merkleProof, BTC_ETH.address, profiling=True)
+        res = self.c.relayTx(txStr, txHash, len(siblings), siblings, path, txBlockHash, BTC_ETH.address)
 
         ethAddrBin = txStr[-52:-12].decode('hex')
-
         userEthBalance = self.s.block.get_balance(ethAddrBin)
         print('USER ETH BALANCE: '+str(userEthBalance))
         expEtherBalance = 0
