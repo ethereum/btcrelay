@@ -24,7 +24,15 @@ class TestBtcBulkStoreHeaders(object):
         tester.seed = self.seed
 
 
-    def bulkStore10(self):
+    def testTx1In300K(self):
+        txIndex = 1
+        # block300k tx[1] 7301b595279ece985f0c415e420e425451fcf7f684fcce087ba14d10ffec1121
+        txStr = '01000000014dff4050dcee16672e48d755c6dd25d324492b5ea306f85a3ab23b4df26e16e9000000008c493046022100cb6dc911ef0bae0ab0e6265a45f25e081fc7ea4975517c9f848f82bc2b80a909022100e30fb6bb4fb64f414c351ed3abaed7491b8f0b1b9bcd75286036df8bfabc3ea5014104b70574006425b61867d2cbb8de7c26095fbc00ba4041b061cf75b85699cb2b449c6758741f640adffa356406632610efb267cb1efa0442c207059dd7fd652eeaffffffff020049d971020000001976a91461cf5af7bb84348df3fd695672e53c7d5b3f3db988ac30601c0c060000001976a914fd4ed114ef85d350d6d40ed3f6dc23743f8f99c488ac00000000'
+        btcAddr = 0x61cf5af7bb84348df3fd695672e53c7d5b3f3db9
+        self.checkRelay(txStr, txIndex, btcAddr)
+
+
+    def bulkStore10From300K(self):
         startBlockNum = 300000
         numBlock = 10
 
@@ -59,13 +67,9 @@ class TestBtcBulkStoreHeaders(object):
 
         return [header, hashes]
 
-    def testBulkStore10AndRelay(self):
-        txIndex = 1
-        # block300k tx[1] 7301b595279ece985f0c415e420e425451fcf7f684fcce087ba14d10ffec1121
-        txStr = '01000000014dff4050dcee16672e48d755c6dd25d324492b5ea306f85a3ab23b4df26e16e9000000008c493046022100cb6dc911ef0bae0ab0e6265a45f25e081fc7ea4975517c9f848f82bc2b80a909022100e30fb6bb4fb64f414c351ed3abaed7491b8f0b1b9bcd75286036df8bfabc3ea5014104b70574006425b61867d2cbb8de7c26095fbc00ba4041b061cf75b85699cb2b449c6758741f640adffa356406632610efb267cb1efa0442c207059dd7fd652eeaffffffff020049d971020000001976a91461cf5af7bb84348df3fd695672e53c7d5b3f3db988ac30601c0c060000001976a914fd4ed114ef85d350d6d40ed3f6dc23743f8f99c488ac00000000'
 
-
-        [header, hashes] = self.bulkStore10()
+    def checkRelay(self, txStr, txIndex, btcAddr):
+        [header, hashes] = self.bulkStore10From300K()
         [txHash, siblings, path, txBlockHash] = makeMerkleProof(header, hashes, txIndex)
 
 
@@ -73,7 +77,7 @@ class TestBtcBulkStoreHeaders(object):
         # the tx outputs and send ether as appropriate
         BTC_ETH = self.s.abi_contract('btc-eth.py', endowment=2000*self.ETHER)
         assert BTC_ETH.setTrustedBtcRelay(self.c.address) == 1
-        assert BTC_ETH.testingonlySetBtcAddr(0x61cf5af7bb84348df3fd695672e53c7d5b3f3db9) == 1
+        assert BTC_ETH.testingonlySetBtcAddr(btcAddr) == 1
         res = self.c.relayTx(txStr, txHash, len(siblings), siblings, path, txBlockHash, BTC_ETH.address, profiling=True)
 
         ethAddrBin = txStr[-52:-12].decode('hex')
