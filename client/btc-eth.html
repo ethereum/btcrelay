@@ -65,7 +65,7 @@ var btcproof = require('btcproof');
 // 0x3432c7f5ca6552fca2f641575135578cb724eb1f
 
 
-var gExchangeContractAddr = '0x'+'79add0b11f29130a8aca966124715dedfe6d418a';
+var gExchangeContractAddr = '0x'+'f243fe631f69bbda17a76b193371914afdb9a4de';
 var gOurBtcAddr = 'c398efa9c392ba6013c5e04ee729755ef7f58b32'
 
 
@@ -128,7 +128,7 @@ function callContract() {
 
   // TODO don't forget to update the ABI (btcRelayAbi.js & btcEthAbi.js)
   // when the Serpent is updated
-  var bethAddress = '0x'+'02f653a05dc68a7df9a74c8eb9a50a15e98bed6e';
+  var bethAddress = '0x'+'a7ac34d64107553f64181ce53b4917da6bede380';
   var contract = web3.eth.contract(bethAddress, btcRelayAbi);
 
 
@@ -221,7 +221,7 @@ $(function() {
   var ethBalance = web3.fromWei(web3.eth.balanceAt(gExchangeContractAddr), 'ether');
   $('#exchBal').text(ethBalance);
 
-  $('#transHex').val('fff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4');
+  // $('#transHex').val('fff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4');
 
   $('#btn-get-tx').click(getTxInfo);
 
