@@ -10,6 +10,34 @@ import time
 import pytest
 slow = pytest.mark.slow
 
+
+
+
+# for now, read the bits of n in order (from least significant)
+# and convert 0 -> 2 and 1 -> 1
+def indexToPath(n, nSibling):
+    ret = []
+    if n == 0:
+        ret = [2] * nSibling
+    else:
+        bits = int(math.log(n, 2)+1)
+        for i in range(bits):
+            if checkBit(n, i) == 0:
+                ret.append(2)
+            else:
+                ret.append(1)
+
+        if bits < nSibling:
+            ret = ret + ([2] * (nSibling - bits))
+    return ret
+
+
+def checkBit(int_type, offset):
+    mask = 1 << offset
+    return(int_type & mask)
+
+
+
 class TestTxVerify(object):
 
     CONTRACT = 'btcrelay.py'
@@ -49,7 +77,7 @@ class TestTxVerify(object):
         tx = int(hashes[index], 16)
         siblings = map(partial(int,base=16), proof['siblings'])
         nSibling = len(siblings)
-        path = self.indexToPath(index, nSibling)
+        path = indexToPath(index, nSibling)
         txBlockHash = int(header['hash'], 16)
         res = self.c.verifyTx(tx, len(siblings), siblings, path, txBlockHash, profiling=profiling)
         return res
@@ -341,7 +369,7 @@ class TestTxVerify(object):
         tx = int(hashes[index], 16)
         siblings = map(partial(int,base=16), proof['siblings'])
         nSibling = len(siblings)
-        path = self.indexToPath(index, nSibling)
+        path = indexToPath(index, nSibling)
         txBlockHash = int(header['hash'], 16)
         res = self.c.verifyTx(tx, len(siblings), siblings, path, txBlockHash, profiling=profiling)
         print('GAS: '+str(res['gas']))
@@ -363,9 +391,10 @@ class TestTxVerify(object):
 
     def makeMerkleProof(self, header, hashes, index):
         proof = mk_merkle_proof(header, hashes, index)  # from pybitcointools
-        proof['path'] = self.indexToPath(index, len(proof['siblings']))
+        proof['path'] = indexToPath(index, len(proof['siblings']))
         return proof
 
+    @slow
     def testRandomTxVerify(self):
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
         self.c.testingonlySetGenesis(block100kPrev)
@@ -411,11 +440,12 @@ class TestTxVerify(object):
         tx = int(hashes[index], 16)
         siblings = map(partial(int,base=16), proof['siblings'])
         nSibling = len(siblings)
-        path = self.indexToPath(index, nSibling)
+        path = indexToPath(index, nSibling)
         merkle = self.c.computeMerkle(tx, len(siblings), siblings, path)
         merkle %= 2 ** 256
         assert merkle == int(proof['header']['merkle_root'], 16)
 
+    @slow
     def testRandomTxMerkleCheck(self):
         self.randomTxMerkleCheck(100000)
 
@@ -431,7 +461,7 @@ class TestTxVerify(object):
         tx = int(hashes[index], 16)
         siblings = map(partial(int,base=16), proof['siblings'])
         nSibling = len(siblings)
-        path = self.indexToPath(index, nSibling)
+        path = indexToPath(index, nSibling)
         merkle = self.c.computeMerkle(tx, len(siblings), siblings, path)
         merkle %= 2 ** 256
         assert merkle == int(proof['header']['merkle_root'], 16)
@@ -440,34 +470,10 @@ class TestTxVerify(object):
 
     @pytest.mark.skipif(True,reason='skip')
     def testToPath(self):
-        assert self.indexToPath(0, 2) == [2,2]
-        assert self.indexToPath(1, 2) == [1,2]
-        assert self.indexToPath(2, 2) == [2,1]
-        assert self.indexToPath(3, 2) == [1,1]
-
-
-    # for now, read the bits of n in order (from least significant)
-    # and convert 0 -> 2 and 1 -> 1
-    def indexToPath(self, n, nSibling):
-        ret = []
-        if n == 0:
-            ret = [2] * nSibling
-        else:
-            bits = int(math.log(n, 2)+1)
-            for i in range(bits):
-                if self.checkBit(n, i) == 0:
-                    ret.append(2)
-                else:
-                    ret.append(1)
-
-            if bits < nSibling:
-                ret = ret + ([2] * (nSibling - bits))
-        return ret
-
-
-    def checkBit(self, int_type, offset):
-        mask = 1 << offset
-        return(int_type & mask)
+        assert indexToPath(0, 2) == [2,2]
+        assert indexToPath(1, 2) == [1,2]
+        assert indexToPath(2, 2) == [2,1]
+        assert indexToPath(3, 2) == [1,1]
 
 
 
