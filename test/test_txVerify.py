@@ -159,7 +159,7 @@ class TestTxVerify(object):
         # block 100000
         header = {'nonce': 274148111, 'hash': u'000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506', 'timestamp': 1293623863, 'merkle_root': u'f3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766', 'version': 1, 'prevhash': u'000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250', 'bits': 453281356}
         hashes = [u'8c14f0db3df150123e6f3dbbf30f8b955a8249b62ac1d1ff16284aefa3d06d87', u'fff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4', u'6359f0868171b1d194cbee1af2f16ea598ae8fad666d9b012c8ed2b79a236ec4', u'e9a66845e05d5abc0ad04ec80f774a7e585c6e8db975962d069a522137b80c1d']
-        [txHash, siblings, path, txBlockHash] = self.doRelayTx(header, hashes, 1)
+        [txHash, siblings, path, txBlockHash] = self.makeMerkleProof(header, hashes, 1)
 
         res = self.c.relayTx(txStr, txHash, len(siblings), siblings, path, txBlockHash, BTC_ETH.address, profiling=True)
         print('GAS: '+str(res['gas']))
@@ -203,7 +203,7 @@ class TestTxVerify(object):
         # block 100000
         header = {'nonce': 274148111, 'hash': u'000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506', 'timestamp': 1293623863, 'merkle_root': u'f3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766', 'version': 1, 'prevhash': u'000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250', 'bits': 453281356}
         hashes = [u'8c14f0db3df150123e6f3dbbf30f8b955a8249b62ac1d1ff16284aefa3d06d87', u'fff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4', u'6359f0868171b1d194cbee1af2f16ea598ae8fad666d9b012c8ed2b79a236ec4', u'e9a66845e05d5abc0ad04ec80f774a7e585c6e8db975962d069a522137b80c1d']
-        [txHash, siblings, path, txBlockHash] = self.doRelayTx(header, hashes, 2)
+        [txHash, siblings, path, txBlockHash] = self.makeMerkleProof(header, hashes, 2)
 
         res = self.c.relayTx(txStr, txHash, len(siblings), siblings, path, txBlockHash, BTC_ETH.address)
 
@@ -225,7 +225,7 @@ class TestTxVerify(object):
         # block 100000
         header = {'nonce': 274148111, 'hash': u'000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506', 'timestamp': 1293623863, 'merkle_root': u'f3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766', 'version': 1, 'prevhash': u'000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250', 'bits': 453281356}
         hashes = [u'8c14f0db3df150123e6f3dbbf30f8b955a8249b62ac1d1ff16284aefa3d06d87', u'fff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4', u'6359f0868171b1d194cbee1af2f16ea598ae8fad666d9b012c8ed2b79a236ec4', u'e9a66845e05d5abc0ad04ec80f774a7e585c6e8db975962d069a522137b80c1d']
-        [txHash, siblings, path, txBlockHash] = self.doRelayTx(header, hashes, 1)
+        [txHash, siblings, path, txBlockHash] = self.makeMerkleProof(header, hashes, 1)
 
         ethAddrBin = txStr[-52:-12].decode('hex')
         expEtherBalance = 13
@@ -336,22 +336,15 @@ class TestTxVerify(object):
         return res['output']
 
 
-    def doRelayTx(self, header, hashes, txIndex):
-        proof = self.makeMerkleProof(header, hashes, txIndex)
+    def makeMerkleProof(self, header, hashes, txIndex):
+        proof = mk_merkle_proof(header, hashes, txIndex)  # from pybitcointools
 
-        txHash = int(proof['hash'], 16)  #TODO should be removable in future when txStr becomes txBinary
-
+        txHash = int(proof['hash'], 16)
         siblings = map(partial(int,base=16), proof['siblings'])
-        path = proof['path']
+        path = indexToPath(txIndex, len(proof['siblings']))
         txBlockHash = int(proof['header']['hash'], 16)
 
         return [txHash, siblings, path, txBlockHash]
-
-
-    def makeMerkleProof(self, header, hashes, index):
-        proof = mk_merkle_proof(header, hashes, index)  # from pybitcointools
-        proof['path'] = indexToPath(index, len(proof['siblings']))
-        return proof
 
     @slow
     def testRandomTxVerify(self):
