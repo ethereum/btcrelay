@@ -22,6 +22,60 @@ class TestBtcBulkStoreHeaders(object):
         tester.seed = self.seed
 
 
+    def testBulkStore10AndRelay(self):
+        startBlockNum = 300000
+        numBlock = 10
+
+        block300kPrev = 0x000000000000000067ecc744b5ae34eebbde14d21ca4db51652e4d67e155f07e
+        self.c.testingonlySetGenesis(block300kPrev)
+
+        strings = ""
+        i = 1
+        with open("test/headers/500from300k.txt") as f:
+            for header in f:
+                strings += header[:-1]
+                if i==numBlock:
+                    break
+                i += 1
+
+        headerBins = strings.decode('hex')  # [:-1] to remove trailing \n
+        # print('@@@ hb: ', headerBins)
+
+        res = self.c.bulkStoreHeader(headerBins, numBlock, profiling=True)
+
+        print('GAS: '+str(res['gas']))
+        assert res['output'] == 1 + numBlock
+
+
+        # block 300000
+        header =
+        hashes =
+
+        # tx[1] 7301b595279ece985f0c415e420e425451fcf7f684fcce087ba14d10ffec1121
+        txStr = '01000000014dff4050dcee16672e48d755c6dd25d324492b5ea306f85a3ab23b4df26e16e9000000008c493046022100cb6dc911ef0bae0ab0e6265a45f25e081fc7ea4975517c9f848f82bc2b80a909022100e30fb6bb4fb64f414c351ed3abaed7491b8f0b1b9bcd75286036df8bfabc3ea5014104b70574006425b61867d2cbb8de7c26095fbc00ba4041b061cf75b85699cb2b449c6758741f640adffa356406632610efb267cb1efa0442c207059dd7fd652eeaffffffff020049d971020000001976a91461cf5af7bb84348df3fd695672e53c7d5b3f3db988ac30601c0c060000001976a914fd4ed114ef85d350d6d40ed3f6dc23743f8f99c488ac00000000'
+        merkleProof = self.makeMerkleProof(header, hashes, 1)
+
+
+        # verify the proof and then hand the proof to the btc-eth contract, which will check
+        # the tx outputs and send ether as appropriate
+        BTC_ETH = self.s.abi_contract('btc-eth.py', endowment=2000*self.ETHER)
+        BTC_ETH.setTrustedBtcRelay(self.c.address)
+        res = self.doRelayTx(txStr, merkleProof, BTC_ETH.address, profiling=True)
+        assert(res == 1)
+
+        ethAddrBin = txStr[-52:-12].decode('hex')
+        userEthBalance = self.s.block.get_balance(ethAddrBin)
+        print('USER ETH BALANCE: '+str(userEthBalance))
+        expEtherBalance = 13
+        assert userEthBalance == expEtherBalance
+        assert res == 1  # ether was transferred
+
+        assert 0 == self.doRelayTx(txStr, merkleProof, BTC_ETH.address)  # re-claim disallowed
+
+
+
+
+
     @slow
     # @pytest.mark.veryslow
     def testBulkStore120(self):
