@@ -65,8 +65,8 @@ class TestBtcBulkStoreHeaders(object):
         # verify the proof and then hand the proof to the btc-eth contract, which will check
         # the tx outputs and send ether as appropriate
         BTC_ETH = self.s.abi_contract('btc-eth.py', endowment=2000*self.ETHER)
-        BTC_ETH.setTrustedBtcRelay(self.c.address)
-        BTC_ETH.testingonlySetBtcAddr(0x61cf5af7bb84348df3fd695672e53c7d5b3f3db9)
+        assert BTC_ETH.setTrustedBtcRelay(self.c.address) == 1
+        assert BTC_ETH.testingonlySetBtcAddr(0x61cf5af7bb84348df3fd695672e53c7d5b3f3db9) == 1
         res = self.c.relayTx(txStr, txHash, len(siblings), siblings, path, txBlockHash, BTC_ETH.address, profiling=True)
 
         ethAddrBin = txStr[-52:-12].decode('hex')
