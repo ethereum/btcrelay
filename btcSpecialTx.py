@@ -30,7 +30,7 @@ def getFirst2Outputs(txStr:str):
 
     numOuts = parseVarInt(txStr, cursor)
     if numOuts < 2:
-        return(0)
+        return
 
 
     ###########################################################
@@ -45,7 +45,7 @@ def getFirst2Outputs(txStr:str):
     # log(scriptSize)
 
     if scriptSize == 0:
-        return(0)
+        return
 
     out1stScriptIndex = cursor
     cursor += scriptSize + 8  # skip script and 2nd output's satoshis (8)
@@ -60,7 +60,7 @@ def getFirst2Outputs(txStr:str):
     # log(scriptSize)
 
     if scriptSize == 0:
-        return(0)
+        return
 
     out2ndScriptIndex = cursor
     ###########################################################
