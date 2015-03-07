@@ -332,26 +332,10 @@ class TestTxVerify(object):
 
 
     def randomTxMerkleCheck(self, blocknum):
-        header = get_block_header_data(blocknum)
-        hashes = get_txs_in_block(blocknum)
-
-        numTx = len(hashes)
-        if numTx == 0:
-            print('@@@@ empty blocknum='+str(blocknum))
-            return
-
-        index = random.randrange(numTx)
-        proof = mk_merkle_proof(header, hashes, index)
-
-        print('@@@@@@@@@@@@@@@@ blocknum='+str(blocknum)+'\ttxIndex='+str(index))
-
-        tx = int(hashes[index], 16)
-        siblings = map(partial(int,base=16), proof['siblings'])
-        nSibling = len(siblings)
-        path = indexToPath(index, nSibling)
-        merkle = self.c.computeMerkle(tx, len(siblings), siblings, path)
+        [txHash, siblings, path, txBlockHash, pybtctoolMerkle] = randomMerkleProof(blocknum, -1, True)
+        merkle = self.c.computeMerkle(txHash, len(siblings), siblings, path)
         merkle %= 2 ** 256
-        assert merkle == int(proof['header']['merkle_root'], 16)
+        assert merkle == pybtctoolMerkle
 
     @slow
     def testRandomTxMerkleCheck(self):

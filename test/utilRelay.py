@@ -18,7 +18,7 @@ def makeMerkleProof(header, hashes, txIndex):
     return [txHash, siblings, path, txBlockHash]
 
 
-def randomMerkleProof(blocknum, txIndex=-1):
+def randomMerkleProof(blocknum, txIndex=-1, withMerkle=False):
     header = get_block_header_data(blocknum)
     hashes = get_txs_in_block(blocknum)
 
@@ -41,8 +41,10 @@ def randomMerkleProof(blocknum, txIndex=-1):
     path = indexToPath(index, nSibling)
     txBlockHash = int(header['hash'], 16)
 
-    return [txHash, siblings, path, txBlockHash]
-
+    ret = [txHash, siblings, path, txBlockHash]
+    if withMerkle:
+        ret.append(int(proof['header']['merkle_root'], 16))
+    return ret
 
 
 # for now, read the bits of n in order (from least significant)
