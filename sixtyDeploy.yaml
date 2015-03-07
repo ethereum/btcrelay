@@ -1,3 +1,8 @@
+# This probably won't work because not enough gas for storing 60 headers
+
+# -
+#   set:
+#     BtcRelay: "0xa7ac34d64107553f64181ce53b4917da6bede380"
 
 # bulk store BtcRelay
 -
@@ -21,7 +26,7 @@
 -
   transact:
     Store60Headers:
-      gas: 300000
+      gas: 600000
       gas_price: 10
       to: $BtcRelay
       fun_name: bulkStoreHeader
