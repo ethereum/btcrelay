@@ -2,7 +2,7 @@ from pyethereum import tester
 from datetime import datetime, date
 from functools import partial
 
-from utilRelay import makeMerkleProof
+from utilRelay import makeMerkleProof, randomMerkleProof
 
 import time
 
@@ -31,28 +31,8 @@ class TestTxVerify(object):
 
     # if txIndex is -1, randomly choose a tx index
     def randomTxVerify(self, blocknum, txIndex=-1, profiling=False):
-        header = get_block_header_data(blocknum)
-        hashes = get_txs_in_block(blocknum)
-
-        numTx = len(hashes)
-        if numTx == 0:
-            print('@@@@ empty blocknum='+str(blocknum))
-            return
-
-        index = random.randrange(numTx) if txIndex == -1 else txIndex
-
-        print('txStr='+hashes[index])
-
-        proof = mk_merkle_proof(header, hashes, index)
-
-        print('@@@@@@@@@@@@@@@@ blocknum='+str(blocknum)+'\ttxIndex='+str(index))
-
-        tx = int(hashes[index], 16)
-        siblings = map(partial(int,base=16), proof['siblings'])
-        nSibling = len(siblings)
-        path = indexToPath(index, nSibling)
-        txBlockHash = int(header['hash'], 16)
-        res = self.c.verifyTx(tx, len(siblings), siblings, path, txBlockHash, profiling=profiling)
+        [txHash, siblings, path, txBlockHash] = randomMerkleProof(blocknum, txIndex)
+        res = self.c.verifyTx(txHash, len(siblings), siblings, path, txBlockHash, profiling=profiling)
         return res
 
 

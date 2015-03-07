@@ -18,6 +18,33 @@ def makeMerkleProof(header, hashes, txIndex):
     return [txHash, siblings, path, txBlockHash]
 
 
+def randomMerkleProof(blocknum, txIndex=-1):
+    header = get_block_header_data(blocknum)
+    hashes = get_txs_in_block(blocknum)
+
+    numTx = len(hashes)
+    if numTx == 0:
+        print('@@@@ empty blocknum='+str(blocknum))
+        return
+
+    index = random.randrange(numTx) if txIndex == -1 else txIndex
+
+    print('txStr='+hashes[index])
+
+    proof = mk_merkle_proof(header, hashes, index)
+
+    print('@@@@@@@@@@@@@@@@ blocknum='+str(blocknum)+'\ttxIndex='+str(index))
+
+    txHash = int(hashes[index], 16)
+    siblings = map(partial(int,base=16), proof['siblings'])
+    nSibling = len(siblings)
+    path = indexToPath(index, nSibling)
+    txBlockHash = int(header['hash'], 16)
+
+    return [txHash, siblings, path, txBlockHash]
+
+
+
 # for now, read the bits of n in order (from least significant)
 # and convert 0 -> 2 and 1 -> 1
 def indexToPath(n, nSibling):
