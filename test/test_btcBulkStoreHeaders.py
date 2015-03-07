@@ -23,8 +23,6 @@ class TestBtcBulkStoreHeaders(object):
         self.s.revert(self.snapshot)
         tester.seed = self.seed
 
-    # this "fails" because the tx 1st output btc address isn't matching the expected one
-    @pytest.mark.skipif(True,reason='skip')
     def testBulkStore10AndRelay(self):
         startBlockNum = 300000
         numBlock = 10
@@ -68,6 +66,7 @@ class TestBtcBulkStoreHeaders(object):
         # the tx outputs and send ether as appropriate
         BTC_ETH = self.s.abi_contract('btc-eth.py', endowment=2000*self.ETHER)
         BTC_ETH.setTrustedBtcRelay(self.c.address)
+        BTC_ETH.testingonlySetBtcAddr(0x61cf5af7bb84348df3fd695672e53c7d5b3f3db9)
         res = self.c.relayTx(txStr, txHash, len(siblings), siblings, path, txBlockHash, BTC_ETH.address, profiling=True)
 
         ethAddrBin = txStr[-52:-12].decode('hex')
@@ -77,7 +76,8 @@ class TestBtcBulkStoreHeaders(object):
         assert userEthBalance == expEtherBalance
         assert res['output'] == 1  # ether was transferred
 
-        assert 0 == self.c.relayTx(txStr, txHash, len(siblings), siblings, path, txBlockHash, BTC_ETH.address, profiling=True)  # re-claim disallowed
+        # re-claim disallowed
+        assert 0 == self.c.relayTx(txStr, txHash, len(siblings), siblings, path, txBlockHash, BTC_ETH.address)
 
 
 

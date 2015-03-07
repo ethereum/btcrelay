@@ -20,7 +20,7 @@ def testingonlySetBtcAddr(btcAddr):
 
 def init():
     self.owner = msg.sender
-    self.btcAcceptAddr = MY_BTC_ADDR
+    self.btcAcceptAddr = MY_BTC_ADDR  # TODO rhs is a string
 
 # trustedRelayContract is the address of the trusted btcrelay contract
 def setTrustedBtcRelay(trustedRelayContract):
@@ -48,7 +48,10 @@ def processTransfer(txStr:str):
 
     #TODO strictly compare the script because an attacker may have a script that mentions
     #our BTC address, but the BTC is not spendable by our private key (only spendable by attacker's key)
-    btcWasSentToMe = compareScriptWithAddr(indexScriptOne, txStr, self.btcAcceptAddr)
+    # btcWasSentToMe = compareScriptWithAddr(indexScriptOne, txStr, self.btcAcceptAddr)
+    addrBtcWasSentTo = getEthAddr(indexScriptOne, txStr, 20, 6)
+
+    btcWasSentToMe = addrBtcWasSentTo == self.btcAcceptAddr
 
 
     indexScriptTwo = outputData[2]
@@ -101,7 +104,8 @@ macro getBEBytes($inStr, $size, $offset):
     div(mload($inStr + $offset), 256**(32 - $size))
 
 
-macro compareScriptWithAddr($indexStart, $txStr, $addrStr):
+
+macro compareScriptWithStringAddr($indexStart, $txStr, $addrStr):
     $i = 0
     $j = 6 + ($indexStart * 2)
     while $i < 26:
