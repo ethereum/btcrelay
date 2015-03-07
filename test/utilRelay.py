@@ -1,8 +1,21 @@
 import math
+from functools import partial
+
+from bitcoin import *
 
 #
 # helper functions for relayTx testing
 #
+
+def makeMerkleProof(header, hashes, txIndex):
+    proof = mk_merkle_proof(header, hashes, txIndex)  # from pybitcointools
+
+    txHash = int(proof['hash'], 16)
+    siblings = map(partial(int,base=16), proof['siblings'])
+    path = indexToPath(txIndex, len(proof['siblings']))
+    txBlockHash = int(proof['header']['hash'], 16)
+
+    return [txHash, siblings, path, txBlockHash]
 
 
 # for now, read the bits of n in order (from least significant)
