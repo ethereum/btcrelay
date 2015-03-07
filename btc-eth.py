@@ -2,14 +2,25 @@ inset('btcSpecialTx.py')
 
 data owner
 data trustedBtcRelay
+data btcAcceptAddr
 
 BTC_NEED = 5 * 10**8 # satoshis
 MY_BTC_ADDR = text("c398efa9c392ba6013c5e04ee729755ef7f58b32")  # testable with tx[1] from block100K
 ETH_TO_SEND = 13
 
 
+# TODO remove when not testing, since owners should create another copy of this
+# contract if they want to get paid to a different btcAddr
+def testingonlySetBtcAddr(btcAddr):
+    if msg.sender == self.owner:
+        self.btcAcceptAddr = btcAddr
+        return(1)
+    return(0)
+
+
 def init():
     self.owner = msg.sender
+    self.btcAcceptAddr = MY_BTC_ADDR
 
 # trustedRelayContract is the address of the trusted btcrelay contract
 def setTrustedBtcRelay(trustedRelayContract):
@@ -37,7 +48,7 @@ def processTransfer(txStr:str):
 
     #TODO strictly compare the script because an attacker may have a script that mentions
     #our BTC address, but the BTC is not spendable by our private key (only spendable by attacker's key)
-    btcWasSentToMe = compareScriptWithAddr(indexScriptOne, txStr, MY_BTC_ADDR)
+    btcWasSentToMe = compareScriptWithAddr(indexScriptOne, txStr, self.btcAcceptAddr)
 
 
     indexScriptTwo = outputData[2]

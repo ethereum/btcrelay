@@ -2,7 +2,7 @@
 
 # TODO you must update the address of BtcRelay to whatever your BtcRelay was mined to
 - set:
-    BtcRelay: "0x02f653a05dc68a7df9a74c8eb9a50a15e98bed6e"
+    BtcRelay: "0xa7ac34d64107553f64181ce53b4917da6bede380"
 
 -
   deploy:
@@ -11,7 +11,6 @@
       gas: 100000
       endowment: 64
       wait: True
-
 -
   transact:
     SetTrustedBtcRelay:
@@ -21,4 +20,16 @@
       sig: i
       data:
         - $BtcRelay
+      wait: True
+
+# for testing only
+-
+  transact:
+    SetBtcAddr:
+      gas: 100000
+      to: $BtcEth
+      fun_name: testingonlySetBtcAddr
+      sig: i
+      data:
+        - 0x61cf5af7bb84348df3fd695672e53c7d5b3f3db9
       wait: True
