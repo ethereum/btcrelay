@@ -80,13 +80,14 @@ class TestBtcBulkStoreHeaders(object):
         # print('@@@ hb: ', headerBins)
 
         startTime = datetime.now().time()
-        res = self.c.bulkStoreHeader(headerBins, numBlock)
+        res = self.c.bulkStoreHeader(headerBins, numBlock, profiling=True)
         endTime = datetime.now().time()
 
         duration = datetime.combine(date.today(), endTime) - datetime.combine(date.today(), startTime)
         print("********** duration: "+str(duration)+" ********** start:"+str(startTime)+" end:"+str(endTime))
 
-        assert res == 1 + numBlock
+        print('GAS: '+str(res['gas']))
+        assert res['output'] == 1 + numBlock
 
 
 
