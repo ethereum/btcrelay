@@ -61,12 +61,11 @@ class TestBtcBulkStoreHeaders(object):
         btcAddr = 0xadd23e3d2d757c9b201005fced7cbdd79a00cfe5
         self.checkRelay(txStr, txIndex, btcAddr, hh)
 
-        # TODO failing
         # 2 ins, 3 outs
-        # txIndex = 50
-        # txStr = '01000000015f43d26fc7ea7049a2fc63a5cd47e767ac1f8cd8bf388045e06dc5faab9e9756010000006b483045022100a51893da50d180cd3481625ce7193a43cf54b9c5ca6eedda75cef471c1afc19c022008255285e37be092ce9d793f8430cef6cc1ad12de50c56a870ee6b443f6068eb012103481e57ba7df07d0b29a827a2380f83bd349002fab509bc865c62f43e79baeb33ffffffff0356dffdfd000000001976a914c9dea40941945cf8a8955c4ee3be117d195df0f488ac20ebb304000000001976a914a9a955323f97ec609bc334fc65cc700913aa66e688acccef9201000000001976a9146f4664e7632d6e2fefc065e540eba4b71ebb371f88ac00000000'
-        # btcAddr = 0xc9dea40941945cf8a8955c4ee3be117d195df0f4
-        # self.checkRelay(txStr, txIndex, btcAddr, hh)
+        txIndex = 50
+        txStr = '01000000015f43d26fc7ea7049a2fc63a5cd47e767ac1f8cd8bf388045e06dc5faab9e9756010000006b483045022100a51893da50d180cd3481625ce7193a43cf54b9c5ca6eedda75cef471c1afc19c022008255285e37be092ce9d793f8430cef6cc1ad12de50c56a870ee6b443f6068eb012103481e57ba7df07d0b29a827a2380f83bd349002fab509bc865c62f43e79baeb33ffffffff0356dffdfd000000001976a914c9dea40941945cf8a8955c4ee3be117d195df0f488ac20ebb304000000001976a914a9a955323f97ec609bc334fc65cc700913aa66e688acccef9201000000001976a9146f4664e7632d6e2fefc065e540eba4b71ebb371f88ac00000000'
+        btcAddr = 0xc9dea40941945cf8a8955c4ee3be117d195df0f4
+        self.checkRelay(txStr, txIndex, btcAddr, hh)
 
 
     def bulkStore10From300K(self):
@@ -104,7 +103,9 @@ class TestBtcBulkStoreHeaders(object):
 
         return [header, hashes]
 
-
+    # this is consistent with the assumption that the ether address is the output
+    # following the 'btcAddr' and that the outputs are standard scripts
+    # (OP_DUP OP_HASH160 <address> OP_EQUALVERIFY OP_CHECKSIG)
     def checkRelay(self, txStr, txIndex, btcAddr, hh):
         [header, hashes] = hh
         [txHash, siblings, path, txBlockHash] = makeMerkleProof(header, hashes, txIndex)
@@ -117,7 +118,9 @@ class TestBtcBulkStoreHeaders(object):
         assert BTC_ETH.testingonlySetBtcAddr(btcAddr) == 1
         res = self.c.relayTx(txStr, txHash, len(siblings), siblings, path, txBlockHash, BTC_ETH.address, profiling=True)
 
-        ethAddrBin = txStr[-52:-12].decode('hex')
+        indexOfBtcAddr = txStr.find(format(btcAddr, 'x'))
+        ethAddrBin = txStr[indexOfBtcAddr+68:indexOfBtcAddr+108].decode('hex') # assumes ether addr is after btcAddr
+        print('@@@@ ethAddrHex: '+ethAddrBin.encode('hex'))
         userEthBalance = self.s.block.get_balance(ethAddrBin)
         print('USER ETH BALANCE: '+str(userEthBalance))
         expEtherBalance = 13
