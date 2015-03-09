@@ -38,7 +38,7 @@ def processTransfer(txStr:str):
     if msg.sender != self.trustedBtcRelay:
         return(0)
 
-    outputData = self.getFirst2Outputs(txStr, outitems=4)
+    outputData = self.getFirst2Outputs(txStr, outitems=3)
 
     if outputData == 0:
         return(0)
