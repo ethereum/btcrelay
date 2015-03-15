@@ -1,3 +1,10 @@
+Requirements
+------------
+* [Serpent](https://github.com/ethereum/serpent)
+* [pyethereum](https://github.com/ethereum/pyethereum) Python Ethereum (needed to run tests)
+
+
+#### Running tests
 
 Exclude slow tests:
 ```
