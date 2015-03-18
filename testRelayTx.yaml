@@ -1,4 +1,11 @@
-# if this fails, make sure that BtcEth has enough ether in its balance
+# if this fails, make sure that BtcEth has enough ether in its balance.
+# This also can only run once, since multiple claims
+# using the same tx is disallowed.  So will need to edit the btcAddr in
+# btcEthDeploy.yaml, deploy it 100% (make sure there are no Go tx failed),
+# then use the new BtcEth address below and
+# update the data: since updating the data is a hassle, use the frontend
+# when testing other instances of BtcEth: make sure that you check the
+# balance of the NEW ether address.
 
 -
   set:
@@ -6,6 +13,7 @@
     BtcEth: "0xd4811f03ec2f97b1f00e8dfd6f3370f99b65118c"
 
 # exp result: fd4ed114ef85d350d6d40ed3f6dc23743f8f99c4 gets ether
+# Can only be used once, so for other times, use the frontend
 -
   transact:
     RelayTx:

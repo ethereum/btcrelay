@@ -1,4 +1,5 @@
 # this deploys the btc-eth exchange contract alone
+# Make sure when using Go, there are no tx failed (issue 519)
 
 # TODO you must update the address of BtcRelay to whatever your BtcRelay was mined to
 - set:
@@ -11,6 +12,7 @@
       gas: 3000000
       endowment: 64
       wait: True
+
 -
   transact:
     SetTrustedBtcRelay:
@@ -22,7 +24,12 @@
         - $BtcRelay
       wait: True
 
-# for testing only.  The btc addr is set to tx1 of block 300K
+# for testing only: the btc addr is set to tx1 of block 300K
+# Do NOT commit changes to the data below.
+#
+# When testing with the frontend, all the should be needed is to
+# change (temporarily) the btcAddr data below, use the same btcAddr in the frontend,
+# and update the frontend's gExchangeContractAddr
 -
   transact:
     SetBtcAddr:
