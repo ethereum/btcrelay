@@ -1,15 +1,3 @@
-# Stored variables:
-#
-# Last known block
-# 10: version
-# 11: hashPrevBlock
-# 12: hashMerkleRoot
-# 13: time
-# 14: bits
-# 15: nonce
-# 16: blockHash / heaviestBlock
-# 17: score
-#
 
 inset('btcChain.py')
 
@@ -28,12 +16,8 @@ data txClaim[2^256]
 extern btc_eth: [processTransfer:s:i]
 
 
-#self.block.blockHeader[]
-
 def shared():
     DIFFICULTY_1 = 0x00000000FFFF0000000000000000000000000000000000000000000000000000
-    TWO_POW_24 = 2 ^ 24
-    ZEROS = 0x0000000000000000000000000000000000000000000000000000000000000000
     LEFT_HASH = 1
     RIGHT_HASH = 2
 
@@ -170,7 +154,7 @@ macro shiftRightBytes($n, $x):
 
 # http://www.righto.com/2014/02/bitcoin-mining-hard-way-algorithms.html#ref3
 macro targetFromBits($bits):
-    $exp = div($bits, TWO_POW_24)
+    $exp = div($bits, 0x1000000)  # 2^24
     $mant = $bits & 0xffffff
     $target = $mant * shiftLeftBytes(1, ($exp - 3))
     $target

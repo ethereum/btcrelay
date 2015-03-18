@@ -22,7 +22,7 @@
         - $BtcRelay
       wait: True
 
-# for testing only
+# for testing only.  The btc addr is set to tx1 of block 300K
 -
   transact:
     SetBtcAddr:

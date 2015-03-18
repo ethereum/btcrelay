@@ -345,7 +345,7 @@ class TestTxVerify(object):
 
     @slow
     def testRandomTxMerkleCheck(self):
-        self.randomTxMerkleCheck(100000)
+        self.randomTxMerkleCheck(347066)
 
 
     @pytest.mark.skipif(True,reason='skip')
