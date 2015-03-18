@@ -1,3 +1,29 @@
+
+Mar 18
+For using Go
+may need to "rm -rf ~/.ethereum" and run "ethereum new account"
+
+Note: password at the end of the unlock param
+ethereum -mine=true -rpc=true -rpcport=8080 -unlock=32ad27653e4df5d81728d16d8e251fee34f53d30:password
+
+Make sure to specify the same coinbase when using pyepm, eg:
+pyepm -a 32ad27653e4df5d81728d16d8e251fee34f53d30 <yaml>
+
+Watch out for tx failed (go-ethereum issue 519)
+
+sendTransaction() callback isn't firing
+
+
+For testing relayTx:
+- each tx can only claim ether once
+- need to change btcAddr and deploy the btcEth contract
+- update the frontend's btcAddr and gExchangeContractAddr
+- in browser frontend, make sure to use the correct txHash
+
+
+
+==
+
 Notes during development (initially to keep track of address of contracts)
 
 02f653a05dc68a7df9a74c8eb9a50a15e98bed6e is sampleContractA.py
