@@ -14,6 +14,13 @@ Watch out for tx failed (go-ethereum issue 519)
 sendTransaction() callback isn't firing
 
 
+Deployment order:
+testBulkDeploy.yaml
+postDeployTests.yaml
+btcEthDeploy.yaml
+testRelayTx.yaml (can only run once since tx can only claim ether once)
+
+
 For testing relayTx:
 - each tx can only claim ether once
 - need to change btcAddr and deploy the btcEth contract
