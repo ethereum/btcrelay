@@ -4,8 +4,9 @@
 # btcEthDeploy.yaml, deploy it 100% (make sure there are no Go tx failed),
 # then use the new BtcEth address below and
 # update the data: since updating the data is a hassle, use the frontend
-# when testing other instances of BtcEth: make sure that you check the
-# balance of the NEW ether address.
+# when testing other instances of BtcEth: make sure that you use
+# the NEW txhash in the frontend, and when check the ether balance, you
+# use the NEW ether address.
 
 -
   set:
