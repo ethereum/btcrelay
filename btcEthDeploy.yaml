@@ -2,13 +2,13 @@
 
 # TODO you must update the address of BtcRelay to whatever your BtcRelay was mined to
 - set:
-    BtcRelay: "0xa7ac34d64107553f64181ce53b4917da6bede380"
+    BtcRelay: "0x795d0f1bf901a7b5a2a1d6c0007afcec52c0cfa9"
 
 -
   deploy:
     BtcEth:
       contract: btc-eth.py
-      gas: 100000
+      gas: 3000000
       endowment: 64
       wait: True
 -
