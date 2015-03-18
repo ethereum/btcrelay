@@ -13,6 +13,9 @@ Watch out for tx failed (go-ethereum issue 519)
 
 sendTransaction() callback isn't firing
 
+May have to use my branch fork/fixWaitTx of pyepm, for deploys to
+work (and not get stuck in Waiting for Transaction...)
+
 
 Deployment order:
 testBulkDeploy.yaml
