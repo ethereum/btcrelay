@@ -38,10 +38,20 @@ Run "eth -j -m on" and note the address, eg
 Address:
 f52a423ecad0b6c70b5adf69edbe51b9db11c7c9
 
-Then deploy using:
+Then deploy with pyepm master branch commit 13e13e7 with string fixed
+  if d != d.decode('string_escape'):
+    definition[key][name][option][i] = d.decode('string_escape')
+  else:
+    print('@@@@ NOP')
+
 pyepm -a f52a423ecad0b6c70b5adf69edbe51b9db11c7c9 <yaml>
 
 Deploy is smoother (nothing like go-ethereum issue 519)
+
+For using Alethzero
+Ensure coinbase has more than 30,000 finney
+(Use Special->Reserved Debug 1 for faster mining)
+
 
 
 ==
