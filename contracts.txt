@@ -17,7 +17,7 @@ May have to use my branch fork/fixWaitTx of pyepm, for deploys to
 work (and not get stuck in Waiting for Transaction...)
 
 
-Deployment order:
+Deployment order (don't forget to set the address for the yamls after testBulkDeploy):
 testBulkDeploy.yaml
 postDeployTests.yaml
 btcEthDeploy.yaml
@@ -30,6 +30,18 @@ For testing relayTx:
 - update the frontend's btcAddr and gExchangeContractAddr
 - in browser frontend, make sure to use the correct txHash
 
+
+Mar 19
+For using C++ eth CLI (497dff0)
+Run "eth -j -m on" and note the address, eg
+--- [ 14:02:10 | main ] Spawning eth
+Address:
+f52a423ecad0b6c70b5adf69edbe51b9db11c7c9
+
+Then deploy using:
+pyepm -a f52a423ecad0b6c70b5adf69edbe51b9db11c7c9 <yaml>
+
+Deploy is smoother (nothing like go-ethereum issue 519)
 
 
 ==
