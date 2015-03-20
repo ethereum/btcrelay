@@ -49,10 +49,19 @@ class TestBtcEth(object):
         res = self.c.processTransfer(self.TX_STR, self.TX_HASH, sender=tester.k1)
         assert res == 0
 
-    def testRelayCanOnlyClaimOnce(self):
+    def testRelayCanClaimWithDifferentTx(self):
         assert self.c.setTrustedBtcRelay(tester.a1) == 1
         res = self.c.processTransfer(self.TX_STR, self.TX_HASH, sender=tester.k1)
-        assert res == 1  # since msg.sender is trustedBtcRelay
+        assert res == 1
+
+        anotherHash = self.TX_HASH + 1
+        res = self.c.processTransfer(self.TX_STR, anotherHash, sender=tester.k1)
+        assert res == 1
+
+    def testRelayCanNotReclaim(self):
+        assert self.c.setTrustedBtcRelay(tester.a1) == 1
+        res = self.c.processTransfer(self.TX_STR, self.TX_HASH, sender=tester.k1)
+        assert res == 1
 
         # trustedBtcRelay should NOT be able to reclaim
         res = self.c.processTransfer(self.TX_STR, self.TX_HASH, sender=tester.k1)
