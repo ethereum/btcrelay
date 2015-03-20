@@ -49,6 +49,10 @@ class TestBtcEth(object):
         res = self.c.processTransfer(txStr)
         assert res == 1  # since msg.sender is owner
 
+        # test that owner can reclaim
+        res = self.c.processTransfer(txStr)
+        assert res == 1  # since msg.sender is owner
+
         # change owner and should no longer be able to processTransfer
         nextOwner = 'deadc901078781c232a2a521c2af7980f8385ee9'
         assert self.c.setOwner(nextOwner) == 1
