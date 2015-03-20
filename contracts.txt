@@ -1,4 +1,6 @@
 
+ethereum.js fix128 branch was used, commit 2618bae
+
 Mar 18
 For using Go
 may need to "rm -rf ~/.ethereum" and run "ethereum new account"
@@ -29,6 +31,10 @@ For testing relayTx:
 - need to change btcAddr and deploy the btcEth contract
 - update the frontend's btcAddr and gExchangeContractAddr
 - in browser frontend, make sure to use the correct txHash
+
+For building Mist:
+➜  go-ethereum git:(develop) ✗ source /opt/qt54/bin/qt54-env.sh
+➜  go-ethereum git:(develop) ✗ godep go build -v ./cmd/mist
 
 
 Mar 19
