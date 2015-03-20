@@ -115,9 +115,9 @@ class TestBtcBulkStoreHeaders(object):
 
         # verify the proof and then hand the proof to the btc-eth contract, which will check
         # the tx outputs and send ether as appropriate
-        BTC_ETH = self.s.abi_contract('btc-eth.py', endowment=2000*self.ETHER)
-        assert BTC_ETH.setTrustedBtcRelay(self.c.address) == 1
-        assert BTC_ETH.testingonlySetBtcAddr(btcAddr) == 1
+        BTC_ETH = self.s.abi_contract('btc-eth.py', endowment=2000*self.ETHER, sender=tester.k1)
+        assert BTC_ETH.setTrustedBtcRelay(self.c.address, sender=tester.k1) == 1
+        assert BTC_ETH.testingonlySetBtcAddr(btcAddr, sender=tester.k1) == 1
         res = self.c.relayTx(txStr, txHash, len(siblings), siblings, path, txBlockHash, BTC_ETH.address, profiling=True)
 
         indexOfBtcAddr = txStr.find(format(btcAddr, 'x'))
@@ -129,7 +129,9 @@ class TestBtcBulkStoreHeaders(object):
         assert userEthBalance == expEtherBalance
         assert res['output'] == 1  # ether was transferred
 
-        # re-claim disallowed
+        # exchange contract is owned by tester.k1, while
+        # relay contract is owned by tester.k0
+        # Thus k0 is NOT allowed to reclaim ether using the same tx
         assert 0 == self.c.relayTx(txStr, txHash, len(siblings), siblings, path, txBlockHash, BTC_ETH.address)
 
 
