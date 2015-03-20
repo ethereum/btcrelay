@@ -36,7 +36,8 @@ def setTrustedBtcRelay(trustedRelayContract):
 # to protect against the possibility of send() returning non-zero error codes
 def processTransfer(txStr:str):
     if msg.sender != self.trustedBtcRelay:
-        return(0)
+        if msg.sender != self.owner:  # allow owner to keep reclaiming (helpful in testing)
+            return(0)
 
     outputData = self.getFirst2Outputs(txStr, outitems=3)
 
