@@ -11,8 +11,8 @@ window.btcToEthAbi = [{
     "outputs": [{ "name": "out", "type": "int256[]" }]
 },
 {
-    "name": "processTransfer(string)",
+    "name": "processTransfer(string,int256)",
     "type": "function",
-    "inputs": [{ "name": "txStr", "type": "bytes" }],
+    "inputs": [{ "name": "txStr", "type": "bytes" }, { "name": "txHash", "type": "int256" }],
     "outputs": [{ "name": "out", "type": "int256" }]
 }]
