@@ -109,9 +109,16 @@ class TestTxVerify(object):
                 assert res == 0
 
     # tx[1] of block 100K sends enough BTC, so ether should be transferred
+    # only the owner of the exchange contract is allowed to claim ether multiple times with same tx
+    #
+    # relay contract is owned by tester.k0
+    # exchange contract is owned by tester.k1
+    # tester.k2 is only allowed to claim ether once
+    # since tester.k1 is the owner, it is allowed to claim multiple times
+    # tester.k0 is not allowed to reclaim since it is not the owner of the exchange contract
     def testRelayTx(self):
-        BTC_ETH = self.s.abi_contract('btc-eth.py', endowment=2000*self.ETHER)
-        BTC_ETH.setTrustedBtcRelay(self.c.address)
+        BTC_ETH = self.s.abi_contract('btc-eth.py', endowment=2000*self.ETHER, sender=tester.k1)
+        assert BTC_ETH.setTrustedBtcRelay(self.c.address, sender=tester.k1) == 1
 
         #
         # store block headers
@@ -135,6 +142,7 @@ class TestTxVerify(object):
 
         # tx[1] fff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4
         txStr = '0100000001032e38e9c0a84c6046d687d10556dcacc41d275ec55fc00779ac88fdf357a187000000008c493046022100c352d3dd993a981beba4a63ad15c209275ca9470abfcd57da93b58e4eb5dce82022100840792bc1f456062819f15d33ee7055cf7b5ee1af1ebcc6028d9cdb1c3af7748014104f46db5e9d61a9dc27b8d64ad23e7383a4e6ca164593c2527c038c0857eb67ee8e825dca65046b82c9331586c82e0fd1f633f25f87c161bc6f8a630121df2b3d3ffffffff0200e32321000000001976a914c398efa9c392ba6013c5e04ee729755ef7f58b3288ac000fe208010000001976a914948c765a6914d43f2a7ac177da2c2f6b52de3d7c88ac00000000'
+        btcAddr = 0xc398efa9c392ba6013c5e04ee729755ef7f58b32
 
         # block 100000
         header = {'nonce': 274148111, 'hash': u'000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506', 'timestamp': 1293623863, 'merkle_root': u'f3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766', 'version': 1, 'prevhash': u'000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250', 'bits': 453281356}
@@ -143,18 +151,30 @@ class TestTxVerify(object):
 
         # verify the proof and then hand the proof to the btc-eth contract, which will check
         # the tx outputs and send ether as appropriate
-        res = self.c.relayTx(txStr, txHash, len(siblings), siblings, path, txBlockHash, BTC_ETH.address, profiling=True)
+        res = self.c.relayTx(txStr, txHash, len(siblings), siblings, path, txBlockHash, BTC_ETH.address, sender=tester.k2, profiling=True)
         print('GAS: '+str(res['gas']))
 
-        ethAddrBin = txStr[-52:-12].decode('hex')
+        indexOfBtcAddr = txStr.find(format(btcAddr, 'x'))
+        ethAddrBin = txStr[indexOfBtcAddr+68:indexOfBtcAddr+108].decode('hex') # assumes ether addr is after btcAddr
         userEthBalance = self.s.block.get_balance(ethAddrBin)
         print('USER ETH BALANCE: '+str(userEthBalance))
         expEtherBalance = 13
         assert userEthBalance == expEtherBalance
         assert res['output'] == 1  # ether was transferred
 
-        assert 0 == self.c.relayTx(txStr, txHash, len(siblings), siblings, path, txBlockHash, BTC_ETH.address)  # re-claim disallowed
+        # re-claim disallowed when sender is not owner
+        assert 0 == self.c.relayTx(txStr, txHash, len(siblings), siblings, path, txBlockHash, BTC_ETH.address, sender=tester.k2)
 
+        # re-claim disallowed for owner of relay contract
+        assert 0 == self.c.relayTx(txStr, txHash, len(siblings), siblings, path, txBlockHash, BTC_ETH.address, sender=tester.k0)
+
+        # owner of exchange contract should be able to reclaim
+        assert 1 == self.c.relayTx(txStr, txHash, len(siblings), siblings, path, txBlockHash, BTC_ETH.address, sender=tester.k1)
+        assert expEtherBalance*2 == self.s.block.get_balance(ethAddrBin)
+
+        # owner of exchange contract should be able to reclaim
+        assert 1 == self.c.relayTx(txStr, txHash, len(siblings), siblings, path, txBlockHash, BTC_ETH.address, sender=tester.k1)
+        assert expEtherBalance*3 == self.s.block.get_balance(ethAddrBin)
 
 
     # tx[2] of block 100K does NOT send enough BTC, so ether should NOT be transferred
