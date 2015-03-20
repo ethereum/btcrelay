@@ -4,6 +4,9 @@ data owner
 data trustedBtcRelay
 data btcAcceptAddr
 
+# records txs that have successfully claimed Ether (thus not allowed to re-claim)
+data txClaim[2^256]
+
 
 # TODO remove when not testing, since owners should create another copy of this
 # contract if they want to get paid to a different btcAddr
@@ -34,8 +37,12 @@ def setTrustedBtcRelay(trustedRelayContract):
 # returns the value of send() if they are met (typically send() returns 1 on success)
 # callers should probably explicitly check for a return value of 1 for success,
 # to protect against the possibility of send() returning non-zero error codes
-def processTransfer(txStr:str):
+def processTransfer(txStr:str, txHash):
     if msg.sender != self.trustedBtcRelay:
+        if msg.sender != self.owner:  # allow owner to keep reclaiming (helpful in testing)
+            return(0)
+
+    if self.txClaim[txHash] != 0:
         if msg.sender != self.owner:  # allow owner to keep reclaiming (helpful in testing)
             return(0)
 
@@ -63,6 +70,7 @@ def processTransfer(txStr:str):
 
     if (btcWasSentToMe && numSatoshi >= BTC_NEED):
         res = send(ethAddr, ETH_TO_SEND)
+        self.txClaim[txHash] = res
         log(msg.sender, data=[res])
         return(res)
 
