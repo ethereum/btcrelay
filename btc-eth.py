@@ -38,12 +38,14 @@ def setTrustedBtcRelay(trustedRelayContract):
 # callers should probably explicitly check for a return value of 1 for success,
 # to protect against the possibility of send() returning non-zero error codes
 def processTransfer(txStr:str, txHash):
+    # apart from trustedBtcRelay, only the owner may claim ether
     if msg.sender != self.trustedBtcRelay:
-        if msg.sender != self.owner:  # allow owner to keep reclaiming (helpful in testing)
+        if tx.origin != self.owner:  # tx.origin is superset of msg.sender, so no need for checking msg.sender==self.owner
             return(0)
 
+    # only the owner may reclaim; trustedBtcRelay and others can NOT reclaim
     if self.txClaim[txHash] != 0:
-        if msg.sender != self.owner:  # allow owner to keep reclaiming (helpful in testing)
+        if tx.origin != self.owner:  # allow owner to keep reclaiming (helpful in testing)
             return(0)
 
     outputData = self.getFirst2Outputs(txStr, outitems=3)
