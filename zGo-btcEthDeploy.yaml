@@ -1,0 +1,65 @@
+# this deploys the btc-eth exchange contract alone
+# Make sure when using Go, there are no tx failed (issue 519)
+
+# TODO you must update the address of BtcRelay to whatever your BtcRelay was mined to
+- set:
+    BtcRelay: "0x4aad4698e53c09eb81a974402632f12930bfc0d0"
+
+-
+  deploy:
+    BtcEth:
+      contract: btc-eth.py
+      gas: 3000000
+      endowment: 1600
+      wait: True
+
+-
+  transact:
+    SetTrustedBtcRelay:
+      gas: 100000
+      to: $BtcEth
+      fun_name: setTrustedBtcRelay
+      sig: i
+      data:
+        - $BtcRelay
+      wait: True
+
+-
+  transact:
+    SetTrustedBtcRelay:
+      gas: 100000
+      to: $BtcEth
+      fun_name: setTrustedBtcRelay
+      sig: i
+      data:
+        - $BtcRelay
+      wait: True
+
+# for testing only: the btc addr is set to tx1 of block 300K
+# Do NOT commit changes to the data below.
+#
+# When testing with the frontend, all the should be needed is to
+# change (temporarily) the btcAddr data below, use the same btcAddr in the frontend,
+# and update the frontend's gExchangeContractAddr
+-
+  transact:
+    SetBtcAddr:
+      gas: 100000
+      to: $BtcEth
+      fun_name: testingonlySetBtcAddr
+      sig: i
+      data:
+        - 0x61cf5af7bb84348df3fd695672e53c7d5b3f3db9
+      wait: True
+
+
+-
+  transact:
+    SetBtcAddr:
+      gas: 100000
+      to: $BtcEth
+      fun_name: testingonlySetBtcAddr
+      sig: i
+      data:
+        - 0x61cf5af7bb84348df3fd695672e53c7d5b3f3db9
+      wait: True
