@@ -10,7 +10,7 @@ data highScore
 # note: _ancestor[9]
 data block[2^256](_height, _score, _ancestor[9], _blockHeader[])
 
-extern btc_eth: [processTransfer:si:i]
+extern btc_eth: [processTransaction:si:i]
 
 
 def shared():
@@ -183,11 +183,11 @@ def verifyTx(tx, proofLen, hash:arr, path:arr, txBlockHash):
 #TODO txHash can eventually be computed (dbl sha256 then flip32Bytes) when
 # txStr becomes txBinary
 #
-# returns the value of processTransfer().  callers should explicitly
+# returns the value of processTransaction().  callers should explicitly
 # check for a value of 1, since other non-zero values could be error codes
 def relayTx(txStr:str, txHash, proofLen, hash:arr, path:arr, txBlockHash, contract):
     if self.verifyTx(txHash, proofLen, hash, path, txBlockHash) == 1:
-        res = contract.processTransfer(txStr, txHash)
+        res = contract.processTransaction(txStr, txHash)
         return(res)
     return(0)
 

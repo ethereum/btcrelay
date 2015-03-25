@@ -35,7 +35,7 @@ class TestBtcEth(object):
         assert self.c.setTrustedBtcRelay(self.s.block.coinbase) == 1
         assert self.c.testingonlySetBtcAddr(0xc398efa9c392ba6013c5e04ee729755ef7f58b32) == 1
 
-        res = self.c.processTransfer(self.TX_STR, self.TX_HASH, profiling=True)
+        res = self.c.processTransaction(self.TX_STR, self.TX_HASH, profiling=True)
         print('GAS: '+str(res['gas']))
         assert(res['output'] == 1)
 
@@ -46,44 +46,44 @@ class TestBtcEth(object):
         assert userEthBalance == expEtherBalance
 
     def testUntrustedCaller(self):
-        res = self.c.processTransfer(self.TX_STR, self.TX_HASH, sender=tester.k1)
+        res = self.c.processTransaction(self.TX_STR, self.TX_HASH, sender=tester.k1)
         assert res == 0
 
     def testRelayCanClaimWithDifferentTx(self):
         assert self.c.setTrustedBtcRelay(tester.a1) == 1
-        res = self.c.processTransfer(self.TX_STR, self.TX_HASH, sender=tester.k1)
+        res = self.c.processTransaction(self.TX_STR, self.TX_HASH, sender=tester.k1)
         assert res == 1
 
         anotherHash = self.TX_HASH + 1
-        res = self.c.processTransfer(self.TX_STR, anotherHash, sender=tester.k1)
+        res = self.c.processTransaction(self.TX_STR, anotherHash, sender=tester.k1)
         assert res == 1
 
     def testRelayCanNotReclaim(self):
         assert self.c.setTrustedBtcRelay(tester.a1) == 1
-        res = self.c.processTransfer(self.TX_STR, self.TX_HASH, sender=tester.k1)
+        res = self.c.processTransaction(self.TX_STR, self.TX_HASH, sender=tester.k1)
         assert res == 1
 
         # trustedBtcRelay should NOT be able to reclaim
-        res = self.c.processTransfer(self.TX_STR, self.TX_HASH, sender=tester.k1)
+        res = self.c.processTransaction(self.TX_STR, self.TX_HASH, sender=tester.k1)
         assert res == 0
 
         # owner (k0) can reclaim again
-        res = self.c.processTransfer(self.TX_STR, self.TX_HASH, sender=tester.k0)
+        res = self.c.processTransaction(self.TX_STR, self.TX_HASH, sender=tester.k0)
         assert res == 1
 
-        # change owner and should no longer be able to processTransfer
+        # change owner and should no longer be able to processTransaction
         nextOwner = 'deadc901078781c232a2a521c2af7980f8385ee9'
         assert self.c.setOwner(nextOwner) == 1
-        res = self.c.processTransfer(self.TX_STR, self.TX_HASH)
+        res = self.c.processTransaction(self.TX_STR, self.TX_HASH)
         assert res == 0
 
 
     def testOwnerCanReclaim(self):
-        res = self.c.processTransfer(self.TX_STR, self.TX_HASH)
+        res = self.c.processTransaction(self.TX_STR, self.TX_HASH)
         assert res == 1  # since msg.sender is owner
 
         # test that owner can reclaim
-        res = self.c.processTransfer(self.TX_STR, self.TX_HASH)
+        res = self.c.processTransaction(self.TX_STR, self.TX_HASH)
         assert res == 1  # since msg.sender is owner
 
     def testOnlyOwnerPrivs(self):
