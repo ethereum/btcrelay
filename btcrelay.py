@@ -92,19 +92,6 @@ def fastHashBlock(blockHeaderBinary:str):
     res = flip32Bytes(hash2)
     return(res)
 
-# eg 0x6162 will be 0x6261
-macro flipBytes($n, $numByte):
-    $b = byte(31, $n)
-
-    $i = 30
-    $j = 1
-    while $j < $numByte:
-        $b = ($b * 256) | byte($i, $n)
-        $i -= 1
-        $j += 1
-
-    $b
-
 macro flip32Bytes($a):
     $o = 0
     with $i = 0:
@@ -113,49 +100,11 @@ macro flip32Bytes($a):
             $i += 1
     $o
 
-# fast string flip bytes
-# macro vflip($x, $L):
-#     with $o = alloc($L + 32):
-#         with $lim = $o + 2:
-#             $o += $L
-#             with $y = $x - 31:
-#                 while $o > $lim:
-#                     mstore($o, mload($y))
-#                     $o -= 1
-#                     $y += 1
-#                     mstore($o, mload($y))
-#                     $o -= 1
-#                     $y += 1
-#                     mstore($o, mload($y))
-#                     $o -= 1
-#                     $y += 1
-#                 if $o > $lim - 2:
-#                     mstore($o, mload($y))
-#                     $o -= 1
-#                     $y += 1
-#                 if $o > $lim - 2:
-#                     mstore($o, mload($y))
-#                     $o -= 1
-#                     $y += 1
-#         mstore($o, $L)
-#         $o + 32
-
-
-
-# shift left bytes
-macro shiftLeftBytes($n, $x):
-    $n * 256^$x  # set the base to 2 (instead of 256) if we want a macro to shift only bits
-
-# shift right
-macro shiftRightBytes($n, $x):
-    div($n, 256^$x)
-
-
 # http://www.righto.com/2014/02/bitcoin-mining-hard-way-algorithms.html#ref3
 macro targetFromBits($bits):
     $exp = div($bits, 0x1000000)  # 2^24
     $mant = $bits & 0xffffff
-    $target = $mant * shiftLeftBytes(1, ($exp - 3))
+    $target = $mant * 256^($exp - 3)
     $target
 
 
@@ -256,6 +205,6 @@ macro concatHash($tx1, $tx2):
     $right = flip32Bytes($tx2)
 
     $hash1 = sha256([$left, $right], chars=64)
-    $hash2 = sha256([$hash1], items=1)
+    $hash2 = sha256($hash1)
 
     flip32Bytes($hash2)
