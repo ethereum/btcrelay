@@ -27,12 +27,12 @@ def init():
 
 #TODO for testing only
 def testingonlySetHeaviest(blockHash):
-    if msg.sender == self.owner:
+    if tx.origin == self.owner:
         self.heaviestBlock = blockHash
 
 #TODO for testing only
 def testingonlySetGenesis(blockHash):
-    if msg.sender == self.owner:
+    if tx.origin == self.owner:
         self.heaviestBlock = blockHash
         self.block[blockHash]._height = 1
         self.block[blockHash]._score = 1  # genesis has score of 1, since score0 means block does NOT exist. see check in storeBlockHeader()

@@ -11,7 +11,7 @@ data txClaim[2^256]
 # TODO remove when not testing, since owners should create another copy of this
 # contract if they want to get paid to a different btcAddr
 def testingonlySetBtcAddr(btcAddr):
-    if msg.sender == self.owner:
+    if tx.origin == self.owner:
         self.btcAcceptAddr = btcAddr
         return(1)
     return(0)
@@ -27,7 +27,7 @@ def init():
 
 # trustedRelayContract is the address of the trusted btcrelay contract
 def setTrustedBtcRelay(trustedRelayContract):
-    if msg.sender == self.owner:
+    if tx.origin == self.owner:
         self.trustedBtcRelay = trustedRelayContract
         return(1)
     return(0)
