@@ -59,13 +59,14 @@ def storeBlockHeader(blockHeaderBinary:str):
 
     blockHash = self.fastHashBlock(blockHeaderBinary)
 
+    if self.block[blockHash]._score != 0:  # block already exists
+        return(0)
+
     # log(333)
     # log(blockHash)
 
     bits = getBytesLE(blockHeaderBinary, 4, 72)
     target = targetFromBits(bits)
-
-    difficulty = DIFFICULTY_1 / target # https://en.bitcoin.it/wiki/Difficulty
 
     # TODO other validation of block?  eg timestamp
 
@@ -74,6 +75,7 @@ def storeBlockHeader(blockHeaderBinary:str):
 
         save(self.block[blockHash]._blockHeader[0], blockHeaderBinary, chars=80) # or 160?
 
+        difficulty = DIFFICULTY_1 / target # https://en.bitcoin.it/wiki/Difficulty
         self.block[blockHash]._score = self.block[hashPrevBlock]._score + difficulty
 
         if gt(self.block[blockHash]._score, self.highScore):  #TODO use sgt?

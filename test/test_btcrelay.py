@@ -266,8 +266,7 @@ class TestBtcRelay(object):
         blockHeaderStr = ("0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c")
         bhBinary = blockHeaderStr.decode('hex')
         res = self.c.storeBlockHeader(bhBinary, profiling=True)
-        print('GAS: '+str(res['gas']))
-        assert res['output'] == 2 # since there's testingonlySetGenesis
+        return res
 
     def storeBlock1(self):
         # block 1
@@ -279,8 +278,23 @@ class TestBtcRelay(object):
 
 
     def testStoringHeaders(self):
-        self.storeGenesisBlock()
+        res = self.storeGenesisBlock()
+        print('GAS: '+str(res['gas']))
+        assert res['output'] == 2 # since there's testingonlySetGenesis
+
         self.storeBlock1()
+
+    def testStoreExistingHeader(self):
+        res = self.storeGenesisBlock()
+        g1 = res['gas']
+        print('GAS: %s' % g1)
+        assert res['output'] == 2 # since there's testingonlySetGenesis
+
+        res = self.storeGenesisBlock()
+        g2 = res['gas']
+        print('GAS: %s' % g2)
+        assert res['output'] == 0 # no block stored
+        assert g2 < 0.36 * g1  # 0.36 is as of aae201c
 
 
 
