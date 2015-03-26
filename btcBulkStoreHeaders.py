@@ -1,6 +1,9 @@
 inset('btcrelay.py')
 
 def bulkStoreHeader(headersBinary:str, count):
+    if tx.origin != self.owner:
+        return(0)
+
     HEADER_SIZE = 80
 
     offset = 0
