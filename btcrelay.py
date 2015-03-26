@@ -15,11 +15,6 @@ data owner
 extern btc_eth: [processTransaction:si:i]
 
 
-def shared():
-    DIFFICULTY_1 = 0x00000000FFFF0000000000000000000000000000000000000000000000000000
-    LEFT_HASH = 1
-    RIGHT_HASH = 2
-
 def init():
     self.owner = msg.sender
     # TODO what to init
@@ -67,7 +62,7 @@ def storeBlockHeader(blockHeaderBinary:str):
 
         save(self.block[blockHash]._blockHeader[0], blockHeaderBinary, chars=80) # or 160?
 
-        difficulty = DIFFICULTY_1 / target # https://en.bitcoin.it/wiki/Difficulty
+        difficulty = 0x00000000FFFF0000000000000000000000000000000000000000000000000000 / target # https://en.bitcoin.it/wiki/Difficulty
         self.block[blockHash]._score = self.block[hashPrevBlock]._score + difficulty
 
         if gt(self.block[blockHash]._score, self.highScore):  #TODO use sgt?
@@ -137,6 +132,9 @@ def relayTx(txStr:str, txHash, proofLen, hash:arr, path:arr, txBlockHash, contra
 
 # return -1 if there's an error (eg called with incorrect params)
 def computeMerkle(tx, proofLen, hash:arr, path:arr):
+    LEFT_HASH = 1
+    RIGHT_HASH = 2
+
     resultHash = tx
     i = 0
     while i < proofLen:
