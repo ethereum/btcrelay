@@ -299,19 +299,20 @@ class TestBtcRelay(object):
 
 
     def testStoreBlockHeader(self):
-        self.c.init333k()
-        version = 2
-        hashPrevBlock = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
-        hashMerkleRoot = 0xf6f8bc90fd41f626705ac8de7efe7ac723ba02f6d00eab29c6fe36a757779ddd
-        time = 1417792088
-        bits = 0x181b7b74
-        nonce = 796195988
-        blockNumber = 333001
+        block300K = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
+        self.c.testingonlySetGenesis(block300K)
 
+        # version = 2
+        # hashPrevBlock = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
+        # hashMerkleRoot = 0xf6f8bc90fd41f626705ac8de7efe7ac723ba02f6d00eab29c6fe36a757779ddd
+        # time = 1417792088
+        # bits = 0x181b7b74
+        # nonce = 796195988
+        # blockNumber = 333001
         blockHeaderStr = '0200000059c786bb379b65487f373279354f8ccc91ffcea2200c36080000000000000000dd9d7757a736fec629ab0ed0f602ba23c77afe7edec85a7026f641fd90bcf8f658ca8154747b1b1894fc742f'
         bhBinary = blockHeaderStr.decode('hex')
 
-        assert blockNumber == self.c.storeBlockHeader(bhBinary)
+        assert 2 == self.c.storeBlockHeader(bhBinary)
 
     def testFastHashBlock(self):
         blockHeaderStr = "0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710"

@@ -10,6 +10,8 @@ data highScore
 # note: _ancestor[9]
 data block[2^256](_height, _score, _ancestor[9], _blockHeader[])
 
+data owner
+
 extern btc_eth: [processTransaction:si:i]
 
 
@@ -19,36 +21,26 @@ def shared():
     RIGHT_HASH = 2
 
 def init():
+    self.owner = msg.sender
     # TODO what to init
-    self.init333k()
-
-
-def init333k():
-    self.heaviestBlock = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
-    trustedBlock = self.heaviestBlock
-    self.block[trustedBlock]._height = 333000
-    self.block[trustedBlock]._score = 1
-    ancLen = self.numAncestorDepths
-    i = 0
-    while i < ancLen:
-        self.block[trustedBlock]._ancestor[i] = trustedBlock
-        i += 1
 
 
 #TODO for testing only
 def testingonlySetHeaviest(blockHash):
-    self.heaviestBlock = blockHash
+    if msg.sender == self.owner:
+        self.heaviestBlock = blockHash
 
 #TODO for testing only
 def testingonlySetGenesis(blockHash):
-    self.heaviestBlock = blockHash
-    self.block[blockHash]._height = 1
-    self.block[blockHash]._score = 1  # genesis has score of 1, since score0 means block does NOT exist. see check in storeBlockHeader()
-    ancLen = self.numAncestorDepths
-    i = 0
-    while i < ancLen:
-        self.block[blockHash]._ancestor[i] = blockHash
-        i += 1
+    if msg.sender == self.owner:
+        self.heaviestBlock = blockHash
+        self.block[blockHash]._height = 1
+        self.block[blockHash]._score = 1  # genesis has score of 1, since score0 means block does NOT exist. see check in storeBlockHeader()
+        ancLen = self.numAncestorDepths
+        i = 0
+        while i < ancLen:
+            self.block[blockHash]._ancestor[i] = blockHash
+            i += 1
 
 
 def storeBlockHeader(blockHeaderBinary:str):
