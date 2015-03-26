@@ -16,12 +16,6 @@ self.ancestor_depths[8] = 65536
 
 # save the ancestors for a block, as well as updating the height
 def saveAncestors(blockHash, hashPrevBlock):
-    # self.block[blockHash]._prevBlock = hashPrevBlock
-
-    # this is a test; separate genesis function could help later
-    # if blockHash == 1:
-    #     self.block[blockHash]._height = 1
-    # else:
     self.block[blockHash]._height = self.block[hashPrevBlock]._height + 1
 
     self.block[blockHash]._ancestor[0] = hashPrevBlock
@@ -34,16 +28,6 @@ def saveAncestors(blockHash, hashPrevBlock):
         else:
             self.block[blockHash]._ancestor[i] = self.block[hashPrevBlock]._ancestor[i]
         i += 1
-
-# in chain:
-#     b = head
-#     anc_index = ancestor_count - 1
-#     while b.number > block.number:
-#         while b.number - block.number < ancestor_depths[anc_index] and anc_index > 0:
-#             anc_index -= 1
-#         b = b.ancestors[anc_index]
-#     return b == block
-
 
 def inMainChain(txBlockHash):
     txBlockHeight = self.block[txBlockHash]._height
@@ -61,15 +45,16 @@ def inMainChain(txBlockHash):
     return(blockHash == txBlockHash)
 
 
-def logAnc(blockHash):
-    log(11111)
-    log(blockHash)
-    i = 0
-    while i < self.numAncestorDepths:
-        anc = self.block[blockHash]._ancestor[i]
-        log(anc)
-        i += 1
-    log(22222)
+# log ancestors
+# def logAnc(blockHash):
+#     log(11111)
+#     log(blockHash)
+#     i = 0
+#     while i < self.numAncestorDepths:
+#         anc = self.block[blockHash]._ancestor[i]
+#         log(anc)
+#         i += 1
+#     log(22222)
 
 
 def getBlockchainHead():
