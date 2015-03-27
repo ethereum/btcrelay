@@ -31,9 +31,7 @@ def main():
                 break
 
     chainHead = getBlockchainHead()
-    hexHead = hex(chainHead)[2:-1] # snip off the 0x and trailing L
-    hexHead = '0'*(64-len(hexHead)) + hexHead
-    print('@@@ hexHead: %s' % hexHead)
+    print('@@@ hexHead: %s' % blockHashHex(chainHead))
 
 
 def storeHeaders(bhBinary, chunkSize):
@@ -70,7 +68,9 @@ def storeHeaders(bhBinary, chunkSize):
     expHead = int(bin_dbl_sha256(bhBinary[-80:])[::-1].encode('hex'), 16)
 
     if chainHead != expHead:
-        print('@@@@@ chainHead={0} expHead={1}').format(chainHead, expHead)
+        print('@@@@@ chainHead: {0} expHead: {1}').format(
+            blockHashHex(chainHead), blockHashHex(expHead))
+        sys.exit(1)
 
 
 def getBlockchainHead():
@@ -85,6 +85,11 @@ def getBlockchainHead():
     chainHead = callResult[0] if len(callResult) else callResult
     return chainHead
 
+
+def blockHashHex(number):
+    hexHead = hex(number)[2:-1] # snip off the 0x and trailing L
+    hexHead = '0'*(64-len(hexHead)) + hexHead
+    return hexHead
 
 if __name__ == '__main__':
     main()
