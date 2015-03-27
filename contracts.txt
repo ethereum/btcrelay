@@ -1,4 +1,13 @@
 
+Mar 27
+AZ
+poc9 block 33807 has the ether transfer (13 wei)
+block 33793 and nearby has the set up
+contracts are at:
+gRelayAddr = '0xb8e116ddf8b8d451e04c5733a96a853b9036e883';  // CPP
+gExchangeContractAddr = '0x4d02a1132621fc80cd36eceeefaa11133ab842cd'; // CPP
+
+
 ethereum.js fix128 branch was used, commit 2618bae
 
 Mar 18
