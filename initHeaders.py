@@ -9,7 +9,7 @@ instance = api.Api(api_config)
 
 instance.address = "0x9dc2299a76b68b7ffa9e3ba0fd8cd7646d21d409"
 
-to = "0x824c0d8b9b08a769d237a236af27572ff08ba145"
+to = "0xe809ebc3b9cfe38d766c801dbefca109238ed03f"
 
 
 def main():
@@ -27,11 +27,16 @@ def main():
                 strings = ""
                 nTime += 1
 
-            if nTime == 3:
+
+            if nTime % 5 == 0:
+                chainHead = getBlockchainHead()
+                print('@@@ hexHead: %s' % blockHashHex(chainHead))
+
+            if nTime == 100:
                 break
 
     chainHead = getBlockchainHead()
-    print('@@@ hexHead: %s' % blockHashHex(chainHead))
+    print('@@@ DONE hexHead: %s' % blockHashHex(chainHead))
 
 
 def storeHeaders(bhBinary, chunkSize):
@@ -68,9 +73,9 @@ def storeHeaders(bhBinary, chunkSize):
     expHead = int(bin_dbl_sha256(bhBinary[-80:])[::-1].encode('hex'), 16)
 
     if chainHead != expHead:
-        print('@@@@@ chainHead: {0} expHead: {1}').format(
+        print('@@@@@ MISMATCH chainHead: {0} expHead: {1}').format(
             blockHashHex(chainHead), blockHashHex(expHead))
-        sys.exit(1)
+        # sys.exit(1)
 
 
 def getBlockchainHead():
