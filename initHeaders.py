@@ -1,5 +1,6 @@
 
 from pyepm import api, config
+from bitcoin import *
 # ### #!/usr/bin/env python
 
 def main():
@@ -20,26 +21,31 @@ def main():
     value = 0
 
 
-    wait = True
-    from_count = instance.transaction_count(defaultBlock='pending')
-    if wait:
-        from_block = instance.last_block()
-
-    instance.transact(to, fun_name=fun_name, sig=sig, data=data, gas=gas, gas_price=gas_price, value=value)
-
-    instance.wait_for_transaction(
-        from_count=from_count,
-        verbose=(True if api_config.get('misc', 'verbosity') > 1 else False))
-
-    if wait:
-        instance.wait_for_next_block(from_block=from_block, verbose=(True if api_config.get('misc', 'verbosity') > 1 else False))
+    # wait = True
+    # from_count = instance.transaction_count(defaultBlock='pending')
+    # if wait:
+    #     from_block = instance.last_block()
+    #
+    # instance.transact(to, fun_name=fun_name, sig=sig, data=data, gas=gas, gas_price=gas_price, value=value)
+    #
+    # instance.wait_for_transaction(
+    #     from_count=from_count,
+    #     verbose=(True if api_config.get('misc', 'verbosity') > 1 else False))
+    #
+    # if wait:
+    #     instance.wait_for_next_block(from_block=from_block, verbose=(True if api_config.get('misc', 'verbosity') > 1 else False))
 
 
     fun_name = 'getBlockchainHead'
     sig = ''
     data = []
-    res = instance.call(to, fun_name=fun_name, sig=sig, data=data, gas=gas, gas_price=gas_price)
-    print("res: %s" % res)
+    callResult = instance.call(to, fun_name=fun_name, sig=sig, data=data, gas=gas, gas_price=gas_price)
+    chainHead = callResult[0] if len(callResult) else callResult
+    expHead = int(bin_dbl_sha256(bhBinary[-80:])[::-1].encode('hex'), 16)
+
+    if chainHead != expHead:
+        print('chainHead={0} expHead={1}').format(chainHead, expHead)
+
 
 
 if __name__ == '__main__':
