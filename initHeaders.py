@@ -17,7 +17,27 @@ def main():
 
     gas = 3000000
     gas_price = 100
+    value = 0
 
+
+    wait = True
+    from_count = instance.transaction_count(defaultBlock='pending')
+    if wait:
+        from_block = instance.last_block()
+
+    instance.transact(to, fun_name=fun_name, sig=sig, data=data, gas=gas, gas_price=gas_price, value=value)
+
+    instance.wait_for_transaction(
+        from_count=from_count,
+        verbose=(True if api_config.get('misc', 'verbosity') > 1 else False))
+
+    if wait:
+        instance.wait_for_next_block(from_block=from_block, verbose=(True if api_config.get('misc', 'verbosity') > 1 else False))
+
+
+    fun_name = 'getBlockchainHead'
+    sig = ''
+    data = []
     res = instance.call(to, fun_name=fun_name, sig=sig, data=data, gas=gas, gas_price=gas_price)
     print("res: %s" % res)
 
