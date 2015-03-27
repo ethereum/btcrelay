@@ -30,6 +30,11 @@ def main():
             if nTime == 3:
                 break
 
+    chainHead = getBlockchainHead()
+    hexHead = hex(chainHead)[2:-1] # snip off the 0x and trailing L
+    hexHead = '0'*(64-len(hexHead)) + hexHead
+    print('@@@ hexHead: %s' % hexHead)
+
 
 def storeHeaders(bhBinary, chunkSize):
     fun_name = "bulkStoreHeader"
@@ -61,19 +66,24 @@ def storeHeaders(bhBinary, chunkSize):
         instance.wait_for_next_block(from_block=from_block, verbose=(True if api_config.get('misc', 'verbosity') > 1 else False))
 
 
-    #
-    # check that chain head is correct
-    #
-    fun_name = 'getBlockchainHead'
-    sig = ''
-    data = []
-    callResult = instance.call(to, fun_name=fun_name, sig=sig, data=data, gas=gas, gas_price=gas_price)
-    chainHead = callResult[0] if len(callResult) else callResult
+    chainHead = getBlockchainHead()
     expHead = int(bin_dbl_sha256(bhBinary[-80:])[::-1].encode('hex'), 16)
 
     if chainHead != expHead:
         print('@@@@@ chainHead={0} expHead={1}').format(chainHead, expHead)
 
+
+def getBlockchainHead():
+    gas = 3000000
+    gas_price = 1
+
+    fun_name = 'getBlockchainHead'
+    sig = ''
+    data = []
+
+    callResult = instance.call(to, fun_name=fun_name, sig=sig, data=data, gas=gas, gas_price=gas_price)
+    chainHead = callResult[0] if len(callResult) else callResult
+    return chainHead
 
 
 if __name__ == '__main__':
