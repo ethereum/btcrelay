@@ -81,12 +81,12 @@ class TestBtcBulkStoreHeaders(object):
         i = 1
         with open("test/headers/500from300k.txt") as f:
             for header in f:
-                strings += header[:-1]
+                strings += header[:-1]  # [:-1] to remove trailing \n
                 if i==numBlock:
                     break
                 i += 1
 
-        headerBins = strings.decode('hex')  # [:-1] to remove trailing \n
+        headerBins = strings.decode('hex')
         # print('@@@ hb: ', headerBins)
 
         res = self.c.bulkStoreHeader(headerBins, numBlock, profiling=True)
