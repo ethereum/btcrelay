@@ -1,7 +1,7 @@
+from datetime import datetime, date
 
 from pyepm import api, config
 from bitcoin import *
-# ### #!/usr/bin/env python
 
 
 api_config = config.read_config()
@@ -17,6 +17,9 @@ def main():
     strings = ""
     i = 0
     nTime = 0
+
+    startTime = datetime.now().time()
+
     with open("test/headers/500from300k.txt") as f:
         for header in f:
             i += 1
@@ -27,16 +30,21 @@ def main():
                 strings = ""
                 nTime += 1
 
-
-            if nTime % 5 == 0:
-                chainHead = getBlockchainHead()
-                print('@@@ hexHead: %s' % blockHashHex(chainHead))
+                if nTime % 5 == 0:
+                    chainHead = getBlockchainHead()
+                    print('@@@ hexHead: %s' % blockHashHex(chainHead))
 
             if nTime == 100:
                 break
 
     chainHead = getBlockchainHead()
     print('@@@ DONE hexHead: %s' % blockHashHex(chainHead))
+
+
+    endTime = datetime.now().time()
+    duration = datetime.combine(date.today(), endTime) - datetime.combine(date.today(), startTime)
+    print("********** duration: "+str(duration)+" ********** start:"+str(startTime)+" end:"+str(endTime))
+
 
 
 def storeHeaders(bhBinary, chunkSize):
