@@ -15,16 +15,17 @@ to = "0x824c0d8b9b08a769d237a236af27572ff08ba145"
 def main():
     chunkSize = 5
     strings = ""
-    i = 1
+    i = 0
     nTime = 0
     with open("test/headers/500from300k.txt") as f:
         for header in f:
+            i += 1
             strings += header[:-1]  # [:-1] to remove trailing \n
+
             if i % chunkSize == 0:
                 storeHeaders(strings.decode('hex'), chunkSize)
+                strings = ""
                 nTime += 1
-
-            i += 1
 
             if nTime == 3:
                 break
