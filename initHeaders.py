@@ -9,18 +9,22 @@ instance = api.Api(api_config)
 
 instance.address = "0x9dc2299a76b68b7ffa9e3ba0fd8cd7646d21d409"
 
-to = "0xe809ebc3b9cfe38d766c801dbefca109238ed03f"
+to = "0x0fd51f042310093b9d8df57d37a42c3523537a99"
 
 
 def main():
     chunkSize = 5
+    numHeader = 80000
+    nIter = numHeader / chunkSize
+
     strings = ""
     i = 0
     nTime = 0
 
     startTime = datetime.now().time()
+    print("@@@ START: %s" % startTime)
 
-    with open("test/headers/500from300k.txt") as f:
+    with open("test/headers/bh80k.txt") as f:
         for header in f:
             i += 1
             strings += header[:-1]  # [:-1] to remove trailing \n
@@ -34,7 +38,7 @@ def main():
                     chainHead = getBlockchainHead()
                     print('@@@ hexHead: %s' % blockHashHex(chainHead))
 
-            if nTime == 100:
+            if nTime == nIter:
                 break
 
     chainHead = getBlockchainHead()
