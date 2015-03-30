@@ -7,14 +7,19 @@ from bitcoin import *
 api_config = config.read_config()
 instance = api.Api(api_config)
 
-instance.address = "0x9dc2299a76b68b7ffa9e3ba0fd8cd7646d21d409"
+# CPP
+instance.address = "0x29d33c02a200937995e632c4597b4dca8e503978"
+to = "0xdee9aae0c31b6254e7635d63f585e5946f4cb713"
 
-to = "0x0fd51f042310093b9d8df57d37a42c3523537a99"
+# GO
+# instance.address = "0x9dc2299a76b68b7ffa9e3ba0fd8cd7646d21d409"
+# to = "0x0fd51f042310093b9d8df57d37a42c3523537a99"
+
 
 
 def main():
     chunkSize = 5
-    numHeader = 80000
+    numHeader = 10 #80000
     nIter = numHeader / chunkSize
 
     strings = ""
@@ -59,7 +64,7 @@ def storeHeaders(bhBinary, chunkSize):
     data = [bhBinary, chunkSize]
 
     gas = 3000000
-    gas_price = 1
+    gas_price = 10000000000000
     value = 0
 
 
