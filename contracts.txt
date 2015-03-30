@@ -1,3 +1,6 @@
+Mar 30
+./eth/eth -j -m on -v 9 -s <secret> -a 29d33c02a200937995e632c4597b4dca8e503978 -r poc-9.ethdev.com:30303
+block 35525 is around the start of storing some headers
 
 Mar 27
 AZ
