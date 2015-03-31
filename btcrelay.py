@@ -49,9 +49,6 @@ def storeBlockHeader(blockHeaderBinary:str):
     if self.block[blockHash]._score != 0:  # block already exists
         return(0)
 
-    # log(333)
-    # log(blockHash)
-
     bits = getBytesLE(blockHeaderBinary, 4, 72)
     target = targetFromBits(bits)
 
@@ -105,6 +102,13 @@ macro getMerkleRoot($blockHash):
     getBytesLE($tmpStr, 32, 36)
 
 
+# returns 1 if tx is in the block given by 'txBlockHash' and the block is
+# in Bitcoin's main chain (ie not a fork)
+#
+# the merkle proof is represented by 'proofLen', 'hash', 'path', where:
+# - 'hash' are the merkle siblings of tx
+# - 'path' corresponds to whether the sibling is to the LEFT (1) or RIGHT (2)
+# - 'proofLen' is the number of merkle siblings
 def verifyTx(tx, proofLen, hash:arr, path:arr, txBlockHash):
     if self.within6Confirms(txBlockHash) || !self.inMainChain(txBlockHash):
         return(0)
@@ -118,11 +122,11 @@ def verifyTx(tx, proofLen, hash:arr, path:arr, txBlockHash):
         return(0)
 
 
-#TODO txHash can eventually be computed (dbl sha256 then flip32Bytes) when
-# txStr becomes txBinary
-#
 # returns the value of processTransaction().  callers should explicitly
 # check for a value of 1, since other non-zero values could be error codes
+#
+# TODO txHash can eventually be computed (dbl sha256 then flip32Bytes) when
+# txStr becomes txBinary
 def relayTx(txStr:str, txHash, proofLen, hash:arr, path:arr, txBlockHash, contract):
     if self.verifyTx(txHash, proofLen, hash, path, txBlockHash) == 1:
         res = contract.processTransaction(txStr, txHash)
@@ -131,6 +135,8 @@ def relayTx(txStr:str, txHash, proofLen, hash:arr, path:arr, txBlockHash, contra
 
 
 # return -1 if there's an error (eg called with incorrect params)
+# [see documentation for verifyTx() for the merkle proof
+# format of 'proofLen', 'hash', 'path' ]
 def computeMerkle(tx, proofLen, hash:arr, path:arr):
     LEFT_HASH = 1
     RIGHT_HASH = 2
@@ -156,6 +162,10 @@ def computeMerkle(tx, proofLen, hash:arr, path:arr):
     return(resultHash)
 
 
+# returns 1 if the 'txBlockHash' is within 6 blocks of self.heaviestBlock
+# otherwise returns 0.
+# note: return value of 0 does not mean 'txBlockHash' has more than 6
+# confirmations; a non-existent 'txBlockHash' will lead to a return value of 0
 def within6Confirms(txBlockHash):
     blockHash = self.heaviestBlock
 
