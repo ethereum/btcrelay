@@ -38,6 +38,7 @@ def testingonlySetGenesis(blockHash):
             i += 1
 
 
+# store a block header that must be provided in binary format 'blockHeaderBinary'
 def storeBlockHeader(blockHeaderBinary:str):
     hashPrevBlock = getBytesLE(blockHeaderBinary, 32, 4)
 
@@ -75,31 +76,6 @@ def fastHashBlock(blockHeaderBinary:str):
     hash2 = sha256(hash1)
     res = flip32Bytes(hash2)
     return(res)
-
-macro flip32Bytes($a):
-    $o = 0
-    with $i = 0:
-        while $i < 32:
-            mstore8(ref($o) + $i, byte(31 - $i, $a))
-            $i += 1
-    $o
-
-# http://www.righto.com/2014/02/bitcoin-mining-hard-way-algorithms.html#ref3
-macro targetFromBits($bits):
-    $exp = div($bits, 0x1000000)  # 2^24
-    $mant = $bits & 0xffffff
-    $target = $mant * 256^($exp - 3)
-    $target
-
-
-macro getPrevBlock($blockHash):
-    $tmpStr = load(self.block[$blockHash]._blockHeader[0], chars=80)
-    getBytesLE($tmpStr, 32, 4)
-
-
-macro getMerkleRoot($blockHash):
-    $tmpStr = load(self.block[$blockHash]._blockHeader[0], chars=80)
-    getBytesLE($tmpStr, 32, 36)
 
 
 # returns 1 if tx is in the block given by 'txBlockHash' and the block is
@@ -181,7 +157,23 @@ def within6Confirms(txBlockHash):
     return(0)
 
 
-# little endian get $size bytes from $inStr with $offset
+#
+# macros
+#
+
+# get the parent of '$blockHash'
+macro getPrevBlock($blockHash):
+    $tmpStr = load(self.block[$blockHash]._blockHeader[0], chars=80)
+    getBytesLE($tmpStr, 32, 4)
+
+
+# get the merkle root of '$blockHash'
+macro getMerkleRoot($blockHash):
+    $tmpStr = load(self.block[$blockHash]._blockHeader[0], chars=80)
+    getBytesLE($tmpStr, 32, 36)
+
+
+# get $size bytes from $inStr with $offset and return in little endian
 macro getBytesLE($inStr, $size, $offset):
     $endIndex = $offset + $size
 
@@ -200,6 +192,16 @@ macro getBytesLE($inStr, $size, $offset):
     $result
 
 
+# compute the target from the 'bits' field of a Bitcoin blockheader
+# based on http://www.righto.com/2014/02/bitcoin-mining-hard-way-algorithms.html#ref3
+macro targetFromBits($bits):
+    $exp = div($bits, 0x1000000)  # 2^24
+    $mant = $bits & 0xffffff
+    $target = $mant * 256^($exp - 3)
+    $target
+
+
+# returns the Bitcoin merkle parent of transaction hashes $tx1 and $tx2
 macro concatHash($tx1, $tx2):
     $left = flip32Bytes($tx1)
     $right = flip32Bytes($tx2)
@@ -208,3 +210,13 @@ macro concatHash($tx1, $tx2):
     $hash2 = sha256($hash1)
 
     flip32Bytes($hash2)
+
+
+# reverse 32 bytes given by '$a'
+macro flip32Bytes($a):
+    $o = 0
+    with $i = 0:
+        while $i < 32:
+            mstore8(ref($o) + $i, byte(31 - $i, $a))
+            $i += 1
+    $o
