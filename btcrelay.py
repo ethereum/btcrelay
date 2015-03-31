@@ -1,6 +1,12 @@
 
 inset('btcChain.py')
 
+
+# btcrelay can relay a transaction to any contract that has a function
+# name 'processTransaction' with signature si:i
+extern relayDestination: [processTransaction:si:i]
+
+
 # block with the highest score (the end of the blockchain)
 data heaviestBlock
 
@@ -10,9 +16,8 @@ data highScore
 # note: _ancestor[9]
 data block[2^256](_height, _score, _ancestor[9], _blockHeader[])
 
+# owner/adminstrator of this contract
 data owner
-
-extern btc_eth: [processTransaction:si:i]
 
 
 def init():
@@ -172,6 +177,14 @@ def fastHashBlock(blockHeaderBinary:str):
     hash2 = sha256(hash1)
     res = flip32Bytes(hash2)
     return(res)
+
+
+# an owner may transfer/change ownership
+def setOwner(newOwner):
+    if msg.sender == self.owner:
+        self.owner = newOwner
+        return(1)
+    return(0)
 
 
 #
