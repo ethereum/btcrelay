@@ -60,7 +60,7 @@
   transact:
     TestingOnlySetGenesis:
       to: $BtcRelay
-      fun_name: testingonlySetGenesis
+      fun_name: setPreGenesis
       sig: i
       data:
         - 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250

@@ -19,7 +19,7 @@ to = "0xdee9aae0c31b6254e7635d63f585e5946f4cb713"
 
 def main():
     chunkSize = 5
-    numHeader = 10 #80000
+    numHeader = 80000
     nIter = numHeader / chunkSize
 
     strings = ""

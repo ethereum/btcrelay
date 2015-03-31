@@ -75,7 +75,7 @@ class TestBtcBulkStoreHeaders(object):
         numBlock = 10
 
         block300kPrev = 0x000000000000000067ecc744b5ae34eebbde14d21ca4db51652e4d67e155f07e
-        self.c.testingonlySetGenesis(block300kPrev)
+        self.c.setPreGenesis(block300kPrev)
 
         strings = ""
         i = 1
@@ -145,7 +145,7 @@ class TestBtcBulkStoreHeaders(object):
         numBlock = 60
 
         block300kPrev = 0x000000000000000067ecc744b5ae34eebbde14d21ca4db51652e4d67e155f07e
-        self.c.testingonlySetGenesis(block300kPrev)
+        self.c.setPreGenesis(block300kPrev)
 
         nLoop = 2
         j = 0
@@ -183,7 +183,7 @@ class TestBtcBulkStoreHeaders(object):
         numBlock = 60
 
         block300kPrev = 0x000000000000000067ecc744b5ae34eebbde14d21ca4db51652e4d67e155f07e
-        self.c.testingonlySetGenesis(block300kPrev)
+        self.c.setPreGenesis(block300kPrev)
 
         strings = ""
         i = 1
@@ -214,7 +214,7 @@ class TestBtcBulkStoreHeaders(object):
     @pytest.mark.veryslow
     def testBulkStore7(self):
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
-        self.c.testingonlySetGenesis(block100kPrev)
+        self.c.setPreGenesis(block100kPrev)
 
         headers = [
             "0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710",

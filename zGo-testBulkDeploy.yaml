@@ -14,7 +14,7 @@
       gas: 3000000
       gas_price: 10000000000000
       to: $RelayWithBulkStore
-      fun_name: testingonlySetGenesis
+      fun_name: setPreGenesis
       sig: i
       data:
         - 0x000000000000000067ecc744b5ae34eebbde14d21ca4db51652e4d67e155f07e
@@ -28,7 +28,7 @@
       gas: 3000000
       gas_price: 10000000000000
       to: $RelayWithBulkStore
-      fun_name: testingonlySetGenesis
+      fun_name: setPreGenesis
       sig: i
       data:
         - 0x000000000000000067ecc744b5ae34eebbde14d21ca4db51652e4d67e155f07e

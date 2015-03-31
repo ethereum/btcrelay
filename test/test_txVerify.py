@@ -43,7 +43,7 @@ class TestTxVerify(object):
         numBlock = 80
 
         block300kPrev = 0x000000000000000067ecc744b5ae34eebbde14d21ca4db51652e4d67e155f07e
-        self.c.testingonlySetGenesis(block300kPrev)
+        self.c.setPreGenesis(block300kPrev)
 
         i = 1
         with open("test/headers/100from300k.txt") as f:
@@ -72,7 +72,7 @@ class TestTxVerify(object):
         numBlock = 400
 
         block300kPrev = 0x000000000000000067ecc744b5ae34eebbde14d21ca4db51652e4d67e155f07e
-        self.c.testingonlySetGenesis(block300kPrev)
+        self.c.setPreGenesis(block300kPrev)
 
         i = 1
         with open("test/headers/500from300k.txt") as f:
@@ -124,7 +124,7 @@ class TestTxVerify(object):
         # store block headers
         #
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
-        self.c.testingonlySetGenesis(block100kPrev)
+        self.c.setPreGenesis(block100kPrev)
 
         headers = [
             "0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710",
@@ -189,7 +189,7 @@ class TestTxVerify(object):
 
 
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
-        self.c.testingonlySetGenesis(block100kPrev)
+        self.c.setPreGenesis(block100kPrev)
 
         headers = [
             "0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710",
@@ -239,7 +239,7 @@ class TestTxVerify(object):
         # store block headers
         #
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
-        self.c.testingonlySetGenesis(block100kPrev)
+        self.c.setPreGenesis(block100kPrev)
 
         headers = [
             "0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710",
@@ -269,7 +269,7 @@ class TestTxVerify(object):
 
     def test7BlockValidTx(self):
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
-        self.c.testingonlySetGenesis(block100kPrev)
+        self.c.setPreGenesis(block100kPrev)
 
         headers = [
             "0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710",
@@ -299,7 +299,7 @@ class TestTxVerify(object):
         numBlock = 30
 
         block300kPrev = 0x000000000000000067ecc744b5ae34eebbde14d21ca4db51652e4d67e155f07e
-        self.c.testingonlySetGenesis(block300kPrev)
+        self.c.setPreGenesis(block300kPrev)
 
         i = 1
         with open("test/headers/100from300k.txt") as f:
@@ -331,7 +331,7 @@ class TestTxVerify(object):
     @slow
     def testRandomTxVerify(self):
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
-        self.c.testingonlySetGenesis(block100kPrev)
+        self.c.setPreGenesis(block100kPrev)
 
         headers = [
             "0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710",
@@ -400,7 +400,7 @@ class TestTxVerify(object):
     #
 
     # this fails and shows that the correct way to set things up is:
-    # 1. call testingonlySetGenesis() first
+    # 1. call setPreGenesis() first
     # 2. call storeRawBlockHeader() of blocks AFTER the genesis
     # the correct way is done in testRandomTxVerify()
     @pytest.mark.skipif(True,reason='skip')
@@ -420,7 +420,7 @@ class TestTxVerify(object):
             assert res == i+1
 
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
-        self.c.testingonlySetGenesis(block100kPrev) # even changing this to testingonlySetHeaviest doesn't make test pass
+        self.c.setPreGenesis(block100kPrev) # even changing this to testingonlySetHeaviest doesn't make test pass
 
         res = self.randomTxVerify(100000)
         assert res == 1
@@ -430,7 +430,7 @@ class TestTxVerify(object):
     @pytest.mark.skipif(True,reason='skip')
     def testIndexOutOfRange(self):
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
-        self.c.testingonlySetGenesis(block100kPrev)
+        self.c.setPreGenesis(block100kPrev)
 
         headers = [
             "0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710",

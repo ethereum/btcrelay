@@ -17,20 +17,34 @@ extern btc_eth: [processTransaction:si:i]
 
 def init():
     self.owner = msg.sender
-    # TODO what to init
+    # TODO anything else to init ?
 
 
-#TODO for testing only
+#TODO for testing only; should be omitted for production
 def testingonlySetHeaviest(blockHash):
     if tx.origin == self.owner:
         self.heaviestBlock = blockHash
 
-#TODO for testing only
-def testingonlySetGenesis(blockHash):
+
+# this has 2 purposes:
+# 1) this should only be called once and is to "store" the block
+# with hash zeroes, so that storing the real genesis
+# block can be done using storeBlockHeader() instead of a special case
+#
+# 2) allows testing of storing arbitrary headers and verifying/relaying
+# transactions, say from block 300K, instead
+# of Satoshi's genesis block which have 0 transactions until much later on
+#
+# a consequence of this function is that the score of blocks is
+# 1 more than its calculated difficulty
+def setPreGenesis(blockHash):
     if tx.origin == self.owner:
         self.heaviestBlock = blockHash
         self.block[blockHash]._height = 1
-        self.block[blockHash]._score = 1  # genesis has score of 1, since score0 means block does NOT exist. see check in storeBlockHeader()
+
+        # set score to 1, since score0 means block does NOT exist. see check in storeBlockHeader()
+        # this means that the score of blocks is 1 more than its calculated difficulty
+        self.block[blockHash]._score = 1
         ancLen = self.numAncestorDepths
         i = 0
         while i < ancLen:
@@ -38,7 +52,8 @@ def testingonlySetGenesis(blockHash):
             i += 1
 
 
-# store a block header that must be provided in binary format 'blockHeaderBinary'
+# store a Bitcoin block header that must be provided in
+# binary format 'blockHeaderBinary'
 def storeBlockHeader(blockHeaderBinary:str):
     hashPrevBlock = getBytesLE(blockHeaderBinary, 32, 4)
 
@@ -70,12 +85,6 @@ def storeBlockHeader(blockHeaderBinary:str):
         return(self.block[blockHash]._height)
 
     return(0)
-
-def fastHashBlock(blockHeaderBinary:str):
-    hash1 = sha256(blockHeaderBinary:str)
-    hash2 = sha256(hash1)
-    res = flip32Bytes(hash2)
-    return(res)
 
 
 # returns 1 if tx is in the block given by 'txBlockHash' and the block is
@@ -157,6 +166,14 @@ def within6Confirms(txBlockHash):
     return(0)
 
 
+# Bitcoin-way of hashing a block header
+def fastHashBlock(blockHeaderBinary:str):
+    hash1 = sha256(blockHeaderBinary:str)
+    hash2 = sha256(hash1)
+    res = flip32Bytes(hash2)
+    return(res)
+
+
 #
 # macros
 #
@@ -192,7 +209,7 @@ macro getBytesLE($inStr, $size, $offset):
     $result
 
 
-# compute the target from the 'bits' field of a Bitcoin blockheader
+# Bitcoin-way of computing the target from the 'bits' field of a blockheader
 # based on http://www.righto.com/2014/02/bitcoin-mining-hard-way-algorithms.html#ref3
 macro targetFromBits($bits):
     $exp = div($bits, 0x1000000)  # 2^24
@@ -201,7 +218,7 @@ macro targetFromBits($bits):
     $target
 
 
-# returns the Bitcoin merkle parent of transaction hashes $tx1 and $tx2
+# Bitcoin-way merkle parent of transaction hashes $tx1 and $tx2
 macro concatHash($tx1, $tx2):
     $left = flip32Bytes($tx1)
     $right = flip32Bytes($tx2)
