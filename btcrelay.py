@@ -52,7 +52,7 @@ def testingonlySetHeaviest(blockHash):
 def setPreGenesis(blockHash):
     if tx.origin == self.owner:
         self.heaviestBlock = blockHash
-        self.block[blockHash]._height = 1
+        self.block[blockHash]._height = 0
 
         # set score to 1, since score0 means block does NOT exist. see check in storeBlockHeader()
         # this means that the score of blocks is 1 more than its calculated difficulty

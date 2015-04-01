@@ -54,7 +54,7 @@ class TestBtcRelay(object):
         for i in range(7):
             res = self.c.storeBlockHeader(blockHeaderBinary[i])
             # print('@@@@ real chain score: ' + str(self.c.getChainScore()))
-            assert res == i+2
+            assert res == i+1
 
         realScore = self.c.getChainScore()
 
@@ -123,7 +123,7 @@ class TestBtcRelay(object):
             hashPrevBlock = self.c.fastHashBlock(blockHeaderBinary)
 
             # print('@@@@ fake chain score: ' + str(self.c.getChainScore()))
-            assert res == i+2
+            assert res == i+1
 
         assert self.c.getChainScore() == realScore
         assert b6 == self.c.getBlockchainHead()
@@ -184,7 +184,7 @@ class TestBtcRelay(object):
             blockHeaderBinary = self.getBlockHeaderBinary(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
             res = self.c.storeBlockHeader(blockHeaderBinary)
             hashPrevBlock = self.c.fastHashBlock(blockHeaderBinary)
-            assert res == i+2
+            assert res == i+1
 
         # testingonlySetHeaviest is needed because the difficulty from
         # EASIEST_DIFFICULTY_TARGET becomes 0 and so the score does not
@@ -212,7 +212,7 @@ class TestBtcRelay(object):
         block100k = 0x000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506
         for i in range(7):
             res = self.c.storeBlockHeader(blockHeaderBinary[i])
-            assert res == i+2
+            assert res == i+1
 
             # firstEasyBlock should no longer verify since it is no longer on the main chain
             res = self.c.verifyTx(tx, proofLen, hash, path, firstEasyBlock)
@@ -241,7 +241,7 @@ class TestBtcRelay(object):
         blockHeaderBinary = map(lambda x: x.decode('hex'), headers)
         for i in range(7):
             res = self.c.storeBlockHeader(blockHeaderBinary[i])
-            assert res == i+2
+            assert res == i+1
 
 
         blockHash = [
@@ -274,13 +274,13 @@ class TestBtcRelay(object):
         bhBinary = blockHeaderStr.decode('hex')
         res = self.c.storeBlockHeader(bhBinary, profiling=True)
         print('GAS: '+str(res['gas']))
-        assert res['output'] == 3  # since there's 2 "genesis" blocks
+        assert res['output'] == 2  # genesis block is at height 1
 
 
     def testStoringHeaders(self):
         res = self.storeGenesisBlock()
         print('GAS: '+str(res['gas']))
-        assert res['output'] == 2 # since there's setPreGenesis
+        assert res['output'] == 1
 
         self.storeBlock1()
 
@@ -294,7 +294,7 @@ class TestBtcRelay(object):
         res = self.storeGenesisBlock()
         g1 = res['gas']
         print('GAS: %s' % g1)
-        assert res['output'] == 2 # since there's setPreGenesis
+        assert res['output'] == 1
 
         res = self.storeGenesisBlock()
         g2 = res['gas']
@@ -318,7 +318,7 @@ class TestBtcRelay(object):
         blockHeaderStr = '0200000059c786bb379b65487f373279354f8ccc91ffcea2200c36080000000000000000dd9d7757a736fec629ab0ed0f602ba23c77afe7edec85a7026f641fd90bcf8f658ca8154747b1b1894fc742f'
         bhBinary = blockHeaderStr.decode('hex')
 
-        assert 2 == self.c.storeBlockHeader(bhBinary)
+        assert self.c.storeBlockHeader(bhBinary) == 1
 
     def testFastHashBlock(self):
         blockHeaderStr = "0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710"

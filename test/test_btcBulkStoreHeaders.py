@@ -92,7 +92,7 @@ class TestBtcBulkStoreHeaders(object):
         res = self.c.bulkStoreHeader(headerBins, numBlock, profiling=True)
 
         print('GAS: '+str(res['gas']))
-        assert res['output'] == 1 + numBlock
+        assert res['output'] == numBlock
 
         # block 300000
         # data from pybitcointools, eg
@@ -162,7 +162,7 @@ class TestBtcBulkStoreHeaders(object):
                 headerBins = strings.decode('hex')  # [:-1] to remove trailing \n
                 res = self.c.bulkStoreHeader(headerBins, numBlock)
 
-                assert res == 1 + (numBlock * (j+1))
+                assert res == (numBlock * (j+1))
 
                 j += 1
 
@@ -173,7 +173,7 @@ class TestBtcBulkStoreHeaders(object):
         # duration = datetime.combine(date.today(), endTime) - datetime.combine(date.today(), startTime)
         # print("********** duration: "+str(duration)+" ********** start:"+str(startTime)+" end:"+str(endTime))
 
-        # assert res == 1 + numBlock
+        # assert res == numBlock
 
 
     # skip since OOG
@@ -205,7 +205,7 @@ class TestBtcBulkStoreHeaders(object):
         print("********** duration: "+str(duration)+" ********** start:"+str(startTime)+" end:"+str(endTime))
 
         print('GAS: '+str(res['gas']))
-        assert res['output'] == 1 + numBlock
+        assert res['output'] == numBlock
 
 
 
@@ -234,4 +234,4 @@ class TestBtcBulkStoreHeaders(object):
         headerBins = strings.decode('hex')
 
         res = self.c.bulkStoreHeader(headerBins, count)
-        assert res == 1 + count
+        assert res == count
