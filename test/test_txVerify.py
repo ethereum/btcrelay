@@ -52,10 +52,10 @@ class TestTxVerify(object):
 
             for header in f:
                 res = self.c.storeBlockHeader(header[:-1].decode('hex'))  # [:-1] to remove trailing \n
+                assert res == i
                 if i==numBlock:
                     break
                 i += 1
-                assert res == i
 
             endTime = datetime.now().time()
 
