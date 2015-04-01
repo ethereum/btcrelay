@@ -11,8 +11,8 @@ extern relayDestination: [processTransaction:si:i]
 #
 # a Bitcoin block (header) is stored as:
 # - _blockHeader 80 bytes
-# - _height
-# - _score
+# - _height is 1 more than the typical Bitcoin term height/blocknumber [see setPreGensesis()]
+# - _score is 1 more than the cumulative difficulty [see setPreGenesis()]
 # - _ancestor list for more efficient backtracking (see btcChain.py)
 data block[2^256](_height, _score, _ancestor[9], _blockHeader[])
 
@@ -47,16 +47,30 @@ def testingonlySetHeaviest(blockHash):
 # transactions, say from block 300K, instead
 # of Satoshi's genesis block which have 0 transactions until much later on
 #
-# a consequence of this function is that the score of blocks is
-# 1 more than its calculated difficulty
+# Since zero is the value that indicates non-existence, block _height
+# and _score have to be set carefully and they have these consequences:
+#
+# - _height is 1 more than the typical Bitcoin
+# term height/blocknumber. ie genesis has height 1 instead of 0
+#
+# - _score is 1 more than the cumulative "Bitcoin standard
+# difficulty". eg the cumulative difficulty at the block after genesis
+# is 2 (it and genesis have difficulty of 1), but this contract assigns
+# a score of 3 for the block after genesis [see testStoringHeaders()]
 def setPreGenesis(blockHash):
     if tx.origin == self.owner:
         self.heaviestBlock = blockHash
+
+        # _height cannot be set to -1 because inMainChain() assumes that
+        # a block with height0 does NOT exist, thus we cannot allow the
+        # real genesis block to be at height0
         self.block[blockHash]._height = 0
 
         # set score to 1, since score0 means block does NOT exist. see check in storeBlockHeader()
-        # this means that the score of blocks is 1 more than its calculated difficulty
+        # this means that the score of a block is 1 more than the
+        # cumulative difficulty to that block
         self.block[blockHash]._score = 1
+
         ancLen = self.numAncestorDepths
         i = 0
         while i < ancLen:

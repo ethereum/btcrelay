@@ -29,8 +29,15 @@ def saveAncestors(blockHash, hashPrevBlock):
             self.block[blockHash]._ancestor[i] = self.block[hashPrevBlock]._ancestor[i]
         i += 1
 
+# returns 1 if 'txBlockHash' is in the main chain, ie not a fork
+# otherwise returns 0
 def inMainChain(txBlockHash):
     txBlockHeight = self.block[txBlockHash]._height
+
+    # By assuming that a block with height 0 does not exist, we can do
+    # this optimization and immediate say that txBlockHash is not in the main chain.
+    # However, the consequence is that
+    # the genesis block must be at height 1 instead of 0 [see setPreGenesis()]
     if !txBlockHeight:
         return(0)
 
