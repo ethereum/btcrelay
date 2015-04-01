@@ -13,7 +13,7 @@ extern relayDestination: [processTransaction:si:i]
 # - _blockHeader 80 bytes
 # - _height is 1 more than the typical Bitcoin term height/blocknumber [see setPreGensesis()]
 # - _score is 1 more than the cumulative difficulty [see setPreGenesis()]
-# - _ancestor list for more efficient backtracking (see btcChain.py)
+# - _ancestor list for more efficient backtracking (see btcChain)
 data block[2^256](_height, _score, _ancestor[9], _blockHeader[])
 
 

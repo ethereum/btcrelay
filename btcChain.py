@@ -1,6 +1,9 @@
+# btcChain is required by btcrelay and is a separate file to improve
+# clarity: it has ancestor management and its
+# main method is inMainChain() which is tested by test_btcChain
 
 data numAncestorDepths
-self.numAncestorDepths = 9  # if change, look at defn of ancestor_depths and block in btcrelay.py
+self.numAncestorDepths = 9  # if changing this, need to do so carefully eg look at defn of ancestor_depths and block in btcrelay
 data ancestor_depths[9]
 
 self.ancestor_depths[0] = 1
