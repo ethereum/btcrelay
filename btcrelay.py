@@ -7,14 +7,21 @@ inset('btcChain.py')
 extern relayDestination: [processTransaction:si:i]
 
 
-# block with the highest score (the end of the blockchain)
+# note: _ancestor[9]
+#
+# a Bitcoin block (header) is stored as:
+# - _blockHeader 80 bytes
+# - _height
+# - _score
+# - _ancestor list for more efficient backtracking (see btcChain.py)
+data block[2^256](_height, _score, _ancestor[9], _blockHeader[])
+
+
+# block with the highest score (aka the Head of the blockchain)
 data heaviestBlock
 
 # highest score among all blocks (so far)
 data highScore
-
-# note: _ancestor[9]
-data block[2^256](_height, _score, _ancestor[9], _blockHeader[])
 
 # owner/adminstrator of this contract
 data owner
@@ -122,6 +129,22 @@ def relayTx(txStr:str, txHash, proofLen, hash:arr, path:arr, txBlockHash, contra
         res = contract.processTransaction(txStr, txHash)
         return(res)
     return(0)
+
+
+# return the hash of the heaviest block aka the Head
+def getBlockchainHead():
+    # log(self.heaviestBlock)
+    return(self.heaviestBlock)
+
+
+# return the score of the Head
+#
+# Because of setPreGenesis(), the score is 1 more than than the
+# cumulative difficulty
+def getChainScore():
+    score = self.block[self.heaviestBlock]._score
+    # log(score)
+    return(score)
 
 
 # return -1 if there's an error (eg called with incorrect params)

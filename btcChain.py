@@ -55,13 +55,3 @@ def inMainChain(txBlockHash):
 #         log(anc)
 #         i += 1
 #     log(22222)
-
-
-def getBlockchainHead():
-    # log(self.heaviestBlock)
-    return(self.heaviestBlock)
-
-def getChainScore():
-    score = self.block[self.heaviestBlock]._score
-    # log(score)
-    return(score)
