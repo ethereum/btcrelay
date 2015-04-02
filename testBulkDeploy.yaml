@@ -10,7 +10,7 @@
 # genesis is block300K previous
 -
   transact:
-    TestingOnlySetGenesis:
+    SetThePreGenesis:
       gas: 3000000
       gas_price: 10000000000000
       to: $RelayWithBulkStore
