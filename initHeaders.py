@@ -9,7 +9,7 @@ instance = api.Api(api_config)
 
 # CPP
 instance.address = "0x29d33c02a200937995e632c4597b4dca8e503978"
-to = "0x3432c7f5ca6552fca2f641575135578cb724eb1f"
+to = "0x8539bd809cf55b59fe197d242d84ea3f1e0b1e08"
 
 # GO
 # instance.address = "0x9dc2299a76b68b7ffa9e3ba0fd8cd7646d21d409"
