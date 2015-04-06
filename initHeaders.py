@@ -8,8 +8,8 @@ api_config = config.read_config()
 instance = api.Api(api_config)
 
 # CPP
-instance.address = "0x29d33c02a200937995e632c4597b4dca8e503978"
-to = "0x8539bd809cf55b59fe197d242d84ea3f1e0b1e08"
+instance.address = "0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826"
+to = "0x2e9bd804a61255b2cc7106f915ed59af5fbf63cd"
 
 # GO
 # instance.address = "0x9dc2299a76b68b7ffa9e3ba0fd8cd7646d21d409"
@@ -64,7 +64,7 @@ def storeHeaders(bhBinary, chunkSize):
     data = [bhBinary, chunkSize]
 
     gas = 3000000
-    gas_price = 10000000000000
+    gas_price = 10000000000000  # if CPP, may need to make this 10szabo (10e12)
     value = 0
 
 
@@ -80,10 +80,27 @@ def storeHeaders(bhBinary, chunkSize):
 
     instance.wait_for_transaction(
         from_count=from_count,
-        verbose=(True if api_config.get('misc', 'verbosity') > 1 else False))
+        #verbose=(True if api_config.get('misc', 'verbosity') > 1 else False))
+        verbose=True)
 
     if wait:
-        instance.wait_for_next_block(from_block=from_block, verbose=(True if api_config.get('misc', 'verbosity') > 1 else False))
+        instance.wait_for_next_block(from_block=from_block,
+            #verbose=(True if api_config.get('misc', 'verbosity') > 1 else False))
+            verbose=True)
+
+
+    # 2nd try
+    # instance.transact(to, fun_name=fun_name, sig=sig, data=data, gas=gas, gas_price=gas_price, value=value)
+    # instance.wait_for_transaction(
+    #     from_count=from_count,
+    #     #verbose=(True if api_config.get('misc', 'verbosity') > 1 else False))
+    #     verbose=True)
+    #
+    # if wait:
+    #     instance.wait_for_next_block(from_block=from_block,
+    #         #verbose=(True if api_config.get('misc', 'verbosity') > 1 else False))
+    #         verbose=True)
+
 
 
     chainHead = getBlockchainHead()
