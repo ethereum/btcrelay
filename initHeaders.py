@@ -18,6 +18,9 @@ to = "0x2e9bd804a61255b2cc7106f915ed59af5fbf63cd"
 
 
 def main():
+    initialSkip = True
+    currHead = 0x000000000b87c229c784a01753187dfb220686a651cc0074626a68e1cf7f12ec
+
     chunkSize = 5
     numHeader = 80000
     nIter = numHeader / chunkSize
@@ -31,6 +34,15 @@ def main():
 
     with open("test/headers/bh80k.txt") as f:
         for header in f:
+
+            if initialSkip:
+                bhBinary = header[:-1].decode('hex')  # [:-1] to remove trailing \n
+                headerInt = int(bin_dbl_sha256(bhBinary[-80:])[::-1].encode('hex'), 16)
+                if headerInt == currHead:
+                    initialSkip = False
+                continue;
+
+
             i += 1
             strings += header[:-1]  # [:-1] to remove trailing \n
 
