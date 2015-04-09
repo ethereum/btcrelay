@@ -19,7 +19,7 @@ to = "0x2e9bd804a61255b2cc7106f915ed59af5fbf63cd"
 
 def main():
     initialSkip = True
-    currHead = 0x000000000b87c229c784a01753187dfb220686a651cc0074626a68e1cf7f12ec
+    currHead = 0x00000000976317d31e8d80cb68f4ce62f32f5e808bc169aceeedcfc65cd4610a
 
     chunkSize = 5
     numHeader = 80000
@@ -67,8 +67,23 @@ def main():
     print("********** duration: "+str(duration)+" ********** start:"+str(startTime)+" end:"+str(endTime))
 
 
-
 def storeHeaders(bhBinary, chunkSize):
+
+    txCount = instance.transaction_count(defaultBlock='pending')
+    print('----------------------------------')
+    print('txCount: %s' % txCount)
+
+    hashOne = blockHashHex(int(bin_dbl_sha256(bhBinary[:80])[::-1].encode('hex'), 16))
+    hashLast = blockHashHex(int(bin_dbl_sha256(bhBinary[-80:])[::-1].encode('hex'), 16))
+    print('hashOne: %s' % hashOne)
+    print('hashLast: %s' % hashLast)
+
+    firstH = bhBinary[:80].encode('hex')
+    lastH = bhBinary[-80:].encode('hex')
+    print('firstH: %s' % firstH)
+    print('lastH: %s' % lastH)
+
+
     fun_name = "bulkStoreHeader"
     sig = "si"
 
@@ -96,9 +111,11 @@ def storeHeaders(bhBinary, chunkSize):
         verbose=True)
 
     if wait:
-        instance.wait_for_next_block(from_block=from_block,
-            #verbose=(True if api_config.get('misc', 'verbosity') > 1 else False))
-            verbose=True)
+        for i in range(5):
+            instance.wait_for_next_block(from_block=from_block,
+                #verbose=(True if api_config.get('misc', 'verbosity') > 1 else False))
+                verbose=True)
+            from_block = instance.last_block()
 
 
     # 2nd try
