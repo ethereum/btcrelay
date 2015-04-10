@@ -19,7 +19,7 @@ to = "0x2e9bd804a61255b2cc7106f915ed59af5fbf63cd"
 
 def main():
     initialSkip = True
-    currHead = 0x00000000976317d31e8d80cb68f4ce62f32f5e808bc169aceeedcfc65cd4610a
+    currHead = 0x00000000d52d9d0b6fe6b9ec08096d3da59c3dcdaa2e29bef2dffdfc905f5f7a
 
     chunkSize = 5
     numHeader = 80000
@@ -111,7 +111,7 @@ def storeHeaders(bhBinary, chunkSize):
         verbose=True)
 
     if wait:
-        for i in range(5):
+        for i in range(12):
             instance.wait_for_next_block(from_block=from_block,
                 #verbose=(True if api_config.get('misc', 'verbosity') > 1 else False))
                 verbose=True)
