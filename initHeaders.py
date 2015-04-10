@@ -19,7 +19,8 @@ to = "0x2e9bd804a61255b2cc7106f915ed59af5fbf63cd"
 
 def main():
     initialSkip = True
-    currHead = 0x00000000d52d9d0b6fe6b9ec08096d3da59c3dcdaa2e29bef2dffdfc905f5f7a
+    # currHead = 0x00000000184d61d43e667b4aebe6224e0a3265a2be87048b7924d7339de6095d
+    currHead = getBlockchainHead()
 
     chunkSize = 5
     numHeader = 80000
