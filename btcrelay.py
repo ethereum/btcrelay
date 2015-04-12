@@ -261,8 +261,7 @@ macro getBytesLE($inStr, $size, $offset):
 macro targetFromBits($bits):
     $exp = div($bits, 0x1000000)  # 2^24
     $mant = $bits & 0xffffff
-    $target = $mant * 256^($exp - 3)
-    $target
+    $mant * 256^($exp - 3)
 
 
 # Bitcoin-way merkle parent of transaction hashes $tx1 and $tx2
