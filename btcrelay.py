@@ -210,10 +210,7 @@ def within6Confirms(txBlockHash):
 
 # Bitcoin-way of hashing a block header
 def fastHashBlock(blockHeaderBinary:str):
-    hash1 = sha256(blockHeaderBinary:str)
-    hash2 = sha256(hash1)
-    res = flip32Bytes(hash2)
-    return(res)
+    return(flipBytes(sha256(sha256(blockHeaderBinary:str))))
 
 
 # an owner may transfer/change ownership
