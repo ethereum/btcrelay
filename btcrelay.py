@@ -83,8 +83,7 @@ def setPreGenesis(blockHash):
 def storeBlockHeader(blockHeaderBinary:str):
     hashPrevBlock = getBytesLE(blockHeaderBinary, 32, 4)
 
-    if self.block[hashPrevBlock]._score == 0:  # score0 means block does NOT exist; genesis has score of 1
-        return(0)
+    assert self.block[hashPrevBlock]._score  # score0 means block does NOT exist; genesis has score of 1
 
     blockHash = self.fastHashBlock(blockHeaderBinary)
 
