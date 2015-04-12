@@ -274,11 +274,12 @@ macro concatHash($tx1, $tx2):
     flip32Bytes($hash2)
 
 
-# reverse 32 bytes given by '$a'
-macro flip32Bytes($a):
-    $o = 0
-    with $i = 0:
-        while $i < 32:
-            mstore8(ref($o) + $i, byte(31 - $i, $a))
-            $i += 1
-    $o
+# reverse 32 bytes given by '$b32'
+macro flip32Bytes($b32):
+    with $a = $b32:  # important to force $a to only be examined once below
+        $o = 0
+        with $i = 0:
+            while $i < 32:
+                mstore8(ref($o) + $i, byte(31 - $i, $a))
+                $i += 1
+        $o
