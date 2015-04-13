@@ -265,13 +265,10 @@ macro targetFromBits($bits):
 
 # Bitcoin-way merkle parent of transaction hashes $tx1 and $tx2
 macro concatHash($tx1, $tx2):
-    $left = flip32Bytes($tx1)
-    $right = flip32Bytes($tx2)
-
-    $hash1 = sha256([$left, $right], chars=64)
-    $hash2 = sha256($hash1)
-
-    flip32Bytes($hash2)
+    with $x = ~alloc(64):
+        ~mstore($x, flip32Bytes($tx1))
+        ~mstore($x + 32, flip32Bytes($tx2))
+        flip32Bytes(sha256(sha256($x, chars=64)))
 
 
 # reverse 32 bytes given by '$b32'

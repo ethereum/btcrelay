@@ -343,6 +343,7 @@ class TestBtcRelay(object):
         hash[1] = 0x8e30899078ca1813be036a073bbf80b86cdddde1c96e9e9c99e9e3782df4ae49
         path[1] = RIGHT_HASH
 
-        r = self.c.computeMerkle(tx, proofLen, hash, path)
+        res = self.c.computeMerkle(tx, proofLen, hash, path, profiling=True)
+        print('GAS: '+str(res['gas']))
         expMerkle = 0xf3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766
-        return(r == expMerkle)
+        return(res['output'] == expMerkle)
