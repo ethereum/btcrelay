@@ -81,7 +81,7 @@ def setPreGenesis(blockHash):
 # store a Bitcoin block header that must be provided in
 # binary format 'blockHeaderBinary'
 def storeBlockHeader(blockHeaderBinary:str):
-    hashPrevBlock = getBytesLE(blockHeaderBinary, 32, 4)
+    hashPrevBlock = flip32Bytes(~calldataload(40))  # 36 (header start) + 4 (offset for hashPrevBlock)
 
     assert self.block[hashPrevBlock]._score  # score0 means block does NOT exist; genesis has score of 1
 
