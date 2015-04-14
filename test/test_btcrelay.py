@@ -347,3 +347,7 @@ class TestBtcRelay(object):
         print('GAS: '+str(res['gas']))
         expMerkle = 0xf3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766
         return(res['output'] == expMerkle)
+
+    def testSetPreGenesisOnlyOnce(self):
+        assert self.c.setPreGenesis(0) == 1
+        assert self.c.setPreGenesis(0) == 0

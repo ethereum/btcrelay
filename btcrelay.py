@@ -25,7 +25,7 @@ data highScore
 
 
 # def init():
-#     # TODO anything else to init ?
+    # TODO anything else to init ?
 
 
 #TODO for testing only; should be omitted for production
@@ -34,7 +34,7 @@ def testingonlySetHeaviest(blockHash):
 
 
 # this has 2 purposes:
-# 1) this should only be called once and is to "store" the block
+# 1) this can only be called once and is to "store" the block
 # with hash zeroes, so that storing the real genesis
 # block can be done using storeBlockHeader() instead of a special case
 #
@@ -53,6 +53,12 @@ def testingonlySetHeaviest(blockHash):
 # is 2 (it and genesis have difficulty of 1), but this contract assigns
 # a score of 3 for the block after genesis [see testStoringHeaders()]
 def setPreGenesis(blockHash):
+    # reuse highScore as the flag for whether setPreGenesis() has already been called
+    if self.highScore != 0:
+        return(0)
+    else:
+        self.highScore = 1  # matches the score that is set below in this function
+
     self.heaviestBlock = blockHash
 
     # _height cannot be set to -1 because inMainChain() assumes that
@@ -70,6 +76,8 @@ def setPreGenesis(blockHash):
     while i < ancLen:
         self.block[blockHash]._ancestor[i] = blockHash
         i += 1
+
+    return(1)
 
 
 # store a Bitcoin block header that must be provided in
