@@ -95,9 +95,9 @@ def storeBlockHeader(blockHeaderBinary:str):
     bits = getBytesLE(blockHeaderBinary, 4, 72)
     target = targetFromBits(bits)
 
-    # TODO other validation of block?  eg timestamp
-
-    if gt(blockHash, 0) && lt(blockHash, target):  #TODO should sgt and slt be used?
+    # we only check the target and do not do other validation (eg timestamp)
+    # to save gas
+    if gt(blockHash, 0) && lt(blockHash, target):
         self.saveAncestors(blockHash, hashPrevBlock)
 
         save(self.block[blockHash]._blockHeader[0], blockHeaderBinary, chars=80) # or 160?
@@ -105,7 +105,7 @@ def storeBlockHeader(blockHeaderBinary:str):
         difficulty = 0x00000000FFFF0000000000000000000000000000000000000000000000000000 / target # https://en.bitcoin.it/wiki/Difficulty
         self.block[blockHash]._score = self.block[hashPrevBlock]._score + difficulty
 
-        if gt(self.block[blockHash]._score, self.highScore):  #TODO use sgt?
+        if gt(self.block[blockHash]._score, self.highScore):
             self.heaviestBlock = blockHash
             self.highScore = self.block[blockHash]._score
 
