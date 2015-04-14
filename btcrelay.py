@@ -226,13 +226,13 @@ def setOwner(newOwner):
 
 # get the parent of '$blockHash'
 macro getPrevBlock($blockHash):
-    $tmpStr = load(self.block[$blockHash]._blockHeader[0], chars=80)
+    $tmpStr = load(self.block[$blockHash]._blockHeader[0], chars=36)  # don't need all 80bytes
     getBytesLE($tmpStr, 32, 4)
 
 
 # get the merkle root of '$blockHash'
 macro getMerkleRoot($blockHash):
-    $tmpStr = load(self.block[$blockHash]._blockHeader[0], chars=80)
+    $tmpStr = load(self.block[$blockHash]._blockHeader[0], chars=68)  # don't need all 80bytes
     getBytesLE($tmpStr, 32, 36)
 
 
