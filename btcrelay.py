@@ -23,19 +23,14 @@ data heaviestBlock
 # highest score among all blocks (so far)
 data highScore
 
-# owner/adminstrator of this contract
-data owner
 
-
-def init():
-    self.owner = msg.sender
-    # TODO anything else to init ?
+# def init():
+#     # TODO anything else to init ?
 
 
 #TODO for testing only; should be omitted for production
 def testingonlySetHeaviest(blockHash):
-    if tx.origin == self.owner:
-        self.heaviestBlock = blockHash
+    self.heaviestBlock = blockHash
 
 
 # this has 2 purposes:
@@ -58,24 +53,23 @@ def testingonlySetHeaviest(blockHash):
 # is 2 (it and genesis have difficulty of 1), but this contract assigns
 # a score of 3 for the block after genesis [see testStoringHeaders()]
 def setPreGenesis(blockHash):
-    if tx.origin == self.owner:
-        self.heaviestBlock = blockHash
+    self.heaviestBlock = blockHash
 
-        # _height cannot be set to -1 because inMainChain() assumes that
-        # a block with height0 does NOT exist, thus we cannot allow the
-        # real genesis block to be at height0
-        self.block[blockHash]._height = 0
+    # _height cannot be set to -1 because inMainChain() assumes that
+    # a block with height0 does NOT exist, thus we cannot allow the
+    # real genesis block to be at height0
+    self.block[blockHash]._height = 0
 
-        # set score to 1, since score0 means block does NOT exist. see check in storeBlockHeader()
-        # this means that the score of a block is 1 more than the
-        # cumulative difficulty to that block
-        self.block[blockHash]._score = 1
+    # set score to 1, since score0 means block does NOT exist. see check in storeBlockHeader()
+    # this means that the score of a block is 1 more than the
+    # cumulative difficulty to that block
+    self.block[blockHash]._score = 1
 
-        ancLen = self.numAncestorDepths
-        i = 0
-        while i < ancLen:
-            self.block[blockHash]._ancestor[i] = blockHash
-            i += 1
+    ancLen = self.numAncestorDepths
+    i = 0
+    while i < ancLen:
+        self.block[blockHash]._ancestor[i] = blockHash
+        i += 1
 
 
 # store a Bitcoin block header that must be provided in
@@ -211,13 +205,6 @@ def within6Confirms(txBlockHash):
 def fastHashBlock(blockHeaderBinary:str):
     return(flip32Bytes(sha256(sha256(blockHeaderBinary:str))))
 
-
-# an owner may transfer/change ownership
-def setOwner(newOwner):
-    if msg.sender == self.owner:
-        self.owner = newOwner
-        return(1)
-    return(0)
 
 
 #
