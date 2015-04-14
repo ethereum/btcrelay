@@ -211,11 +211,12 @@ class TestBtcBulkStoreHeaders(object):
 
 
     # we generally want to skip this since it is covered by BulkStore60
-    @pytest.mark.veryslow
-    def testBulkStore7(self):
+    # @pytest.mark.veryslow
+    def testBulkStore5(self):
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
         self.c.setPreGenesis(block100kPrev)
 
+        # 7 here, but only storing 5 headers since OOG
         headers = [
             "0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710",
             "0100000006e533fd1ada86391f3f6c343204b0d278d4aaec1c0b20aa27ba0300000000006abbb3eb3d733a9fe18967fd7d4c117e4ccbbac5bec4d910d900b3ae0793e77f54241b4d4c86041b4089cc9b",
@@ -226,12 +227,13 @@ class TestBtcBulkStoreHeaders(object):
             "0100000045dc58743362fe8d8898a7506faa816baed7d391c9bc0b13b0da00000000000021728a2f4f975cc801cb3c672747f1ead8a946b2702b7bd52f7b86dd1aa0c975c02a1b4d4c86041b7b47546d"
         ]
 
-        count = 7
+        count = 5
         strings = ""
         for i in range(count):
             strings += headers[i]
 
         headerBins = strings.decode('hex')
 
-        res = self.c.bulkStoreHeader(headerBins, count)
-        assert res == count
+        res = self.c.bulkStoreHeader(headerBins, count, profiling=True)
+        print('GAS: '+str(res['gas']))
+        assert res['output'] == count
