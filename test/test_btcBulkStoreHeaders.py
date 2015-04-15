@@ -75,7 +75,7 @@ class TestBtcBulkStoreHeaders(object):
         score = self.c.getChainScore()
         assert score == 12
 
-        blockDifficulty = self.c.getBlockDifficulty()
+        blockDifficulty = self.c.getAverageBlockDifficulty()
         assert blockDifficulty == 10
 
 
