@@ -146,8 +146,26 @@ def relayTx(txStr:str, txHash, proofLen, hash:arr, path:arr, txBlockHash, contra
     return(0)
 
 
+# return the hash of the heaviest block aka the Head
+def getBlockchainHead():
+    # log(self.heaviestBlock)
+    return(self.heaviestBlock)
+
+
+# return the (total) cumulative difficulty of the Head
+def getCumulativeDifficulty():
+    # Because of setPreGenesis(), the score is 1 more than than the
+    # cumulative difficulty
+    cumulDifficulty = self.block[self.heaviestBlock]._score - 1
+    return(cumulDifficulty)
+
+
 # return the difference between the cumulative difficulty at
 # the blockchain Head and its 10th ancestor
+#
+# this is not needed by the relay itself, but is provided in
+# case some contract wants to use the
+# Bitcoin network difficulty as a data feed for some purpose
 def getAverageBlockDifficulty():
     blockHash = self.heaviestBlock
 
@@ -161,20 +179,6 @@ def getAverageBlockDifficulty():
     cumulDifficulty10Ancestors = self.block[blockHash]._score - 1
 
     return(cumulDifficultyHead - cumulDifficulty10Ancestors)
-
-
-# return the hash of the heaviest block aka the Head
-def getBlockchainHead():
-    # log(self.heaviestBlock)
-    return(self.heaviestBlock)
-
-
-# return the (total) cumulative difficulty of the Head
-def getCumulativeDifficulty():
-    # Because of setPreGenesis(), the score is 1 more than than the
-    # cumulative difficulty
-    cumulDifficulty = self.block[self.heaviestBlock]._score - 1
-    return(cumulDifficulty)
 
 
 # return -1 if there's an error (eg called with incorrect params)
