@@ -146,6 +146,23 @@ def relayTx(txStr:str, txHash, proofLen, hash:arr, path:arr, txBlockHash, contra
     return(0)
 
 
+# return the difference between the total difficulty at
+# the blockchain HEAD and its 10th ancestor
+def getBlockDifficulty():
+    blockHash = self.heaviestBlock
+
+    totalDifficultyHead = self.block[blockHash]._score - 1
+
+    i = 0
+    while i < 10:
+        blockHash = getPrevBlock(blockHash)
+        i += 1
+
+    totalDifficulty10Ancestors = self.block[blockHash]._score - 1
+
+    return(totalDifficultyHead - totalDifficulty10Ancestors)
+
+
 # return the hash of the heaviest block aka the Head
 def getBlockchainHead():
     # log(self.heaviestBlock)

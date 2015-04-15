@@ -70,6 +70,30 @@ class TestBtcBulkStoreHeaders(object):
         self.checkRelay(txStr, txIndex, btcAddr, hh)
 
 
+    def testScore(self):
+        self.bulkStore11FromGenesis()
+        score = self.c.getChainScore()
+        assert score == 12
+
+        blockDifficulty = self.c.getBlockDifficulty()
+        assert blockDifficulty == 10
+
+
+    def bulkStore11FromGenesis(self):
+        numBlock = 11
+        self.c.setPreGenesis(0)
+
+        strings = ""
+        with open("test/headers/firstEleven.txt") as f:
+            for header in f:
+                strings += header[:-1]  # [:-1] to remove trailing \n
+
+        headerBins = strings.decode('hex')
+        # print('@@@ hb: ', headerBins)
+
+        self.c.bulkStoreHeader(headerBins, numBlock)
+
+
     def bulkStore10From300K(self):
         startBlockNum = 300000
         numBlock = 10
