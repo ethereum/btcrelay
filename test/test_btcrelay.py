@@ -287,7 +287,7 @@ class TestBtcRelay(object):
         block1Hash = 0x00000000839a8e6886ab5951d76f411475428afc90947ee320161bbf18eb6048
         assert self.c.getBlockchainHead() == block1Hash
 
-        assert self.c.getCumulativeDifficulty() == 3
+        assert self.c.getCumulativeDifficulty() == 2
 
 
     def testStoreExistingHeader(self):

@@ -70,10 +70,10 @@ class TestBtcBulkStoreHeaders(object):
         self.checkRelay(txStr, txIndex, btcAddr, hh)
 
 
-    def testScore(self):
+    def testDifficulty(self):
         self.bulkStore11FromGenesis()
         cumulDiff = self.c.getCumulativeDifficulty()
-        assert cumulDiff == 12
+        assert cumulDiff == 11
 
         blockDifficulty = self.c.getAverageBlockDifficulty()
         assert blockDifficulty == 10

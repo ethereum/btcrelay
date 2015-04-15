@@ -147,7 +147,7 @@ def relayTx(txStr:str, txHash, proofLen, hash:arr, path:arr, txBlockHash, contra
 
 
 # return the difference between the cumulative difficulty at
-# the blockchain HEAD and its 10th ancestor
+# the blockchain Head and its 10th ancestor
 def getAverageBlockDifficulty():
     blockHash = self.heaviestBlock
 
@@ -169,14 +169,12 @@ def getBlockchainHead():
     return(self.heaviestBlock)
 
 
-# return the score of the Head
-#
-# Because of setPreGenesis(), the score is 1 more than than the
-# cumulative difficulty
+# return the (total) cumulative difficulty of the Head
 def getCumulativeDifficulty():
-    score = self.block[self.heaviestBlock]._score
-    # log(score)
-    return(score)
+    # Because of setPreGenesis(), the score is 1 more than than the
+    # cumulative difficulty
+    cumulDifficulty = self.block[self.heaviestBlock]._score - 1
+    return(cumulDifficulty)
 
 
 # return -1 if there's an error (eg called with incorrect params)
