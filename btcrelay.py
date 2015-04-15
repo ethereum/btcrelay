@@ -85,11 +85,11 @@ def setPreGenesis(blockHash):
 def storeBlockHeader(blockHeaderBinary:str):
     hashPrevBlock = flip32Bytes(~calldataload(40))  # 36 (header start) + 4 (offset for hashPrevBlock)
 
-    assert self.block[hashPrevBlock]._score  # score0 means block does NOT exist; genesis has score of 1
+    assert self.block[hashPrevBlock]._score  # assert prev block exists
 
     blockHash = self.fastHashBlock(blockHeaderBinary)
 
-    if self.block[blockHash]._score != 0:  # block already exists
+    if self.block[blockHash]._score != 0:  # block already stored/exists
         return(0)
 
     bits = getBytesLE(blockHeaderBinary, 4, 72)
