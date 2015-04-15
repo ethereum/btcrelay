@@ -173,7 +173,7 @@ def getBlockchainHead():
 #
 # Because of setPreGenesis(), the score is 1 more than than the
 # cumulative difficulty
-def getChainScore():
+def getCumulativeDifficulty():
     score = self.block[self.heaviestBlock]._score
     # log(score)
     return(score)

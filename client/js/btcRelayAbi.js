@@ -17,7 +17,7 @@ window.btcRelayAbi = [{
     "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
-    "name": "getChainScore()",
+    "name": "getCumulativeDifficulty()",
     "type": "function",
     "inputs": [],
     "outputs": [{ "name": "out", "type": "int256" }]

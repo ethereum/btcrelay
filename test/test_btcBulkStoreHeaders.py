@@ -72,8 +72,8 @@ class TestBtcBulkStoreHeaders(object):
 
     def testScore(self):
         self.bulkStore11FromGenesis()
-        score = self.c.getChainScore()
-        assert score == 12
+        cumulDiff = self.c.getCumulativeDifficulty()
+        assert cumulDiff == 12
 
         blockDifficulty = self.c.getAverageBlockDifficulty()
         assert blockDifficulty == 10

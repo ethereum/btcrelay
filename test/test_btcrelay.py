@@ -53,10 +53,10 @@ class TestBtcRelay(object):
         blockHeaderBinary = map(lambda x: x.decode('hex'), headers)
         for i in range(7):
             res = self.c.storeBlockHeader(blockHeaderBinary[i])
-            # print('@@@@ real chain score: ' + str(self.c.getChainScore()))
+            # print('@@@@ real chain score: ' + str(self.c.getCumulativeDifficulty()))
             assert res == i+1
 
-        realScore = self.c.getChainScore()
+        cumulDiff = self.c.getCumulativeDifficulty()
 
         # block hashes
         b0 = 0x000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506
@@ -122,10 +122,10 @@ class TestBtcRelay(object):
             res = self.c.storeBlockHeader(blockHeaderBinary)
             hashPrevBlock = self.c.fastHashBlock(blockHeaderBinary)
 
-            # print('@@@@ fake chain score: ' + str(self.c.getChainScore()))
+            # print('@@@@ fake chain score: ' + str(self.c.getCumulativeDifficulty()))
             assert res == i+1
 
-        assert self.c.getChainScore() == realScore
+        assert self.c.getCumulativeDifficulty() == cumulDiff  # cumulDiff should not change
         assert b6 == self.c.getBlockchainHead()
 
         # forked block should NOT verify
@@ -287,7 +287,7 @@ class TestBtcRelay(object):
         block1Hash = 0x00000000839a8e6886ab5951d76f411475428afc90947ee320161bbf18eb6048
         assert self.c.getBlockchainHead() == block1Hash
 
-        assert self.c.getChainScore() == 3
+        assert self.c.getCumulativeDifficulty() == 3
 
 
     def testStoreExistingHeader(self):
