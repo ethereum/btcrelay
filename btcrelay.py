@@ -121,11 +121,11 @@ def storeBlockHeader(blockHeaderBinary:str):
 # - 'hash' are the merkle siblings of tx
 # - 'path' corresponds to whether the sibling is to the LEFT (1) or RIGHT (2)
 # - 'proofLen' is the number of merkle siblings
-def verifyTx(tx, proofLen, hash:arr, path:arr, txBlockHash):
+def verifyTx(txHash, txIndex, sibling:arr, txBlockHash):
     if self.within6Confirms(txBlockHash) || !self.inMainChain(txBlockHash):
         return(0)
 
-    merkle = self.computeMerkle(tx, proofLen, hash, path)
+    merkle = self.computeMerkle(txHash, txIndex, sibling)
     realMerkleRoot = getMerkleRoot(txBlockHash)
 
     if merkle == realMerkleRoot:
@@ -139,8 +139,8 @@ def verifyTx(tx, proofLen, hash:arr, path:arr, txBlockHash):
 #
 # TODO txHash can eventually be computed (dbl sha256 then flip32Bytes) when
 # txStr becomes txBinary
-def relayTx(txStr:str, txHash, proofLen, hash:arr, path:arr, txBlockHash, contract):
-    if self.verifyTx(txHash, proofLen, hash, path, txBlockHash) == 1:
+def relayTx(txStr:str, txHash, txIndex, sibling:arr, txBlockHash, contract):
+    if self.verifyTx(txHash, txIndex, sibling, txBlockHash) == 1:
         res = contract.processTransaction(txStr, txHash)
         return(res)
     return(0)
@@ -184,7 +184,7 @@ def getAverageBlockDifficulty():
 # return -1 if there's an error (eg called with incorrect params)
 # [see documentation for verifyTx() for the merkle proof
 # format of 'proofLen', 'hash', 'path' ]
-def merkleHash(txHash, txIndex, sibling:arr):
+def computeMerkle(txHash, txIndex, sibling:arr):
     resultHash = txHash
     proofLen = len(sibling)
     i = 0
@@ -198,34 +198,6 @@ def merkleHash(txHash, txIndex, sibling:arr):
             left = proofHex
             right = resultHash
         elif sideOfSibling == 0:
-            left = resultHash
-            right = proofHex
-
-        resultHash = concatHash(left, right)
-
-        i += 1
-
-    if !resultHash:
-        return(-1)
-
-    return(resultHash)
-
-
-# return -1 if there's an error (eg called with incorrect params)
-# [see documentation for verifyTx() for the merkle proof
-# format of 'proofLen', 'hash', 'path' ]
-def computeMerkle(tx, proofLen, hash:arr, path:arr):
-    LEFT_HASH = 1
-    RIGHT_HASH = 2
-
-    resultHash = tx
-    i = 0
-    while i < proofLen:
-        proofHex = hash[i]
-        if path[i] == LEFT_HASH:
-            left = proofHex
-            right = resultHash
-        elif path[i] == RIGHT_HASH:
             left = resultHash
             right = proofHex
 

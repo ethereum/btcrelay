@@ -69,31 +69,25 @@ class TestBtcRelay(object):
 
         # values are from block 100K
         tx = 0x8c14f0db3df150123e6f3dbbf30f8b955a8249b62ac1d1ff16284aefa3d06d87
-        proofLen = 2
-        hash = [None] * proofLen
-        path = [None] * proofLen
-
-        RIGHT_HASH = 2
-        hash[0] = 0xfff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4
-        path[0] = RIGHT_HASH
-
-        hash[1] = 0x8e30899078ca1813be036a073bbf80b86cdddde1c96e9e9c99e9e3782df4ae49
-        path[1] = RIGHT_HASH
+        txIndex = 0
+        sibling = [None] * 2
+        sibling[0] = 0xfff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4
+        sibling[1] = 0x8e30899078ca1813be036a073bbf80b86cdddde1c96e9e9c99e9e3782df4ae49
 
 
         txBlockHash = 0xdead
-        res = self.c.verifyTx(tx, proofLen, hash, path, txBlockHash)
+        res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
         assert res == 0
 
         # b1 is within6confirms so should NOT verify
         txBlockHash = b1
-        res = self.c.verifyTx(tx, proofLen, hash, path, txBlockHash)
+        res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
         assert res == 0
 
 
         # verifyTx should only return 1 for b0
         txBlockHash = b0
-        res = self.c.verifyTx(tx, proofLen, hash, path, txBlockHash)
+        res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
         assert res == 1
 
         assert b6 == self.c.getBlockchainHead()
@@ -130,12 +124,12 @@ class TestBtcRelay(object):
 
         # forked block should NOT verify
         txBlockHash = 0x11bb7c5555b8eab7801b1c4384efcab0d869230fcf4a8f043abad255c99105f8
-        res = self.c.verifyTx(tx, proofLen, hash, path, txBlockHash)
+        res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
         assert res == 0
 
         # b0 should still verify
         txBlockHash = b0
-        res = self.c.verifyTx(tx, proofLen, hash, path, txBlockHash)
+        res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
         assert res == 1
 
 
@@ -149,16 +143,11 @@ class TestBtcRelay(object):
 
         # tx for verification: values are from block 100K
         tx = 0x8c14f0db3df150123e6f3dbbf30f8b955a8249b62ac1d1ff16284aefa3d06d87
-        proofLen = 2
-        hash = [None] * proofLen
-        path = [None] * proofLen
+        txIndex = 0
+        sibling = [None] * 2
+        sibling[0] = 0xfff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4
+        sibling[1] = 0x8e30899078ca1813be036a073bbf80b86cdddde1c96e9e9c99e9e3782df4ae49
 
-        RIGHT_HASH = 2
-        hash[0] = 0xfff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4
-        path[0] = RIGHT_HASH
-
-        hash[1] = 0x8e30899078ca1813be036a073bbf80b86cdddde1c96e9e9c99e9e3782df4ae49
-        path[1] = RIGHT_HASH
 
 
 
@@ -192,7 +181,7 @@ class TestBtcRelay(object):
         self.c.testingonlySetHeaviest(0x2b80a2f4b68e9ebfd4975f5f14a340501d24c3adf041ad9be4cd2576e827328c)
 
         firstEasyBlock = 0x11bb7c5555b8eab7801b1c4384efcab0d869230fcf4a8f043abad255c99105f8
-        res = self.c.verifyTx(tx, proofLen, hash, path, firstEasyBlock)
+        res = self.c.verifyTx(tx, txIndex, sibling, firstEasyBlock)
         assert res == 1
 
 
@@ -215,11 +204,11 @@ class TestBtcRelay(object):
             assert res == i+1
 
             # firstEasyBlock should no longer verify since it is no longer on the main chain
-            res = self.c.verifyTx(tx, proofLen, hash, path, firstEasyBlock)
+            res = self.c.verifyTx(tx, txIndex, sibling, firstEasyBlock)
             assert res == 0
 
             # block100k should only verify when it has enough confirmations
-            res = self.c.verifyTx(tx, proofLen, hash, path, block100k)
+            res = self.c.verifyTx(tx, txIndex, sibling, block100k)
             exp = 1 if i==6 else 0
             assert res == exp
 
@@ -328,37 +317,15 @@ class TestBtcRelay(object):
         exp = 0x000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506
         assert res['output'] == exp
 
-    def testMerkleHash(self):
+    def testComputeMerkle(self):
         # values are from block 100K
         txHash = 0x8c14f0db3df150123e6f3dbbf30f8b955a8249b62ac1d1ff16284aefa3d06d87
         txIndex = 0
         sibling = [None] * 2
-
         sibling[0] = 0xfff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4
         sibling[1] = 0x8e30899078ca1813be036a073bbf80b86cdddde1c96e9e9c99e9e3782df4ae49
 
-        res = self.c.merkleHash(txHash, txIndex, sibling, profiling=True)
-        print('GAS: '+str(res['gas']))
-        expMerkle = 0xf3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766
-        wrappedMerkle = res['output'] % 2**256
-        assert wrappedMerkle == expMerkle
-
-    def testComputeMerkle(self):
-        # values are from block 100K
-        tx = 0x8c14f0db3df150123e6f3dbbf30f8b955a8249b62ac1d1ff16284aefa3d06d87
-        proofLen = 2
-        hash = [None] * proofLen
-        path = [None] * proofLen
-
-        RIGHT_HASH = 2  # from btcrelay.py
-
-        hash[0] = 0xfff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4
-        path[0] = RIGHT_HASH
-
-        hash[1] = 0x8e30899078ca1813be036a073bbf80b86cdddde1c96e9e9c99e9e3782df4ae49
-        path[1] = RIGHT_HASH
-
-        res = self.c.computeMerkle(tx, proofLen, hash, path, profiling=True)
+        res = self.c.computeMerkle(txHash, txIndex, sibling, profiling=True)
         print('GAS: '+str(res['gas']))
         expMerkle = 0xf3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766
         wrappedMerkle = res['output'] % 2**256
