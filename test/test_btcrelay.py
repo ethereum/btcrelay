@@ -340,7 +340,8 @@ class TestBtcRelay(object):
         res = self.c.merkleHash(txHash, txIndex, sibling, profiling=True)
         print('GAS: '+str(res['gas']))
         expMerkle = 0xf3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766
-        return(res['output'] == expMerkle)
+        wrappedMerkle = res['output'] % 2**256
+        assert wrappedMerkle == expMerkle
 
     def testComputeMerkle(self):
         # values are from block 100K
@@ -360,7 +361,8 @@ class TestBtcRelay(object):
         res = self.c.computeMerkle(tx, proofLen, hash, path, profiling=True)
         print('GAS: '+str(res['gas']))
         expMerkle = 0xf3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766
-        return(res['output'] == expMerkle)
+        wrappedMerkle = res['output'] % 2**256
+        assert wrappedMerkle == expMerkle
 
     def testSetPreGenesisOnlyOnce(self):
         assert self.c.setPreGenesis(0) == 1
