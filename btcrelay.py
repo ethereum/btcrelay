@@ -191,12 +191,13 @@ def merkleHash(txHash, txIndex, sibling:arr):
     while i < proofLen:
         proofHex = sibling[i]
 
-        leftOrRight = m_checkBit(txIndex, i)
+        txIndex /= 2
+        sideOfSibling = txIndex % 2  # 0 means sibling is on the right; 1 means left
 
-        if leftOrRight == 1:
+        if sideOfSibling == 1:
             left = proofHex
             right = resultHash
-        elif leftOrRight == 0:
+        elif sideOfSibling == 0:
             left = resultHash
             right = proofHex
 
@@ -208,12 +209,6 @@ def merkleHash(txHash, txIndex, sibling:arr):
         return(-1)
 
     return(resultHash)
-
-
-macro m_checkBit($int_type, $offset):
-    # $mask = 1 << $offset
-    $mask = $int_type * 256^$offset
-    $int_type & $mask
 
 
 # return -1 if there's an error (eg called with incorrect params)
