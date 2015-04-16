@@ -191,7 +191,6 @@ def computeMerkle(txHash, txIndex, sibling:arr):
     while i < proofLen:
         proofHex = sibling[i]
 
-        txIndex /= 2
         sideOfSibling = txIndex % 2  # 0 means sibling is on the right; 1 means left
 
         if sideOfSibling == 1:
@@ -203,6 +202,7 @@ def computeMerkle(txHash, txIndex, sibling:arr):
 
         resultHash = concatHash(left, right)
 
+        txIndex /= 2
         i += 1
 
     if !resultHash:
