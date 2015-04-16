@@ -13,7 +13,7 @@ class TestBtcRelay(object):
     ETHER = 10 ** 18
 
     def setup_class(cls):
-        tester.gas_limit = 2 * 10**6
+        tester.gas_limit = 3 * 10**6
         cls.s = tester.state()
         cls.c = cls.s.abi_contract(cls.CONTRACT, endowment=2000*cls.ETHER)
         cls.snapshot = cls.s.snapshot()
@@ -327,6 +327,20 @@ class TestBtcRelay(object):
         print('GAS: '+str(res['gas']))
         exp = 0x000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506
         assert res['output'] == exp
+
+    def testMerkleHash(self):
+        # values are from block 100K
+        txHash = 0x8c14f0db3df150123e6f3dbbf30f8b955a8249b62ac1d1ff16284aefa3d06d87
+        txIndex = 0
+        sibling = [None] * 2
+
+        sibling[0] = 0xfff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4
+        sibling[1] = 0x8e30899078ca1813be036a073bbf80b86cdddde1c96e9e9c99e9e3782df4ae49
+
+        res = self.c.merkleHash(txHash, txIndex, sibling, profiling=True)
+        print('GAS: '+str(res['gas']))
+        expMerkle = 0xf3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766
+        return(res['output'] == expMerkle)
 
     def testComputeMerkle(self):
         # values are from block 100K

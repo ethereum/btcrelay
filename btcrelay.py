@@ -184,6 +184,41 @@ def getAverageBlockDifficulty():
 # return -1 if there's an error (eg called with incorrect params)
 # [see documentation for verifyTx() for the merkle proof
 # format of 'proofLen', 'hash', 'path' ]
+def merkleHash(txHash, txIndex, sibling:arr):
+    resultHash = txHash
+    proofLen = len(sibling)
+    i = 0
+    while i < proofLen:
+        proofHex = sibling[i]
+
+        leftOrRight = m_checkBit(txIndex, i)
+
+        if leftOrRight == 1:
+            left = proofHex
+            right = resultHash
+        elif leftOrRight == 0:
+            left = resultHash
+            right = proofHex
+
+        resultHash = concatHash(left, right)
+
+        i += 1
+
+    if !resultHash:
+        return(-1)
+
+    return(resultHash)
+
+
+macro m_checkBit($int_type, $offset):
+    # $mask = 1 << $offset
+    $mask = $int_type * 256^$offset
+    $int_type & $mask
+
+
+# return -1 if there's an error (eg called with incorrect params)
+# [see documentation for verifyTx() for the merkle proof
+# format of 'proofLen', 'hash', 'path' ]
 def computeMerkle(tx, proofLen, hash:arr, path:arr):
     LEFT_HASH = 1
     RIGHT_HASH = 2
