@@ -183,7 +183,7 @@ def getAverageBlockDifficulty():
 
 # return -1 if there's an error (eg called with incorrect params)
 # [see documentation for verifyTx() for the merkle proof
-# format of 'proofLen', 'hash', 'path' ]
+# format of 'txHash', 'txIndex', 'sibling' ]
 def computeMerkle(txHash, txIndex, sibling:arr):
     resultHash = txHash
     proofLen = len(sibling)
