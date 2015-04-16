@@ -117,10 +117,10 @@ def storeBlockHeader(blockHeaderBinary:str):
 # returns 1 if tx is in the block given by 'txBlockHash' and the block is
 # in Bitcoin's main chain (ie not a fork)
 #
-# the merkle proof is represented by 'proofLen', 'hash', 'path', where:
-# - 'hash' are the merkle siblings of tx
-# - 'path' corresponds to whether the sibling is to the LEFT (1) or RIGHT (2)
-# - 'proofLen' is the number of merkle siblings
+# the merkle proof is represented by 'txHash', 'txIndex', 'sibling', where:
+# - 'txHash' is the hash of the tx
+# - 'txIndex' is the index of the tx within the block
+# - 'sibling' are the merkle siblings of tx
 def verifyTx(txHash, txIndex, sibling:arr, txBlockHash):
     if self.within6Confirms(txBlockHash) || !self.inMainChain(txBlockHash):
         return(0)
