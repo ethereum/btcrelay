@@ -15744,9 +15744,6 @@ module.exports = function(arr, obj){
 (function (Buffer){
 const crypto = require('crypto');
 
-const LEFT_HASH = 1,
-  RIGHT_HASH = 2;
-
 var sha256 = exports.sha256 = function(data) {
   return new Buffer(crypto.createHash('sha256').update(data).digest('binary'), 'binary');
 };
@@ -15757,7 +15754,7 @@ var twoSha256 = exports.twoSha256 = function(data) {
 
 var bufReverse = exports.bufReverse = function(buf) {
   return new Buffer(Array.prototype.slice.call(buf).reverse());
-}
+};
 
 var getProof = exports.getProof = function(txs, index) {
   // if (txs.length == 0) {
@@ -15773,8 +15770,12 @@ var getProof = exports.getProof = function(txs, index) {
 
   if (index >= 0) {
     var lookFor = txs[index].toString('hex');
-    var proof = [];
-    var foundPath = 0;
+    var proof = {
+      txHash: txs[index],
+      txIndex: index,
+      sibling: []
+    };
+    var foundSibling = false;
   }
 
   // Now step through each level ...
@@ -15788,26 +15789,26 @@ var getProof = exports.getProof = function(txs, index) {
       if (index >= 0) {
         var aHex = a.toString('hex'),
           bHex = b.toString('hex');
-console.log('lf: ', lookFor, aHex, bHex)
+// console.log('lf: ', lookFor, aHex, bHex)
         if (lookFor === aHex) {
-          foundPath = RIGHT_HASH;
-          proof.push({hash: bHex, path: RIGHT_HASH});
-console.log('pA: ', proof)
+          proof.sibling.push(bHex);
+          foundSibling = true;
+// console.log('pA: ', proof)
         } else if (lookFor === bHex) {
-          foundPath = LEFT_HASH;
-          proof.push({hash: aHex, path: LEFT_HASH});
-console.log('pB: ', proof)
+          proof.sibling.push(aHex);
+          foundSibling = true;
+// console.log('pB: ', proof)
         }
       }
 
       var dblSha = twoSha256(Buffer.concat([bufReverse(a), bufReverse(b)]));
       dblSha = bufReverse(dblSha);
 
-      if (foundPath > 0) {
-        lookFor = dblSha.toString('hex'); //foundPath === 1 ? aHex : bHex;
-        console.log('@@@@@@@@ ', bufReverse(a), bufReverse(b), lookFor)
+      if (foundSibling) {
+        lookFor = dblSha.toString('hex');
+        // console.log('@@@@@@@@ ', bufReverse(a), bufReverse(b), lookFor)
 
-        foundPath = 0;
+        foundSibling = false;
       }
 
       tree.push(dblSha);
@@ -15816,7 +15817,7 @@ console.log('pB: ', proof)
   }
 
   if (index >= 0) {
-    console.log('@@@@@@@@@proof: ', proof)
+    // console.log('@@@@@@@@@proof: ', proof)
     return proof;
   }
 
@@ -15825,29 +15826,34 @@ console.log('pB: ', proof)
 
 exports.getMerkleRoot = function(txs) {
   return getProof(txs, null);
-}
+};
 
-exports.getTxMerkle = function(tx, proofArr) {
+exports.getTxMerkle = function(tx, proofObj) {
   var resultHash = new Buffer(tx, 'hex'),
     left,
-    right;
+    right,
+    txIndex = proofObj.txIndex;
 
-  proofArr.forEach(function(proof) {
-    var proofHex = new Buffer(proof.hash, 'hex');
-    if (proof.path === LEFT_HASH) {
+  proofObj.sibling.forEach(function(sibling) {
+    var proofHex = new Buffer(sibling, 'hex'),
+      sideOfSibling = txIndex % 2;  // 0 means sibling is on the right; 1 means left
+
+    if (sideOfSibling === 1) {
       left = proofHex;
       right = resultHash;
-    } else if (proof.path === RIGHT_HASH) {
+    } else if (sideOfSibling === 0) {
       left = resultHash;
       right = proofHex;
     }
 
     resultHash = twoSha256(Buffer.concat([bufReverse(left), bufReverse(right)]));
     resultHash = bufReverse(resultHash);
-  })
+
+    txIndex = Math.floor(txIndex / 2);
+  });
 
   return resultHash.toString('hex');
-}
+};
 
 }).call(this,require("buffer").Buffer)
 },{"buffer":3,"crypto":10}]},{},[]);

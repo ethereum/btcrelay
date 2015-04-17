@@ -1,3 +1,11 @@
+Apr 16
+may still need this in pyepm per Mar 19:
+else:
+  print('@@@@ NOP')
+
+browserify -r ./index.js:btcproof   is how to get btcproof.js
+
+
 Apr 2
 PV60 around block 17418 are the test transactions using cpp
 
