@@ -134,7 +134,9 @@ function callContract() {
   // 'from' should be the address of the bulk/bridge contract (instead of coinbase)
   var from = gFromAccount;
   console.log('@@@ from gFrom: ', from)
-  // var res = exch.call({from:from, gas:500000}).processTransaction(txHex, txHash);
+
+  var res;
+  // res = exch.call({from:from, gas:500000}).processTransaction(txHex, txHash);
 
   var startTime = Date.now();
   var sendObj = exch.sendTransaction({from:gFromAccount, gas: 3000000}, function(err, result) {
@@ -147,7 +149,7 @@ function callContract() {
   sendObj.processTransaction(txHex, txHash);
 
 
-  if (!!res) {
+  if (res) {
     console.log('@@@@ res.toString(10): ', res.toString(10))
     document.getElementById('result').innerText = res.toString(10);
   }
