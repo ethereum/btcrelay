@@ -82,7 +82,7 @@ var gOurBtcAddr = '61cf5af7bb84348df3fd695672e53c7d5b3f3db9'  // tx1 of block300
 // var gOurBtcAddr = '29a158767437cd82ccf4bd3e34ecd16c267fc363'  // tx3 of block300K
 // var gOurBtcAddr = 'c398efa9c392ba6013c5e04ee729755ef7f58b32'  // tx1 of block100K
 
-var gCoinbase = web3.eth.coinbase;
+var gFromAccount = '0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826';
 
 
 function c22allContract() {
@@ -100,12 +100,12 @@ function c22allContract() {
   // useCall = true;
 
   if (useCall) {
-    var res = contract.call({from:gCoinbase, gas:500000}).foo('ab', 3);
+    var res = contract.call({from:gFromAccount, gas:500000}).foo('ab', 3);
     console.log('@@@@ foo res: ', res)
     document.getElementById('result').innerText = res.toString(10);
   }
   else {
-    var sendObj = contract.sendTransaction({from:gCoinbase, gas:500000}, function(err, result) {
+    var sendObj = contract.sendTransaction({from:gFromAccount, gas:500000}, function(err, result) {
       var res = result;
       console.log('@@@@ foo res: ', res)
       document.getElementById('result').innerText = res.toString(10);
@@ -167,10 +167,10 @@ var gRawTx;
 function callContract() {
   console.log('@@@ in callContract')
   console.log('@@@ btcRelayAbi: ', btcRelayAbi)
-  console.log('@@@ gCoinbase: ', gCoinbase)
+  console.log('@@@ gFromAccount: ', gFromAccount)
 
   var verifyTx;
-  verifyTx = true;  // if commented, it will call relayTx
+  // verifyTx = true;  // if commented, it will call relayTx
 
 
   // TODO don't forget to update the ABI (btcRelayAbi.js & btcEthAbi.js)
@@ -207,9 +207,9 @@ function callContract() {
     console.log('@@@@ going to call() verifyTx')
     var startTime = Date.now();
 
-    // var res = contract.call({from:gCoinbase, gas: 3000000}).computeMerkle(txHash, proofLen, merkleSibling, merklePath);
+    // var res = contract.call({from:gFromAccount, gas: 3000000}).computeMerkle(txHash, proofLen, merkleSibling, merklePath);
 
-    var res = contract.call({from:gCoinbase, gas: 3000000}).verifyTx(txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash);
+    var res = contract.call({from:gFromAccount, gas: 3000000}).verifyTx(txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash);
 
     var endTime = Date.now();
     var durationSec = (endTime - startTime) / 1000;
@@ -227,7 +227,7 @@ function callContract() {
   var exchangeContractAddr = new BigNumber(gExchangeContractAddr);
 
   var startTime = Date.now();
-  var sendObj = contract.sendTransaction({from:gCoinbase, gas: 3000000}, function(err, result) {
+  var sendObj = contract.sendTransaction({from:gFromAccount, gas: 3000000}, function(err, result) {
       var res = result;
       var endTime = Date.now();
       var durationSec = (endTime - startTime) / 1000;
