@@ -74,7 +74,8 @@ var gCpp;
 // }
 // else {
   gRelayAddr = '0x54d39c26e038848290c30cf78de281f0ba65027e';  // Go
-  gExchangeContractAddr = '0x23e14ff5cb6733588d1f4dc30fdfc9a4840d32a4'; // Go
+  gExchangeContractAddr = '0x50e4d8b5a5568bb8039f14ef990b3878c0984907';
+  // gExchangeContractAddr = '0x23e14ff5cb6733588d1f4dc30fdfc9a4840d32a4'; // Go
 // }
 
 
@@ -132,20 +133,32 @@ function callContract() {
 
   // 'from' should be the address of the bulk/bridge contract (instead of coinbase)
   var from = gFromAccount;
-  var res = exch.call({from:from, gas:500000}).processTransaction(txHex, txHash);
-  // var res = exch.transact().processTransaction(txHex);
-  console.log('@@@@ res.toString(10): ', res.toString(10))
-  if (res) {
+  console.log('@@@ from gFrom: ', from)
+  // var res = exch.call({from:from, gas:500000}).processTransaction(txHex, txHash);
+
+  var startTime = Date.now();
+  var sendObj = exch.sendTransaction({from:gFromAccount, gas: 3000000}, function(err, result) {
+      var res = result;
+      var endTime = Date.now();
+      var durationSec = (endTime - startTime) / 1000;
+      console.log('@@@@ processTransaction res: ', res, ' duration: ', durationSec)
+      document.getElementById('result').innerText = res.toString(10) + "    " + durationSec+ "secs";
+  });
+  sendObj.processTransaction(txHex, txHash);
+
+
+  if (!!res) {
+    console.log('@@@@ res.toString(10): ', res.toString(10))
     document.getElementById('result').innerText = res.toString(10);
   }
 }
 
 
 
-// web3.eth.filter({'address': gExchangeContractAddr}).watch(function(res) {
-//   console.log('@@@ gExchangeContractAddr filter')
-//   console.log(res)
-// });
+web3.eth.filter({'address': gExchangeContractAddr}).watch(function(res) {
+  console.log('@@@ gExchangeContractAddr filter')
+  console.log(res)
+});
 
 
 // web3.eth.filter('pending').watch(function (log) {
@@ -164,7 +177,7 @@ function callContract() {
 var gMerkleProof;
 var gBlockHashOfTx;
 var gRawTx;
-function c33333allContract() {
+function c77allContract() {
   console.log('@@@ in callContract')
   console.log('@@@ btcRelayAbi: ', btcRelayAbi)
   console.log('@@@ gFromAccount: ', gFromAccount)
