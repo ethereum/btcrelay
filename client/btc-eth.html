@@ -170,7 +170,7 @@ function callContract() {
   console.log('@@@ gCoinbase: ', gCoinbase)
 
   var verifyTx;
-  // verifyTx = true;  // if commented, it will call relayTx
+  verifyTx = true;  // if commented, it will call relayTx
 
 
   // TODO don't forget to update the ABI (btcRelayAbi.js & btcEthAbi.js)
@@ -196,23 +196,12 @@ function callContract() {
   // TODO check if transHex is prefixed with 0x
   var txHash = new BigNumber('0x' + transHex);
 
-
-  var merkleSibling = [];
-  var merklePath = [];
-  gMerkleProof.forEach(function(proof) {
-    merkleSibling.push(new BigNumber('0x'+proof.hash));
-    merklePath.push(proof.path);
-  })
-
-  // console.log('$$$$$$$$', merkleSibling)
-  // console.log('$$$$$$$$', merklePath)
-
-  var proofLen = merkleSibling.length;
-  // var merklePath = [new BigNumber(1), new BigNumber(2)];
-  // var proofLen = new BigNumber(merkleSibling.length);
   var txBlockHash = new BigNumber('0x'+gBlockHashOfTx);
 
-
+  // web3.js wants 0x prepended
+  var merkleSibling = gMerkleProof.sibling.map(function(sib) {
+    return '0x' + sib;
+  });
 
   if (verifyTx) {
     console.log('@@@@ going to call() verifyTx')
@@ -220,7 +209,7 @@ function callContract() {
 
     // var res = contract.call({from:gCoinbase, gas: 3000000}).computeMerkle(txHash, proofLen, merkleSibling, merklePath);
 
-    var res = contract.call({from:gCoinbase, gas: 3000000}).verifyTx(txHash, proofLen, merkleSibling, merklePath, txBlockHash);
+    var res = contract.call({from:gCoinbase, gas: 3000000}).verifyTx(txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash);
 
     var endTime = Date.now();
     var durationSec = (endTime - startTime) / 1000;
@@ -246,7 +235,7 @@ function callContract() {
       document.getElementById('result').innerText = res.toString(10) + "    " + durationSec+ "secs";
   });
 
-  sendObj.relayTx(txHex, txHash, proofLen, merkleSibling, merklePath, txBlockHash, exchangeContractAddr)
+  sendObj.relayTx(txHex, txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash, exchangeContractAddr)
 }
 
 
