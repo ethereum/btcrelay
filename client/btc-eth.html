@@ -19,13 +19,13 @@
   -->
 
   <script src="./js/bignumber.js"></script>
-  <script src="./js/ethereum.min.js"></script>
+  <script src="./js/web3.min.js"></script>
 
 
   <script src="./js/btcproof.js"></script>
 
 <script type="text/javascript">
-var web3 = require('ethereum.js');
+var web3 = require('web3');
     web3.setProvider(new web3.providers.HttpProvider('http://localhost:8080'));  // port 8545 for Mist
 
 // web3.setProvider(new web3.providers.AutoProvider());
@@ -67,15 +67,15 @@ var gRelayAddr;
 var gExchangeContractAddr;
 var gCpp;
 
-gCpp = true;
-if (gCpp) {
-  gRelayAddr = '0x02f653a05dc68a7df9a74c8eb9a50a15e98bed6e';  // CPP
-  gExchangeContractAddr = '0x205215f022af4950618730bcfae161b28397bc41'; // CPP
-}
-else {
-  gRelayAddr = '0x3297908805dadac5d306768be4e0720c0a1b3d26';  // Go
-  gExchangeContractAddr = '0xefa8f178d75037eb39bb3d5777f80860975fb87e'; // Go
-}
+// gCpp = true;
+// if (gCpp) {
+//   gRelayAddr = '0x02f653a05dc68a7df9a74c8eb9a50a15e98bed6e';  // CPP
+//   gExchangeContractAddr = '0x205215f022af4950618730bcfae161b28397bc41'; // CPP
+// }
+// else {
+  gRelayAddr = '0x54d39c26e038848290c30cf78de281f0ba65027e';  // Go
+  gExchangeContractAddr = '0x23e14ff5cb6733588d1f4dc30fdfc9a4840d32a4'; // Go
+// }
 
 
 var gOurBtcAddr = '61cf5af7bb84348df3fd695672e53c7d5b3f3db9'  // tx1 of block300K
