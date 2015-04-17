@@ -120,19 +120,19 @@ function c22allContract() {
 // This requires that blocks are from block300K
 // this should no longer work because processTransaction can only
 // be called by the (trusted) BtcRelay contract
-function c44allContract() {
+function callContract() {
   console.log('@@@ in testDirectprocessTransaction')
   console.log('@@@ btcToEthAbi: ', btcToEthAbi, ' gExchangeContractAddr: ', gExchangeContractAddr)
 
-
-  var addrExchContract = gExchangeContractAddr;
-  var exch = web3.eth.contract(addrExchContract, btcToEthAbi);
+  var ExchangeContract = web3.eth.contract(btcToEthAbi);
+  var exch = new ExchangeContract(gExchangeContractAddr);
 
   var txHex = '01000000014dff4050dcee16672e48d755c6dd25d324492b5ea306f85a3ab23b4df26e16e9000000008c493046022100cb6dc911ef0bae0ab0e6265a45f25e081fc7ea4975517c9f848f82bc2b80a909022100e30fb6bb4fb64f414c351ed3abaed7491b8f0b1b9bcd75286036df8bfabc3ea5014104b70574006425b61867d2cbb8de7c26095fbc00ba4041b061cf75b85699cb2b449c6758741f640adffa356406632610efb267cb1efa0442c207059dd7fd652eeaffffffff020049d971020000001976a91461cf5af7bb84348df3fd695672e53c7d5b3f3db988ac30601c0c060000001976a914fd4ed114ef85d350d6d40ed3f6dc23743f8f99c488ac00000000';
+  var txHash = new BigNumber('0x7301b595279ece985f0c415e420e425451fcf7f684fcce087ba14d10ffec1121')
 
   // 'from' should be the address of the bulk/bridge contract (instead of coinbase)
-  var from = '0x4a2c77dbf6eee7f957bfe70d2c5a3335010e4390';
-  var res = exch.call({from:from, gas:500000}).processTransaction(txHex);
+  var from = gFromAccount;
+  var res = exch.call({from:from, gas:500000}).processTransaction(txHex, txHash);
   // var res = exch.transact().processTransaction(txHex);
   console.log('@@@@ res.toString(10): ', res.toString(10))
   if (res) {
@@ -142,10 +142,10 @@ function c44allContract() {
 
 
 
-web3.eth.filter({'address': gExchangeContractAddr}).watch(function(res) {
-  console.log('@@@ gExchangeContractAddr filter')
-  console.log(res)
-});
+// web3.eth.filter({'address': gExchangeContractAddr}).watch(function(res) {
+//   console.log('@@@ gExchangeContractAddr filter')
+//   console.log(res)
+// });
 
 
 // web3.eth.filter('pending').watch(function (log) {
@@ -164,10 +164,11 @@ web3.eth.filter({'address': gExchangeContractAddr}).watch(function(res) {
 var gMerkleProof;
 var gBlockHashOfTx;
 var gRawTx;
-function callContract() {
+function c33333allContract() {
   console.log('@@@ in callContract')
   console.log('@@@ btcRelayAbi: ', btcRelayAbi)
   console.log('@@@ gFromAccount: ', gFromAccount)
+
 
   var verifyTx;
   // verifyTx = true;  // if commented, it will call relayTx
