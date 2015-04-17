@@ -121,7 +121,7 @@ function c22allContract() {
 // This requires that blocks are from block300K
 // this should no longer work because processTransaction can only
 // be called by the (trusted) BtcRelay contract
-function callContract() {
+function c22allContract() {
   console.log('@@@ in testDirectprocessTransaction')
   console.log('@@@ btcToEthAbi: ', btcToEthAbi, ' gExchangeContractAddr: ', gExchangeContractAddr)
 
@@ -179,7 +179,7 @@ web3.eth.filter({'address': gExchangeContractAddr}).watch(function(res) {
 var gMerkleProof;
 var gBlockHashOfTx;
 var gRawTx;
-function c77allContract() {
+function callContract() {
   console.log('@@@ in callContract')
   console.log('@@@ btcRelayAbi: ', btcRelayAbi)
   console.log('@@@ gFromAccount: ', gFromAccount)
