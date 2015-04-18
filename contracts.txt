@@ -1,3 +1,10 @@
+Apr 17
+0x50e4d8b5a5568bb8039f14ef990b3878c0984907 is the exchange contract
+that returns tx.origin as in:
+if msg.sender != self.trustedBtcRelay:
+      if tx.origin != self.owner:  # tx.origin is superset of msg.sender, so no need for checking msg.sender==self.owner
+          return(tx.origin)
+
 Apr 16
 may still need this in pyepm per Mar 19:
 else:
