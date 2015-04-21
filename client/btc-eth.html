@@ -157,7 +157,11 @@ function c22allContract() {
 
 
 
-web3.eth.filter({'address': gExchangeContractAddr}).watch(function(res) {
+web3.eth.filter({'address': gExchangeContractAddr}).watch(function(err, res) {
+  if (err) {
+    console.log('@@@ ERROR gExchangeContractAddr filter: ', err)
+    return;
+  }
   console.log('@@@ gExchangeContractAddr filter')
   console.log(res)
 });
