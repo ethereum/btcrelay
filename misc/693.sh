@@ -16,6 +16,8 @@ do
    }
    ],"id":1}' http://localhost:8080
 
+   sleep 5
+
    curl -X POST --data '{"jsonrpc":"2.0","method":"eth_getTransactionCount","params":[
     "0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826",
     "pending"
