@@ -71,8 +71,8 @@ var gOurBtcAddr;
 
 gBtcTestnet = true;
 if (gBtcTestnet) {
-  gRelayAddr = '0xfd7a5d5349a2b69a817868f206346990af2a9e87';
-  gExchangeContractAddr = '0x24d4ed00b826be9f9020c6254c3be95a8be6af8a';
+  gRelayAddr = '0xba164d1e85526bd5e27fd15ad14b0eae91c45a93';
+  gExchangeContractAddr = '0x1ca0fe8f95d6430001542b0c7b3bf9a5b8e6d19a';
 
   gOurBtcAddr = '0xa0dc485fc3ade71be5e1b68397abded386c0adb7';
 }
@@ -174,7 +174,23 @@ web3.eth.filter({'address': gExchangeContractAddr}).watch(function(err, res) {
     document.getElementById('result').innerText = 'ether sent.  Check your address!';
   }
   else {
-    document.getElementById('result').innerText = 'Bitcoin Transaction Hash is incorrect, or try sending your Bitcoins again';
+    document.getElementById('result').innerText = 'Bitcoin Transaction not accepted.  Make sure you have sent enough Bitcoins.';
+  }
+});
+
+// CPP apparently can call watch() multiple times and doesn't protect against duplicates
+web3.eth.filter({'address': gRelayAddr}).watch(function(err, res) {
+  if (err) {
+    console.log('@@@ ERROR gRelayAddr filter: ', err)
+    return;
+  }
+  console.log('@@@ gRelayAddr filter')
+  console.log(res)
+
+  var logDataFromRelay = res.data;
+
+  if (web3.toDecimal(logDataFromRelay) === -9999) {
+    document.getElementById('result').innerText = 'Bitcoin Transaction not accepted.  Wait for more confirmations or send your Bitcoins again.';
   }
 });
 
