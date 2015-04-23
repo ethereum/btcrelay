@@ -262,9 +262,54 @@ function callContract() {
 }
 
 
+function getTxInfo() {
+  var txid = $('#transHex').val();
+  console.log('@@@ txid: ', txid);
+
+  var urlHexTx = "https://blockchain.info/rawtx/"+txid+"?format=hex&cors=true";
+  $.ajax(urlHexTx).done(function(data) {
+      // console.log('@@@ hex: ', data)
+      gRawTx = data;
+      $('#txHexText').val(gRawTx);
+  });
+
+  var urlJsonTx = "https://btc.blockr.io/api/v1/tx/raw/" + txid;
+  $.getJSON(urlJsonTx, function(data) {
+      console.log('@@@ data: ', data)
+
+      var blockNum = data.data.tx.blockhash; // blockr does not easily provide block height
+      $('#txBlockNum').text('n/a for blockr.io');
+      // $('#txBlockNum').text(blockNum);
+
+      var blockInfoUrl = "http://btc.blockr.io/api/v1/block/raw/"+blockNum;
+      $.getJSON(blockInfoUrl, function(res) {
+          console.log('@@@ res: ', res)
+
+          gBlockHashOfTx = res.data.hash;
+          $('#txBlockHash').text(gBlockHashOfTx)
+
+          var txIndex;
+          for (var key in res.data.tx) {
+            if (res.data.tx[key] == txid) {
+              txIndex = key;
+              break;
+            }
+          }
+
+          // var txIndex = Object.keys(res.data.tx).indexOf(txid);
+          console.log('@@@@ txIndex: ', txIndex)
+
+          gMerkleProof = btcproof.getProof(res.data.tx, txIndex);
+          console.log('@@@ mp: ', gMerkleProof)
+          $('#mProof').val(JSON.stringify(gMerkleProof));
+      })
+
+  })
+}
+
 
 // fff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4
-function getTxInfo() {
+function bci_getTxInfo() {
   var txid = $('#transHex').val();
   console.log('@@@ txid: ', txid);
 
