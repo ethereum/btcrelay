@@ -69,10 +69,10 @@ var gBtcTestnet;
 var gOurBtcAddr;
 
 
-// gBtcTestnet = true;
+gBtcTestnet = true;
 if (gBtcTestnet) {
   gRelayAddr = '0xfd7a5d5349a2b69a817868f206346990af2a9e87';
-  gExchangeContractAddr = '0xa220cc29eea1d6d00283e1ac3d3eafcaa85626af';
+  gExchangeContractAddr = '0x24d4ed00b826be9f9020c6254c3be95a8be6af8a';
 
   gOurBtcAddr = '0xa0dc485fc3ade71be5e1b68397abded386c0adb7';
 }
@@ -259,15 +259,9 @@ function callContract() {
   var exchangeContractAddr = new BigNumber(gExchangeContractAddr);
 
   var startTime = Date.now();
-  var sendObj = contract.sendTransaction({from:gFromAccount, gas: 3000000}, function(err, result) {
-      var res = result;
-      var endTime = Date.now();
-      var durationSec = (endTime - startTime) / 1000;
-      console.log('@@@@ relayTx res: ', res, ' duration: ', durationSec)
-      document.getElementById('result').innerText = res.toString(10) + "    " + durationSec+ "secs";
-  });
-
+  var sendObj = contract.sendTransaction({from:gFromAccount, gas: 3000000});
   sendObj.relayTx(txHex, txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash, exchangeContractAddr)
+  document.getElementById('result').innerText = 'Ethereum transaction is in progress...'
 }
 
 
