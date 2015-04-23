@@ -1,0 +1,58 @@
+# Deploy contracts
+-
+  deploy:
+    RelayWithBulkStore:
+      contract: btcBulkStoreHeaders.py
+      gas: 3000000
+      gas_price: 10000000000000
+      wait: True
+
+# genesis is block 350540 previous
+-
+  transact:
+    SetThePreGenesis:
+      gas: 3000000
+      gas_price: 10000000000000
+      to: $RelayWithBulkStore
+      fun_name: setPreGenesis
+      sig: i
+      data:
+        - 0x0000000008c2959240ce83444a02acf8c3227951f53caaec49caf569e434be15
+      wait: True
+
+
+-
+  deploy:
+    BtcEth:
+      contract: btc-eth.py
+      gas: 3000000
+      endowment: 1600
+      wait: True
+
+-
+  transact:
+    SetTrustedBtcRelay:
+      gas: 100000
+      to: $BtcEth
+      fun_name: setTrustedBtcRelay
+      sig: i
+      data:
+        - $BtcRelay
+      wait: True
+
+
+# testnet bitcoin address is mvBWJFv8Uc84YEyZKBm8HZQ7qrvmBiH7zR
+#
+# When testing with the frontend, all the should be needed is to
+# change (temporarily) the btcAddr data below, use the same btcAddr in the frontend,
+# and update the frontend's gExchangeContractAddr
+-
+  transact:
+    SetBtcAddr:
+      gas: 100000
+      to: $BtcEth
+      fun_name: testingonlySetBtcAddr
+      sig: i
+      data:
+        - 0xa0dc485fc3ade71be5e1b68397abded386c0adb7
+      wait: True
