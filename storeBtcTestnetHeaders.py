@@ -16,62 +16,32 @@ to = "0xfd7a5d5349a2b69a817868f206346990af2a9e87"
 # to = "0x0fd51f042310093b9d8df57d37a42c3523537a99"
 
 
+def main22():
+    chainHead = getBlockchainHead()
+    print('@@@ chainHead: %s' % blockHashHex(chainHead))
+
+
 def main():
     genesisNum = 350540
-    bhJson = blockr_get_block_header_data(genesisNum, network='testnet')
-    bhStr = serialize_header(bhJson)
-    print("@@@ {0}: {1}").format(genesisNum, bhStr)
-
-
-def main222():
-    initialSkip = True
-    # currHead = 0x00000000184d61d43e667b4aebe6224e0a3265a2be87048b7924d7339de6095d
-    currHead = getBlockchainHead()
-
     chunkSize = 5
-    numHeader = 80000
-    nIter = numHeader / chunkSize
+    chunkStartNum = genesisNum
+    numChunk = 2
 
-    strings = ""
-    i = 0
-    nTime = 0
+    for j in range(numChunk):
+        strings = ""
+        for i in range(chunkSize):
+            blockNum = chunkStartNum  + i
+            bhJson = blockr_get_block_header_data(blockNum, network='testnet')
+            bhStr = serialize_header(bhJson)
+            print("@@@ {0}: {1}").format(blockNum, bhStr)
+            strings += bhStr
 
-    startTime = datetime.now().time()
-    print("@@@ START: %s" % startTime)
+        storeHeaders(strings.decode('hex'), chunkSize)
 
-    with open("test/headers/bh80k.txt") as f:
-        for header in f:
+        chainHead = getBlockchainHead()
+        print('@@@ DONE hexHead: %s' % blockHashHex(chainHead))
 
-            if initialSkip:
-                bhBinary = header[:-1].decode('hex')  # [:-1] to remove trailing \n
-                headerInt = int(bin_dbl_sha256(bhBinary[-80:])[::-1].encode('hex'), 16)
-                if headerInt == currHead:
-                    initialSkip = False
-                continue;
-
-
-            i += 1
-            strings += header[:-1]  # [:-1] to remove trailing \n
-
-            if i % chunkSize == 0:
-                storeHeaders(strings.decode('hex'), chunkSize)
-                strings = ""
-                nTime += 1
-
-                if nTime % 5 == 0:
-                    chainHead = getBlockchainHead()
-                    print('@@@ hexHead: %s' % blockHashHex(chainHead))
-
-            if nTime == nIter:
-                break
-
-    chainHead = getBlockchainHead()
-    print('@@@ DONE hexHead: %s' % blockHashHex(chainHead))
-
-
-    endTime = datetime.now().time()
-    duration = datetime.combine(date.today(), endTime) - datetime.combine(date.today(), startTime)
-    print("********** duration: "+str(duration)+" ********** start:"+str(startTime)+" end:"+str(endTime))
+        chunkStartNum += chunkSize
 
 
 def storeHeaders(bhBinary, chunkSize):
