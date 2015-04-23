@@ -266,22 +266,30 @@ function getTxInfo() {
   var txid = $('#transHex').val();
   console.log('@@@ txid: ', txid);
 
-  var urlHexTx = "https://blockchain.info/rawtx/"+txid+"?format=hex&cors=true";
-  $.ajax(urlHexTx).done(function(data) {
-      // console.log('@@@ hex: ', data)
-      gRawTx = data;
-      $('#txHexText').val(gRawTx);
-  });
-
-  var urlJsonTx = "https://btc.blockr.io/api/v1/tx/raw/" + txid;
+  var urlJsonTx;
+  if (gBtcTestnet) {
+      urlJsonTx = "https://tbtc.blockr.io/api/v1/tx/raw/" + txid;
+  }
+  else {
+      urlJsonTx = "https://btc.blockr.io/api/v1/tx/raw/" + txid;
+  }
   $.getJSON(urlJsonTx, function(data) {
       console.log('@@@ data: ', data)
+
+      gRawTx = data.data.tx.hex;
+      $('#txHexText').val(gRawTx);
 
       var blockNum = data.data.tx.blockhash; // blockr does not easily provide block height
       $('#txBlockNum').text('n/a for blockr.io');
       // $('#txBlockNum').text(blockNum);
 
-      var blockInfoUrl = "http://btc.blockr.io/api/v1/block/raw/"+blockNum;
+      var blockInfoUrl;
+      if (gBtcTestnet) {
+          blockInfoUrl = "http://tbtc.blockr.io/api/v1/block/raw/"+blockNum;
+      }
+      else {
+          blockInfoUrl = "http://btc.blockr.io/api/v1/block/raw/"+blockNum;
+      }
       $.getJSON(blockInfoUrl, function(res) {
           console.log('@@@ res: ', res)
 
