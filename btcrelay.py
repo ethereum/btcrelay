@@ -134,15 +134,23 @@ def verifyTx(txHash, txIndex, sibling:arr, txBlockHash):
         return(0)
 
 
-# returns the value of processTransaction().  callers should explicitly
-# check for a value of 1, since other non-zero values could be error codes
+# relays transaction to target 'contract' processTransaction() method.
+# returns and logs the value of processTransaction().
+#
+# if the transaction does not meet verification, error code -9999
+# is logged on both this contract and target contract
 #
 # TODO txHash can eventually be computed (dbl sha256 then flip32Bytes) when
 # txStr becomes txBinary
 def relayTx(txStr:str, txHash, txIndex, sibling:arr, txBlockHash, contract):
     if self.verifyTx(txHash, txIndex, sibling, txBlockHash) == 1:
         res = contract.processTransaction(txStr, txHash)
+        log(msg.sender, data=[res])
         return(res)
+
+    # log error code -9999 on both this contract and target contract
+    log(msg.sender, data=[-9999])
+    log(contract, data=[-9999])
     return(0)
 
 
