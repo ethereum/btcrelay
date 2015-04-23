@@ -159,7 +159,7 @@ function c22allContract() {
 }
 
 
-
+// CPP apparently can call watch() multiple times and doesn't protect against duplicates
 web3.eth.filter({'address': gExchangeContractAddr}).watch(function(err, res) {
   if (err) {
     console.log('@@@ ERROR gExchangeContractAddr filter: ', err)
@@ -167,6 +167,15 @@ web3.eth.filter({'address': gExchangeContractAddr}).watch(function(err, res) {
   }
   console.log('@@@ gExchangeContractAddr filter')
   console.log(res)
+
+  var contractReturnData = res.data;
+
+  if (web3.toDecimal(contractReturnData) === 1) {
+    document.getElementById('result').innerText = 'ether sent.  Check your address!';
+  }
+  else {
+    document.getElementById('result').innerText = 'Bitcoin Transaction Hash is incorrect, or try sending your Bitcoins again';
+  }
 });
 
 
