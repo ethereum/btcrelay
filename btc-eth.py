@@ -17,7 +17,8 @@ def testingonlySetBtcAddr(btcAddr):
     return(0)
 
 def shared():
-    BTC_NEED = 5 * 10**8 # satoshis
+    BTC_NEED = 1700000 # 1.7mBTC for btcTestnet
+    # BTC_NEED = 5 * 10**8 # satoshis
     MY_BTC_ADDR = 0xc398efa9c392ba6013c5e04ee729755ef7f58b32  # testable with tx[1] from block100K
     ETH_TO_SEND = 13  # wei
 
@@ -41,16 +42,19 @@ def processTransaction(txStr:str, txHash):
     # apart from trustedBtcRelay, only the owner may claim ether
     if msg.sender != self.trustedBtcRelay:
         if tx.origin != self.owner:  # tx.origin is superset of msg.sender, so no need for checking msg.sender==self.owner
+            log(msg.sender, data=[-10])
             return(0)
 
     # only the owner may reclaim; trustedBtcRelay and others can NOT reclaim
     if self.txClaim[txHash] != 0:
         if tx.origin != self.owner:  # allow owner to keep reclaiming (helpful in testing)
+            log(msg.sender, data=[-20])
             return(0)
 
     outputData = self.getFirst2Outputs(txStr, outitems=3)
 
     if outputData == 0:
+        log(msg.sender, data=[-30])
         return(0)
 
     numSatoshi = outputData[0]
@@ -76,6 +80,7 @@ def processTransaction(txStr:str, txHash):
         log(msg.sender, data=[res])
         return(res)
 
+    log(msg.sender, data=[-100])
     return(0)
 
 
