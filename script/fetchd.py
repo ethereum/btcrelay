@@ -13,7 +13,7 @@ except:
 
 BITCOIN_MAINNET = 'btc'
 BITCOIN_TESTNET = 'testnet'
-SLEEP_TIME = 5 # 60 * 10 # 10 mins
+SLEEP_TIME = 60 * 10 # 10 mins
 
 # Makes a request to a given URL (first arg) and optional params (second arg)
 def make_request(*args):
