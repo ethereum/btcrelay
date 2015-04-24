@@ -3,6 +3,27 @@ from datetime import datetime, date
 from pyepm import api, config
 from bitcoin import *
 
+try:
+    from urllib.request import build_opener
+except:
+    from urllib2 import build_opener
+
+
+# Makes a request to a given URL (first arg) and optional params (second arg)
+def make_request(*args):
+    opener = build_opener()
+    opener.addheaders = [('User-agent',
+                          'Mozilla/5.0'+str(random.randrange(1000000)))]
+    try:
+        return opener.open(*args).read().strip()
+    except Exception as e:
+        try:
+            p = e.read().strip()
+        except:
+            p = e
+        raise Exception(p)
+
+
 
 api_config = config.read_config()
 instance = api.Api(api_config)
@@ -16,16 +37,28 @@ to = "0xba164d1e85526bd5e27fd15ad14b0eae91c45a93"
 # to = "0x0fd51f042310093b9d8df57d37a42c3523537a99"
 
 
-def main22():
-    chainHead = getBlockchainHead()
-    print('@@@ chainHead: %s' % blockHashHex(chainHead))
-
-
 def main():
+    network = 'testnet'
+    chainHead = blockHashHex(getBlockchainHead())
+
+    blockInfoUrl = "https://tbtc.blockr.io/api/v1/block/info/"
+
+    data = make_request(blockInfoUrl + chainHead)
+    jsonobj = json.loads(data)
+    contractHeight = jsonobj["data"]["nb"]
+
+    actualHeight = last_block_height(network)
+
+    print('@@@ heights: {0} {1}').format(contractHeight, actualHeight)
+
+    print('@@@ chainHead: %s' % chainHead)
+
+
+def getFromGenesis():
     genesisNum = 350540
     chunkSize = 5
     chunkStartNum = genesisNum
-    numChunk = 6
+    numChunk = 1
 
     for j in range(numChunk):
         strings = ""
