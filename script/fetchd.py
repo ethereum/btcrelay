@@ -13,6 +13,7 @@ except:
 
 BITCOIN_MAINNET = 'btc'
 BITCOIN_TESTNET = 'testnet'
+SLEEP_TIME = 5 # 60 * 10 # 10 mins
 
 # Makes a request to a given URL (first arg) and optional params (second arg)
 def make_request(*args):
@@ -43,15 +44,21 @@ def main():
     parser.add_argument('--fetch', action='store_true', help='fetch blockheaders')
     parser.add_argument('-s', '--sender', required=True, help='sender of transaction')
     parser.add_argument('-r', '--relay', required=True, help='relay contract address')
-    parser.add_argument('-n', '--network', default=BITCOIN_TESTNET, choices=[BITCOIN_TESTNET, BITCOIN_MAINNET], help='relay contract address')
+    parser.add_argument('-n', '--network', default=BITCOIN_TESTNET, choices=[BITCOIN_TESTNET, BITCOIN_MAINNET], help='Bitcoin network')
+    parser.add_argument('-d', '--daemon', default=False, action='store_true', help='run as daemon')
 
     args = parser.parse_args()
-    print(args)
 
     instance.address = args.sender
     instance.relayContract = args.relay
 
-    run(doFetch=args.fetch)
+    if not args.daemon:
+        run(doFetch=args.fetch)
+        return
+
+    while True:
+        run(doFetch=args.fetch)
+        sleep(SLEEP_TIME)
 
 
 def run(doFetch=False, network=BITCOIN_TESTNET):
