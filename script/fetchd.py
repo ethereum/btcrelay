@@ -53,13 +53,21 @@ def main():
 
     print('@@@ chainHead: %s' % chainHead)
 
-
-def getFromGenesis():
-    genesisNum = 350540
     chunkSize = 5
-    chunkStartNum = genesisNum
-    numChunk = 1
+    fetchNum =  actualHeight - contractHeight
+    numChunk = fetchNum / chunkSize
+    leftoverToFetch = fetchNum % chunkSize
 
+    print('@@@ numChunk: {0} leftoverToFetch: {1}').format(numChunk, leftoverToFetch)
+
+    fetchHeaders(contractHeight+1, chunkSize, numChunk)
+    fetchHeaders(actualHeight-leftoverToFetch, 1, leftoverToFetch)
+
+    sleep(3)
+    print('@@@ chainHead: %s' % chainHead)
+
+
+def fetchHeaders(chunkStartNum, chunkSize, numChunk):
     for j in range(numChunk):
         strings = ""
         for i in range(chunkSize):
