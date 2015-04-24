@@ -11,7 +11,7 @@ macro parseVarInt($txStr, $cursor):
 
 # return 0 if tx has less than 2 outputs
 # or other error, otherwise return array
-# of [out1stSatoshis, out1stScriptIndex, out2ndScriptSize]
+# of [out1stSatoshis, out1stScriptIndex, out2ndScriptIndex]
 def getFirst2Outputs(txStr:str):
     cursor = 4  # skip version
 
