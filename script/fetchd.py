@@ -1,5 +1,6 @@
 from datetime import datetime, date
 from time import sleep
+from argparse import ArgumentParser
 
 from pyepm import api, config
 from bitcoin import *
@@ -29,17 +30,23 @@ def make_request(*args):
 api_config = config.read_config()
 instance = api.Api(api_config)
 
-# CPP
-instance.address = "0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826"
-to = "0xba164d1e85526bd5e27fd15ad14b0eae91c45a93"
 
-# GO
-# instance.address = "0x9dc2299a76b68b7ffa9e3ba0fd8cd7646d21d409"
-# to = "0x0fd51f042310093b9d8df57d37a42c3523537a99"
+# instance.address = "0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826"
+# instance.relayContract = "0xba164d1e85526bd5e27fd15ad14b0eae91c45a93"
 
 
 def main():
-    run()
+    parser = ArgumentParser()
+    parser.add_argument('--fetch', action='store_true', help='fetch blockheaders')
+    parser.add_argument('-s', '--sender', required=True, help='sender of transaction')
+    parser.add_argument('-r', '--relay', required=True, help='relay contract address')
+    args = parser.parse_args()
+
+    instance.address = args.sender
+    instance.relayContract = args.relay
+
+    run(doFetch=args.fetch)
+
 
 def run(doFetch=False):
     network = 'testnet'
@@ -126,7 +133,7 @@ def storeHeaders(bhBinary, chunkSize):
     if wait:
         from_block = instance.last_block()
 
-    instance.transact(to, fun_name=fun_name, sig=sig, data=data, gas=gas, gas_price=gas_price, value=value)
+    instance.transact(instance.relayContract, fun_name=fun_name, sig=sig, data=data, gas=gas, gas_price=gas_price, value=value)
 
     # instance.wait_for_transaction(
     #     from_count=from_count,
@@ -139,21 +146,6 @@ def storeHeaders(bhBinary, chunkSize):
                 #verbose=(True if api_config.get('misc', 'verbosity') > 1 else False))
                 verbose=True)
             from_block = instance.last_block()
-
-
-    # 2nd try
-    # instance.transact(to, fun_name=fun_name, sig=sig, data=data, gas=gas, gas_price=gas_price, value=value)
-    # instance.wait_for_transaction(
-    #     from_count=from_count,
-    #     #verbose=(True if api_config.get('misc', 'verbosity') > 1 else False))
-    #     verbose=True)
-    #
-    # if wait:
-    #     instance.wait_for_next_block(from_block=from_block,
-    #         #verbose=(True if api_config.get('misc', 'verbosity') > 1 else False))
-    #         verbose=True)
-
-
 
     chainHead = getBlockchainHead()
     expHead = int(bin_dbl_sha256(bhBinary[-80:])[::-1].encode('hex'), 16)
@@ -172,7 +164,7 @@ def getBlockchainHead():
     sig = ''
     data = []
 
-    callResult = instance.call(to, fun_name=fun_name, sig=sig, data=data, gas=gas, gas_price=gas_price)
+    callResult = instance.call(instance.relayContract, fun_name=fun_name, sig=sig, data=data, gas=gas, gas_price=gas_price)
     chainHead = callResult[0] if len(callResult) else callResult
     return chainHead
 
