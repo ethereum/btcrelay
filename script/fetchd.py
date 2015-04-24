@@ -66,7 +66,7 @@ def run(doFetch=False):
 
     if doFetch:
         fetchHeaders(contractHeight+1, chunkSize, numChunk)
-        fetchHeaders(actualHeight-leftoverToFetch, 1, leftoverToFetch)
+        fetchHeaders(actualHeight-leftoverToFetch+1, 1, leftoverToFetch)
 
         sleep(3)
         print('@@@ chainHead: %s' % chainHead)
