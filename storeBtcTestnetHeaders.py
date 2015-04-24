@@ -9,7 +9,7 @@ instance = api.Api(api_config)
 
 # CPP
 instance.address = "0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826"
-to = "0xfd7a5d5349a2b69a817868f206346990af2a9e87"
+to = "0xba164d1e85526bd5e27fd15ad14b0eae91c45a93"
 
 # GO
 # instance.address = "0x9dc2299a76b68b7ffa9e3ba0fd8cd7646d21d409"
@@ -25,7 +25,7 @@ def main():
     genesisNum = 350540
     chunkSize = 5
     chunkStartNum = genesisNum
-    numChunk = 2
+    numChunk = 6
 
     for j in range(numChunk):
         strings = ""
