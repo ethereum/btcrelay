@@ -38,6 +38,9 @@ to = "0xba164d1e85526bd5e27fd15ad14b0eae91c45a93"
 
 
 def main():
+    run()
+
+def run(doFetch=False):
     network = 'testnet'
     chainHead = blockHashHex(getBlockchainHead())
 
@@ -60,11 +63,12 @@ def main():
 
     print('@@@ numChunk: {0} leftoverToFetch: {1}').format(numChunk, leftoverToFetch)
 
-    fetchHeaders(contractHeight+1, chunkSize, numChunk)
-    fetchHeaders(actualHeight-leftoverToFetch, 1, leftoverToFetch)
+    if doFetch:
+        fetchHeaders(contractHeight+1, chunkSize, numChunk)
+        fetchHeaders(actualHeight-leftoverToFetch, 1, leftoverToFetch)
 
-    sleep(3)
-    print('@@@ chainHead: %s' % chainHead)
+        sleep(3)
+        print('@@@ chainHead: %s' % chainHead)
 
 
 def fetchHeaders(chunkStartNum, chunkSize, numChunk):
