@@ -11,6 +11,9 @@ except:
     from urllib2 import build_opener
 
 
+BITCOIN_MAINNET = 'btc'
+BITCOIN_TESTNET = 'testnet'
+
 # Makes a request to a given URL (first arg) and optional params (second arg)
 def make_request(*args):
     opener = build_opener()
@@ -40,7 +43,10 @@ def main():
     parser.add_argument('--fetch', action='store_true', help='fetch blockheaders')
     parser.add_argument('-s', '--sender', required=True, help='sender of transaction')
     parser.add_argument('-r', '--relay', required=True, help='relay contract address')
+    parser.add_argument('-n', '--network', default=BITCOIN_TESTNET, choices=[BITCOIN_TESTNET, BITCOIN_MAINNET], help='relay contract address')
+
     args = parser.parse_args()
+    print(args)
 
     instance.address = args.sender
     instance.relayContract = args.relay
@@ -48,11 +54,13 @@ def main():
     run(doFetch=args.fetch)
 
 
-def run(doFetch=False):
-    network = 'testnet'
+def run(doFetch=False, network=BITCOIN_TESTNET):
     chainHead = blockHashHex(getBlockchainHead())
 
-    blockInfoUrl = "https://tbtc.blockr.io/api/v1/block/info/"
+    if network == BITCOIN_MAINNET:
+        blockInfoUrl = "https://btc.blockr.io/api/v1/block/info/"
+    else:
+        blockInfoUrl = "https://tbtc.blockr.io/api/v1/block/info/"
 
     data = make_request(blockInfoUrl + chainHead)
     jsonobj = json.loads(data)
@@ -72,19 +80,19 @@ def run(doFetch=False):
     print('@@@ numChunk: {0} leftoverToFetch: {1}').format(numChunk, leftoverToFetch)
 
     if doFetch:
-        fetchHeaders(contractHeight+1, chunkSize, numChunk)
-        fetchHeaders(actualHeight-leftoverToFetch+1, 1, leftoverToFetch)
+        fetchHeaders(contractHeight+1, chunkSize, numChunk, network=network)
+        fetchHeaders(actualHeight-leftoverToFetch+1, 1, leftoverToFetch, network=network)
 
         sleep(3)
         print('@@@ chainHead: %s' % chainHead)
 
 
-def fetchHeaders(chunkStartNum, chunkSize, numChunk):
+def fetchHeaders(chunkStartNum, chunkSize, numChunk, network=BITCOIN_TESTNET):
     for j in range(numChunk):
         strings = ""
         for i in range(chunkSize):
             blockNum = chunkStartNum  + i
-            bhJson = blockr_get_block_header_data(blockNum, network='testnet')
+            bhJson = blockr_get_block_header_data(blockNum, network=network)
             bhStr = serialize_header(bhJson)
             print("@@@ {0}: {1}").format(blockNum, bhStr)
             strings += bhStr
