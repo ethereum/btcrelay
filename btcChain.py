@@ -40,7 +40,7 @@ def inMainChain(txBlockHash):
     # By assuming that a block with height 0 does not exist, we can do
     # this optimization and immediate say that txBlockHash is not in the main chain.
     # However, the consequence is that
-    # the genesis block must be at height 1 instead of 0 [see setPreGenesis()]
+    # the genesis block must be at height 1 instead of 0 [see setInitialParent()]
     if !txBlockHeight:
         return(0)
 

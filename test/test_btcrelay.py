@@ -39,7 +39,7 @@ class TestBtcRelay(object):
     # also tests a (fake) fork
     def testHeadersFrom100K(self):
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
-        self.c.setPreGenesis(block100kPrev, 99999, 1)
+        self.c.setInitialParent(block100kPrev, 99999, 1)
 
         headers = [
             "0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710",
@@ -137,7 +137,7 @@ class TestBtcRelay(object):
     # no longer be on the main chain
     def testReorg(self):
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
-        self.c.setPreGenesis(block100kPrev, 99999, 1)
+        self.c.setInitialParent(block100kPrev, 99999, 1)
 
 
 
@@ -216,7 +216,7 @@ class TestBtcRelay(object):
 
     def testWithin6Confirms(self):
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
-        self.c.setPreGenesis(block100kPrev, 99999, 1)
+        self.c.setInitialParent(block100kPrev, 99999, 1)
 
         headers = [
             "0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710",
@@ -250,7 +250,7 @@ class TestBtcRelay(object):
 
 
     def storeGenesisBlock(self):
-        self.c.setPreGenesis(0, 0, 1)
+        self.c.setInitialParent(0, 0, 1)
 
         blockHeaderStr = ("0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c")
         bhBinary = blockHeaderStr.decode('hex')
@@ -296,7 +296,7 @@ class TestBtcRelay(object):
 
     def testStoreBlockHeader(self):
         block300K = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
-        self.c.setPreGenesis(block300K, 299999, 1)
+        self.c.setInitialParent(block300K, 299999, 1)
 
         # version = 2
         # hashPrevBlock = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
@@ -332,6 +332,6 @@ class TestBtcRelay(object):
         wrappedMerkle = res['output'] % 2**256
         assert wrappedMerkle == expMerkle
 
-    def testSetPreGenesisOnlyOnce(self):
-        assert self.c.setPreGenesis(0, 0, 1) == 1
-        assert self.c.setPreGenesis(0, 0, 1) == 0
+    def testsetInitialParentOnlyOnce(self):
+        assert self.c.setInitialParent(0, 0, 1) == 1
+        assert self.c.setInitialParent(0, 0, 1) == 0

@@ -47,7 +47,7 @@ window.btcRelayAbi = [{
     "outputs": []
 },
 {
-    "name": "setPreGenesis(int256)",
+    "name": "setInitialParent(int256)",
     "type": "function",
     "inputs": [{ "name": "blockHash", "type": "int256" }],
     "outputs": [{ "name": "out", "type": "int256" }]

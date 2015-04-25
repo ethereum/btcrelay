@@ -12,7 +12,7 @@ extern relayDestination: [processTransaction:si:i]
 # a Bitcoin block (header) is stored as:
 # - _blockHeader 80 bytes
 # - _height is 1 more than the typical Bitcoin term height/blocknumber [see setPreGensesis()]
-# - _score is 1 more than the cumulative difficulty [see setPreGenesis()]
+# - _score is 1 more than the cumulative difficulty [see setInitialParent()]
 # - _ancestor list for more efficient backtracking (see btcChain)
 data block[2^256](_height, _score, _ancestor[9], _blockHeader[])
 
@@ -43,7 +43,7 @@ def testingonlySetHeaviest(blockHash):
 # of Satoshi's genesis block which have 0 transactions until much later on
 #
 # Since zero is the value that indicates non-existence, block _height
-# and _score have to be set carefully and they have these consequences:
+# and _score have to be set carefully:
 #
 # - _height is 1 more than the typical Bitcoin
 # term height/blocknumber. ie genesis has height 1 instead of 0
@@ -52,8 +52,8 @@ def testingonlySetHeaviest(blockHash):
 # difficulty". eg the cumulative difficulty at the block after genesis
 # is 2 (it and genesis have difficulty of 1), but this contract assigns
 # a score of 3 for the block after genesis [see testStoringHeaders()]
-def setPreGenesis(blockHash, height, cumulativeDifficulty):
-    # reuse highScore as the flag for whether setPreGenesis() has already been called
+def setInitialParent(blockHash, height, cumulativeDifficulty):
+    # reuse highScore as the flag for whether setInitialParent() has already been called
     if self.highScore != 0:
         return(0)
     else:
@@ -167,7 +167,7 @@ def getLastBlockHeight():
 
 # return the (total) cumulative difficulty of the Head
 def getCumulativeDifficulty():
-    # Because of setPreGenesis(), the score is 1 more than than the
+    # Because of setInitialParent(), the score is 1 more than than the
     # cumulative difficulty
     cumulDifficulty = self.block[self.heaviestBlock]._score - 1
     return(cumulDifficulty)

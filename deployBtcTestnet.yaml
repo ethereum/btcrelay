@@ -14,7 +14,7 @@
       gas: 3000000
       gas_price: 10000000000000
       to: $RelayWithBulkStore
-      fun_name: setPreGenesis
+      fun_name: setInitialParent
       sig: i
       data:
         - 0x0000000008c2959240ce83444a02acf8c3227951f53caaec49caf569e434be15

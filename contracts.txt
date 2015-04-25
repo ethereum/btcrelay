@@ -145,7 +145,7 @@ Done in block3450
 
 Scenario2: testRelayTx
 
->>> api.abi_data('setPreGenesis', 'i', [0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250])
+>>> api.abi_data('setInitialParent', 'i', [0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250])
 '0x3b880072000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250'
 Done in local chain, relay contract is 3432c7f5ca6552fca2f641575135578cb724eb1f
 
