@@ -412,16 +412,18 @@ $(function() {
       <img src="./images/ethereum-logo-small.png"/>
     </div>
 
-    <h2>Get ether with bitcoin <small>&nbsp;&nbsp;&nbsp; 1000 ether per 1BTC</small></h2>
+    <h2>Get ether with bitcoin
+      <small>&nbsp;&nbsp;&nbsp; BITCOIN TESTNET 13 wei per 1.7mBTC</small>
+      <!-- <small>&nbsp;&nbsp;&nbsp; 1000 ether per 1BTC</small> -->
+    </h2>
 
     <p class="lead">Contract at <span id="exchAddr"></span> has
       <span id="exchBal"></span> ether.
-      <br>
-      To get ether, submit 1 Bitcoin transaction with 2 outputs:</p>
-    <ul>
-      <li>1st sending BTC to <strong id="ourBtcAddr"></strong></li>
-      <li>2nd sending 0.0001 BTC to <strong>your</strong> Ethereum Address</li>
-    </ul>
+      <br>https://github.com/ethers/btcToEther
+
+      <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModal">
+        Advanced alternative
+      </button>
 
     <p>After sending the BTC, <strong>Lookup</strong> the hash of your
       Bitcoin transaction here, and then click
@@ -485,6 +487,32 @@ $(function() {
     </div>
   </div>
 
+
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Advanced manual instructions</h4>
+        </div>
+        <div class="modal-body">
+          To get ether, submit 1 Bitcoin transaction with 2 outputs:</p>
+          <ul>
+            <li>1st sending BTC to <strong id="ourBtcAddr"></strong></li>
+            <li>2nd sending 0.0001 BTC to <strong>your</strong> Ethereum Address</li>
+          </ul>
+          <p>After sending the BTC, <strong>Lookup</strong> the hash of your
+            Bitcoin transaction here, and then click
+            <strong>Claim Ether</strong> below.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 
 </html>
