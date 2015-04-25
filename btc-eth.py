@@ -17,8 +17,8 @@ def testingonlySetBtcAddr(btcAddr):
     return(0)
 
 def shared():
-    BTC_NEED = 170000 # 1.7mBTC for btcTestnet
-    # BTC_NEED = 5 * 10**8 # satoshis
+    # BTC_NEED = 170000 # 1.7mBTC for btcTestnet
+    BTC_NEED = 5 * 10**8 # satoshis
     MY_BTC_ADDR = 0xc398efa9c392ba6013c5e04ee729755ef7f58b32  # testable with tx[1] from block100K
     ETH_TO_SEND = 13  # wei
 

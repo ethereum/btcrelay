@@ -124,7 +124,7 @@ class TestTxVerify(object):
         # store block headers
         #
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
-        self.c.setPreGenesis(block300kPrev, 99999, 1)
+        self.c.setPreGenesis(block100kPrev, 99999, 1)
 
         headers = [
             "0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710",
@@ -138,7 +138,7 @@ class TestTxVerify(object):
         blockHeaderBinary = map(lambda x: x.decode('hex'), headers)
         for i in range(7):
             res = self.c.storeBlockHeader(blockHeaderBinary[i])
-            assert res == i+1
+            assert res == i+100000
 
         # tx[1] fff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4
         txStr = '0100000001032e38e9c0a84c6046d687d10556dcacc41d275ec55fc00779ac88fdf357a187000000008c493046022100c352d3dd993a981beba4a63ad15c209275ca9470abfcd57da93b58e4eb5dce82022100840792bc1f456062819f15d33ee7055cf7b5ee1af1ebcc6028d9cdb1c3af7748014104f46db5e9d61a9dc27b8d64ad23e7383a4e6ca164593c2527c038c0857eb67ee8e825dca65046b82c9331586c82e0fd1f633f25f87c161bc6f8a630121df2b3d3ffffffff0200e32321000000001976a914c398efa9c392ba6013c5e04ee729755ef7f58b3288ac000fe208010000001976a914948c765a6914d43f2a7ac177da2c2f6b52de3d7c88ac00000000'
@@ -148,9 +148,6 @@ class TestTxVerify(object):
         header = {'nonce': 274148111, 'hash': u'000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506', 'timestamp': 1293623863, 'merkle_root': u'f3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766', 'version': 1, 'prevhash': u'000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250', 'bits': 453281356}
         hashes = [u'8c14f0db3df150123e6f3dbbf30f8b955a8249b62ac1d1ff16284aefa3d06d87', u'fff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4', u'6359f0868171b1d194cbee1af2f16ea598ae8fad666d9b012c8ed2b79a236ec4', u'e9a66845e05d5abc0ad04ec80f774a7e585c6e8db975962d069a522137b80c1d']
         [txHash, txIndex, siblings, txBlockHash] = makeMerkleProof(header, hashes, 1)
-
-        print('jjj')
-        print([txHash, txIndex, siblings, txBlockHash])
 
         # verify the proof and then hand the proof to the btc-eth contract, which will check
         # the tx outputs and send ether as appropriate
@@ -206,7 +203,7 @@ class TestTxVerify(object):
         blockHeaderBinary = map(lambda x: x.decode('hex'), headers)
         for i in range(7):
             res = self.c.storeBlockHeader(blockHeaderBinary[i])
-            assert res == i+1
+            assert res == i+100000
 
         # block 100000
         header = {'nonce': 274148111, 'hash': u'000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506', 'timestamp': 1293623863, 'merkle_root': u'f3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766', 'version': 1, 'prevhash': u'000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250', 'bits': 453281356}
@@ -256,7 +253,7 @@ class TestTxVerify(object):
         blockHeaderBinary = map(lambda x: x.decode('hex'), headers)
         for i in range(7):
             res = self.c.storeBlockHeader(blockHeaderBinary[i])
-            assert res == i+1
+            assert res == i+100000
 
             res = self.c.relayTx(txStr, txHash, txIndex, siblings, txBlockHash, BTC_ETH.address)
 
@@ -286,7 +283,7 @@ class TestTxVerify(object):
         blockHeaderBinary = map(lambda x: x.decode('hex'), headers)
         for i in range(7):
             res = self.c.storeBlockHeader(blockHeaderBinary[i])
-            assert res == i+1
+            assert res == i+100000
 
         # block 100000
         header = {'nonce': 274148111, 'hash': u'000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506', 'timestamp': 1293623863, 'merkle_root': u'f3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766', 'version': 1, 'prevhash': u'000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250', 'bits': 453281356}
@@ -311,7 +308,7 @@ class TestTxVerify(object):
 
             for header in f:
                 res = self.c.storeBlockHeader(header[:-1].decode('hex'))  # [:-1] to remove \n
-                assert res == i
+                assert res == i-1+startBlockNum
                 if i==numBlock:
                     break
                 i += 1
@@ -348,7 +345,7 @@ class TestTxVerify(object):
         blockHeaderBinary = map(lambda x: x.decode('hex'), headers)
         for i in range(7):
             res = self.c.storeBlockHeader(blockHeaderBinary[i])
-            assert res == i+1
+            assert res == i+100000
 
         startBlockNum = 100000
         numBlock = 7
@@ -419,7 +416,7 @@ class TestTxVerify(object):
         ]
         for i in range(8):  # different from testRandomTxVerify()
             res = self.c.storeRawBlockHeader(headers[i])
-            assert res == i+1
+            assert res == i+100000
 
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
         self.c.setPreGenesis(block300kPrev, 99999, 1) # even changing this to testingonlySetHeaviest doesn't make test pass
@@ -445,7 +442,7 @@ class TestTxVerify(object):
         ]
         for i in range(7):
             res = self.c.storeRawBlockHeader(headers[i])
-            assert res == i+1
+            assert res == i+100000
 
         res = self.randomTxVerify(100001, 8)
         assert res == 0

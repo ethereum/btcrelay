@@ -116,7 +116,7 @@ class TestBtcBulkStoreHeaders(object):
         res = self.c.bulkStoreHeader(headerBins, numBlock, profiling=True)
 
         print('GAS: '+str(res['gas']))
-        assert res['output'] == numBlock
+        assert res['output'] == numBlock-1 + startBlockNum
 
         # block 300000
         # data from pybitcointools, eg
@@ -238,7 +238,7 @@ class TestBtcBulkStoreHeaders(object):
     # @pytest.mark.veryslow
     def testBulkStore5(self):
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
-        self.c.setPreGenesis(block100kPrev, startBlockNum-1, 1)
+        self.c.setPreGenesis(block100kPrev, 99999, 1)
 
         # 7 here, but only storing 5 headers since OOG
         headers = [
@@ -260,4 +260,4 @@ class TestBtcBulkStoreHeaders(object):
 
         res = self.c.bulkStoreHeader(headerBins, count, profiling=True)
         print('GAS: '+str(res['gas']))
-        assert res['output'] == count
+        assert res['output'] == count-1 + 100000
