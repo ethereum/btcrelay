@@ -189,7 +189,8 @@ web3.eth.filter({'address': gRelayAddr}).watch(function(err, res) {
 
   var logDataFromRelay = res.data;
 
-  if (web3.toDecimal(logDataFromRelay) === -9999) {
+  // if (web3.toDecimal(logDataFromRelay) === -9999) {
+  if (logDataFromRelay === '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd8f1') {
     document.getElementById('result').innerText = 'Bitcoin Transaction not accepted.  Wait for more confirmations or send your Bitcoins again.';
   }
 });
