@@ -41,9 +41,11 @@ instance = api.Api(api_config)
 
 def main():
     parser = ArgumentParser()
-    parser.add_argument('--fetch', action='store_true', help='fetch blockheaders')
     parser.add_argument('-s', '--sender', required=True, help='sender of transaction')
     parser.add_argument('-r', '--relay', required=True, help='relay contract address')
+    parser.add_argument('--startBlock', required=True, type=int, help='block number to start fetching from')
+
+    parser.add_argument('--fetch', action='store_true', help='fetch blockheaders')
     parser.add_argument('-n', '--network', default=BITCOIN_TESTNET, choices=[BITCOIN_TESTNET, BITCOIN_MAINNET], help='Bitcoin network')
     parser.add_argument('-d', '--daemon', default=False, action='store_true', help='run as daemon')
 
@@ -51,6 +53,7 @@ def main():
 
     instance.address = args.sender
     instance.relayContract = args.relay
+    instance.heightToStartFetch = args.startBlock
 
     if not args.daemon:
         run(doFetch=args.fetch)
@@ -70,41 +73,21 @@ def run(doFetch=False, network=BITCOIN_TESTNET):
     else:
         blockInfoUrl = "https://tbtc.blockr.io/api/v1/block/info/"
 
-    # retry network every 2mins; review this logic if SLEEP_TIME changes
-    for i in range(4):
-        try:
-            data = make_request(blockInfoUrl + chainHead)
-        except Exception as e:
-            print(e)
-            print('Retry in 2mins')
-            sleep(120)
-
-            if i == 3:
-                return
-            continue
-        break
-
-    jsonobj = json.loads(data)
-    contractHeight = jsonobj["data"]["nb"]
-    heightToStartFetch = contractHeight - 4  # handle up to 5 orphan blocks
-
     actualHeight = last_block_height(network)
 
-    print('@@@ heights: {0} {1} {2}').format(contractHeight, heightToStartFetch, actualHeight)
+    print('@@@ startFetch: {0} actualHeight: {1}').format(instance.heightToStartFetch, actualHeight)
 
     chunkSize = 5
-    fetchNum =  actualHeight - heightToStartFetch
+    fetchNum =  actualHeight - instance.heightToStartFetch
     numChunk = fetchNum / chunkSize
     leftoverToFetch = fetchNum % chunkSize
 
     print('@@@ numChunk: {0} leftoverToFetch: {1}').format(numChunk, leftoverToFetch)
 
     if doFetch:
-        fetchHeaders(heightToStartFetch, chunkSize, numChunk, network=network)
+        fetchHeaders(instance.heightToStartFetch, chunkSize, numChunk, network=network)
         fetchHeaders(actualHeight-leftoverToFetch+1, 1, leftoverToFetch, network=network)
-
-        sleep(3)
-        print('@@@ chainHead: %s' % chainHead)
+        instance.heightToStartFetch = actualHeight + 1  # update next heightToStartFetch
 
 
 def fetchHeaders(chunkStartNum, chunkSize, numChunk, network=BITCOIN_TESTNET):
