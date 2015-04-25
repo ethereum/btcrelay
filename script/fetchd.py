@@ -69,7 +69,19 @@ def run(doFetch=False, network=BITCOIN_TESTNET):
     else:
         blockInfoUrl = "https://tbtc.blockr.io/api/v1/block/info/"
 
-    data = make_request(blockInfoUrl + chainHead)
+    # retry network every 2mins
+    for i in range(4):
+        while True:
+            try:
+                data = make_request(blockInfoUrl + chainHead)
+            except Exception as e:
+                sleep(120)
+
+                if i == 3:
+                    return
+                continue
+            break
+
     jsonobj = json.loads(data)
     contractHeight = jsonobj["data"]["nb"]
 
