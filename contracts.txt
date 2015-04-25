@@ -1,3 +1,9 @@
+Apr 24
+btcToEther github, follow instructions, after sending BTC don't forget to finalize
+http://52.8.73.68/btc-eth.html
+geth with --rpccorsdomain http://52.8.73.68
+
+
 Apr 17
 0x50e4d8b5a5568bb8039f14ef990b3878c0984907 is the exchange contract
 that returns tx.origin as in:
