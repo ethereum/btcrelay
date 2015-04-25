@@ -86,20 +86,21 @@ def run(doFetch=False, network=BITCOIN_TESTNET):
 
     jsonobj = json.loads(data)
     contractHeight = jsonobj["data"]["nb"]
+    heightToStartFetch = contractHeight - 4  # handle up to 5 orphan blocks
 
     actualHeight = last_block_height(network)
 
-    print('@@@ heights: {0} {1}').format(contractHeight, actualHeight)
+    print('@@@ heights: {0} {1} {2}').format(contractHeight, heightToStartFetch, actualHeight)
 
     chunkSize = 5
-    fetchNum =  actualHeight - contractHeight
+    fetchNum =  actualHeight - heightToStartFetch
     numChunk = fetchNum / chunkSize
     leftoverToFetch = fetchNum % chunkSize
 
     print('@@@ numChunk: {0} leftoverToFetch: {1}').format(numChunk, leftoverToFetch)
 
     if doFetch:
-        fetchHeaders(contractHeight+1, chunkSize, numChunk, network=network)
+        fetchHeaders(heightToStartFetch, chunkSize, numChunk, network=network)
         fetchHeaders(actualHeight-leftoverToFetch+1, 1, leftoverToFetch, network=network)
 
         sleep(3)
