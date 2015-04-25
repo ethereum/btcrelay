@@ -75,6 +75,8 @@ def run(doFetch=False, network=BITCOIN_TESTNET):
             try:
                 data = make_request(blockInfoUrl + chainHead)
             except Exception as e:
+                print(e)
+                print('Retry in 2mins')
                 sleep(120)
 
                 if i == 3:
