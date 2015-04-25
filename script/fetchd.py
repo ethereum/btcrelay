@@ -13,7 +13,7 @@ except:
 
 BITCOIN_MAINNET = 'btc'
 BITCOIN_TESTNET = 'testnet'
-SLEEP_TIME = 60 * 10 # 10 mins
+SLEEP_TIME = 60 * 10 # 10 mins, if changing this need to review retry logic
 
 # Makes a request to a given URL (first arg) and optional params (second arg)
 def make_request(*args):
@@ -63,26 +63,26 @@ def main():
 
 def run(doFetch=False, network=BITCOIN_TESTNET):
     chainHead = blockHashHex(getBlockchainHead())
+    print('@@@ chainHead: %s' % chainHead)
 
     if network == BITCOIN_MAINNET:
         blockInfoUrl = "https://btc.blockr.io/api/v1/block/info/"
     else:
         blockInfoUrl = "https://tbtc.blockr.io/api/v1/block/info/"
 
-    # retry network every 2mins
+    # retry network every 2mins; review this logic if SLEEP_TIME changes
     for i in range(4):
-        while True:
-            try:
-                data = make_request(blockInfoUrl + chainHead)
-            except Exception as e:
-                print(e)
-                print('Retry in 2mins')
-                sleep(120)
+        try:
+            data = make_request(blockInfoUrl + chainHead)
+        except Exception as e:
+            print(e)
+            print('Retry in 2mins')
+            sleep(120)
 
-                if i == 3:
-                    return
-                continue
-            break
+            if i == 3:
+                return
+            continue
+        break
 
     jsonobj = json.loads(data)
     contractHeight = jsonobj["data"]["nb"]
@@ -90,8 +90,6 @@ def run(doFetch=False, network=BITCOIN_TESTNET):
     actualHeight = last_block_height(network)
 
     print('@@@ heights: {0} {1}').format(contractHeight, actualHeight)
-
-    print('@@@ chainHead: %s' % chainHead)
 
     chunkSize = 5
     fetchNum =  actualHeight - contractHeight
