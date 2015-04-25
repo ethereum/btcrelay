@@ -81,7 +81,7 @@ class TestBtcBulkStoreHeaders(object):
 
     def bulkStore11FromGenesis(self):
         numBlock = 11
-        self.c.setPreGenesis(0)
+        self.c.setPreGenesis(0, 0, 1)
 
         strings = ""
         with open("test/headers/firstEleven.txt") as f:
@@ -99,7 +99,7 @@ class TestBtcBulkStoreHeaders(object):
         numBlock = 10
 
         block300kPrev = 0x000000000000000067ecc744b5ae34eebbde14d21ca4db51652e4d67e155f07e
-        self.c.setPreGenesis(block300kPrev)
+        self.c.setPreGenesis(block300kPrev, startBlockNum-1, 1)
 
         strings = ""
         i = 1
@@ -169,7 +169,7 @@ class TestBtcBulkStoreHeaders(object):
         numBlock = 60
 
         block300kPrev = 0x000000000000000067ecc744b5ae34eebbde14d21ca4db51652e4d67e155f07e
-        self.c.setPreGenesis(block300kPrev)
+        self.c.setPreGenesis(block300kPrev, startBlockNum-1, 1)
 
         nLoop = 2
         j = 0
@@ -207,7 +207,7 @@ class TestBtcBulkStoreHeaders(object):
         numBlock = 60
 
         block300kPrev = 0x000000000000000067ecc744b5ae34eebbde14d21ca4db51652e4d67e155f07e
-        self.c.setPreGenesis(block300kPrev)
+        self.c.setPreGenesis(block300kPrev, startBlockNum-1, 1)
 
         strings = ""
         i = 1
@@ -238,7 +238,7 @@ class TestBtcBulkStoreHeaders(object):
     # @pytest.mark.veryslow
     def testBulkStore5(self):
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
-        self.c.setPreGenesis(block100kPrev)
+        self.c.setPreGenesis(block100kPrev, startBlockNum-1, 1)
 
         # 7 here, but only storing 5 headers since OOG
         headers = [

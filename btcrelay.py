@@ -52,7 +52,7 @@ def testingonlySetHeaviest(blockHash):
 # difficulty". eg the cumulative difficulty at the block after genesis
 # is 2 (it and genesis have difficulty of 1), but this contract assigns
 # a score of 3 for the block after genesis [see testStoringHeaders()]
-def setPreGenesis(blockHash):
+def setPreGenesis(blockHash, height, cumulativeDifficulty):
     # reuse highScore as the flag for whether setPreGenesis() has already been called
     if self.highScore != 0:
         return(0)
@@ -64,12 +64,12 @@ def setPreGenesis(blockHash):
     # _height cannot be set to -1 because inMainChain() assumes that
     # a block with height0 does NOT exist, thus we cannot allow the
     # real genesis block to be at height0
-    self.block[blockHash]._height = 0
+    self.block[blockHash]._height = height
 
     # set score to 1, since score0 means block does NOT exist. see check in storeBlockHeader()
     # this means that the score of a block is 1 more than the
     # cumulative difficulty to that block
-    self.block[blockHash]._score = 1
+    self.block[blockHash]._score = cumulativeDifficulty
 
     ancLen = self.numAncestorDepths
     i = 0
@@ -158,6 +158,11 @@ def relayTx(txStr:str, txHash, txIndex, sibling:arr, txBlockHash, contract):
 def getBlockchainHead():
     # log(self.heaviestBlock)
     return(self.heaviestBlock)
+
+
+# return the height of the heaviest block aka the Head
+def getLastBlockHeight():
+    return(self.block[self.heaviestBlock]._height - 1)  # -1 to follow the usual Bitcoin standard where genesis is height0
 
 
 # return the (total) cumulative difficulty of the Head

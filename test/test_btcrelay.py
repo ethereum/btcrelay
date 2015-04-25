@@ -39,7 +39,7 @@ class TestBtcRelay(object):
     # also tests a (fake) fork
     def testHeadersFrom100K(self):
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
-        self.c.setPreGenesis(block100kPrev)
+        self.c.setPreGenesis(block100kPrev, 99999, 1)
 
         headers = [
             "0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710",
@@ -54,7 +54,7 @@ class TestBtcRelay(object):
         for i in range(7):
             res = self.c.storeBlockHeader(blockHeaderBinary[i])
             # print('@@@@ real chain score: ' + str(self.c.getCumulativeDifficulty()))
-            assert res == i+1
+            assert res == i+100000
 
         cumulDiff = self.c.getCumulativeDifficulty()
 
@@ -117,7 +117,7 @@ class TestBtcRelay(object):
             hashPrevBlock = self.c.fastHashBlock(blockHeaderBinary)
 
             # print('@@@@ fake chain score: ' + str(self.c.getCumulativeDifficulty()))
-            assert res == i+1
+            assert res == i+100000
 
         assert self.c.getCumulativeDifficulty() == cumulDiff  # cumulDiff should not change
         assert b6 == self.c.getBlockchainHead()
@@ -137,7 +137,7 @@ class TestBtcRelay(object):
     # no longer be on the main chain
     def testReorg(self):
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
-        self.c.setPreGenesis(block100kPrev)
+        self.c.setPreGenesis(block100kPrev, 99999, 1)
 
 
 
@@ -173,7 +173,7 @@ class TestBtcRelay(object):
             blockHeaderBinary = self.getBlockHeaderBinary(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
             res = self.c.storeBlockHeader(blockHeaderBinary)
             hashPrevBlock = self.c.fastHashBlock(blockHeaderBinary)
-            assert res == i+1
+            assert res == i+100000
 
         # testingonlySetHeaviest is needed because the difficulty from
         # EASIEST_DIFFICULTY_TARGET becomes 0 and so the score does not
@@ -201,7 +201,7 @@ class TestBtcRelay(object):
         block100k = 0x000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506
         for i in range(7):
             res = self.c.storeBlockHeader(blockHeaderBinary[i])
-            assert res == i+1
+            assert res == i+100000
 
             # firstEasyBlock should no longer verify since it is no longer on the main chain
             res = self.c.verifyTx(tx, txIndex, sibling, firstEasyBlock)
@@ -216,7 +216,7 @@ class TestBtcRelay(object):
 
     def testWithin6Confirms(self):
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
-        self.c.setPreGenesis(block100kPrev)
+        self.c.setPreGenesis(block100kPrev, 99999, 1)
 
         headers = [
             "0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710",
@@ -230,7 +230,7 @@ class TestBtcRelay(object):
         blockHeaderBinary = map(lambda x: x.decode('hex'), headers)
         for i in range(7):
             res = self.c.storeBlockHeader(blockHeaderBinary[i])
-            assert res == i+1
+            assert res == i+100000
 
 
         blockHash = [
@@ -250,7 +250,7 @@ class TestBtcRelay(object):
 
 
     def storeGenesisBlock(self):
-        self.c.setPreGenesis(0)
+        self.c.setPreGenesis(0, 0, 1)
 
         blockHeaderStr = ("0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c")
         bhBinary = blockHeaderStr.decode('hex')
@@ -275,6 +275,7 @@ class TestBtcRelay(object):
 
         block1Hash = 0x00000000839a8e6886ab5951d76f411475428afc90947ee320161bbf18eb6048
         assert self.c.getBlockchainHead() == block1Hash
+        assert self.c.getLastBlockHeight() == 1
 
         assert self.c.getCumulativeDifficulty() == 2
 
@@ -295,7 +296,7 @@ class TestBtcRelay(object):
 
     def testStoreBlockHeader(self):
         block300K = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
-        self.c.setPreGenesis(block300K)
+        self.c.setPreGenesis(block300K, 299999, 1)
 
         # version = 2
         # hashPrevBlock = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
@@ -307,7 +308,7 @@ class TestBtcRelay(object):
         blockHeaderStr = '0200000059c786bb379b65487f373279354f8ccc91ffcea2200c36080000000000000000dd9d7757a736fec629ab0ed0f602ba23c77afe7edec85a7026f641fd90bcf8f658ca8154747b1b1894fc742f'
         bhBinary = blockHeaderStr.decode('hex')
 
-        assert self.c.storeBlockHeader(bhBinary) == 1
+        assert self.c.storeBlockHeader(bhBinary) == 300000
 
     def testFastHashBlock(self):
         blockHeaderStr = "0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710"
@@ -332,5 +333,5 @@ class TestBtcRelay(object):
         assert wrappedMerkle == expMerkle
 
     def testSetPreGenesisOnlyOnce(self):
-        assert self.c.setPreGenesis(0) == 1
-        assert self.c.setPreGenesis(0) == 0
+        assert self.c.setPreGenesis(0, 0, 1) == 1
+        assert self.c.setPreGenesis(0, 0, 1) == 0

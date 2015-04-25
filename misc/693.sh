@@ -4,7 +4,7 @@
 
 a=0
 
-while [ $a -lt 3 ]
+while [ $a -lt 10 ]
 do
    echo $a
    curl -X POST --data '{"jsonrpc":"2.0","method":"eth_sendTransaction","params":[{
