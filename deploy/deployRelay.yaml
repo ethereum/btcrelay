@@ -1,0 +1,21 @@
+-
+  deploy:
+    RelayWithBulkStore:
+      contract: ../btcBulkStoreHeaders.py
+      gas: 3000000
+      gas_price: 10000000000000
+      wait: True
+
+-
+  transact:
+    SetInitialParent:
+      gas: 3000000
+      gas_price: 10000000000000
+      to: $RelayWithBulkStore
+      fun_name: setInitialParent
+      sig: iii
+      data:
+        - 0x00000000000000000c199cf1b66f9fa71d3de88ee16567fec2493a7dfd8801ba
+        - 353670
+        - 7752624141721183493029888
+      wait: True
