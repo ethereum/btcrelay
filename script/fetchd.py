@@ -82,7 +82,7 @@ def run(doFetch=False, network=BITCOIN_TESTNET):
     print('@@@ startFetch: {0} actualHeight: {1}').format(instance.heightToStartFetch, actualHeight)
 
     chunkSize = 5
-    fetchNum =  actualHeight - instance.heightToStartFetch
+    fetchNum =  actualHeight - instance.heightToStartFetch + 1
     numChunk = fetchNum / chunkSize
     leftoverToFetch = fetchNum % chunkSize
 
