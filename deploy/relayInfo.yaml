@@ -1,0 +1,30 @@
+-
+  set:
+    RelayWithBulkStore: "0x87ed6c7b36a51fc3616d1f7b4ac13230976f49be"
+
+-
+  call:
+    getBlockchainHead:
+      gas: 500000
+      gas_price: 1
+      to: $RelayWithBulkStore
+      fun_name: getBlockchainHead
+      sig: ''
+
+-
+  call:
+    getLastBlockHeight:
+      gas: 500000
+      gas_price: 1
+      to: $RelayWithBulkStore
+      fun_name: getLastBlockHeight
+      sig: ''
+
+-
+  call:
+    getCumulativeDifficulty:
+      gas: 500000
+      gas_price: 1
+      to: $RelayWithBulkStore
+      fun_name: getCumulativeDifficulty
+      sig: ''
