@@ -13,7 +13,7 @@ except:
 
 BITCOIN_MAINNET = 'btc'
 BITCOIN_TESTNET = 'testnet'
-SLEEP_TIME = 5 * 60 # 5 mins
+SLEEP_TIME = 5 * 60 # 5 mins.  If changing, check retry logic
 
 # Makes a request to a given URL (first arg) and optional params (second arg)
 def make_request(*args):
@@ -64,8 +64,17 @@ def main():
         return
 
     while True:
-        run(doFetch=args.fetch, network=args.network)
-        sleep(SLEEP_TIME)
+        for i in range(4):
+            try:
+                run(doFetch=args.fetch, network=args.network)
+                sleep(SLEEP_TIME)
+            except Exception as e:
+                print(e)
+                print('Retry in 1min')
+                sleep(60)
+                continue
+            break
+
 
 
 def run(doFetch=False, network=BITCOIN_TESTNET):
