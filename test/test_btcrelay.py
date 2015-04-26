@@ -275,9 +275,9 @@ class TestBtcRelay(object):
 
         block1Hash = 0x00000000839a8e6886ab5951d76f411475428afc90947ee320161bbf18eb6048
         assert self.c.getBlockchainHead() == block1Hash
-        assert self.c.getLastBlockHeight() == 1
+        assert self.c.getLastBlockHeight() == 1 + 1  # +1 since setInitialParent was called with imaginary block
 
-        assert self.c.getCumulativeDifficulty() == 2
+        assert self.c.getCumulativeDifficulty() == 2 + 1  # +1 since setInitialParent was called with imaginary block
 
 
     def testStoreExistingHeader(self):

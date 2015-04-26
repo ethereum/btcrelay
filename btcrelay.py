@@ -33,25 +33,17 @@ def testingonlySetHeaviest(blockHash):
     self.heaviestBlock = blockHash
 
 
-# this has 2 purposes:
-# 1) this can only be called once and is to "store" the block
-# with hash zeroes, so that storing the real genesis
-# block can be done using storeBlockHeader() instead of a special case
+# this can only be called once and allows testing of storing
+# arbitrary headers and verifying/relaying transactions,
+# say from block 300K, instead of Satoshi's genesis block which
+# have 0 transactions until much later on
 #
-# 2) allows testing of storing arbitrary headers and verifying/relaying
-# transactions, say from block 300K, instead
-# of Satoshi's genesis block which have 0 transactions until much later on
+# This should be called using a real block on the Bitcoin blockchain.
 #
-# Since zero is the value that indicates non-existence, block _height
-# and _score have to be set carefully:
-#
-# - _height is 1 more than the typical Bitcoin
-# term height/blocknumber. ie genesis has height 1 instead of 0
-#
-# - _score is 1 more than the cumulative "Bitcoin standard
-# difficulty". eg the cumulative difficulty at the block after genesis
-# is 2 (it and genesis have difficulty of 1), but this contract assigns
-# a score of 3 for the block after genesis [see testStoringHeaders()]
+# Note: If used to store the imaginary block before Satoshi's
+# genesis, then it should be called as setInitialParent(0, 0, 1) and
+# means that getLastBlockHeight() and getCumulativeDifficulty() will be
+# 1 more than the usual: eg Satoshi's genesis has height 1 instead of 0
 def setInitialParent(blockHash, height, cumulativeDifficulty):
     # reuse highScore as the flag for whether setInitialParent() has already been called
     if self.highScore != 0:
@@ -62,13 +54,12 @@ def setInitialParent(blockHash, height, cumulativeDifficulty):
     self.heaviestBlock = blockHash
 
     # _height cannot be set to -1 because inMainChain() assumes that
-    # a block with height0 does NOT exist, thus we cannot allow the
-    # real genesis block to be at height0
+    # a block with height0 does NOT exist (thus we cannot allow the
+    # real genesis block to be at height0)
     self.block[blockHash]._height = height
 
-    # set score to 1, since score0 means block does NOT exist. see check in storeBlockHeader()
-    # this means that the score of a block is 1 more than the
-    # cumulative difficulty to that block
+    # do NOT pass cumulativeDifficulty of 0, since score0 means
+    # block does NOT exist. see check in storeBlockHeader()
     self.block[blockHash]._score = cumulativeDifficulty
 
     ancLen = self.numAncestorDepths
@@ -162,14 +153,12 @@ def getBlockchainHead():
 
 # return the height of the heaviest block aka the Head
 def getLastBlockHeight():
-    return(self.block[self.heaviestBlock]._height - 1)  # -1 to follow the usual Bitcoin standard where genesis is height0
+    return(self.block[self.heaviestBlock]._height)
 
 
 # return the (total) cumulative difficulty of the Head
 def getCumulativeDifficulty():
-    # Because of setInitialParent(), the score is 1 more than than the
-    # cumulative difficulty
-    cumulDifficulty = self.block[self.heaviestBlock]._score - 1
+    cumulDifficulty = self.block[self.heaviestBlock]._score
     return(cumulDifficulty)
 
 
@@ -182,14 +171,14 @@ def getCumulativeDifficulty():
 def getAverageBlockDifficulty():
     blockHash = self.heaviestBlock
 
-    cumulDifficultyHead = self.block[blockHash]._score - 1
+    cumulDifficultyHead = self.block[blockHash]._score
 
     i = 0
     while i < 10:
         blockHash = getPrevBlock(blockHash)
         i += 1
 
-    cumulDifficulty10Ancestors = self.block[blockHash]._score - 1
+    cumulDifficulty10Ancestors = self.block[blockHash]._score
 
     return(cumulDifficultyHead - cumulDifficulty10Ancestors)
 
