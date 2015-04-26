@@ -29,6 +29,12 @@ window.btcRelayAbi = [{
     "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
+    "name": "getLastBlockHeight()",
+    "type": "function",
+    "inputs": [],
+    "outputs": [{ "name": "out", "type": "int256" }]
+},
+{
     "name": "inMainChain(int256)",
     "type": "function",
     "inputs": [{ "name": "txBlockHash", "type": "int256" }],
@@ -47,9 +53,9 @@ window.btcRelayAbi = [{
     "outputs": []
 },
 {
-    "name": "setInitialParent(int256)",
+    "name": "setInitialParent(int256,int256,int256)",
     "type": "function",
-    "inputs": [{ "name": "blockHash", "type": "int256" }],
+    "inputs": [{ "name": "blockHash", "type": "int256" }, { "name": "height", "type": "int256" }, { "name": "cumulativeDifficulty", "type": "int256" }],
     "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
