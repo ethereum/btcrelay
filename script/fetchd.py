@@ -56,11 +56,11 @@ def main():
     instance.heightToStartFetch = args.startBlock
 
     if not args.daemon:
-        run(doFetch=args.fetch)
+        run(doFetch=args.fetch, network=args.network)
         return
 
     while True:
-        run(doFetch=args.fetch)
+        run(doFetch=args.fetch, network=args.network)
         sleep(SLEEP_TIME)
 
 
