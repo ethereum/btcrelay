@@ -43,8 +43,8 @@ def main():
     parser = ArgumentParser()
     parser.add_argument('-s', '--sender', required=True, help='sender of transaction')
     parser.add_argument('-r', '--relay', required=True, help='relay contract address')
-    parser.add_argument('--startBlock', required=True, type=int, help='block number to start fetching from')
 
+    parser.add_argument('--startBlock', default=0, type=int, help='block number to start fetching from')
     parser.add_argument('--fetch', action='store_true', help='fetch blockheaders')
     parser.add_argument('-n', '--network', default=BITCOIN_TESTNET, choices=[BITCOIN_TESTNET, BITCOIN_MAINNET], help='Bitcoin network')
     parser.add_argument('-d', '--daemon', default=False, action='store_true', help='run as daemon')
@@ -53,7 +53,11 @@ def main():
 
     instance.address = args.sender
     instance.relayContract = args.relay
-    instance.heightToStartFetch = args.startBlock
+
+    contractHeight = getLastBlockHeight()  # needs instance.relayContract to be set
+    print('@@@ contract height: {0}').format(contractHeight)
+
+    instance.heightToStartFetch = args.startBlock or contractHeight+1
 
     if not args.daemon:
         run(doFetch=args.fetch, network=args.network)
@@ -87,7 +91,7 @@ def run(doFetch=False, network=BITCOIN_TESTNET):
     if doFetch:
         fetchHeaders(instance.heightToStartFetch, chunkSize, numChunk, network=network)
         fetchHeaders(actualHeight-leftoverToFetch+1, 1, leftoverToFetch, network=network)
-        instance.heightToStartFetch = actualHeight + 1  # update next heightToStartFetch
+        instance.heightToStartFetch = getLastBlockHeight() + 1  # update next heightToStartFetch
 
 
 def fetchHeaders(chunkStartNum, chunkSize, numChunk, network=BITCOIN_TESTNET):
@@ -167,8 +171,20 @@ def storeHeaders(bhBinary, chunkSize):
         # sys.exit(1)
 
 
+def getLastBlockHeight():
+    gas = 500000
+    gas_price = 1
+
+    fun_name = 'getLastBlockHeight'
+    sig = ''
+    data = []
+
+    callResult = instance.call(instance.relayContract, fun_name=fun_name, sig=sig, data=data, gas=gas, gas_price=gas_price)
+    chainHead = callResult[0] if len(callResult) else callResult
+    return chainHead
+
 def getBlockchainHead():
-    gas = 3000000
+    gas = 500000
     gas_price = 1
 
     fun_name = 'getBlockchainHead'
