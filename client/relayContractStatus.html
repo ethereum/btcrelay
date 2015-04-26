@@ -33,11 +33,19 @@
     var abiToUse = btcRelayAbi;
     var RelayContract = web3.eth.contract(abiToUse);
     var contract = new RelayContract(bethAddress);
-    console.log('@@@@ contract: ', contract)
+    // console.log('@@@@ contract: ', contract)
 
 
-    var height = contract.call({from:fromAccount, gas:500000}).getLastBlockHeight();
+    var callParam = {from:fromAccount, gas:60000};
+
+    var height = contract.call(callParam).getLastBlockHeight();
     $('#latestBlockHeight').text(height);
+
+    var headHash = contract.call(callParam).getBlockchainHead();
+    $('#latestBlockHash').text(web3.toHex(headHash));
+
+    var headScore = contract.call(callParam).getCumulativeDifficulty();
+    $('#latestBlockScore').text(web3.toBigNumber(headScore).toString(10));
   });
 
   </script>
