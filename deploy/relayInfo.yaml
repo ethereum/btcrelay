@@ -1,6 +1,6 @@
 -
   set:
-    RelayWithBulkStore: "0x87ed6c7b36a51fc3616d1f7b4ac13230976f49be"
+    RelayWithBulkStore: "0x5f556780ddb00cacc26977d199dae86bf6294495"
 
 -
   call:
