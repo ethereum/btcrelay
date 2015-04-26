@@ -9,23 +9,15 @@
 
   <script src="./js/btcRelayAbi.js"></script>
 
-  <!-- TODO may not all be needed -->
-  <!--
-  <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/components/core-min.js"></script>
-  <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/components/enc-utf16-min.js"></script>
-  <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/components/enc-base64-min.js"></script>
-  -->
-
   <script src="./js/bignumber.js"></script>
   <script src="./js/web3.min.js"></script>
 
   <script>
   var web3 = require('web3');
-      web3.setProvider(new web3.providers.HttpProvider('http://localhost:8080'));  // port 8545 for Mist
+  web3.setProvider(new web3.providers.HttpProvider('http://localhost:8080'));  // port 8545 for Mist
 
   $(function() {
     var relayAddr = '0x5f556780ddb00cacc26977d199dae86bf6294495';
-    var fromAccount = '0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826';
 
     $('#relayAddr').text(relayAddr);
 
@@ -35,16 +27,13 @@
     var contract = new RelayContract(bethAddress);
     // console.log('@@@@ contract: ', contract)
 
-
-    var callParam = {from:fromAccount, gas:60000};
-
-    var height = contract.call(callParam).getLastBlockHeight();
+    var height = contract.call().getLastBlockHeight();
     $('#latestBlockHeight').text(height);
 
-    var headHash = contract.call(callParam).getBlockchainHead();
+    var headHash = contract.call().getBlockchainHead();
     $('#latestBlockHash').text(web3.toHex(headHash));
 
-    var headScore = contract.call(callParam).getCumulativeDifficulty();
+    var headScore = contract.call().getCumulativeDifficulty();
     $('#latestBlockScore').text(web3.toBigNumber(headScore).toString(10));
   });
 
