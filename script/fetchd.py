@@ -159,10 +159,10 @@ def storeHeaders(bhBinary, chunkSize):
 
     instance.transact(instance.relayContract, fun_name=fun_name, sig=sig, data=data, gas=gas, gas_price=gas_price, value=value)
 
-    instance.wait_for_transaction(
-        from_count=from_count,
-        #verbose=(True if api_config.get('misc', 'verbosity') > 1 else False))
-        verbose=True)
+    # instance.wait_for_transaction(
+    #     from_count=from_count,
+    #     #verbose=(True if api_config.get('misc', 'verbosity') > 1 else False))
+    #     verbose=True)
 
     # if wait:
     #     for i in range(1):
