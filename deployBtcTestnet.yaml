@@ -7,20 +7,21 @@
       gas_price: 10000000000000
       wait: True
 
-# genesis is block 350540 previous
 -
   transact:
-    SetThePreGenesis:
+    SetInitialParent:
       gas: 3000000
       gas_price: 10000000000000
       to: $RelayWithBulkStore
       fun_name: setInitialParent
-      sig: i
+      sig: iii
       data:
-        - 0x0000000008c2959240ce83444a02acf8c3227951f53caaec49caf569e434be15
+        - 0x00000000147948125423f7c1236bde19341e61eee36c804bd06ff02cf28e3b4f
+        - 374609
+        - 1
       wait: True
 
-
+# for btc testnet, change btc-eth.py BTC_NEED to 170000
 -
   deploy:
     BtcEth:
