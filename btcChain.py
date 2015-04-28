@@ -50,9 +50,13 @@ def inMainChain(txBlockHash):
     while self.block[blockHash]._height > txBlockHeight:
         while self.block[blockHash]._height - txBlockHeight < self.ancestor_depths[anc_index] && anc_index > 0:
             anc_index -= 1
-        blockHash = self.block[blockHash]._ancestor[anc_index]
+        blockHash = m_getAncestor(blockHash, anc_index)
 
     return(blockHash == txBlockHash)
+
+
+macro m_getAncestor($blockHash, $anc_index):
+    self.block[$blockHash]._ancestor[$anc_index]
 
 
 # log ancestors
