@@ -2,7 +2,7 @@
 -
   deploy:
     RelayWithBulkStore:
-      contract: btcBulkStoreHeaders.py
+      contract: ../../btcBulkStoreHeaders.py
       gas: 3000000
       gas_price: 10000000000000
       wait: True
@@ -25,7 +25,7 @@
 -
   deploy:
     BtcEth:
-      contract: btc-eth.py
+      contract: ../../btc-eth.py
       gas: 3000000
       endowment: 1600
       wait: True
