@@ -164,12 +164,12 @@ def storeHeaders(bhBinary, chunkSize):
     #     #verbose=(True if api_config.get('misc', 'verbosity') > 1 else False))
     #     verbose=True)
 
-    # if wait:
-    #     for i in range(1):
-    #         instance.wait_for_next_block(from_block=from_block,
-    #             #verbose=(True if api_config.get('misc', 'verbosity') > 1 else False))
-    #             verbose=True)
-    #         from_block = instance.last_block()
+    if wait:
+        for i in range(3):
+            instance.wait_for_next_block(from_block=from_block,
+                #verbose=(True if api_config.get('misc', 'verbosity') > 1 else False))
+                verbose=True)
+            from_block = instance.last_block()
 
     chainHead = getBlockchainHead()
     expHead = int(bin_dbl_sha256(bhBinary[-80:])[::-1].encode('hex'), 16)
