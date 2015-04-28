@@ -29,7 +29,7 @@ def saveAncestors(blockHash, hashPrevBlock):
         if self.block[blockHash]._height % depth == 1:
             self.block[blockHash]._ancestor[i] = hashPrevBlock
         else:
-            self.block[blockHash]._ancestor[i] = self.block[hashPrevBlock]._ancestor[i]
+            self.block[blockHash]._ancestor[i] = m_getAncestor(hashPrevBlock, i)
         i += 1
 
 # returns 1 if 'txBlockHash' is in the main chain, ie not a fork
