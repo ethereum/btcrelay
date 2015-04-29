@@ -16,6 +16,16 @@ self.ancestor_depths[6] = 4096
 self.ancestor_depths[7] = 16384
 
 
+# list for internal usage only that allows a 32 byte blockHash to be looked up
+# with a 32bit int
+# This is not designed to be used for anything else, eg it contains all block
+# hashes and nothing can be assumed about which blocks are on the main chain
+data internalBlock[2^50]
+
+# counter for next available slot in internalBlock
+data ibIndex
+
+
 # save the ancestors for a block, as well as updating the height
 def saveAncestors(blockHash, hashPrevBlock):
     self.internalBlock[self.ibIndex] = blockHash
@@ -23,33 +33,28 @@ def saveAncestors(blockHash, hashPrevBlock):
     self.ibIndex += 1
 
 
-
     self.block[blockHash]._height = self.block[hashPrevBlock]._height + 1
 
+    # 8 indexes into internalBlock can be stored inside one ancestor (32 byte) word
     ancWord = 0
+
+    # the first ancestor is the index to hashPrevBlock, and write it to ancWord
     prevIbIndex = self.block[hashPrevBlock]._ibIndex
     m_mstore32(ref(ancWord), prevIbIndex)
-    # mstore8(ref(ancWord), hashPrevBlock)
 
-    # self.block[blockHash]._ancestor[0] = hashPrevBlock
+    # update ancWord with the remaining indexes
     i = 1
     while i < self.numAncestorDepths:
         depth = self.ancestor_depths[i]
 
         if self.block[blockHash]._height % depth == 1:
             m_mstore32(ref(ancWord) + 4*i, prevIbIndex)
-            # self.block[blockHash]._ancestor[i] = hashPrevBlock
         else:
             fourB = m_getAncestor(hashPrevBlock, i)
             m_mstore32(ref(ancWord) + 4*i, fourB)
-
-            # ancHash = self.internalBlock[fourB]
-            # ibx = self.block[ancHash]._ibIndex
-            # m_mstore32(ref(ancWord) + 4*i, ibx)
-
-            # self.block[blockHash]._ancestor[i] = m_getAncestor(hashPrevBlock, i)
         i += 1
 
+    # write the ancestor word to storage
     self.block[blockHash]._ancestor = ancWord
 
 
@@ -83,6 +88,10 @@ macro m_mstore32($addr, $fourBytes):
     mstore8($addr + 3, byte(28, $fourBytes))
 
 
+# a block's _ancestor storage slot contains 8 indexes into internalBlock, so
+# this macro returns the index that can be used to lookup the desired ancestor
+# eg. for combined usage, self.internalBlock[m_getAncestor(someBlock, 2)] will
+# return the block hash of someBlock's 3rd ancestor
 macro m_getAncestor($blockHash, $anc_index):
     $startInd = $anc_index*4
     $b0 = byte($startInd, self.block[$blockHash]._ancestor)
