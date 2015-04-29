@@ -21,7 +21,8 @@ def saveAncestors(blockHash, hashPrevBlock):
     self.block[blockHash]._height = self.block[hashPrevBlock]._height + 1
 
     ancWord = 0
-    mstore8(ref(ancWord), hashPrevBlock)
+    m_mstore32(ref(ancWord), hashPrevBlock)
+    # mstore8(ref(ancWord), hashPrevBlock)
 
     # self.block[blockHash]._ancestor[0] = hashPrevBlock
     i = 1
@@ -29,10 +30,11 @@ def saveAncestors(blockHash, hashPrevBlock):
         depth = self.ancestor_depths[i]
 
         if self.block[blockHash]._height % depth == 1:
-            mstore8(ref(ancWord) + 4*i, hashPrevBlock)
+            m_mstore32(ref(ancWord) + 4*i, hashPrevBlock)
             # self.block[blockHash]._ancestor[i] = hashPrevBlock
         else:
-            mstore8(ref(ancWord) + 4*i, m_getAncestor(hashPrevBlock, i))
+            fourB = m_getAncestor(hashPrevBlock, i)
+            m_mstore32(ref(ancWord) + 4*i, fourB)
             # self.block[blockHash]._ancestor[i] = m_getAncestor(hashPrevBlock, i)
         i += 1
 
@@ -62,18 +64,33 @@ def inMainChain(txBlockHash):
     return(blockHash == txBlockHash)
 
 
+macro m_mstore32($addr, $fourBytes):
+    mstore8(ref($addr), byte(0, $fourBytes))
+    mstore8(ref($addr) + 1, byte(1, $fourBytes))
+    mstore8(ref($addr) + 2, byte(2, $fourBytes))
+    mstore8(ref($addr) + 3, byte(3, $fourBytes))
+
+
 macro m_getAncestor($blockHash, $anc_index):
-    byte($anc_index*4, self.block[$blockHash]._ancestor)
+    $startInd = $anc_index*4
+    $b0 = byte($startInd, self.block[$blockHash]._ancestor)
+    $b1 = byte($startInd + 1, self.block[$blockHash]._ancestor)
+    $b2 = byte($startInd + 2, self.block[$blockHash]._ancestor)
+    $b3 = byte($startInd + 3, self.block[$blockHash]._ancestor)
+
+    $b3 + $b2*256 + $b1*256^2 + $b0*256^3
+
     # self.block[$blockHash]._ancestor[$anc_index]
 
 
 # log ancestors
-# def logAnc(blockHash):
-#     log(11111)
-#     log(blockHash)
-#     i = 0
-#     while i < self.numAncestorDepths:
-#         anc = self.block[blockHash]._ancestor[i]
-#         log(anc)
-#         i += 1
-#     log(22222)
+def logAnc(blockHash):
+    log(11111)
+    log(blockHash)
+    i = 0
+    while i < self.numAncestorDepths:
+        anc = m_getAncestor(blockHash, i)
+        # anc = self.block[blockHash]._ancestor[i]
+        log(anc)
+        i += 1
+    log(22222)
