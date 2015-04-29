@@ -12,7 +12,7 @@ class TestBtcChain(object):
 
     ETHER = 10 ** 18
 
-    ANC_DEPTHS = [1, 4, 16, 64, 256, 1024, 4096, 16384, 65536]
+    ANC_DEPTHS = [1, 4, 16, 64, 256, 1024, 4096, 16384]
 
 
     def setup_class(cls):

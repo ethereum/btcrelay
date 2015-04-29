@@ -3,8 +3,8 @@
 # main method is inMainChain() which is tested by test_btcChain
 
 data numAncestorDepths
-self.numAncestorDepths = 9  # if changing this, need to do so carefully eg look at defn of ancestor_depths and block in btcrelay
-data ancestor_depths[9]
+self.numAncestorDepths = 8  # if changing this, need to do so carefully eg look at defn of ancestor_depths and block in btcrelay
+data ancestor_depths[8]
 
 self.ancestor_depths[0] = 1
 self.ancestor_depths[1] = 4
@@ -14,23 +14,30 @@ self.ancestor_depths[4] = 256
 self.ancestor_depths[5] = 1024
 self.ancestor_depths[6] = 4096
 self.ancestor_depths[7] = 16384
-self.ancestor_depths[8] = 65536
 
 
 # save the ancestors for a block, as well as updating the height
 def saveAncestors(blockHash, hashPrevBlock):
     self.block[blockHash]._height = self.block[hashPrevBlock]._height + 1
 
-    self.block[blockHash]._ancestor[0] = hashPrevBlock
+    ancWord = 0
+    mstore8(ref(ancWord), hashPrevBlock)
+
+    # self.block[blockHash]._ancestor[0] = hashPrevBlock
     i = 1
     while i < self.numAncestorDepths:
         depth = self.ancestor_depths[i]
 
         if self.block[blockHash]._height % depth == 1:
-            self.block[blockHash]._ancestor[i] = hashPrevBlock
+            mstore8(ref(ancWord) + 4*i, hashPrevBlock)
+            # self.block[blockHash]._ancestor[i] = hashPrevBlock
         else:
-            self.block[blockHash]._ancestor[i] = m_getAncestor(hashPrevBlock, i)
+            mstore8(ref(ancWord) + 4*i, m_getAncestor(hashPrevBlock, i))
+            # self.block[blockHash]._ancestor[i] = m_getAncestor(hashPrevBlock, i)
         i += 1
+
+    self.block[blockHash]._ancestor = ancWord
+
 
 # returns 1 if 'txBlockHash' is in the main chain, ie not a fork
 # otherwise returns 0
@@ -56,7 +63,8 @@ def inMainChain(txBlockHash):
 
 
 macro m_getAncestor($blockHash, $anc_index):
-    self.block[$blockHash]._ancestor[$anc_index]
+    byte($anc_index*4, self.block[$blockHash]._ancestor)
+    # self.block[$blockHash]._ancestor[$anc_index]
 
 
 # log ancestors

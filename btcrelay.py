@@ -14,7 +14,7 @@ extern relayDestination: [processTransaction:si:i]
 # - _height is 1 more than the typical Bitcoin term height/blocknumber [see setPreGensesis()]
 # - _score is 1 more than the cumulative difficulty [see setInitialParent()]
 # - _ancestor list for more efficient backtracking (see btcChain)
-data block[2^256](_height, _score, _ancestor[9], _blockHeader[])
+data block[2^256](_height, _score, _ancestor, _blockHeader[])
 
 
 # block with the highest score (aka the Head of the blockchain)
@@ -62,11 +62,12 @@ def setInitialParent(blockHash, height, cumulativeDifficulty):
     # block does NOT exist. see check in storeBlockHeader()
     self.block[blockHash]._score = cumulativeDifficulty
 
-    ancLen = self.numAncestorDepths
-    i = 0
-    while i < ancLen:
-        self.block[blockHash]._ancestor[i] = blockHash
-        i += 1
+    # TODO
+    # ancLen = self.numAncestorDepths
+    # i = 0
+    # while i < ancLen:
+    #     self.block[blockHash]._ancestor[i] = blockHash
+    #     i += 1
 
     return(1)
 
