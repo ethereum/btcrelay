@@ -80,14 +80,15 @@ def inMainChain(txBlockHash):
     return(blockHash == txBlockHash)
 
 
-# write $int32 to memory at $addr
+# write $int32 to memory at $addrLoc
 # This is useful for writing 32bit ints inside one 32 byte word
-macro m_mwrite32($addr, $int32):
-    with $fourBytes = $int32:
-        mstore8($addr, byte(31, $fourBytes))
-        mstore8($addr + 1, byte(30, $fourBytes))
-        mstore8($addr + 2, byte(29, $fourBytes))
-        mstore8($addr + 3, byte(28, $fourBytes))
+macro m_mwrite32($addrLoc, $int32):
+    with $addr = $addrLoc:
+        with $fourBytes = $int32:
+            mstore8($addr, byte(31, $fourBytes))
+            mstore8($addr + 1, byte(30, $fourBytes))
+            mstore8($addr + 2, byte(29, $fourBytes))
+            mstore8($addr + 3, byte(28, $fourBytes))
 
 
 # a block's _ancestor storage slot contains 8 indexes into internalBlock, so
