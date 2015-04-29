@@ -40,7 +40,7 @@ def saveAncestors(blockHash, hashPrevBlock):
 
     # the first ancestor is the index to hashPrevBlock, and write it to ancWord
     prevIbIndex = self.block[hashPrevBlock]._ibIndex
-    m_mstore32(ref(ancWord), prevIbIndex)
+    m_mwrite32(ref(ancWord), prevIbIndex)
 
     # update ancWord with the remaining indexes
     i = 1
@@ -48,10 +48,9 @@ def saveAncestors(blockHash, hashPrevBlock):
         depth = self.ancestor_depths[i]
 
         if self.block[blockHash]._height % depth == 1:
-            m_mstore32(ref(ancWord) + 4*i, prevIbIndex)
+            m_mwrite32(ref(ancWord) + 4*i, prevIbIndex)
         else:
-            fourB = m_getAncestor(hashPrevBlock, i)
-            m_mstore32(ref(ancWord) + 4*i, fourB)
+            m_mwrite32(ref(ancWord) + 4*i, m_getAncestor(hashPrevBlock, i))
         i += 1
 
     # write the ancestor word to storage
@@ -81,11 +80,14 @@ def inMainChain(txBlockHash):
     return(blockHash == txBlockHash)
 
 
-macro m_mstore32($addr, $fourBytes):
-    mstore8($addr, byte(31, $fourBytes))
-    mstore8($addr + 1, byte(30, $fourBytes))
-    mstore8($addr + 2, byte(29, $fourBytes))
-    mstore8($addr + 3, byte(28, $fourBytes))
+# write $int32 to memory at $addr
+# This is useful for writing 32bit ints inside one 32 byte word
+macro m_mwrite32($addr, $int32):
+    with $fourBytes = $int32:
+        mstore8($addr, byte(31, $fourBytes))
+        mstore8($addr + 1, byte(30, $fourBytes))
+        mstore8($addr + 2, byte(29, $fourBytes))
+        mstore8($addr + 3, byte(28, $fourBytes))
 
 
 # a block's _ancestor storage slot contains 8 indexes into internalBlock, so
@@ -94,18 +96,17 @@ macro m_mstore32($addr, $fourBytes):
 # return the block hash of someBlock's 3rd ancestor
 macro m_getAncestor($blockHash, $anc_index):
     $wordOfAncestorIndexes = self.block[$blockHash]._ancestor
-    $startInd = $anc_index * 4
-    $b0 = byte($startInd, $wordOfAncestorIndexes)
-    $b1 = byte($startInd + 1, $wordOfAncestorIndexes)
-    $b2 = byte($startInd + 2, $wordOfAncestorIndexes)
-    $b3 = byte($startInd + 3, $wordOfAncestorIndexes)
+    $b0 = byte($anc_index*4, $wordOfAncestorIndexes)
+    $b1 = byte($anc_index*4 + 1, $wordOfAncestorIndexes)
+    $b2 = byte($anc_index*4 + 2, $wordOfAncestorIndexes)
+    $b3 = byte($anc_index*4 + 3, $wordOfAncestorIndexes)
 
     $b0 + $b1*256 + $b2*TWOTO16 + $b3*TWOTO24
 
-    # self.block[$blockHash]._ancestor[$anc_index]
 
 macro TWOTO16: 65536
 macro TWOTO24: 16777216
+
 
 # log ancestors
 # def logAnc(blockHash):
