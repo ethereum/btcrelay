@@ -18,10 +18,17 @@ self.ancestor_depths[7] = 16384
 
 # save the ancestors for a block, as well as updating the height
 def saveAncestors(blockHash, hashPrevBlock):
+    self.internalBlock[self.ibIndex] = blockHash
+    self.block[blockHash]._ibIndex = self.ibIndex
+    self.ibIndex += 1
+
+
+
     self.block[blockHash]._height = self.block[hashPrevBlock]._height + 1
 
     ancWord = 0
-    m_mstore32(ref(ancWord), hashPrevBlock)
+    prevIbIndex = self.block[hashPrevBlock]._ibIndex
+    m_mstore32(ref(ancWord), prevIbIndex)
     # mstore8(ref(ancWord), hashPrevBlock)
 
     # self.block[blockHash]._ancestor[0] = hashPrevBlock
@@ -30,11 +37,16 @@ def saveAncestors(blockHash, hashPrevBlock):
         depth = self.ancestor_depths[i]
 
         if self.block[blockHash]._height % depth == 1:
-            m_mstore32(ref(ancWord) + 4*i, hashPrevBlock)
+            m_mstore32(ref(ancWord) + 4*i, prevIbIndex)
             # self.block[blockHash]._ancestor[i] = hashPrevBlock
         else:
             fourB = m_getAncestor(hashPrevBlock, i)
             m_mstore32(ref(ancWord) + 4*i, fourB)
+
+            # ancHash = self.internalBlock[fourB]
+            # ibx = self.block[ancHash]._ibIndex
+            # m_mstore32(ref(ancWord) + 4*i, ibx)
+
             # self.block[blockHash]._ancestor[i] = m_getAncestor(hashPrevBlock, i)
         i += 1
 
@@ -59,7 +71,7 @@ def inMainChain(txBlockHash):
     while self.block[blockHash]._height > txBlockHeight:
         while self.block[blockHash]._height - txBlockHeight < self.ancestor_depths[anc_index] && anc_index > 0:
             anc_index -= 1
-        blockHash = m_getAncestor(blockHash, anc_index)
+        blockHash = self.internalBlock[m_getAncestor(blockHash, anc_index)]
 
     return(blockHash == txBlockHash)
 

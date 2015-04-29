@@ -14,7 +14,10 @@ extern relayDestination: [processTransaction:si:i]
 # - _height is 1 more than the typical Bitcoin term height/blocknumber [see setPreGensesis()]
 # - _score is 1 more than the cumulative difficulty [see setInitialParent()]
 # - _ancestor list for more efficient backtracking (see btcChain)
-data block[2^256](_height, _score, _ancestor, _blockHeader[])
+data block[2^256](_height, _score, _ancestor, _blockHeader[], _ibIndex)
+
+data internalBlock[2^50]
+data ibIndex
 
 
 # block with the highest score (aka the Head of the blockchain)
@@ -287,14 +290,14 @@ macro concatHash($tx1, $tx2):
 
 macro m_initialParentSetAncestors($blockHash):
     $ancWord = 0
-    mstore8(ref($ancWord), $blockHash)
-    mstore8(ref($ancWord) + 4, $blockHash)
-    mstore8(ref($ancWord) + 8, $blockHash)
-    mstore8(ref($ancWord) + 12, $blockHash)
-    mstore8(ref($ancWord) + 16, $blockHash)
-    mstore8(ref($ancWord) + 20, $blockHash)
-    mstore8(ref($ancWord) + 24, $blockHash)
-    mstore8(ref($ancWord) + 28, $blockHash)
+    mstore8(ref($ancWord), self.block[$blockHash]._ibIndex)
+    mstore8(ref($ancWord) + 4, self.block[$blockHash]._ibIndex)
+    mstore8(ref($ancWord) + 8, self.block[$blockHash]._ibIndex)
+    mstore8(ref($ancWord) + 12, self.block[$blockHash]._ibIndex)
+    mstore8(ref($ancWord) + 16, self.block[$blockHash]._ibIndex)
+    mstore8(ref($ancWord) + 20, self.block[$blockHash]._ibIndex)
+    mstore8(ref($ancWord) + 24, self.block[$blockHash]._ibIndex)
+    mstore8(ref($ancWord) + 28, self.block[$blockHash]._ibIndex)
     self.block[$blockHash]._ancestor = $ancWord
 
 
