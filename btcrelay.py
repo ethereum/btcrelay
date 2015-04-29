@@ -80,12 +80,24 @@ def storeBlockHeader(blockHeaderBinary:str):
     if self.block[blockHash]._score != 0:  # block already stored/exists
         return(0)
 
-    bits = getBytesLE(blockHeaderBinary, 4, 72)
+    # bits = getBytesLE(blockHeaderBinary, 4, 72)
+
+    fourBytes = ~calldataload(36+72)
+    b0 = byte(0, fourBytes)
+    b1 = byte(1, fourBytes)
+    b2 = byte(2, fourBytes)
+    b3 = byte(3, fourBytes)
+    bits = b0 + b1*256 + b2*256^2 + b3*256^3
+
+    # log(b0)
+    # log(b3)
+    # log(bits)
+
     target = targetFromBits(bits)
 
     # we only check the target and do not do other validation (eg timestamp)
     # to save gas
-    if gt(blockHash, 0) && lt(blockHash, target):
+    if blockHash > 0 && blockHash < target:
         self.saveAncestors(blockHash, hashPrevBlock)
 
         save(self.block[blockHash]._blockHeader[0], blockHeaderBinary, chars=80) # or 160?
@@ -93,7 +105,7 @@ def storeBlockHeader(blockHeaderBinary:str):
         difficulty = 0x00000000FFFF0000000000000000000000000000000000000000000000000000 / target # https://en.bitcoin.it/wiki/Difficulty
         self.block[blockHash]._score = self.block[hashPrevBlock]._score + difficulty
 
-        if gt(self.block[blockHash]._score, self.highScore):
+        if self.block[blockHash]._score > self.highScore:
             self.heaviestBlock = blockHash
             self.highScore = self.block[blockHash]._score
 
