@@ -39,7 +39,6 @@ def saveAncestors(blockHash, hashPrevBlock):
         i += 1
 
     self.block[blockHash]._ancestor = ancWord
-    log(self.block[blockHash]._ancestor)
 
 
 # returns 1 if 'txBlockHash' is in the main chain, ie not a fork
@@ -66,10 +65,10 @@ def inMainChain(txBlockHash):
 
 
 macro m_mstore32($addr, $fourBytes):
-    mstore8(ref($addr), byte(31, $fourBytes))
-    mstore8(ref($addr) + 1, byte(30, $fourBytes))
-    mstore8(ref($addr) + 2, byte(29, $fourBytes))
-    mstore8(ref($addr) + 3, byte(28, $fourBytes))
+    mstore8($addr, byte(31, $fourBytes))
+    mstore8($addr + 1, byte(30, $fourBytes))
+    mstore8($addr + 2, byte(29, $fourBytes))
+    mstore8($addr + 3, byte(28, $fourBytes))
 
 
 macro m_getAncestor($blockHash, $anc_index):
@@ -85,13 +84,13 @@ macro m_getAncestor($blockHash, $anc_index):
 
 
 # log ancestors
-def logAnc(blockHash):
-    log(11111)
-    log(blockHash)
-    i = 0
-    while i < self.numAncestorDepths:
-        anc = m_getAncestor(blockHash, i)
-        # anc = self.block[blockHash]._ancestor[i]
-        log(anc)
-        i += 1
-    log(22222)
+# def logAnc(blockHash):
+#     log(11111)
+#     log(blockHash)
+#     i = 0
+#     while i < self.numAncestorDepths:
+#         anc = m_getAncestor(blockHash, i)
+#         # anc = self.block[blockHash]._ancestor[i]
+#         log(anc)
+#         i += 1
+#     log(22222)

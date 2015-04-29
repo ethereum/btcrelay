@@ -16,7 +16,7 @@ class TestBtcChain(object):
 
 
     def setup_class(cls):
-        tester.gas_limit = 3 * 10**6
+        tester.gas_limit = int(2e6)
         cls.s = tester.state()
         cls.c = cls.s.abi_contract(cls.CONTRACT, endowment=2000*cls.ETHER)
         cls.snapshot = cls.s.snapshot()
@@ -207,10 +207,6 @@ class TestBtcChain(object):
         self.c.saveAncestors(300, 2)
         self.c.saveAncestors(310, 300)
         self.c.saveAncestors(320, 310)
-
-        self.c.logAnc(300)
-        self.c.logAnc(310)
-        self.c.logAnc(320)
 
         self.c.testingonlySetHeaviest(heaviest)
         for i in range(1, heaviest+1):
