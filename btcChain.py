@@ -93,16 +93,19 @@ macro m_mstore32($addr, $fourBytes):
 # eg. for combined usage, self.internalBlock[m_getAncestor(someBlock, 2)] will
 # return the block hash of someBlock's 3rd ancestor
 macro m_getAncestor($blockHash, $anc_index):
-    $startInd = $anc_index*4
-    $b0 = byte($startInd, self.block[$blockHash]._ancestor)
-    $b1 = byte($startInd + 1, self.block[$blockHash]._ancestor)
-    $b2 = byte($startInd + 2, self.block[$blockHash]._ancestor)
-    $b3 = byte($startInd + 3, self.block[$blockHash]._ancestor)
+    $wordOfAncestorIndexes = self.block[$blockHash]._ancestor
+    $startInd = $anc_index * 4
+    $b0 = byte($startInd, $wordOfAncestorIndexes)
+    $b1 = byte($startInd + 1, $wordOfAncestorIndexes)
+    $b2 = byte($startInd + 2, $wordOfAncestorIndexes)
+    $b3 = byte($startInd + 3, $wordOfAncestorIndexes)
 
-    $b0 + $b1*256 + $b2*256^2 + $b3*256^3
+    $b0 + $b1*256 + $b2*TWOTO16 + $b3*TWOTO24
 
     # self.block[$blockHash]._ancestor[$anc_index]
 
+macro TWOTO16: 65536
+macro TWOTO24: 16777216
 
 # log ancestors
 # def logAnc(blockHash):
