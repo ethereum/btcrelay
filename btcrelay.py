@@ -62,12 +62,7 @@ def setInitialParent(blockHash, height, cumulativeDifficulty):
     # block does NOT exist. see check in storeBlockHeader()
     self.block[blockHash]._score = cumulativeDifficulty
 
-    # TODO
-    # ancLen = self.numAncestorDepths
-    # i = 0
-    # while i < ancLen:
-    #     self.block[blockHash]._ancestor[i] = blockHash
-    #     i += 1
+    m_initialParentSetAncestors(blockHash)
 
     return(1)
 
@@ -288,6 +283,19 @@ macro concatHash($tx1, $tx2):
         ~mstore($x, flip32Bytes($tx1))
         ~mstore($x + 32, flip32Bytes($tx2))
         flip32Bytes(sha256(sha256($x, chars=64)))
+
+
+macro m_initialParentSetAncestors($blockHash):
+    $ancWord = 0
+    mstore8(ref($ancWord), $blockHash)
+    mstore8(ref($ancWord) + 4, $blockHash)
+    mstore8(ref($ancWord) + 8, $blockHash)
+    mstore8(ref($ancWord) + 12, $blockHash)
+    mstore8(ref($ancWord) + 16, $blockHash)
+    mstore8(ref($ancWord) + 20, $blockHash)
+    mstore8(ref($ancWord) + 24, $blockHash)
+    mstore8(ref($ancWord) + 28, $blockHash)
+    self.block[$blockHash]._ancestor = $ancWord
 
 
 # reverse 32 bytes given by '$b32'
