@@ -17,18 +17,22 @@ data ibIndex
 
 
 
-# this should be in a function and called by init() but this is a
+# this should be a function with different name, eg initAncestorDepths,
+# and called by init() in btcrelay, but this is a
 # workaround for issues as https://github.com/ethereum/serpent/issues/77 78 ...
-depthWord = 0
-mstore8(ref(depthWord), 1)
-m_mwrite16(ref(depthWord) + 1, 5)
-m_mwrite16(ref(depthWord) + 3, 25)
-m_mwrite16(ref(depthWord) + 5, 125)
-m_mwrite16(ref(depthWord) + 7, 625)
-m_mwrite16(ref(depthWord) + 9, 3125)
-m_mwrite16(ref(depthWord) + 11, 15625)
-m_mwrite24(ref(depthWord) + 13, 78125)
-self.ancestorDepths = depthWord
+def init():
+    depthWord = 0
+
+    mstore8(ref(depthWord), 1)
+    m_mwrite16(ref(depthWord) + 1, 5)
+    m_mwrite16(ref(depthWord) + 3, 25)
+    m_mwrite16(ref(depthWord) + 5, 125)
+    m_mwrite16(ref(depthWord) + 7, 625)
+    m_mwrite16(ref(depthWord) + 9, 3125)
+    m_mwrite16(ref(depthWord) + 11, 15625)
+    m_mwrite24(ref(depthWord) + 13, 78125)
+
+    self.ancestorDepths = depthWord
 
 
 # save the ancestors for a block, as well as updating the height
