@@ -1,6 +1,4 @@
-
 inset('btcChain.py')
-
 
 # btcrelay can relay a transaction to any contract that has a function
 # name 'processTransaction' with signature si:i
@@ -25,9 +23,10 @@ data heaviestBlock
 data highScore
 
 
-def init():
-    self.initAncestorDepths()
+# def init():
     # TODO anything else to init ?
+    # carefully test if adding anything to init() since
+    # issues such as https://github.com/ethereum/serpent/issues/77 78 ...
 
 
 #TODO for testing only; should be omitted for production
