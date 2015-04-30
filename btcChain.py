@@ -6,18 +6,6 @@ macro NUM_ANCESTOR_DEPTHS: 8
 
 data ancestorDepths
 
-data ancestor_depths[8]
-
-self.ancestor_depths[0] = 1
-self.ancestor_depths[1] = 4
-self.ancestor_depths[2] = 16
-self.ancestor_depths[3] = 64
-self.ancestor_depths[4] = 256
-self.ancestor_depths[5] = 1024
-self.ancestor_depths[6] = 4096
-self.ancestor_depths[7] = 16384
-
-
 # list for internal usage only that allows a 32 byte blockHash to be looked up
 # with a 32bit int
 # This is not designed to be used for anything else, eg it contains all block
@@ -47,7 +35,7 @@ def saveAncestors(blockHash, hashPrevBlock):
     # update ancWord with the remaining indexes
     i = 1
     while i < NUM_ANCESTOR_DEPTHS:
-        depth = self.ancestor_depths[i]
+        depth = m_getAncDepth(i)
 
         if self.block[blockHash]._height % depth == 1:
             m_mwrite32(ref(ancWord) + 4*i, prevIbIndex)
@@ -75,7 +63,7 @@ def inMainChain(txBlockHash):
 
     anc_index = NUM_ANCESTOR_DEPTHS - 1
     while self.block[blockHash]._height > txBlockHeight:
-        while self.block[blockHash]._height - txBlockHeight < self.ancestor_depths[anc_index] && anc_index > 0:
+        while self.block[blockHash]._height - txBlockHeight < m_getAncDepth(anc_index) && anc_index > 0:
             anc_index -= 1
         blockHash = self.internalBlock[m_getAncestor(blockHash, anc_index)]
 
@@ -95,13 +83,6 @@ def initAncestorDepths():
     m_mwrite24(ref(depthWord) + 13, 78125)
 
     self.ancestorDepths = depthWord
-
-    i=0
-    while i<8:
-        ad = m_getAncDepth(i)
-        log(ad)
-        i+=1
-
 
 
 # write $int32 to memory at $addrLoc

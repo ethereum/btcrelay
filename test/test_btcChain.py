@@ -19,6 +19,7 @@ class TestBtcChain(object):
         tester.gas_limit = int(2.2e6)
         cls.s = tester.state()
         cls.c = cls.s.abi_contract(cls.CONTRACT, endowment=2000*cls.ETHER)
+        cls.c.initAncestorDepths()  # needed for some reason since init() isn't called in this test framework
         cls.snapshot = cls.s.snapshot()
         cls.seed = tester.seed
 
@@ -246,7 +247,3 @@ class TestBtcChain(object):
         assert self.c.inMainChain(300) == 1
         assert self.c.inMainChain(310) == 1
         assert self.c.inMainChain(320) == 1
-
-
-    def testInitAncestorDepths(self):
-        self.c.initAncestorDepths()
