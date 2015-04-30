@@ -63,7 +63,7 @@ def setInitialParent(blockHash, height, cumulativeDifficulty):
     # block does NOT exist. see check in storeBlockHeader()
     self.block[blockHash]._score = cumulativeDifficulty
 
-    m_initialParentSetAncestors(blockHash)
+    m_initialParentSetAncestors(blockHash)  # see btcChain
 
     return(1)
 
@@ -284,21 +284,6 @@ macro concatHash($tx1, $tx2):
         ~mstore($x, flip32Bytes($tx1))
         ~mstore($x + 32, flip32Bytes($tx2))
         flip32Bytes(sha256(sha256($x, chars=64)))
-
-
-macro m_initialParentSetAncestors($blockHash):
-    with $ibIndex = self.block[$blockHash]._ibIndex:
-        $ancWord = 0
-        mstore8(ref($ancWord), $ibIndex)
-        mstore8(ref($ancWord) + 4, $ibIndex)
-        mstore8(ref($ancWord) + 8, $ibIndex)
-        mstore8(ref($ancWord) + 12, $ibIndex)
-        mstore8(ref($ancWord) + 16, $ibIndex)
-        mstore8(ref($ancWord) + 20, $ibIndex)
-        mstore8(ref($ancWord) + 24, $ibIndex)
-        mstore8(ref($ancWord) + 28, $ibIndex)
-        
-        self.block[$blockHash]._ancestor = $ancWord
 
 
 # reverse 32 bytes given by '$b32'
