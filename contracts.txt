@@ -1,3 +1,12 @@
+Apr 29
+relay populated via Geth: 0x0a6a88b25bef326a92c0286cb6ff5245f6197373
+via cpp: 0x5cdf67dce4bb8dd3d431572eac41fdd0a0c77d27
+
+Apr 28
+0x5f556780ddb00cacc26977d199dae86bf6294495
+older one? 0x54d39c26e038848290c30cf78de281f0ba65027e
+
+
 Apr 24
 btcToEther github, follow instructions, after sending BTC don't forget to finalize
 http://52.8.73.68/btc-eth.html
