@@ -46,6 +46,7 @@ def main():
 
     parser.add_argument('--startBlock', default=0, type=int, help='block number to start fetching from')
     parser.add_argument('-w', '--waitFor', default=0, type=int, help='number of blocks to wait between fetches')
+    parser.add_argument('--gasPrice', default=10e12, type=int, help='gas price')  # default 10 szabo
     parser.add_argument('--fetch', action='store_true', help='fetch blockheaders')
     parser.add_argument('-n', '--network', default=BITCOIN_TESTNET, choices=[BITCOIN_TESTNET, BITCOIN_MAINNET], help='Bitcoin network')
     parser.add_argument('-d', '--daemon', default=False, action='store_true', help='run as daemon')
@@ -55,9 +56,10 @@ def main():
     instance.address = args.sender
     instance.relayContract = args.relay
     instance.numBlocksToWait = args.waitFor  # for CPP eth as of Apr 28, 3 blocks seems reasonable.  0 seems to be fine for Geth
+    instance.gasPrice = args.gasPrice
 
     contractHeight = getLastBlockHeight()  # needs instance.relayContract to be set
-    print('@@@ contract height: {0}').format(contractHeight)
+    print('@@@ contract height: {0} gp: {1}').format(contractHeight, instance.gasPrice)
 
     instance.heightToStartFetch = args.startBlock or contractHeight+1
 
@@ -147,7 +149,6 @@ def storeHeaders(bhBinary, chunkSize):
     data = [bhBinary, chunkSize]
 
     gas = 3000000
-    gas_price = 10000000000000  # if CPP, may need to make this 10szabo (10e12)
     value = 0
 
 
@@ -159,7 +160,8 @@ def storeHeaders(bhBinary, chunkSize):
     if wait:
         from_block = instance.last_block()
 
-    instance.transact(instance.relayContract, fun_name=fun_name, sig=sig, data=data, gas=gas, gas_price=gas_price, value=value)
+    instance.transact(instance.relayContract, fun_name=fun_name, sig=sig,
+        data=data, gas=gas, gas_price=instance.gasPrice, value=value)
 
     # instance.wait_for_transaction(
     #     from_count=from_count,
@@ -183,26 +185,20 @@ def storeHeaders(bhBinary, chunkSize):
 
 
 def getLastBlockHeight():
-    gas = 500000
-    gas_price = 1
-
     fun_name = 'getLastBlockHeight'
     sig = ''
     data = []
 
-    callResult = instance.call(instance.relayContract, fun_name=fun_name, sig=sig, data=data, gas=gas, gas_price=gas_price)
+    callResult = instance.call(instance.relayContract, fun_name=fun_name, sig=sig, data=data)
     chainHead = callResult[0] if len(callResult) else callResult
     return chainHead
 
 def getBlockchainHead():
-    gas = 500000
-    gas_price = 1
-
     fun_name = 'getBlockchainHead'
     sig = ''
     data = []
 
-    callResult = instance.call(instance.relayContract, fun_name=fun_name, sig=sig, data=data, gas=gas, gas_price=gas_price)
+    callResult = instance.call(instance.relayContract, fun_name=fun_name, sig=sig, data=data)
     chainHead = callResult[0] if len(callResult) else callResult
     return chainHead
 
