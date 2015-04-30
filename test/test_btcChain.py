@@ -246,3 +246,7 @@ class TestBtcChain(object):
         assert self.c.inMainChain(300) == 1
         assert self.c.inMainChain(310) == 1
         assert self.c.inMainChain(320) == 1
+
+
+    def testInitAncestorDepths(self):
+        self.c.initAncestorDepths()

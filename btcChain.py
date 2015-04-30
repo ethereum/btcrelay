@@ -4,6 +4,8 @@
 
 macro NUM_ANCESTOR_DEPTHS: 8
 
+data ancestorDepths
+
 data ancestor_depths[8]
 
 self.ancestor_depths[0] = 1
@@ -80,6 +82,27 @@ def inMainChain(txBlockHash):
     return(blockHash == txBlockHash)
 
 
+def initAncestorDepths():
+    depthWord = 0
+
+    m_mwrite16(ref(depthWord), 1)
+    m_mwrite16(ref(depthWord) + 2, 5)
+    m_mwrite16(ref(depthWord) + 4, 25)
+    m_mwrite16(ref(depthWord) + 6, 125)
+    m_mwrite16(ref(depthWord) + 8, 625)
+    m_mwrite16(ref(depthWord) + 10, 3125)
+    m_mwrite16(ref(depthWord) + 12, 15625)
+
+    self.ancestorDepths = depthWord
+
+    i=0
+    while i<7:
+        ad = m_getAncDepth(i)
+        log(ad)
+        i+=1
+
+
+
 # write $int32 to memory at $addrLoc
 # This is useful for writing 32bit ints inside one 32 byte word
 macro m_mwrite32($addrLoc, $int32):
@@ -89,6 +112,13 @@ macro m_mwrite32($addrLoc, $int32):
             mstore8($addr + 1, byte(30, $fourBytes))
             mstore8($addr + 2, byte(29, $fourBytes))
             mstore8($addr + 3, byte(28, $fourBytes))
+
+
+macro m_mwrite16($addrLoc, $int16):
+    with $addr = $addrLoc:
+        with $twoBytes = $int16:
+            mstore8($addr, byte(31, $twoBytes))
+            mstore8($addr + 1, byte(30, $twoBytes))
 
 
 # a block's _ancestor storage slot contains 8 indexes into internalBlock, so
@@ -104,6 +134,15 @@ macro m_getAncestor($blockHash, $whichAncestor):
         $b3 = byte($startByte + 3, $wordOfAncestorIndexes)
 
     $b0 + $b1*256 + $b2*TWOTO16 + $b3*TWOTO24
+
+
+macro m_getAncDepth($index):
+    with $startByte = $index * 2:
+        ancDepths = self.ancestorDepths
+        $b0 = byte($startByte, ancDepths)
+        $b1 = byte($startByte + 1, ancDepths)
+
+    $b0 + $b1*256
 
 
 macro m_initialParentSetAncestors($blockHash):

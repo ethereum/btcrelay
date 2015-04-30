@@ -25,7 +25,8 @@ data heaviestBlock
 data highScore
 
 
-# def init():
+def init():
+    self.initAncestorDepths()
     # TODO anything else to init ?
 
 
