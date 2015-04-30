@@ -95,12 +95,13 @@ macro m_mwrite32($addrLoc, $int32):
 # this macro returns the index that can be used to lookup the desired ancestor
 # eg. for combined usage, self.internalBlock[m_getAncestor(someBlock, 2)] will
 # return the block hash of someBlock's 3rd ancestor
-macro m_getAncestor($blockHash, $anc_index):
-    $wordOfAncestorIndexes = self.block[$blockHash]._ancestor
-    $b0 = byte($anc_index*4, $wordOfAncestorIndexes)
-    $b1 = byte($anc_index*4 + 1, $wordOfAncestorIndexes)
-    $b2 = byte($anc_index*4 + 2, $wordOfAncestorIndexes)
-    $b3 = byte($anc_index*4 + 3, $wordOfAncestorIndexes)
+macro m_getAncestor($blockHash, $whichAncestor):
+    with $startByte = $whichAncestor * 4:
+        $wordOfAncestorIndexes = self.block[$blockHash]._ancestor
+        $b0 = byte($startByte, $wordOfAncestorIndexes)
+        $b1 = byte($startByte + 1, $wordOfAncestorIndexes)
+        $b2 = byte($startByte + 2, $wordOfAncestorIndexes)
+        $b3 = byte($startByte + 3, $wordOfAncestorIndexes)
 
     $b0 + $b1*256 + $b2*TWOTO16 + $b3*TWOTO24
 
