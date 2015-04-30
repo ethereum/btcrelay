@@ -287,16 +287,18 @@ macro concatHash($tx1, $tx2):
 
 
 macro m_initialParentSetAncestors($blockHash):
-    $ancWord = 0
-    mstore8(ref($ancWord), self.block[$blockHash]._ibIndex)
-    mstore8(ref($ancWord) + 4, self.block[$blockHash]._ibIndex)
-    mstore8(ref($ancWord) + 8, self.block[$blockHash]._ibIndex)
-    mstore8(ref($ancWord) + 12, self.block[$blockHash]._ibIndex)
-    mstore8(ref($ancWord) + 16, self.block[$blockHash]._ibIndex)
-    mstore8(ref($ancWord) + 20, self.block[$blockHash]._ibIndex)
-    mstore8(ref($ancWord) + 24, self.block[$blockHash]._ibIndex)
-    mstore8(ref($ancWord) + 28, self.block[$blockHash]._ibIndex)
-    self.block[$blockHash]._ancestor = $ancWord
+    with $ibIndex = self.block[$blockHash]._ibIndex:
+        $ancWord = 0
+        mstore8(ref($ancWord), $ibIndex)
+        mstore8(ref($ancWord) + 4, $ibIndex)
+        mstore8(ref($ancWord) + 8, $ibIndex)
+        mstore8(ref($ancWord) + 12, $ibIndex)
+        mstore8(ref($ancWord) + 16, $ibIndex)
+        mstore8(ref($ancWord) + 20, $ibIndex)
+        mstore8(ref($ancWord) + 24, $ibIndex)
+        mstore8(ref($ancWord) + 28, $ibIndex)
+        
+        self.block[$blockHash]._ancestor = $ancWord
 
 
 # reverse 32 bytes given by '$b32'
