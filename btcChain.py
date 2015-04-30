@@ -85,7 +85,7 @@ def inMainChain(txBlockHash):
 def initAncestorDepths():
     depthWord = 0
 
-    m_mwrite16(ref(depthWord), 1)
+    mstore8(ref(depthWord), 1)
     m_mwrite16(ref(depthWord) + 2, 5)
     m_mwrite16(ref(depthWord) + 4, 25)
     m_mwrite16(ref(depthWord) + 6, 125)
@@ -137,12 +137,16 @@ macro m_getAncestor($blockHash, $whichAncestor):
 
 
 macro m_getAncDepth($index):
-    with $startByte = $index * 2:
-        ancDepths = self.ancestorDepths
-        $b0 = byte($startByte, ancDepths)
-        $b1 = byte($startByte + 1, ancDepths)
+    ancDepths = self.ancestorDepths
 
-    $b0 + $b1*256
+    if $index == 0:
+        byte(0, ancDepths)
+    else:
+        with $startByte = $index * 2:
+            $b0 = byte($startByte, ancDepths)
+            $b1 = byte($startByte + 1, ancDepths)
+
+        $b0 + $b1*256
 
 
 macro m_initialParentSetAncestors($blockHash):
