@@ -45,6 +45,7 @@ def main():
     parser.add_argument('-r', '--relay', required=True, help='relay contract address')
 
     parser.add_argument('--startBlock', default=0, type=int, help='block number to start fetching from')
+    parser.add_argument('-w', '--waitFor', default=0, type=int, help='number of blocks to wait between fetches')
     parser.add_argument('--fetch', action='store_true', help='fetch blockheaders')
     parser.add_argument('-n', '--network', default=BITCOIN_TESTNET, choices=[BITCOIN_TESTNET, BITCOIN_MAINNET], help='Bitcoin network')
     parser.add_argument('-d', '--daemon', default=False, action='store_true', help='run as daemon')
@@ -53,6 +54,7 @@ def main():
 
     instance.address = args.sender
     instance.relayContract = args.relay
+    instance.numBlocksToWait = args.waitFor  # for CPP eth as of Apr 28, 3 blocks seems reasonable.  0 seems to be fine for Geth
 
     contractHeight = getLastBlockHeight()  # needs instance.relayContract to be set
     print('@@@ contract height: {0}').format(contractHeight)
@@ -165,7 +167,7 @@ def storeHeaders(bhBinary, chunkSize):
     #     verbose=True)
 
     if wait:
-        for i in range(3):
+        for i in range(instance.numBlocksToWait):
             instance.wait_for_next_block(from_block=from_block,
                 #verbose=(True if api_config.get('misc', 'verbosity') > 1 else False))
                 verbose=True)
