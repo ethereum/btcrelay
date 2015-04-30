@@ -2,8 +2,8 @@
 # clarity: it has ancestor management and its
 # main method is inMainChain() which is tested by test_btcChain
 
-data numAncestorDepths
-self.numAncestorDepths = 8  # if changing this, need to do so carefully eg look at defn of ancestor_depths and block in btcrelay
+macro NUM_ANCESTOR_DEPTHS: 8
+
 data ancestor_depths[8]
 
 self.ancestor_depths[0] = 1
@@ -44,7 +44,7 @@ def saveAncestors(blockHash, hashPrevBlock):
 
     # update ancWord with the remaining indexes
     i = 1
-    while i < self.numAncestorDepths:
+    while i < NUM_ANCESTOR_DEPTHS:
         depth = self.ancestor_depths[i]
 
         if self.block[blockHash]._height % depth == 1:
@@ -71,7 +71,7 @@ def inMainChain(txBlockHash):
 
     blockHash = self.heaviestBlock
 
-    anc_index = self.numAncestorDepths - 1
+    anc_index = NUM_ANCESTOR_DEPTHS - 1
     while self.block[blockHash]._height > txBlockHeight:
         while self.block[blockHash]._height - txBlockHeight < self.ancestor_depths[anc_index] && anc_index > 0:
             anc_index -= 1
@@ -120,7 +120,7 @@ macro m_initialParentSetAncestors($blockHash):
 
         self.block[$blockHash]._ancestor = $ancWord
 
-        
+
 macro TWOTO16: 65536
 macro TWOTO24: 16777216
 
@@ -130,7 +130,7 @@ macro TWOTO24: 16777216
 #     log(11111)
 #     log(blockHash)
 #     i = 0
-#     while i < self.numAncestorDepths:
+#     while i < NUM_ANCESTOR_DEPTHS:
 #         anc = m_getAncestor(blockHash, i)
 #         # anc = self.block[blockHash]._ancestor[i]
 #         log(anc)
