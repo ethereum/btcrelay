@@ -92,11 +92,12 @@ def initAncestorDepths():
     m_mwrite16(ref(depthWord) + 7, 625)
     m_mwrite16(ref(depthWord) + 9, 3125)
     m_mwrite16(ref(depthWord) + 11, 15625)
+    m_mwrite24(ref(depthWord) + 13, 78125)
 
     self.ancestorDepths = depthWord
 
     i=0
-    while i<7:
+    while i<8:
         ad = m_getAncDepth(i)
         log(ad)
         i+=1
@@ -121,6 +122,14 @@ macro m_mwrite16($addrLoc, $int16):
             mstore8($addr + 1, byte(30, $twoBytes))
 
 
+macro m_mwrite24($addrLoc, $int24):
+    with $addr = $addrLoc:
+        with $threeBytes = $int24:
+            mstore8($addr, byte(31, $threeBytes))
+            mstore8($addr + 1, byte(30, $threeBytes))
+            mstore8($addr + 2, byte(29, $threeBytes))
+
+
 # a block's _ancestor storage slot contains 8 indexes into internalBlock, so
 # this macro returns the index that can be used to lookup the desired ancestor
 # eg. for combined usage, self.internalBlock[m_getAncestor(someBlock, 2)] will
@@ -141,6 +150,13 @@ macro m_getAncDepth($index):
 
     if $index == 0:
         byte(0, ancDepths)
+    elif $index == NUM_ANCESTOR_DEPTHS - 1:
+        with $startByte = $index*2 - 1:
+            $b0 = byte($startByte, ancDepths)
+            $b1 = byte($startByte + 1, ancDepths)
+            $b2 = byte($startByte + 2, ancDepths)
+
+        $b0 + $b1*256 + $b2*TWOTO16
     else:
         with $startByte = $index*2 - 1:
             $b0 = byte($startByte, ancDepths)
