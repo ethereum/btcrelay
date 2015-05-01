@@ -272,12 +272,8 @@ macro getBytesLE($inStr, $size, $offset):
 
 # get the 'bits' field from a Bitcoin blockheader
 macro m_bitsFromBlockHeader():
-    with $word = ~calldataload(36+72):  # 36 (header start) + 72 (offset for 'bits')
-        $b0 = byte(0, $word)
-        $b1 = byte(1, $word)
-        $b2 = byte(2, $word)
-        $b3 = byte(3, $word)
-    $b0 + $b1*256 + $b2*TWOTO16 + $b3*TWOTO24
+    with $w = ~calldataload(36+72):  # 36 (header start) + 72 (offset for 'bits')
+        byte(0, $w) + byte(1, $w)*256 + byte(2, $w)*TWOTO16 + byte(3, $w)*TWOTO24
 
 
 # Bitcoin-way of computing the target from the 'bits' field of a blockheader
