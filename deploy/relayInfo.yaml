@@ -5,8 +5,6 @@
 -
   call:
     getBlockchainHead:
-      gas: 500000
-      gas_price: 1
       to: $RelayWithBulkStore
       fun_name: getBlockchainHead
       sig: ''
@@ -14,8 +12,6 @@
 -
   call:
     getLastBlockHeight:
-      gas: 500000
-      gas_price: 1
       to: $RelayWithBulkStore
       fun_name: getLastBlockHeight
       sig: ''
@@ -23,8 +19,6 @@
 -
   call:
     getCumulativeDifficulty:
-      gas: 500000
-      gas_price: 1
       to: $RelayWithBulkStore
       fun_name: getCumulativeDifficulty
       sig: ''

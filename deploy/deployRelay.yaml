@@ -3,14 +3,14 @@
     RelayWithBulkStore:
       contract: ../btcBulkStoreHeaders.py
       gas: 3000000
-      gas_price: 10000000000000
+      gas_price: 0  # 10000000000000
       wait: True
 
 -
   transact:
     SetInitialParent:
       gas: 3000000
-      gas_price: 10000000000000
+      gas_price: 0  # 10000000000000
       to: $RelayWithBulkStore
       fun_name: setInitialParent
       sig: iii
