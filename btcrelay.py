@@ -80,19 +80,7 @@ def storeBlockHeader(blockHeaderBinary:str):
     if self.block[blockHash]._score != 0:  # block already stored/exists
         return(0)
 
-    # bits = getBytesLE(blockHeaderBinary, 4, 72)
-
-    fourBytes = ~calldataload(36+72)
-    b0 = byte(0, fourBytes)
-    b1 = byte(1, fourBytes)
-    b2 = byte(2, fourBytes)
-    b3 = byte(3, fourBytes)
-    bits = b0 + b1*256 + b2*256^2 + b3*256^3
-
-    # log(b0)
-    # log(b3)
-    # log(bits)
-
+    bits = m_bitsFromBlockHeader()
     target = targetFromBits(bits)
 
     # we only check the target and do not do other validation (eg timestamp)
@@ -282,6 +270,16 @@ macro getBytesLE($inStr, $size, $offset):
     $result
 
 
+# get the 'bits' field from a Bitcoin blockheader
+macro m_bitsFromBlockHeader():
+    with $word = ~calldataload(36+72):  # 36 (header start) + 72 (offset for 'bits')
+        $b0 = byte(0, $word)
+        $b1 = byte(1, $word)
+        $b2 = byte(2, $word)
+        $b3 = byte(3, $word)
+    $b0 + $b1*256 + $b2*TWOTO16 + $b3*TWOTO24
+
+
 # Bitcoin-way of computing the target from the 'bits' field of a blockheader
 # based on http://www.righto.com/2014/02/bitcoin-mining-hard-way-algorithms.html#ref3
 macro targetFromBits($bits):
@@ -301,7 +299,6 @@ macro concatHash($tx1, $tx2):
 # reverse 32 bytes given by '$b32'
 macro flip32Bytes($b32):
     with $a = $b32:  # important to force $a to only be examined once below
-        $o = 0
         mstore8(ref($o), byte(31, $a))
         mstore8(ref($o) + 1,  byte(30, $a))
         mstore8(ref($o) + 2,  byte(29, $a))
@@ -334,4 +331,4 @@ macro flip32Bytes($b32):
         mstore8(ref($o) + 29, byte(2, $a))
         mstore8(ref($o) + 30, byte(1, $a))
         mstore8(ref($o) + 31, byte(0, $a))
-        $o
+    $o
