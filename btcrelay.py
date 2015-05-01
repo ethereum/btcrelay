@@ -75,7 +75,7 @@ def storeBlockHeader(blockHeaderBinary:str):
 
     assert self.block[hashPrevBlock]._score  # assert prev block exists
 
-    blockHash = self.fastHashBlock(blockHeaderBinary)
+    blockHash = m_hashBlockHeader(blockHeaderBinary)
 
     if self.block[blockHash]._score != 0:  # block already stored/exists
         return(0)
@@ -229,12 +229,6 @@ def within6Confirms(txBlockHash):
     return(0)
 
 
-# Bitcoin-way of hashing a block header
-def fastHashBlock(blockHeaderBinary:str):
-    return(flip32Bytes(sha256(sha256(blockHeaderBinary:str))))
-
-
-
 #
 # macros
 #
@@ -268,6 +262,11 @@ macro getBytesLE($inStr, $size, $offset):
         $exponent += 1
 
     $result
+
+
+# Bitcoin-way of hashing a block header
+macro m_hashBlockHeader($blockHeaderBytes):
+    flip32Bytes(sha256(sha256($blockHeaderBytes:str)))
 
 
 # get the 'bits' field from a Bitcoin blockheader

@@ -5,6 +5,8 @@ import struct
 import pytest
 slow = pytest.mark.slow
 
+from utilRelay import dblSha256Flip
+
 class TestBtcRelay(object):
 
     CONTRACT = 'btcrelay.py'
@@ -114,7 +116,7 @@ class TestBtcRelay(object):
             nonce = 1 if (i in [4,5]) else 0
             blockHeaderBinary = self.getBlockHeaderBinary(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
             res = self.c.storeBlockHeader(blockHeaderBinary)
-            hashPrevBlock = self.c.fastHashBlock(blockHeaderBinary)
+            hashPrevBlock = dblSha256Flip(blockHeaderBinary)
 
             # print('@@@@ fake chain score: ' + str(self.c.getCumulativeDifficulty()))
             assert res == i+100000
@@ -172,7 +174,7 @@ class TestBtcRelay(object):
             nonce = 1 if (i in [4,5]) else 0
             blockHeaderBinary = self.getBlockHeaderBinary(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
             res = self.c.storeBlockHeader(blockHeaderBinary)
-            hashPrevBlock = self.c.fastHashBlock(blockHeaderBinary)
+            hashPrevBlock = dblSha256Flip(blockHeaderBinary)
             assert res == i+100000
 
         # testingonlySetHeaviest is needed because the difficulty from
@@ -310,13 +312,14 @@ class TestBtcRelay(object):
 
         assert self.c.storeBlockHeader(bhBinary) == 300000
 
-    def testFastHashBlock(self):
-        blockHeaderStr = "0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710"
-        bhBinary = blockHeaderStr.decode('hex')
-        res = self.c.fastHashBlock(bhBinary, profiling=True)
-        print('GAS: '+str(res['gas']))
-        exp = 0x000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506
-        assert res['output'] == exp
+    # was converted to macro
+    # def testFastHashBlock(self):
+    #     blockHeaderStr = "0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710"
+    #     bhBinary = blockHeaderStr.decode('hex')
+    #     res = self.c.fastHashBlock(bhBinary, profiling=True)
+    #     print('GAS: '+str(res['gas']))
+    #     exp = 0x000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506
+    #     assert res['output'] == exp
 
     def testComputeMerkle(self):
         # values are from block 100K

@@ -42,3 +42,7 @@ def randomMerkleProof(blocknum, txIndex=-1, withMerkle=False):
     if withMerkle:
         ret.append(int(proof['header']['merkle_root'], 16))
     return ret
+
+
+def dblSha256Flip(rawBytes):
+    return int(bin_sha256(bin_sha256(rawBytes))[::-1].encode('hex'), 16)
