@@ -150,21 +150,6 @@ macro m_getAncDepth($index):
         $b0 + $b1*256
 
 
-macro m_initialParentSetAncestors($blockHash):
-    with $ibIndex = self.block[$blockHash]._ibIndex:
-        $ancWord = 0
-        mstore8(ref($ancWord), $ibIndex)
-        mstore8(ref($ancWord) + 4, $ibIndex)
-        mstore8(ref($ancWord) + 8, $ibIndex)
-        mstore8(ref($ancWord) + 12, $ibIndex)
-        mstore8(ref($ancWord) + 16, $ibIndex)
-        mstore8(ref($ancWord) + 20, $ibIndex)
-        mstore8(ref($ancWord) + 24, $ibIndex)
-        mstore8(ref($ancWord) + 28, $ibIndex)
-
-        self.block[$blockHash]._ancestor = $ancWord
-
-
 macro TWOTO16: 65536
 macro TWOTO24: 16777216
 

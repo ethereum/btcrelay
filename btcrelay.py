@@ -63,7 +63,8 @@ def setInitialParent(blockHash, height, cumulativeDifficulty):
     # block does NOT exist. see check in storeBlockHeader()
     self.block[blockHash]._score = cumulativeDifficulty
 
-    m_initialParentSetAncestors(blockHash)  # see btcChain
+    # _ancestor can remain zeros because
+    # self.internalBlock[0] already points to blockHash
 
     return(1)
 
