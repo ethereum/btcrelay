@@ -13,7 +13,7 @@ extern relayDestination: [processTransaction:si:i]
 # - _score is 1 more than the cumulative difficulty [see setInitialParent()]
 # - _ancestor stores 8 32bit ancestor indices for more efficient backtracking (see btcChain)
 # - _ibIndex is the block's index to internalBlock (see btcChain)
-data block[2^256](_height, _score, _ancestor, _blockHeader[])
+data block[2^256](_height, _ancestor, _blockHeader[])
 
 
 # block with the highest score (aka the Head of the blockchain)
@@ -30,7 +30,37 @@ macro BYTES_4: 2**32
 macro BYTES_5: 2**40
 macro BYTES_6: 2**48
 macro BYTES_7: 2**56
+macro BYTES_8: 2**48
+macro BYTES_9: 2**56
+macro BYTES_10: 2**64
+macro BYTES_11: 2**72
+macro BYTES_12: 2**80
+macro BYTES_13: 2**88
+macro BYTES_14: 2**96
+macro BYTES_15: 2**104
 
+
+# write $int64 to memory at $addrLoc
+# This is useful for writing 64bit ints inside one 32 byte word
+macro m_mwrite128($addrLoc, $int128):
+    with $addr = $addrLoc:
+        with $bytes16 = $int128:
+            mstore8($addr, byte(31, $bytes16))
+            mstore8($addr + 1, byte(30, $bytes16))
+            mstore8($addr + 2, byte(29, $bytes16))
+            mstore8($addr + 3, byte(28, $bytes16))
+            mstore8($addr + 4, byte(27, $bytes16))
+            mstore8($addr + 5, byte(26, $bytes16))
+            mstore8($addr + 6, byte(25, $bytes16))
+            mstore8($addr + 7, byte(24, $bytes16))
+            mstore8($addr + 8, byte(23, $bytes16))
+            mstore8($addr + 9, byte(22, $bytes16))
+            mstore8($addr + 10, byte(21, $bytes16))
+            mstore8($addr + 11, byte(20, $bytes16))
+            mstore8($addr + 12, byte(19, $bytes16))
+            mstore8($addr + 13, byte(18, $bytes16))
+            mstore8($addr + 14, byte(17, $bytes16))
+            mstore8($addr + 15, byte(16, $bytes16))
 
 # write $int64 to memory at $addrLoc
 # This is useful for writing 64bit ints inside one 32 byte word
@@ -62,11 +92,21 @@ macro m_setHeight($blockHash, $blockHeight):
     self.block[$blockHash]._height = $word
     # 1
 
+macro m_setScore($blockHash, $blockScore):
+    $word = sload(ref(self.block[$blockHash]._height))
+    m_mwrite128(ref($word) + 16, $blockScore)
+    self.block[$blockHash]._height = $word
+
+
+
 macro m_getIbIndex($blockHash):
     m_getInt64($blockHash, 8)
 
 macro m_getHeight($blockHash):
     m_getInt64($blockHash, 0)
+
+macro m_getScore($blockHash):
+    m_getInt128($blockHash, 16)
 
 macro m_getInt64($blockHash, $offset):
     with $startByte = $offset * 8:
@@ -81,6 +121,29 @@ macro m_getInt64($blockHash, $offset):
             $b7 = byte($offset + 7, $word)
 
     $b0 + $b1*BYTES_1 + $b2*BYTES_2 + $b3*BYTES_3 + $b4*BYTES_4 + $b5*BYTES_5 + $b6*BYTES_6 + $b7*BYTES_7
+
+
+macro m_getInt128($blockHash, $offset):
+    with $startByte = $offset * 8:
+        with $word = self.block[$blockHash]._height:
+            $b0 = byte($offset, $word)
+            $b1 = byte($offset + 1, $word)
+            $b2 = byte($offset + 2, $word)
+            $b3 = byte($offset + 3, $word)
+            $b4 = byte($offset + 4, $word)
+            $b5 = byte($offset + 5, $word)
+            $b6 = byte($offset + 6, $word)
+            $b7 = byte($offset + 7, $word)
+            $b8 = byte($offset + 8, $word)
+            $b9 = byte($offset + 9, $word)
+            $b10 = byte($offset + 10, $word)
+            $b11 = byte($offset + 11, $word)
+            $b12 = byte($offset + 12, $word)
+            $b13 = byte($offset + 13, $word)
+            $b14 = byte($offset + 14, $word)
+            $b15 = byte($offset + 15, $word)
+
+    $b0 + $b1*BYTES_1 + $b2*BYTES_2 + $b3*BYTES_3 + $b4*BYTES_4 + $b5*BYTES_5 + $b6*BYTES_6 + $b7*BYTES_7 + $b8*BYTES_8 + $b9*BYTES_9 + $b10*BYTES_10 + $b11*BYTES_11 + $b12*BYTES_12 + $b13*BYTES_13 + $b14*BYTES_14 + $b15*BYTES_15
 
 
 # def init():
@@ -122,7 +185,7 @@ def setInitialParent(blockHash, height, cumulativeDifficulty):
 
     # do NOT pass cumulativeDifficulty of 0, since score0 means
     # block does NOT exist. see check in storeBlockHeader()
-    self.block[blockHash]._score = cumulativeDifficulty
+    m_setScore(blockHash, cumulativeDifficulty)
 
     # _ancestor can remain zeros because
     # self.internalBlock[0] already points to blockHash
@@ -135,11 +198,12 @@ def setInitialParent(blockHash, height, cumulativeDifficulty):
 def storeBlockHeader(blockHeaderBinary:str):
     hashPrevBlock = flip32Bytes(~calldataload(40))  # 36 (header start) + 4 (offset for hashPrevBlock)
 
-    assert self.block[hashPrevBlock]._score  # assert prev block exists
+    # TODO store in var
+    assert m_getScore(hashPrevBlock)  # assert prev block exists
 
     blockHash = m_hashBlockHeader(blockHeaderBinary)
 
-    if self.block[blockHash]._score != 0:  # block already stored/exists
+    if m_getScore(blockHash) != 0:  # block already stored/exists
         return(0)
 
     bits = m_bitsFromBlockHeader()
@@ -153,11 +217,11 @@ def storeBlockHeader(blockHeaderBinary:str):
         save(self.block[blockHash]._blockHeader[0], blockHeaderBinary, chars=80) # or 160?
 
         difficulty = 0x00000000FFFF0000000000000000000000000000000000000000000000000000 / target # https://en.bitcoin.it/wiki/Difficulty
-        self.block[blockHash]._score = self.block[hashPrevBlock]._score + difficulty
+        m_setScore(blockHash, m_getScore(hashPrevBlock) + difficulty)
 
-        if self.block[blockHash]._score > self.highScore:
+        if m_getScore(blockHash) > self.highScore:
             self.heaviestBlock = blockHash
-            self.highScore = self.block[blockHash]._score
+            self.highScore = m_getScore(blockHash)
 
         return(m_getHeight(blockHash))
 
@@ -217,7 +281,7 @@ def getLastBlockHeight():
 
 # return the (total) cumulative difficulty of the Head
 def getCumulativeDifficulty():
-    cumulDifficulty = self.block[self.heaviestBlock]._score
+    cumulDifficulty = m_getScore(self.heaviestBlock)
     return(cumulDifficulty)
 
 
@@ -230,14 +294,14 @@ def getCumulativeDifficulty():
 def getAverageBlockDifficulty():
     blockHash = self.heaviestBlock
 
-    cumulDifficultyHead = self.block[blockHash]._score
+    cumulDifficultyHead = m_getScore(blockHash)
 
     i = 0
     while i < 10:
         blockHash = getPrevBlock(blockHash)
         i += 1
 
-    cumulDifficulty10Ancestors = self.block[blockHash]._score
+    cumulDifficulty10Ancestors = m_getScore(blockHash)
 
     return(cumulDifficultyHead - cumulDifficulty10Ancestors)
 
