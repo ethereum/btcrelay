@@ -38,7 +38,7 @@ def init():
 # save the ancestors for a block, as well as updating the height
 def saveAncestors(blockHash, hashPrevBlock):
     self.internalBlock[self.ibIndex] = blockHash
-    self.block[blockHash]._ibIndex = self.ibIndex
+    m_setIbIndex(blockHash, self.ibIndex)
     self.ibIndex += 1
 
     # self.block[blockHash]._height = self.block[hashPrevBlock]._height + 1
@@ -48,7 +48,7 @@ def saveAncestors(blockHash, hashPrevBlock):
     ancWord = 0
 
     # the first ancestor is the index to hashPrevBlock, and write it to ancWord
-    prevIbIndex = self.block[hashPrevBlock]._ibIndex
+    prevIbIndex = m_getIbIndex(hashPrevBlock)
     m_mwrite32(ref(ancWord), prevIbIndex)
 
     # update ancWord with the remaining indexes

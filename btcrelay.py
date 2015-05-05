@@ -13,7 +13,7 @@ extern relayDestination: [processTransaction:si:i]
 # - _score is 1 more than the cumulative difficulty [see setInitialParent()]
 # - _ancestor stores 8 32bit ancestor indices for more efficient backtracking (see btcChain)
 # - _ibIndex is the block's index to internalBlock (see btcChain)
-data block[2^256](_height, _score, _ancestor, _blockHeader[], _ibIndex)
+data block[2^256](_height, _score, _ancestor, _blockHeader[])
 
 
 # block with the highest score (aka the Head of the blockchain)
@@ -61,6 +61,9 @@ macro m_setHeight($blockHash, $blockHeight):
     m_mwrite64(ref($word), $blockHeight)
     self.block[$blockHash]._height = $word
     # 1
+
+macro m_getIbIndex($blockHash):
+    m_getInt64($blockHash, 8)
 
 macro m_getHeight($blockHash):
     m_getInt64($blockHash, 0)
