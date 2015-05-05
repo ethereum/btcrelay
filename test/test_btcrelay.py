@@ -1,4 +1,4 @@
-from pyethereum import tester
+from ethereum import tester
 
 import datetime
 import struct

@@ -1,4 +1,4 @@
-from pyethereum import tester
+from ethereum import tester
 from datetime import datetime, date
 from functools import partial
 
