@@ -41,8 +41,8 @@ def saveAncestors(blockHash, hashPrevBlock):
     self.block[blockHash]._ibIndex = self.ibIndex
     self.ibIndex += 1
 
-
-    self.block[blockHash]._height = self.block[hashPrevBlock]._height + 1
+    # self.block[blockHash]._height = self.block[hashPrevBlock]._height + 1
+    m_setHeight(blockHash, m_getHeight(hashPrevBlock) + 1)
 
     # 8 indexes into internalBlock can be stored inside one ancestor (32 byte) word
     ancWord = 0
@@ -56,7 +56,7 @@ def saveAncestors(blockHash, hashPrevBlock):
     while i < NUM_ANCESTOR_DEPTHS:
         depth = m_getAncDepth(i)
 
-        if self.block[blockHash]._height % depth == 1:
+        if m_getHeight(blockHash) % depth == 1:
             m_mwrite32(ref(ancWord) + 4*i, prevIbIndex)
         else:
             m_mwrite32(ref(ancWord) + 4*i, m_getAncestor(hashPrevBlock, i))
@@ -69,7 +69,7 @@ def saveAncestors(blockHash, hashPrevBlock):
 # returns 1 if 'txBlockHash' is in the main chain, ie not a fork
 # otherwise returns 0
 def inMainChain(txBlockHash):
-    txBlockHeight = self.block[txBlockHash]._height
+    txBlockHeight = m_getHeight(txBlockHash)
 
     # By assuming that a block with height 0 does not exist, we can do
     # this optimization and immediate say that txBlockHash is not in the main chain.
@@ -81,8 +81,8 @@ def inMainChain(txBlockHash):
     blockHash = self.heaviestBlock
 
     anc_index = NUM_ANCESTOR_DEPTHS - 1
-    while self.block[blockHash]._height > txBlockHeight:
-        while self.block[blockHash]._height - txBlockHeight < m_getAncDepth(anc_index) && anc_index > 0:
+    while m_getHeight(blockHash) > txBlockHeight:
+        while m_getHeight(blockHash) - txBlockHeight < m_getAncDepth(anc_index) && anc_index > 0:
             anc_index -= 1
         blockHash = self.internalBlock[m_getAncestor(blockHash, anc_index)]
 

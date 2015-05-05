@@ -23,6 +23,48 @@ data heaviestBlock
 data highScore
 
 
+macro BYTES_1: 2**8
+macro BYTES_2: 2**16
+macro BYTES_3: 2**24
+macro BYTES_4: 2**32
+macro BYTES_5: 2**40
+macro BYTES_6: 2**48
+macro BYTES_7: 2**56
+
+
+# write $int64 to memory at $addrLoc
+# This is useful for writing 64bit ints inside one 32 byte word
+macro m_mwrite64($addrLoc, $int64):
+    with $addr = $addrLoc:
+        with $eightBytes = $int64:
+            mstore8($addr, byte(31, $eightBytes))
+            mstore8($addr + 1, byte(30, $eightBytes))
+            mstore8($addr + 2, byte(29, $eightBytes))
+            mstore8($addr + 3, byte(28, $eightBytes))
+            mstore8($addr + 4, byte(27, $eightBytes))
+            mstore8($addr + 5, byte(26, $eightBytes))
+            mstore8($addr + 6, byte(25, $eightBytes))
+            mstore8($addr + 7, byte(24, $eightBytes))
+
+
+macro m_setHeight($blockHash, $blockHeight):
+    with $addr = ref(self.block[$blockHash]._height):
+        m_mwrite64($addr, $blockHeight)
+
+macro m_getHeight($blockHash):
+    with $word = self.block[$blockHash]._height:
+        $b0 = byte(0, $word)
+        $b1 = byte(1, $word)
+        $b2 = byte(2, $word)
+        $b3 = byte(3, $word)
+        $b4 = byte(4, $word)
+        $b5 = byte(5, $word)
+        $b6 = byte(6, $word)
+        $b7 = byte(7, $word)
+
+    $b0 + $b1*BYTES_1 + $b2*BYTES_2 + $b3*BYTES_3 + $b4*BYTES_4 + $b5*BYTES_5 + $b6*BYTES_6 + $b7*BYTES_7
+
+
 # def init():
     # TODO anything else to init ?
     # carefully test if adding anything to init() since
@@ -57,7 +99,8 @@ def setInitialParent(blockHash, height, cumulativeDifficulty):
     # _height cannot be set to -1 because inMainChain() assumes that
     # a block with height0 does NOT exist (thus we cannot allow the
     # real genesis block to be at height0)
-    self.block[blockHash]._height = height
+    # self.block[blockHash]._height = height
+    m_setHeight(blockHash, height)
 
     # do NOT pass cumulativeDifficulty of 0, since score0 means
     # block does NOT exist. see check in storeBlockHeader()
@@ -98,7 +141,7 @@ def storeBlockHeader(blockHeaderBinary:str):
             self.heaviestBlock = blockHash
             self.highScore = self.block[blockHash]._score
 
-        return(self.block[blockHash]._height)
+        return(m_getHeight(blockHash))
 
     return(0)
 
@@ -151,7 +194,7 @@ def getBlockchainHead():
 
 # return the height of the heaviest block aka the Head
 def getLastBlockHeight():
-    return(self.block[self.heaviestBlock]._height)
+    return(m_getHeight(self.heaviestBlock))
 
 
 # return the (total) cumulative difficulty of the Head
