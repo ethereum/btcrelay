@@ -47,6 +47,12 @@ macro m_mwrite64($addrLoc, $int64):
             mstore8($addr + 7, byte(24, $eightBytes))
 
 
+
+macro m_setIbIndex($blockHash, $internalIndex):
+    $word = sload(ref(self.block[$blockHash]._height))
+    m_mwrite64(ref($word) + 8, $internalIndex)
+    self.block[$blockHash]._height = $word
+
 macro m_setHeight($blockHash, $blockHeight):
     # with $addr = ref(self.block[$blockHash]._height):
     #     m_mwrite64($addr, $blockHeight)
@@ -57,15 +63,19 @@ macro m_setHeight($blockHash, $blockHeight):
     # 1
 
 macro m_getHeight($blockHash):
-    with $word = self.block[$blockHash]._height:
-        $b0 = byte(0, $word)
-        $b1 = byte(1, $word)
-        $b2 = byte(2, $word)
-        $b3 = byte(3, $word)
-        $b4 = byte(4, $word)
-        $b5 = byte(5, $word)
-        $b6 = byte(6, $word)
-        $b7 = byte(7, $word)
+    m_getInt64($blockHash, 0)
+
+macro m_getInt64($blockHash, $offset):
+    with $startByte = $offset * 8:
+        with $word = self.block[$blockHash]._height:
+            $b0 = byte($offset, $word)
+            $b1 = byte($offset + 1, $word)
+            $b2 = byte($offset + 2, $word)
+            $b3 = byte($offset + 3, $word)
+            $b4 = byte($offset + 4, $word)
+            $b5 = byte($offset + 5, $word)
+            $b6 = byte($offset + 6, $word)
+            $b7 = byte($offset + 7, $word)
 
     $b0 + $b1*BYTES_1 + $b2*BYTES_2 + $b3*BYTES_3 + $b4*BYTES_4 + $b5*BYTES_5 + $b6*BYTES_6 + $b7*BYTES_7
 
