@@ -237,33 +237,15 @@ def within6Confirms(txBlockHash):
 # get the parent of '$blockHash'
 macro getPrevBlock($blockHash):
     with $addr = ref(self.block[$blockHash]._blockHeader[0]):
-        $tmp = sload($addr) * 2**32 + sload($addr+1) / 2**224
+        $tmp = sload($addr) * 2**32 + div(sload($addr+1), 2**224)  # must use div()
     flip32Bytes($tmp)
 
 
 # get the merkle root of '$blockHash'
 macro getMerkleRoot($blockHash):
-    $tmpStr = load(self.block[$blockHash]._blockHeader[0], chars=68)  # don't need all 80bytes
-    getBytesLE($tmpStr, 32, 36)
-
-
-# get $size bytes from $inStr with $offset and return in little endian
-macro getBytesLE($inStr, $size, $offset):
-    $endIndex = $offset + $size
-
-    $result = 0
-    $exponent = 0
-    $j = $offset
-    while $j < $endIndex:
-        $char = getch($inStr, $j)
-        # log($char)
-        $result += $char * 256^$exponent
-        # log(result)
-
-        $j += 1
-        $exponent += 1
-
-    $result
+    with $addr = ref(self.block[$blockHash]._blockHeader[0]):
+        $tmp = sload($addr+1) * 2**32 + div(sload($addr+2), 2**224)  # must use div()
+    flip32Bytes($tmp)
 
 
 # Bitcoin-way of hashing a block header
