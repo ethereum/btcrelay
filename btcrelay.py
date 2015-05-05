@@ -236,8 +236,9 @@ def within6Confirms(txBlockHash):
 
 # get the parent of '$blockHash'
 macro getPrevBlock($blockHash):
-    $tmpStr = load(self.block[$blockHash]._blockHeader[0], chars=36)  # don't need all 80bytes
-    getBytesLE($tmpStr, 32, 4)
+    with $addr = ref(self.block[$blockHash]._blockHeader[0]):
+        $tmp = sload($addr) * 2**32 + sload($addr+1) / 2**224
+    flip32Bytes($tmp)
 
 
 # get the merkle root of '$blockHash'

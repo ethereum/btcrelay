@@ -246,9 +246,10 @@ class TestBtcRelay(object):
         ]
 
         for i, bh in enumerate(blockHash):
-            res = self.c.within6Confirms(bh)
+            res = self.c.within6Confirms(bh, profiling=True)
+            print('GAS: '+str(res['gas']))
             exp = 0 if i==0 else 1
-            assert res == exp
+            assert res['output'] == exp
 
 
     def storeGenesisBlock(self):
