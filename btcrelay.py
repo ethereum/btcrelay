@@ -48,8 +48,13 @@ macro m_mwrite64($addrLoc, $int64):
 
 
 macro m_setHeight($blockHash, $blockHeight):
-    with $addr = ref(self.block[$blockHash]._height):
-        m_mwrite64($addr, $blockHeight)
+    # with $addr = ref(self.block[$blockHash]._height):
+    #     m_mwrite64($addr, $blockHeight)
+
+    $word = sload(ref(self.block[$blockHash]._height))
+    m_mwrite64(ref($word), $blockHeight)
+    self.block[$blockHash]._height = $word
+    # 1
 
 macro m_getHeight($blockHash):
     with $word = self.block[$blockHash]._height:
