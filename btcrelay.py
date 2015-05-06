@@ -9,12 +9,12 @@ extern relayDestination: [processTransaction:si:i]
 #
 # a Bitcoin block (header) is stored as:
 # - _blockHeader 80 bytes
-# - _info who's 32 bytes are comprised of "_height" 8bytes, "_score" 16bytes, "_ibIndex" 8bytes
+# - _info who's 32 bytes are comprised of "_height" 8bytes, "_ibIndex" 8bytes, "_score" 16bytes
 # -   "_height" is 1 more than the typical Bitcoin term height/blocknumber [see setPreGensesis()]
-# -   "_score" is 1 more than the cumulative difficulty [see setInitialParent()]
 # -   "_ibIndex" is the block's index to internalBlock (see btcChain)
+# -   "_score" is 1 more than the cumulative difficulty [see setInitialParent()]
 # - _ancestor stores 8 32bit ancestor indices for more efficient backtracking (see btcChain)
-data block[2^256](_info, _ancestor, _blockHeader[])
+data block[2**256](_info, _ancestor, _blockHeader[])
 
 
 # block with the highest score (aka the Head of the blockchain)
@@ -22,108 +22,6 @@ data heaviestBlock
 
 # highest score among all blocks (so far)
 data highScore
-
-
-macro BYTES_1: 2**8
-macro BYTES_2: 2**16
-macro BYTES_3: 2**24
-macro BYTES_4: 2**32
-macro BYTES_5: 2**40
-macro BYTES_6: 2**48
-macro BYTES_7: 2**56
-macro BYTES_8: 2**64
-macro BYTES_9: 2**72
-macro BYTES_10: 2**80
-macro BYTES_11: 2**88
-macro BYTES_12: 2**96
-macro BYTES_13: 2**104
-macro BYTES_14: 2**112
-macro BYTES_15: 2**120
-macro BYTES_16: 2**128
-macro BYTES_17: 2**136
-macro BYTES_18: 2**144
-macro BYTES_19: 2**152
-macro BYTES_20: 2**160
-macro BYTES_21: 2**168
-macro BYTES_22: 2**176
-macro BYTES_23: 2**184
-macro BYTES_24: 2**192
-macro BYTES_25: 2**200
-macro BYTES_26: 2**208
-macro BYTES_27: 2**216
-macro BYTES_28: 2**224
-macro BYTES_29: 2**232
-macro BYTES_30: 2**240
-macro BYTES_31: 2**248
-macro BYTES_32: 2**256
-
-
-
-# write $int64 to memory at $addrLoc
-# This is useful for writing 64bit ints inside one 32 byte word
-macro m_mwrite128($addrLoc, $int128):
-    with $addr = $addrLoc:
-        with $bytes16 = $int128:
-            mstore8($addr, byte(16, $bytes16))
-            mstore8($addr + 1, byte(17, $bytes16))
-            mstore8($addr + 2, byte(18, $bytes16))
-            mstore8($addr + 3, byte(19, $bytes16))
-            mstore8($addr + 4, byte(20, $bytes16))
-            mstore8($addr + 5, byte(21, $bytes16))
-            mstore8($addr + 6, byte(22, $bytes16))
-            mstore8($addr + 7, byte(23, $bytes16))
-            mstore8($addr + 8, byte(24, $bytes16))
-            mstore8($addr + 9, byte(25, $bytes16))
-            mstore8($addr + 10, byte(26, $bytes16))
-            mstore8($addr + 11, byte(27, $bytes16))
-            mstore8($addr + 12, byte(28, $bytes16))
-            mstore8($addr + 13, byte(29, $bytes16))
-            mstore8($addr + 14, byte(30, $bytes16))
-            mstore8($addr + 15, byte(31, $bytes16))
-
-
-# write $int64 to memory at $addrLoc
-# This is useful for writing 64bit ints inside one 32 byte word
-macro m_mwrite64($addrLoc, $int64):
-    with $addr = $addrLoc:
-        with $eightBytes = $int64:
-            mstore8($addr, byte(24, $eightBytes))
-            mstore8($addr + 1, byte(25, $eightBytes))
-            mstore8($addr + 2, byte(26, $eightBytes))
-            mstore8($addr + 3, byte(27, $eightBytes))
-            mstore8($addr + 4, byte(28, $eightBytes))
-            mstore8($addr + 5, byte(29, $eightBytes))
-            mstore8($addr + 6, byte(30, $eightBytes))
-            mstore8($addr + 7, byte(31, $eightBytes))
-
-
-
-macro m_setIbIndex($blockHash, $internalIndex):
-    $word = sload(ref(self.block[$blockHash]._info))
-    m_mwrite64(ref($word) + 8, $internalIndex)
-    self.block[$blockHash]._info = $word
-
-
-macro m_setHeight($blockHash, $blockHeight):
-    $word = sload(ref(self.block[$blockHash]._info))
-    m_mwrite64(ref($word), $blockHeight)
-    self.block[$blockHash]._info = $word
-
-
-macro m_setScore($blockHash, $blockScore):
-    $word = sload(ref(self.block[$blockHash]._info))
-    m_mwrite128(ref($word) + 16, $blockScore)
-    self.block[$blockHash]._info = $word
-
-
-macro m_getIbIndex($blockHash):
-    div(sload(ref(self.block[$blockHash]._info)) * BYTES_8, BYTES_24)
-
-macro m_getHeight($blockHash):
-    div(sload(ref(self.block[$blockHash]._info)), BYTES_24)
-
-macro m_getScore($blockHash):
-    div(sload(ref(self.block[$blockHash]._info)) * BYTES_16, BYTES_16)
 
 
 # def init():
@@ -361,7 +259,7 @@ macro m_hashBlockHeader($blockHeaderBytes):
 # get the 'bits' field from a Bitcoin blockheader
 macro m_bitsFromBlockHeader():
     with $w = ~calldataload(36+72):  # 36 (header start) + 72 (offset for 'bits')
-        byte(0, $w) + byte(1, $w)*256 + byte(2, $w)*TWOTO16 + byte(3, $w)*TWOTO24
+        byte(0, $w) + byte(1, $w)*BYTES_1 + byte(2, $w)*BYTES_2 + byte(3, $w)*BYTES_3
 
 
 # Bitcoin-way of computing the target from the 'bits' field of a blockheader
@@ -416,3 +314,76 @@ macro flip32Bytes($b32):
         mstore8(ref($o) + 30, byte(1, $a))
         mstore8(ref($o) + 31, byte(0, $a))
     $o
+
+
+# write $int64 to memory at $addrLoc
+# This is useful for writing 64bit ints inside one 32 byte word
+macro m_mwrite64($addrLoc, $int64):
+    with $addr = $addrLoc:
+        with $eightBytes = $int64:
+            mstore8($addr, byte(24, $eightBytes))
+            mstore8($addr + 1, byte(25, $eightBytes))
+            mstore8($addr + 2, byte(26, $eightBytes))
+            mstore8($addr + 3, byte(27, $eightBytes))
+            mstore8($addr + 4, byte(28, $eightBytes))
+            mstore8($addr + 5, byte(29, $eightBytes))
+            mstore8($addr + 6, byte(30, $eightBytes))
+            mstore8($addr + 7, byte(31, $eightBytes))
+
+
+# write $int128 to memory at $addrLoc
+# This is useful for writing 128bit ints inside one 32 byte word
+macro m_mwrite128($addrLoc, $int128):
+    with $addr = $addrLoc:
+        with $bytes16 = $int128:
+            mstore8($addr, byte(16, $bytes16))
+            mstore8($addr + 1, byte(17, $bytes16))
+            mstore8($addr + 2, byte(18, $bytes16))
+            mstore8($addr + 3, byte(19, $bytes16))
+            mstore8($addr + 4, byte(20, $bytes16))
+            mstore8($addr + 5, byte(21, $bytes16))
+            mstore8($addr + 6, byte(22, $bytes16))
+            mstore8($addr + 7, byte(23, $bytes16))
+            mstore8($addr + 8, byte(24, $bytes16))
+            mstore8($addr + 9, byte(25, $bytes16))
+            mstore8($addr + 10, byte(26, $bytes16))
+            mstore8($addr + 11, byte(27, $bytes16))
+            mstore8($addr + 12, byte(28, $bytes16))
+            mstore8($addr + 13, byte(29, $bytes16))
+            mstore8($addr + 14, byte(30, $bytes16))
+            mstore8($addr + 15, byte(31, $bytes16))
+
+
+
+#
+#  macro accessors for a block's _info (height, ibIndex, score)
+#
+
+# block height is the first 8 bytes of _info
+macro m_setHeight($blockHash, $blockHeight):
+    $word = sload(ref(self.block[$blockHash]._info))
+    m_mwrite64(ref($word), $blockHeight)
+    self.block[$blockHash]._info = $word
+
+macro m_getHeight($blockHash):
+    div(sload(ref(self.block[$blockHash]._info)), BYTES_24)
+
+
+# index to self.internalBlock is the second 8 bytes of _info
+macro m_setIbIndex($blockHash, $internalIndex):
+    $word = sload(ref(self.block[$blockHash]._info))
+    m_mwrite64(ref($word) + 8, $internalIndex)
+    self.block[$blockHash]._info = $word
+
+macro m_getIbIndex($blockHash):
+    div(sload(ref(self.block[$blockHash]._info)) * BYTES_8, BYTES_24)
+
+
+# score of the block is the last 16 bytes of _info
+macro m_setScore($blockHash, $blockScore):
+    $word = sload(ref(self.block[$blockHash]._info))
+    m_mwrite128(ref($word) + 16, $blockScore)
+    self.block[$blockHash]._info = $word
+
+macro m_getScore($blockHash):
+    div(sload(ref(self.block[$blockHash]._info)) * BYTES_16, BYTES_16)

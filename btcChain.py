@@ -1,3 +1,5 @@
+inset('constants.se')
+
 # btcChain is required by btcrelay and is a separate file to improve
 # clarity: it has ancestor management and its
 # main method is inMainChain() which is tested by test_btcChain
