@@ -84,30 +84,17 @@ macro m_setIbIndex($blockHash, $internalIndex):
     m_mwrite64(ref($word) + 8, $internalIndex)
     self.block[$blockHash]._height = $word
 
-macro m_setHeight($blockHash, $blockHeight):
-    # with $addr = ref(self.block[$blockHash]._height):
-    #     m_mwrite64($addr, $blockHeight)
 
+macro m_setHeight($blockHash, $blockHeight):
     $word = sload(ref(self.block[$blockHash]._height))
     m_mwrite64(ref($word), $blockHeight)
     self.block[$blockHash]._height = $word
-    # 1
+
 
 macro m_setScore($blockHash, $blockScore):
-    # self.m_mwrite128($blockHash, $blockScore)
-
     $word = sload(ref(self.block[$blockHash]._height))
-    #
-    # log($word)
-    #
-    # log(ref($word))
-    #
     m_mwrite128(ref($word) + 16, $blockScore)
-    #
-    # log($word)
-    #
     self.block[$blockHash]._height = $word
-
 
 
 macro m_getIbIndex($blockHash):
@@ -123,38 +110,6 @@ macro m_getScore($blockHash):
 macro m_getInt128($blockHash, $offset):
     # TODO try putting the score as the 1st 16bytes so that a single div is needed here
     div(sload(ref(self.block[$blockHash]._height)) * 2**128, 2**128)
-    # flip32Bytes($tmp)
-
-    # with $startByte = $offset:
-    #     with $word = self.block[$blockHash]._height:
-    #
-    #         with $i = 0:
-    #             $ret = 0
-    #             while $i < 16:
-    #                 $ret += byte($startByte + $i, $word) * 2**(8*$i)
-    #
-    #                 $i += 1
-    #
-    # $ret
-
-    #         $b0 = byte($startByte, $word)
-    #         $b1 = byte($startByte + 1, $word)
-    #         $b2 = byte($startByte + 2, $word)
-    #         $b3 = byte($startByte + 3, $word)
-    #         $b4 = byte($startByte + 4, $word)
-    #         $b5 = byte($startByte + 5, $word)
-    #         $b6 = byte($startByte + 6, $word)
-    #         $b7 = byte($startByte + 7, $word)
-    #         $b8 = byte($startByte + 8, $word)
-    #         $b9 = byte($startByte + 9, $word)
-    #         $b10 = byte($startByte + 10, $word)
-    #         $b11 = byte($startByte + 11, $word)
-    #         $b12 = byte($startByte + 12, $word)
-    #         $b13 = byte($startByte + 13, $word)
-    #         $b14 = byte($startByte + 14, $word)
-    #         $b15 = byte($startByte + 15, $word)
-    #
-    # $b0 + $b1*BYTES_1 + $b2*BYTES_2 + $b3*BYTES_3 + $b4*BYTES_4 + $b5*BYTES_5 + $b6*BYTES_6 + $b7*BYTES_7 + $b8*BYTES_8 + $b9*BYTES_9 + $b10*BYTES_10 + $b11*BYTES_11 + $b12*BYTES_12 + $b13*BYTES_13 + $b14*BYTES_14 + $b15*BYTES_15
 
 
 # def init():
