@@ -96,10 +96,10 @@ def inMainChain(txBlockHash):
 macro m_mwrite32($addrLoc, $int32):
     with $addr = $addrLoc:
         with $fourBytes = $int32:
-            mstore8($addr, byte(31, $fourBytes))
-            mstore8($addr + 1, byte(30, $fourBytes))
-            mstore8($addr + 2, byte(29, $fourBytes))
-            mstore8($addr + 3, byte(28, $fourBytes))
+            mstore8($addr, byte(28, $fourBytes))
+            mstore8($addr + 1, byte(29, $fourBytes))
+            mstore8($addr + 2, byte(30, $fourBytes))
+            mstore8($addr + 3, byte(31, $fourBytes))
 
 
 macro m_mwrite16($addrLoc, $int16):
@@ -122,14 +122,7 @@ macro m_mwrite24($addrLoc, $int24):
 # eg. for combined usage, self.internalBlock[m_getAncestor(someBlock, 2)] will
 # return the block hash of someBlock's 3rd ancestor
 macro m_getAncestor($blockHash, $whichAncestor):
-    with $startByte = $whichAncestor * 4:
-        $wordOfAncestorIndexes = self.block[$blockHash]._ancestor
-        $b0 = byte($startByte, $wordOfAncestorIndexes)
-        $b1 = byte($startByte + 1, $wordOfAncestorIndexes)
-        $b2 = byte($startByte + 2, $wordOfAncestorIndexes)
-        $b3 = byte($startByte + 3, $wordOfAncestorIndexes)
-
-    $b0 + $b1*BYTES_1 + $b2*BYTES_2 + $b3*BYTES_3
+    div(sload(ref(self.block[$blockHash]._ancestor)) * 2**(32*$whichAncestor), BYTES_28)
 
 
 macro m_getAncDepth($index):
@@ -152,8 +145,8 @@ macro m_getAncDepth($index):
         $b0 + $b1*BYTES_1
 
 
-def test_macro_getAncDepth(index):
-    return(m_getAncDepth(index))
+# def test_macro_getAncDepth(index):
+#     return(m_getAncDepth(index))
 
 # log ancestors
 # def logAnc(blockHash):
