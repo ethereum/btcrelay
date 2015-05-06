@@ -82,14 +82,14 @@ def m_mwrite128(blockHash, int128):
 macro m_mwrite64($addrLoc, $int64):
     with $addr = $addrLoc:
         with $eightBytes = $int64:
-            mstore8($addr, byte(31, $eightBytes))
-            mstore8($addr + 1, byte(30, $eightBytes))
-            mstore8($addr + 2, byte(29, $eightBytes))
-            mstore8($addr + 3, byte(28, $eightBytes))
-            mstore8($addr + 4, byte(27, $eightBytes))
-            mstore8($addr + 5, byte(26, $eightBytes))
-            mstore8($addr + 6, byte(25, $eightBytes))
-            mstore8($addr + 7, byte(24, $eightBytes))
+            mstore8($addr, byte(24, $eightBytes))
+            mstore8($addr + 1, byte(25, $eightBytes))
+            mstore8($addr + 2, byte(26, $eightBytes))
+            mstore8($addr + 3, byte(27, $eightBytes))
+            mstore8($addr + 4, byte(28, $eightBytes))
+            mstore8($addr + 5, byte(29, $eightBytes))
+            mstore8($addr + 6, byte(30, $eightBytes))
+            mstore8($addr + 7, byte(31, $eightBytes))
 
 
 
@@ -125,27 +125,13 @@ macro m_setScore($blockHash, $blockScore):
 
 
 macro m_getIbIndex($blockHash):
-    m_getInt64($blockHash, 8)
+    div(sload(ref(self.block[$blockHash]._height)) * 2**64, 2**192)
 
 macro m_getHeight($blockHash):
-    m_getInt64($blockHash, 0)
+    div(sload(ref(self.block[$blockHash]._height)), 2**192)
 
 macro m_getScore($blockHash):
     m_getInt128($blockHash, 16)
-
-macro m_getInt64($blockHash, $offset):
-    with $startByte = $offset:
-        with $word = self.block[$blockHash]._height:
-            $b0 = byte($startByte, $word)
-            $b1 = byte($startByte + 1, $word)
-            $b2 = byte($startByte + 2, $word)
-            $b3 = byte($startByte + 3, $word)
-            $b4 = byte($startByte + 4, $word)
-            $b5 = byte($startByte + 5, $word)
-            $b6 = byte($startByte + 6, $word)
-            $b7 = byte($startByte + 7, $word)
-
-    $b0 + $b1*BYTES_1 + $b2*BYTES_2 + $b3*BYTES_3 + $b4*BYTES_4 + $b5*BYTES_5 + $b6*BYTES_6 + $b7*BYTES_7
 
 
 macro m_getInt128($blockHash, $offset):
