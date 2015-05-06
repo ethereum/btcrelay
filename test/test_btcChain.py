@@ -246,3 +246,10 @@ class TestBtcChain(object):
         assert self.c.inMainChain(300) == 1
         assert self.c.inMainChain(310) == 1
         assert self.c.inMainChain(320) == 1
+
+
+    # to run, will need to uncomment test_macro_getAncDepth in btcChain
+    # def testGetAncDepth(self):
+    #     for i in range(8):
+    #         # print(self.c.test_macro_getAncDepth(i))
+    #         assert self.c.test_macro_getAncDepth(i) == 5**i

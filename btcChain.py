@@ -37,6 +37,7 @@ def init():
     self.ancestorDepths = depthWord
 
 
+
 # save the ancestors for a block, as well as updating the height
 def saveAncestors(blockHash, hashPrevBlock):
     self.internalBlock[self.ibIndex] = blockHash
@@ -104,16 +105,16 @@ macro m_mwrite32($addrLoc, $int32):
 macro m_mwrite16($addrLoc, $int16):
     with $addr = $addrLoc:
         with $twoBytes = $int16:
-            mstore8($addr, byte(31, $twoBytes))
-            mstore8($addr + 1, byte(30, $twoBytes))
+            mstore8($addr, byte(30, $twoBytes))
+            mstore8($addr + 1, byte(31, $twoBytes))
 
 
 macro m_mwrite24($addrLoc, $int24):
     with $addr = $addrLoc:
         with $threeBytes = $int24:
-            mstore8($addr, byte(31, $threeBytes))
+            mstore8($addr, byte(29, $threeBytes))
             mstore8($addr + 1, byte(30, $threeBytes))
-            mstore8($addr + 2, byte(29, $threeBytes))
+            mstore8($addr + 2, byte(31, $threeBytes))
 
 
 # a block's _ancestor storage slot contains 8 indexes into internalBlock, so
@@ -138,18 +139,21 @@ macro m_getAncDepth($index):
         byte(0, ancDepths)
     elif $index == NUM_ANCESTOR_DEPTHS - 1:
         with $startByte = $index*2 - 1:
-            $b0 = byte($startByte, ancDepths)
+            $b2 = byte($startByte, ancDepths)
             $b1 = byte($startByte + 1, ancDepths)
-            $b2 = byte($startByte + 2, ancDepths)
+            $b0 = byte($startByte + 2, ancDepths)
 
         $b0 + $b1*BYTES_1 + $b2*BYTES_2
     else:
         with $startByte = $index*2 - 1:
-            $b0 = byte($startByte, ancDepths)
-            $b1 = byte($startByte + 1, ancDepths)
+            $b1 = byte($startByte, ancDepths)
+            $b0 = byte($startByte + 1, ancDepths)
 
         $b0 + $b1*BYTES_1
 
+
+def test_macro_getAncDepth(index):
+    return(m_getAncDepth(index))
 
 # log ancestors
 # def logAnc(blockHash):
