@@ -69,6 +69,23 @@ def inMainChain(txBlockHash):
     return(blockHash == txBlockHash)
 
 
+#
+# macros
+#
+
+# a block's _ancestor storage slot contains 8 indexes into internalBlock, so
+# this macro returns the index that can be used to lookup the desired ancestor
+# eg. for combined usage, self.internalBlock[m_getAncestor(someBlock, 2)] will
+# return the block hash of someBlock's 3rd ancestor
+macro m_getAncestor($blockHash, $whichAncestor):
+    div(sload(ref(self.block[$blockHash]._ancestor)) * 2**(32*$whichAncestor), BYTES_28)
+
+
+# index should be 0 to 7, so this returns 1, 5, 25 ... 78125
+macro m_getAncDepth($index):
+    5**$index
+
+
 # write $int32 to memory at $addrLoc
 # This is useful for writing 32bit ints inside one 32 byte word
 macro m_mwrite32($addrLoc, $int32):
@@ -80,13 +97,8 @@ macro m_mwrite32($addrLoc, $int32):
             mstore8($addr + 3, byte(31, $fourBytes))
 
 
-macro m_mwrite16($addrLoc, $int16):
-    with $addr = $addrLoc:
-        with $twoBytes = $int16:
-            mstore8($addr, byte(30, $twoBytes))
-            mstore8($addr + 1, byte(31, $twoBytes))
-
-
+# write $int24 to memory at $addrLoc
+# This is useful for writing 24bit ints inside one 32 byte word
 macro m_mwrite24($addrLoc, $int24):
     with $addr = $addrLoc:
         with $threeBytes = $int24:
@@ -95,19 +107,14 @@ macro m_mwrite24($addrLoc, $int24):
             mstore8($addr + 2, byte(31, $threeBytes))
 
 
-# a block's _ancestor storage slot contains 8 indexes into internalBlock, so
-# this macro returns the index that can be used to lookup the desired ancestor
-# eg. for combined usage, self.internalBlock[m_getAncestor(someBlock, 2)] will
-# return the block hash of someBlock's 3rd ancestor
-macro m_getAncestor($blockHash, $whichAncestor):
-    div(sload(ref(self.block[$blockHash]._ancestor)) * 2**(32*$whichAncestor), BYTES_28)
+# write $int16 to memory at $addrLoc
+# This is useful for writing 16bit ints inside one 32 byte word
+macro m_mwrite16($addrLoc, $int16):
+    with $addr = $addrLoc:
+        with $twoBytes = $int16:
+            mstore8($addr, byte(30, $twoBytes))
+            mstore8($addr + 1, byte(31, $twoBytes))
 
-
-macro m_getAncDepth($index):
-    5**$index
-
-# def test_macro_getAncDepth(index):
-#     return(m_getAncDepth(index))
 
 # log ancestors
 # def logAnc(blockHash):
