@@ -42,25 +42,40 @@ macro BYTES_15: 2**104
 
 # write $int64 to memory at $addrLoc
 # This is useful for writing 64bit ints inside one 32 byte word
-macro m_mwrite128($addrLoc, $int128):
-    with $addr = $addrLoc:
-        with $bytes16 = $int128:
-            mstore8($addr, byte(31, $bytes16))
-            mstore8($addr + 1, byte(30, $bytes16))
-            mstore8($addr + 2, byte(29, $bytes16))
-            mstore8($addr + 3, byte(28, $bytes16))
-            mstore8($addr + 4, byte(27, $bytes16))
-            mstore8($addr + 5, byte(26, $bytes16))
-            mstore8($addr + 6, byte(25, $bytes16))
-            mstore8($addr + 7, byte(24, $bytes16))
-            mstore8($addr + 8, byte(23, $bytes16))
-            mstore8($addr + 9, byte(22, $bytes16))
-            mstore8($addr + 10, byte(21, $bytes16))
-            mstore8($addr + 11, byte(20, $bytes16))
-            mstore8($addr + 12, byte(19, $bytes16))
-            mstore8($addr + 13, byte(18, $bytes16))
-            mstore8($addr + 14, byte(17, $bytes16))
-            mstore8($addr + 15, byte(16, $bytes16))
+def m_mwrite128(blockHash, int128):
+
+    word = sload(ref(self.block[blockHash]._height))
+
+    # log(word)
+    # log(addrLoc)
+
+    addr = ref(word) + 16
+    bytes16 = int128
+    # log(addr)
+    # log(bytes16)
+
+    mstore8(addr, byte(31, bytes16))
+    mstore8(addr + 1, byte(30, bytes16))
+    mstore8(addr + 2, byte(29, bytes16))
+    mstore8(addr + 3, byte(28, bytes16))
+    mstore8(addr + 4, byte(27, bytes16))
+    mstore8(addr + 5, byte(26, bytes16))
+    mstore8(addr + 6, byte(25, bytes16))
+    mstore8(addr + 7, byte(24, bytes16))
+    mstore8(addr + 8, byte(23, bytes16))
+    mstore8(addr + 9, byte(22, bytes16))
+    mstore8(addr + 10, byte(21, bytes16))
+    mstore8(addr + 11, byte(20, bytes16))
+    mstore8(addr + 12, byte(19, bytes16))
+    mstore8(addr + 13, byte(18, bytes16))
+    mstore8(addr + 14, byte(17, bytes16))
+    mstore8(addr + 15, byte(16, bytes16))
+
+    self.block[blockHash]._height = word
+
+    # log(word)
+
+
 
 # write $int64 to memory at $addrLoc
 # This is useful for writing 64bit ints inside one 32 byte word
@@ -93,9 +108,19 @@ macro m_setHeight($blockHash, $blockHeight):
     # 1
 
 macro m_setScore($blockHash, $blockScore):
-    $word = sload(ref(self.block[$blockHash]._height))
-    m_mwrite128(ref($word) + 16, $blockScore)
-    self.block[$blockHash]._height = $word
+    self.m_mwrite128($blockHash, $blockScore)
+
+    # $word = sload(ref(self.block[$blockHash]._height))
+    #
+    # log($word)
+    #
+    # log(ref($word))
+    #
+    # self.m_mwrite128(ref($word) + 16, $blockScore)
+    #
+    # log($word)
+    #
+    # self.block[$blockHash]._height = $word
 
 
 
