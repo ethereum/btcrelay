@@ -41,7 +41,6 @@ def saveAncestors(blockHash, hashPrevBlock):
     m_setIbIndex(blockHash, self.ibIndex)
     self.ibIndex += 1
 
-    # self.block[blockHash]._height = self.block[hashPrevBlock]._height + 1
     m_setHeight(blockHash, m_getHeight(hashPrevBlock) + 1)
 
     # 8 indexes into internalBlock can be stored inside one ancestor (32 byte) word

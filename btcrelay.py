@@ -9,11 +9,12 @@ extern relayDestination: [processTransaction:si:i]
 #
 # a Bitcoin block (header) is stored as:
 # - _blockHeader 80 bytes
-# - _height is 1 more than the typical Bitcoin term height/blocknumber [see setPreGensesis()]
-# - _score is 1 more than the cumulative difficulty [see setInitialParent()]
+# - _info who's 32 bytes are comprised of "_height" 8bytes, "_score" 16bytes, "_ibIndex" 8bytes
+# -   "_height" is 1 more than the typical Bitcoin term height/blocknumber [see setPreGensesis()]
+# -   "_score" is 1 more than the cumulative difficulty [see setInitialParent()]
+# -   "_ibIndex" is the block's index to internalBlock (see btcChain)
 # - _ancestor stores 8 32bit ancestor indices for more efficient backtracking (see btcChain)
-# - _ibIndex is the block's index to internalBlock (see btcChain)
-data block[2^256](_height, _ancestor, _blockHeader[])
+data block[2^256](_info, _ancestor, _blockHeader[])
 
 
 # block with the highest score (aka the Head of the blockchain)
@@ -80,28 +81,28 @@ macro m_mwrite64($addrLoc, $int64):
 
 
 macro m_setIbIndex($blockHash, $internalIndex):
-    $word = sload(ref(self.block[$blockHash]._height))
+    $word = sload(ref(self.block[$blockHash]._info))
     m_mwrite64(ref($word) + 8, $internalIndex)
-    self.block[$blockHash]._height = $word
+    self.block[$blockHash]._info = $word
 
 
 macro m_setHeight($blockHash, $blockHeight):
-    $word = sload(ref(self.block[$blockHash]._height))
+    $word = sload(ref(self.block[$blockHash]._info))
     m_mwrite64(ref($word), $blockHeight)
-    self.block[$blockHash]._height = $word
+    self.block[$blockHash]._info = $word
 
 
 macro m_setScore($blockHash, $blockScore):
-    $word = sload(ref(self.block[$blockHash]._height))
+    $word = sload(ref(self.block[$blockHash]._info))
     m_mwrite128(ref($word) + 16, $blockScore)
-    self.block[$blockHash]._height = $word
+    self.block[$blockHash]._info = $word
 
 
 macro m_getIbIndex($blockHash):
-    div(sload(ref(self.block[$blockHash]._height)) * 2**64, 2**192)
+    div(sload(ref(self.block[$blockHash]._info)) * 2**64, 2**192)
 
 macro m_getHeight($blockHash):
-    div(sload(ref(self.block[$blockHash]._height)), 2**192)
+    div(sload(ref(self.block[$blockHash]._info)), 2**192)
 
 macro m_getScore($blockHash):
     m_getInt128($blockHash, 16)
@@ -109,7 +110,7 @@ macro m_getScore($blockHash):
 
 macro m_getInt128($blockHash, $offset):
     # TODO try putting the score as the 1st 16bytes so that a single div is needed here
-    div(sload(ref(self.block[$blockHash]._height)) * 2**128, 2**128)
+    div(sload(ref(self.block[$blockHash]._info)) * 2**128, 2**128)
 
 
 # def init():
