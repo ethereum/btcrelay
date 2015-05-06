@@ -126,24 +126,13 @@ macro m_getAncestor($blockHash, $whichAncestor):
 
 
 macro m_getAncDepth($index):
-    ancDepths = self.ancestorDepths
-
-    if $index == 0:
-        byte(0, ancDepths)
-    elif $index == NUM_ANCESTOR_DEPTHS - 1:
-        with $startByte = $index*2 - 1:
-            $b2 = byte($startByte, ancDepths)
-            $b1 = byte($startByte + 1, ancDepths)
-            $b0 = byte($startByte + 2, ancDepths)
-
-        $b0 + $b1*BYTES_1 + $b2*BYTES_2
-    else:
-        with $startByte = $index*2 - 1:
-            $b1 = byte($startByte, ancDepths)
-            $b0 = byte($startByte + 1, ancDepths)
-
-        $b0 + $b1*BYTES_1
-
+    with $ancDepths = self.ancestorDepths:
+        if $index == 0:
+            byte(0, $ancDepths)
+        elif $index == NUM_ANCESTOR_DEPTHS - 1:
+            div($ancDepths * 2**(8*($index*2 - 1)), BYTES_29)
+        else:
+            div($ancDepths * 2**(8*($index*2 - 1)), BYTES_30)
 
 # def test_macro_getAncDepth(index):
 #     return(m_getAncDepth(index))
