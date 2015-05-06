@@ -128,7 +128,7 @@ macro m_getAncestor($blockHash, $whichAncestor):
         $b2 = byte($startByte + 2, $wordOfAncestorIndexes)
         $b3 = byte($startByte + 3, $wordOfAncestorIndexes)
 
-    $b0 + $b1*256 + $b2*TWOTO16 + $b3*TWOTO24
+    $b0 + $b1*BYTES_1 + $b2*BYTES_2 + $b3*BYTES_3
 
 
 macro m_getAncDepth($index):
@@ -142,17 +142,13 @@ macro m_getAncDepth($index):
             $b1 = byte($startByte + 1, ancDepths)
             $b2 = byte($startByte + 2, ancDepths)
 
-        $b0 + $b1*256 + $b2*TWOTO16
+        $b0 + $b1*BYTES_1 + $b2*BYTES_2
     else:
         with $startByte = $index*2 - 1:
             $b0 = byte($startByte, ancDepths)
             $b1 = byte($startByte + 1, ancDepths)
 
-        $b0 + $b1*256
-
-
-macro TWOTO16: 65536
-macro TWOTO24: 16777216
+        $b0 + $b1*BYTES_1
 
 
 # log ancestors

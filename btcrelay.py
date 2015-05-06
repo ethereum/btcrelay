@@ -240,14 +240,14 @@ def within6Confirms(txBlockHash):
 # get the parent of '$blockHash'
 macro getPrevBlock($blockHash):
     with $addr = ref(self.block[$blockHash]._blockHeader[0]):
-        $tmp = sload($addr) * 2**32 + div(sload($addr+1), 2**224)  # must use div()
+        $tmp = sload($addr) * BYTES_4 + div(sload($addr+1), BYTES_28)  # must use div()
     flip32Bytes($tmp)
 
 
 # get the merkle root of '$blockHash'
 macro getMerkleRoot($blockHash):
     with $addr = ref(self.block[$blockHash]._blockHeader[0]):
-        $tmp = sload($addr+1) * 2**32 + div(sload($addr+2), 2**224)  # must use div()
+        $tmp = sload($addr+1) * BYTES_4 + div(sload($addr+2), BYTES_28)  # must use div()
     flip32Bytes($tmp)
 
 
