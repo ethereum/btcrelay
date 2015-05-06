@@ -31,14 +31,32 @@ macro BYTES_4: 2**32
 macro BYTES_5: 2**40
 macro BYTES_6: 2**48
 macro BYTES_7: 2**56
-macro BYTES_8: 2**48
-macro BYTES_9: 2**56
-macro BYTES_10: 2**64
-macro BYTES_11: 2**72
-macro BYTES_12: 2**80
-macro BYTES_13: 2**88
-macro BYTES_14: 2**96
-macro BYTES_15: 2**104
+macro BYTES_8: 2**64
+macro BYTES_9: 2**72
+macro BYTES_10: 2**80
+macro BYTES_11: 2**88
+macro BYTES_12: 2**96
+macro BYTES_13: 2**104
+macro BYTES_14: 2**112
+macro BYTES_15: 2**120
+macro BYTES_16: 2**128
+macro BYTES_17: 2**136
+macro BYTES_18: 2**144
+macro BYTES_19: 2**152
+macro BYTES_20: 2**160
+macro BYTES_21: 2**168
+macro BYTES_22: 2**176
+macro BYTES_23: 2**184
+macro BYTES_24: 2**192
+macro BYTES_25: 2**200
+macro BYTES_26: 2**208
+macro BYTES_27: 2**216
+macro BYTES_28: 2**224
+macro BYTES_29: 2**232
+macro BYTES_30: 2**240
+macro BYTES_31: 2**248
+macro BYTES_32: 2**256
+
 
 
 # write $int64 to memory at $addrLoc
@@ -99,18 +117,13 @@ macro m_setScore($blockHash, $blockScore):
 
 
 macro m_getIbIndex($blockHash):
-    div(sload(ref(self.block[$blockHash]._info)) * 2**64, 2**192)
+    div(sload(ref(self.block[$blockHash]._info)) * BYTES_8, BYTES_24)
 
 macro m_getHeight($blockHash):
-    div(sload(ref(self.block[$blockHash]._info)), 2**192)
+    div(sload(ref(self.block[$blockHash]._info)), BYTES_24)
 
 macro m_getScore($blockHash):
-    m_getInt128($blockHash, 16)
-
-
-macro m_getInt128($blockHash, $offset):
-    # TODO try putting the score as the 1st 16bytes so that a single div is needed here
-    div(sload(ref(self.block[$blockHash]._info)) * 2**128, 2**128)
+    div(sload(ref(self.block[$blockHash]._info)) * BYTES_16, BYTES_16)
 
 
 # def init():
