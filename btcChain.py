@@ -6,8 +6,6 @@ inset('constants.se')
 
 macro NUM_ANCESTOR_DEPTHS: 8
 
-data ancestorDepths
-
 # list for internal usage only that allows a 32 byte blockHash to be looked up
 # with a 32bit int
 # This is not designed to be used for anything else, eg it contains all block
@@ -16,26 +14,6 @@ data internalBlock[2^50]
 
 # counter for next available slot in internalBlock
 data ibIndex
-
-
-
-# this should be a function with different name, eg initAncestorDepths,
-# and called by init() in btcrelay, but this is a
-# workaround for issues as https://github.com/ethereum/serpent/issues/77 78 ...
-def init():
-    depthWord = 0
-
-    mstore8(ref(depthWord), 1)
-    m_mwrite16(ref(depthWord) + 1, 5)
-    m_mwrite16(ref(depthWord) + 3, 25)
-    m_mwrite16(ref(depthWord) + 5, 125)
-    m_mwrite16(ref(depthWord) + 7, 625)
-    m_mwrite16(ref(depthWord) + 9, 3125)
-    m_mwrite16(ref(depthWord) + 11, 15625)
-    m_mwrite24(ref(depthWord) + 13, 78125)
-
-    self.ancestorDepths = depthWord
-
 
 
 # save the ancestors for a block, as well as updating the height
@@ -126,13 +104,7 @@ macro m_getAncestor($blockHash, $whichAncestor):
 
 
 macro m_getAncDepth($index):
-    with $ancDepths = self.ancestorDepths:
-        if $index == 0:
-            byte(0, $ancDepths)
-        elif $index == NUM_ANCESTOR_DEPTHS - 1:
-            div($ancDepths * 2**(8*($index*2 - 1)), BYTES_29)
-        else:
-            div($ancDepths * 2**(8*($index*2 - 1)), BYTES_30)
+    5**$index
 
 # def test_macro_getAncDepth(index):
 #     return(m_getAncDepth(index))
