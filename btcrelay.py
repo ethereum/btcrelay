@@ -54,22 +54,22 @@ def m_mwrite128(blockHash, int128):
     # log(addr)
     # log(bytes16)
 
-    mstore8(addr, byte(31, bytes16))
-    mstore8(addr + 1, byte(30, bytes16))
-    mstore8(addr + 2, byte(29, bytes16))
-    mstore8(addr + 3, byte(28, bytes16))
-    mstore8(addr + 4, byte(27, bytes16))
-    mstore8(addr + 5, byte(26, bytes16))
-    mstore8(addr + 6, byte(25, bytes16))
-    mstore8(addr + 7, byte(24, bytes16))
-    mstore8(addr + 8, byte(23, bytes16))
-    mstore8(addr + 9, byte(22, bytes16))
-    mstore8(addr + 10, byte(21, bytes16))
-    mstore8(addr + 11, byte(20, bytes16))
-    mstore8(addr + 12, byte(19, bytes16))
-    mstore8(addr + 13, byte(18, bytes16))
-    mstore8(addr + 14, byte(17, bytes16))
-    mstore8(addr + 15, byte(16, bytes16))
+    mstore8(addr, byte(16, bytes16))
+    mstore8(addr + 1, byte(17, bytes16))
+    mstore8(addr + 2, byte(18, bytes16))
+    mstore8(addr + 3, byte(19, bytes16))
+    mstore8(addr + 4, byte(20, bytes16))
+    mstore8(addr + 5, byte(21, bytes16))
+    mstore8(addr + 6, byte(22, bytes16))
+    mstore8(addr + 7, byte(23, bytes16))
+    mstore8(addr + 8, byte(24, bytes16))
+    mstore8(addr + 9, byte(25, bytes16))
+    mstore8(addr + 10, byte(26, bytes16))
+    mstore8(addr + 11, byte(27, bytes16))
+    mstore8(addr + 12, byte(28, bytes16))
+    mstore8(addr + 13, byte(29, bytes16))
+    mstore8(addr + 14, byte(30, bytes16))
+    mstore8(addr + 15, byte(31, bytes16))
 
     self.block[blockHash]._height = word
 
@@ -149,26 +149,40 @@ macro m_getInt64($blockHash, $offset):
 
 
 macro m_getInt128($blockHash, $offset):
-    with $startByte = $offset:
-        with $word = self.block[$blockHash]._height:
-            $b0 = byte($startByte, $word)
-            $b1 = byte($startByte + 1, $word)
-            $b2 = byte($startByte + 2, $word)
-            $b3 = byte($startByte + 3, $word)
-            $b4 = byte($startByte + 4, $word)
-            $b5 = byte($startByte + 5, $word)
-            $b6 = byte($startByte + 6, $word)
-            $b7 = byte($startByte + 7, $word)
-            $b8 = byte($startByte + 8, $word)
-            $b9 = byte($startByte + 9, $word)
-            $b10 = byte($startByte + 10, $word)
-            $b11 = byte($startByte + 11, $word)
-            $b12 = byte($startByte + 12, $word)
-            $b13 = byte($startByte + 13, $word)
-            $b14 = byte($startByte + 14, $word)
-            $b15 = byte($startByte + 15, $word)
+    # TODO try putting the score as the 1st 16bytes so that a single div is needed here
+    div(sload(ref(self.block[$blockHash]._height)) * 2**128, 2**128)
+    # flip32Bytes($tmp)
 
-    $b0 + $b1*BYTES_1 + $b2*BYTES_2 + $b3*BYTES_3 + $b4*BYTES_4 + $b5*BYTES_5 + $b6*BYTES_6 + $b7*BYTES_7 + $b8*BYTES_8 + $b9*BYTES_9 + $b10*BYTES_10 + $b11*BYTES_11 + $b12*BYTES_12 + $b13*BYTES_13 + $b14*BYTES_14 + $b15*BYTES_15
+    # with $startByte = $offset:
+    #     with $word = self.block[$blockHash]._height:
+    #
+    #         with $i = 0:
+    #             $ret = 0
+    #             while $i < 16:
+    #                 $ret += byte($startByte + $i, $word) * 2**(8*$i)
+    #
+    #                 $i += 1
+    #
+    # $ret
+
+    #         $b0 = byte($startByte, $word)
+    #         $b1 = byte($startByte + 1, $word)
+    #         $b2 = byte($startByte + 2, $word)
+    #         $b3 = byte($startByte + 3, $word)
+    #         $b4 = byte($startByte + 4, $word)
+    #         $b5 = byte($startByte + 5, $word)
+    #         $b6 = byte($startByte + 6, $word)
+    #         $b7 = byte($startByte + 7, $word)
+    #         $b8 = byte($startByte + 8, $word)
+    #         $b9 = byte($startByte + 9, $word)
+    #         $b10 = byte($startByte + 10, $word)
+    #         $b11 = byte($startByte + 11, $word)
+    #         $b12 = byte($startByte + 12, $word)
+    #         $b13 = byte($startByte + 13, $word)
+    #         $b14 = byte($startByte + 14, $word)
+    #         $b15 = byte($startByte + 15, $word)
+    #
+    # $b0 + $b1*BYTES_1 + $b2*BYTES_2 + $b3*BYTES_3 + $b4*BYTES_4 + $b5*BYTES_5 + $b6*BYTES_6 + $b7*BYTES_7 + $b8*BYTES_8 + $b9*BYTES_9 + $b10*BYTES_10 + $b11*BYTES_11 + $b12*BYTES_12 + $b13*BYTES_13 + $b14*BYTES_14 + $b15*BYTES_15
 
 
 # def init():
