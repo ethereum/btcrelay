@@ -69,7 +69,7 @@ var gBtcTestnet;
 var gOurBtcAddr;
 
 
-gBtcTestnet = true;
+// gBtcTestnet = true;
 if (gBtcTestnet) {
   gRelayAddr = '0x7d5a9e09786d628603ce7f5819b21f5ac14e6baf';
   gExchangeContractAddr = '0xa5bbd4e59bdc2c17e52e7056afe43ba9f52462f2';
@@ -77,8 +77,8 @@ if (gBtcTestnet) {
   gOurBtcAddr = 'mvBWJFv8Uc84YEyZKBm8HZQ7qrvmBiH7zR';
 }
 else {
-  gRelayAddr = '0x54d39c26e038848290c30cf78de281f0ba65027e';
-  gExchangeContractAddr = '0x0304245e93ee2f0a90f2794233d491ec1c517ca1';
+  gRelayAddr = '0x2cc3640eb432574e79ed488500b102930110e4c1';
+  gExchangeContractAddr = '0x23e14ff5cb6733588d1f4dc30fdfc9a4840d32a4';
   // gExchangeContractAddr = '0x95e32f338d28bed978b3ef948bd73ec20d1eb60a'; // Go
 
   gOurBtcAddr = '61cf5af7bb84348df3fd695672e53c7d5b3f3db9'  // tx1 of block300K
@@ -219,7 +219,7 @@ function callContract() {
 
 
   var verifyTx;
-  // verifyTx = true;  // if commented, it will call relayTx
+  verifyTx = true;  // if commented, it will call relayTx
 
 
   // TODO don't forget to update the ABI (btcRelayAbi.js & btcEthAbi.js)
@@ -258,7 +258,10 @@ function callContract() {
 
     // var res = contract.call({from:gFromAccount, gas: 3000000}).computeMerkle(txHash, proofLen, merkleSibling, merklePath);
 
-    var res = contract.call({from:gFromAccount, gas: 3000000}).verifyTx(txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash);
+    // var res = contract.call({from:gFromAccount, gas: 3000000}).verifyTx(txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash);
+
+    var res = contract.verifyTx.call(txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash, {from:gFromAccount, gas: 3000000});
+
 
     var endTime = Date.now();
     var durationSec = (endTime - startTime) / 1000;
@@ -387,8 +390,10 @@ $(function() {
 
   // $('#transHex').val('fff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4');
 
-  // tx1 300K
-  // $('#transHex').val('7301b595279ece985f0c415e420e425451fcf7f684fcce087ba14d10ffec1121');
+  if (!gBtcTestnet) {
+    // tx1 300K
+    $('#transHex').val('7301b595279ece985f0c415e420e425451fcf7f684fcce087ba14d10ffec1121');
+  }
 
   // tx3 300K
   // $('#transHex').val('85e72c0814597ec52d2d178b7125af0e3cfa07821912ca81bf4b1fbe4b4b70f2');

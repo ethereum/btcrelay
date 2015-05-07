@@ -5,12 +5,6 @@ window.btcRelayAbi = [{
     "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
-    "name": "fastHashBlock(string)",
-    "type": "function",
-    "inputs": [{ "name": "blockHeaderBinary", "type": "bytes" }],
-    "outputs": [{ "name": "out", "type": "int256" }]
-},
-{
     "name": "getAverageBlockDifficulty()",
     "type": "function",
     "inputs": [],
@@ -41,7 +35,7 @@ window.btcRelayAbi = [{
     "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
-    "name": "relayTx(string,int256,int256,int256[],int256,int256)",
+    "name": "relayTx(bytes,int256,int256,int256[],int256,int256)",
     "type": "function",
     "inputs": [{ "name": "txStr", "type": "bytes" }, { "name": "txHash", "type": "int256" }, { "name": "txIndex", "type": "int256" }, { "name": "sibling", "type": "int256[]" }, { "name": "txBlockHash", "type": "int256" }, { "name": "contract", "type": "int256" }],
     "outputs": [{ "name": "out", "type": "int256" }]
@@ -59,7 +53,7 @@ window.btcRelayAbi = [{
     "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
-    "name": "storeBlockHeader(string)",
+    "name": "storeBlockHeader(bytes)",
     "type": "function",
     "inputs": [{ "name": "blockHeaderBinary", "type": "bytes" }],
     "outputs": [{ "name": "out", "type": "int256" }]
