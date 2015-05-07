@@ -250,6 +250,7 @@ function callContract() {
   // web3.js wants 0x prepended
   var merkleSibling = gMerkleProof.sibling.map(function(sib) {
     return '0x' + sib;
+    // return new BigNumber('0x' + sib);
   });
 
   if (verifyTx) {
@@ -258,9 +259,10 @@ function callContract() {
 
     // var res = contract.call({from:gFromAccount, gas: 3000000}).computeMerkle(txHash, proofLen, merkleSibling, merklePath);
 
-    // var res = contract.call({from:gFromAccount, gas: 3000000}).verifyTx(txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash);
+    var res = contract.call({from:gFromAccount, gas: 3000000}).verifyTx(txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash);
 
-    var res = contract.verifyTx.call(txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash, {from:gFromAccount, gas: 3000000});
+    // var objParam = {from:gFromAccount, gas: 3000000};
+    // var res = contract.verifyTx.call(txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash, objParam);
 
 
     var endTime = Date.now();
@@ -279,8 +281,11 @@ function callContract() {
   var exchangeContractAddr = new BigNumber(gExchangeContractAddr);
 
   var startTime = Date.now();
-  var objParam = {from:gFromAccount, gas: 3000000};
-  contract.relayTx.sendTransaction(txHex, txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash, exchangeContractAddr, objParam);
+  var objParam = {from:gFromAccount, gas: 3000000, gasPrice: 0};
+
+  contract.sendTransaction(objParam).relayTx(txHex, txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash, exchangeContractAddr);
+
+  // contract.relayTx.sendTransaction(txHex, txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash, exchangeContractAddr, objParam);
   document.getElementById('result').innerText = 'Ethereum transaction is in progress...'
 }
 
