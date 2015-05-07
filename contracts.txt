@@ -1,3 +1,21 @@
+May 6
+use pyepm with NOP per Mar 19
+under relayTest/
+  run testBulkDeploy.yaml
+  update postDeployTests.yaml with addr of relay contract, then run it
+  update btcEthDeploy.yaml with addr of relay contract, then run it
+  check balance of addr
+  update contract address in testRelayTx.yaml then run it
+  check that balance of has 13 more wei
+
+in btc-eth.html
+  update the contract addresses
+  make sure gBtcTestnet is false
+  test the call()
+  then comment out verify=true and test the sendTransaction()
+  check that the balance has 13 more wei
+
+
 Apr 29
 relay populated via Geth: 0x0a6a88b25bef326a92c0286cb6ff5245f6197373
 via cpp: 0x5cdf67dce4bb8dd3d431572eac41fdd0a0c77d27
