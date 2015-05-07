@@ -3,7 +3,7 @@
 
 # TODO you must update the address of BtcRelay to whatever your BtcRelay was mined to
 - set:
-    BtcRelay: "0x54d39c26e038848290c30cf78de281f0ba65027e"
+    BtcRelay: ""
 
 -
   deploy:

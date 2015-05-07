@@ -10,8 +10,8 @@
 
 -
   set:
-    RelayWithBulkStore: "0x54d39c26e038848290c30cf78de281f0ba65027e"
-    BtcEth: "0x23e14ff5cb6733588d1f4dc30fdfc9a4840d32a4"
+    RelayWithBulkStore: "0x2cc3640eb432574e79ed488500b102930110e4c1"
+    BtcEth: "0x1d1150303d796e7a91e435e167322577f39866a7"
 
 # exp result: fd4ed114ef85d350d6d40ed3f6dc23743f8f99c4 gets ether
 # Can only be used once, so for other times, use the frontend
