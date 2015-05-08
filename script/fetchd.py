@@ -44,6 +44,8 @@ def main():
     parser.add_argument('-s', '--sender', required=True, help='sender of transaction')
     parser.add_argument('-r', '--relay', required=True, help='relay contract address')
 
+    parser.add_argument('--rpcHost', default='127.0.0.1', help='RPC hostname')
+    parser.add_argument('--rpcPort', default='8545', type=int, help='RPC port')
     parser.add_argument('--startBlock', default=0, type=int, help='block number to start fetching from')
     parser.add_argument('-w', '--waitFor', default=0, type=int, help='number of blocks to wait between fetches')
     parser.add_argument('--gasPrice', default=10e12, type=int, help='gas price')  # default 10 szabo
@@ -55,8 +57,15 @@ def main():
 
     instance.address = args.sender
     instance.relayContract = args.relay
+
+    instance.rpcHost = args.rpcHost
+    instance.rpcPort = args.rpcPort
+    instance.jsonrpc_url = "http://%s:%s" % (instance.rpcHost, instance.rpcPort)
+
     instance.numBlocksToWait = args.waitFor  # for CPP eth as of Apr 28, 3 blocks seems reasonable.  0 seems to be fine for Geth
     instance.gasPrice = args.gasPrice
+
+    # print('@@@ rpc: %s' % instance.jsonrpc_url)
 
     contractHeight = getLastBlockHeight()  # needs instance.relayContract to be set
     print('@@@ contract height: {0} gp: {1}').format(contractHeight, instance.gasPrice)
