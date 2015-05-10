@@ -30,7 +30,7 @@ def main():
 
     parser.add_argument('--rpcHost', default='127.0.0.1', help='RPC hostname')
     parser.add_argument('--rpcPort', default='8545', type=int, help='RPC port')
-    parser.add_argument('--startBlock', default=0, type=int, help='block number to start fetching from')
+    # parser.add_argument('--startBlock', default=0, type=int, help='block number to start fetching from')
     parser.add_argument('-w', '--waitFor', default=0, type=int, help='number of blocks to wait between fetches')
     parser.add_argument('--gasPrice', default=10e12, type=int, help='gas price')  # default 10 szabo
     parser.add_argument('--fetch', action='store_true', help='fetch blockheaders')
@@ -51,10 +51,10 @@ def main():
 
     # print('@@@ rpc: %s' % instance.jsonrpc_url)
 
-    contractHeight = getLastBlockHeight()  # needs instance.relayContract to be set
-    print('@@@ contract height: {0} gp: {1}').format(contractHeight, instance.gasPrice)
-
-    instance.heightToStartFetch = args.startBlock or contractHeight+1
+    # this can't be commented out easily since run() always does instance.heightToStartFetch = getLastBlockHeight() + 1 for retries
+    # contractHeight = getLastBlockHeight()  # needs instance.relayContract to be set
+    # print('@@@ contract height: {0} gp: {1}').format(contractHeight, instance.gasPrice)
+    # instance.heightToStartFetch = args.startBlock or contractHeight+1
 
     # this will not handle exceptions or do retries.  need to use -d switch if desired
     if not args.daemon:
@@ -84,12 +84,14 @@ def run(doFetch=False, network=BITCOIN_TESTNET):
     chainHead = blockHashHex(getBlockchainHead())
     print('@@@ chainHead: %s' % chainHead)
 
-    if network == BITCOIN_MAINNET:
-        blockInfoUrl = "https://btc.blockr.io/api/v1/block/info/"
-    else:
-        blockInfoUrl = "https://tbtc.blockr.io/api/v1/block/info/"
+    # if network == BITCOIN_MAINNET:
+    #     blockInfoUrl = "https://btc.blockr.io/api/v1/block/info/"
+    # else:
+    #     blockInfoUrl = "https://tbtc.blockr.io/api/v1/block/info/"
 
-    actualHeight = last_block_height(network)
+    actualHeight = last_block_height(network)  # in my fork of pybitcointools
+
+    instance.heightToStartFetch = getLastBlockHeight() + 1
 
     print('@@@ startFetch: {0} actualHeight: {1}').format(instance.heightToStartFetch, actualHeight)
 
@@ -103,7 +105,6 @@ def run(doFetch=False, network=BITCOIN_TESTNET):
     if doFetch:
         fetchHeaders(instance.heightToStartFetch, chunkSize, numChunk, network=network)
         fetchHeaders(actualHeight-leftoverToFetch+1, 1, leftoverToFetch, network=network)
-        instance.heightToStartFetch = getLastBlockHeight() + 1  # update next heightToStartFetch
         # sys.exit()
 
 
