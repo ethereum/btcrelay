@@ -65,13 +65,16 @@ def main():
             try:
                 run(doFetch=args.fetch, network=args.network)
                 sleep(SLEEP_TIME)
-            except: # catch *all* exceptions
-                e = sys.exc_info()[0]
-            # except Exception as e:
+            except Exception as e:
                 print(e)
                 print('Retry in 1min')
                 sleep(60)
                 continue
+            except: # catch *all* exceptions
+                e = sys.exc_info()[0]
+                print(e)
+                print('Rare exception')
+                raise
             break
 
 
