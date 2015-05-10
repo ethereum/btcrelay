@@ -2,6 +2,8 @@ from datetime import datetime, date
 from time import sleep
 from argparse import ArgumentParser
 
+import logging
+
 from pyepm import api, config
 from bitcoin import *
 
@@ -40,6 +42,8 @@ instance = api.Api(api_config)
 
 
 def main():
+    # logging.basicConfig(level=logging.DEBUG)
+
     parser = ArgumentParser()
     parser.add_argument('-s', '--sender', required=True, help='sender of transaction')
     parser.add_argument('-r', '--relay', required=True, help='relay contract address')
@@ -114,6 +118,7 @@ def run(doFetch=False, network=BITCOIN_TESTNET):
         fetchHeaders(instance.heightToStartFetch, chunkSize, numChunk, network=network)
         fetchHeaders(actualHeight-leftoverToFetch+1, 1, leftoverToFetch, network=network)
         instance.heightToStartFetch = getLastBlockHeight() + 1  # update next heightToStartFetch
+        # sys.exit()
 
 
 def fetchHeaders(chunkStartNum, chunkSize, numChunk, network=BITCOIN_TESTNET):
@@ -157,7 +162,7 @@ def storeHeaders(bhBinary, chunkSize):
     # bhBinary = '\x02\x00\x00\x00~\xf0U\xe1gM.eQ\xdb\xa4\x1c\xd2\x14\xde\xbb\xee4\xae\xb5D\xc7\xecg\x00\x00\x00\x00\x00\x00\x00\x00\xd3\x99\x89c\xf8\x0c[\xabC\xfe\x8c&"\x8e\x98\xd00\xed\xf4\xdc\xbeH\xa6f\xf5\xc3\x9e-z\x88\\\x91\x02\xc8mSl\x89\x00\x19Y:G\r\x02\x00\x00\x00Tr\xac\x8b\x11\x87\xbf\xcf\x91\xd6\xd2\x18\xbb\xda\x1e\xb2@]|U\xf1\xf8\xcc\x82\x00\x00\x00\x00\x00\x00\x00\x00\xab\n\xaa7|\xa3\xf4\x9b\x15E\xe2\xaek\x06g\xa0\x8fB\xe7-\x8c$\xae#q@\xe2\x8f\x14\xf3\xbb|k\xccmSl\x89\x00\x19\xed\xd8<\xcf\x02\x00\x00\x00\xa9\xab\x12\xe3,\xed\xdc+\xa5\xe6\xade\x1f\xacw,\x986\xdf\x83M\x91\xa0I\x00\x00\x00\x00\x00\x00\x00\x00\xdfuu\xc7\x8f\x83\x1f \xaf\x14~\xa7T\xe5\x84\xaa\xd9Yeiic-\xa9x\xd2\xddq\x86#\xfd0\xc5\xccmSl\x89\x00\x19\xe6Q\x07\xe9\x02\x00\x00\x00,P\x1f\xc0\xb0\xfd\xe9\xb3\xc1\x0e#S\xc1TI*5k\x1a\x02)^+\x86\x00\x00\x00\x00\x00\x00\x00\x00\xa7\xaaa\xc8\xd3|\x88v\xba\xa0\x17\x9ej2\x94D4\xbf\xd3\xe1\xccug\x89*1K\x0c{\x9e]\x92\'\xcemSl\x89\x00\x19\xa4\xa0<{\x02\x00\x00\x00\xe7\xfc\x91>+y\n0v\x0c\xaa\xfb\x9b_\xaa\xe1\xb5\x1dlT\xff\xe4\xae\x82\x00\x00\x00\x00\x00\x00\x00\x00P\xad\x11k\xfb\x11c\x03\x03a\xd9}H\xb4\xca\x90\'\xa4\x9b\xca\xf8\xb8\xd4!\x1b\xaa\x92\xccr\xe7\xe1#f\xcfmSl\x89\x00\x19\xe6\x13\x9c\x82'
     data = [bhBinary, chunkSize]
 
-    gas = 3000000
+    gas = 900000
     value = 0
 
 
@@ -172,10 +177,23 @@ def storeHeaders(bhBinary, chunkSize):
     instance.transact(instance.relayContract, fun_name=fun_name, sig=sig,
         data=data, gas=gas, gas_price=instance.gasPrice, value=value)
 
-    # instance.wait_for_transaction(
-    #     from_count=from_count,
-    #     #verbose=(True if api_config.get('misc', 'verbosity') > 1 else False))
-    #     verbose=True)
+    waitTxRes = instance.wait_for_transaction(
+        from_count=from_count,
+        #verbose=(True if api_config.get('misc', 'verbosity') > 1 else False))
+        verbose=True)
+
+    while waitTxRes == 999:
+        from_count = instance.transaction_count(defaultBlock='pending')
+        print('@@@ resending tx with count: %s' % from_count)
+
+        instance.transact(instance.relayContract, fun_name=fun_name, sig=sig,
+            data=data, gas=gas, gas_price=instance.gasPrice, value=value)
+
+        waitTxRes = instance.wait_for_transaction(
+            from_count=from_count,
+            #verbose=(True if api_config.get('misc', 'verbosity') > 1 else False))
+            verbose=True)
+
 
     if wait:
         for i in range(instance.numBlocksToWait):
