@@ -163,22 +163,28 @@ def storeHeaders(bhBinary, chunkSize):
     instance.transact(instance.relayContract, fun_name=fun_name, sig=sig,
         data=data, gas=gas, gas_price=instance.gasPrice, value=value)
 
-    waitTxRes = instance.wait_for_transaction(
+    instance.wait_for_transaction(
         from_count=from_count,
         #verbose=(True if api_config.get('misc', 'verbosity') > 1 else False))
         verbose=True)
 
-    while waitTxRes == 999:
-        from_count = instance.transaction_count(defaultBlock='pending')
-        print('@@@ resending tx with count: %s' % from_count)
 
-        instance.transact(instance.relayContract, fun_name=fun_name, sig=sig,
-            data=data, gas=gas, gas_price=instance.gasPrice, value=value)
-
-        waitTxRes = instance.wait_for_transaction(
-            from_count=from_count,
-            #verbose=(True if api_config.get('misc', 'verbosity') > 1 else False))
-            verbose=True)
+    # waitTxRes = instance.wait_for_transaction(
+    #     from_count=from_count,
+    #     #verbose=(True if api_config.get('misc', 'verbosity') > 1 else False))
+    #     verbose=True)
+    #
+    # while waitTxRes == 999:
+    #     from_count = instance.transaction_count(defaultBlock='pending')
+    #     print('@@@ resending tx with count: %s' % from_count)
+    #
+    #     instance.transact(instance.relayContract, fun_name=fun_name, sig=sig,
+    #         data=data, gas=gas, gas_price=instance.gasPrice, value=value)
+    #
+    #     waitTxRes = instance.wait_for_transaction(
+    #         from_count=from_count,
+    #         #verbose=(True if api_config.get('misc', 'verbosity') > 1 else False))
+    #         verbose=True)
 
 
     if wait:
