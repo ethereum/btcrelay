@@ -7,30 +7,10 @@ import logging
 from pyepm import api, config
 from bitcoin import *
 
-try:
-    from urllib.request import build_opener
-except:
-    from urllib2 import build_opener
-
 
 BITCOIN_MAINNET = 'btc'
 BITCOIN_TESTNET = 'testnet'
 SLEEP_TIME = 5 * 60 # 5 mins.  If changing, check retry logic
-
-# Makes a request to a given URL (first arg) and optional params (second arg)
-def make_request(*args):
-    opener = build_opener()
-    opener.addheaders = [('User-agent',
-                          'Mozilla/5.0'+str(random.randrange(1000000)))]
-    try:
-        return opener.open(*args).read().strip()
-    except Exception as e:
-        try:
-            p = e.read().strip()
-        except:
-            p = e
-        raise Exception(p)
-
 
 
 api_config = config.read_config()
