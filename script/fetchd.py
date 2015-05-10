@@ -56,6 +56,7 @@ def main():
 
     instance.heightToStartFetch = args.startBlock or contractHeight+1
 
+    # this will not handle exceptions or do retries.  need to use -d switch if desired
     if not args.daemon:
         run(doFetch=args.fetch, network=args.network)
         return
