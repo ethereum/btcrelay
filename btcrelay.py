@@ -74,7 +74,7 @@ def setInitialParent(blockHash, height, cumulativeDifficulty):
 # store a Bitcoin block header that must be provided in
 # binary format 'blockHeaderBinary'
 def storeBlockHeader(blockHeaderBinary:str):
-    hashPrevBlock = flip32Bytes(~calldataload(40))  # 36 (header start) + 4 (offset for hashPrevBlock)
+    hashPrevBlock = flip32Bytes(~calldataload(72))  # 68 (header start) + 4 (offset for hashPrevBlock)
 
     # TODO store in var
     assert m_getScore(hashPrevBlock)  # assert prev block exists
@@ -258,7 +258,7 @@ macro m_hashBlockHeader($blockHeaderBytes):
 
 # get the 'bits' field from a Bitcoin blockheader
 macro m_bitsFromBlockHeader():
-    with $w = ~calldataload(36+72):  # 36 (header start) + 72 (offset for 'bits')
+    with $w = ~calldataload(68+72):  # 68 (header start) + 72 (offset for 'bits')
         byte(0, $w) + byte(1, $w)*BYTES_1 + byte(2, $w)*BYTES_2 + byte(3, $w)*BYTES_3
 
 
