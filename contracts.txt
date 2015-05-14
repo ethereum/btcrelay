@@ -1,3 +1,10 @@
+May 13
+good relay with new abi: 0xcffaf1199ff8b486a20728424879dd59ecb38a92
+
+
+May 7
+to simulate OOG, use web3.js 22ca9b0 and send a tx to 0x2cc3640eb432574e79ed488500b102930110e4c1
+
 May 6
 use pyepm with NOP per Mar 19
 under relayTest/
@@ -14,6 +21,9 @@ in btc-eth.html
   test the call()
   then comment out verify=true and test the sendTransaction()
   check that the balance has 13 more wei
+
+
+tx 0xead0f836e1363bb3a6cbf3c9fc8c68e61db7ab26ec870c2d442a7b1bb4252018 consumed all gas
 
 
 Apr 29

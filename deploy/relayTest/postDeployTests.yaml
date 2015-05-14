@@ -1,19 +1,20 @@
 
 -
   set:
-    RelayWithBulkStore: "0xb61662398570293e4f0d25525e2b3002b7fe0836"
+    RelayWithBulkStore: "0xcffaf1199ff8b486a20728424879dd59ecb38a92"
 
+# fastHashBlock became a macro
 # exp result: 3207223183672972000823575025715994760747264838119535178324L
--
-  call:
-    fastHashBlock:
-      gas: 500000
-      gas_price: 10000000000000
-      to: $RelayWithBulkStore
-      fun_name: fastHashBlock
-      sig: s
-      data:
-        - \x02\x00\x00\x00~\xf0U\xe1gM.eQ\xdb\xa4\x1c\xd2\x14\xde\xbb\xee4\xae\xb5D\xc7\xecg\x00\x00\x00\x00\x00\x00\x00\x00\xd3\x99\x89c\xf8\x0c[\xabC\xfe\x8c&"\x8e\x98\xd00\xed\xf4\xdc\xbeH\xa6f\xf5\xc3\x9e-z\x88\\\x91\x02\xc8mSl\x89\x00\x19Y:G\r
+# -
+#   call:
+#     fastHashBlock:
+#       gas: 500000
+#       gas_price: 10000000000000
+#       to: $RelayWithBulkStore
+#       fun_name: fastHashBlock
+#       sig: s
+#       data:
+#         - \x02\x00\x00\x00~\xf0U\xe1gM.eQ\xdb\xa4\x1c\xd2\x14\xde\xbb\xee4\xae\xb5D\xc7\xecg\x00\x00\x00\x00\x00\x00\x00\x00\xd3\x99\x89c\xf8\x0c[\xabC\xfe\x8c&"\x8e\x98\xd00\xed\xf4\xdc\xbeH\xa6f\xf5\xc3\x9e-z\x88\\\x91\x02\xc8mSl\x89\x00\x19Y:G\r
 
 # exp result: 65748854905954260029931588968005089057134116446520112199172165907794925033939L
 -
