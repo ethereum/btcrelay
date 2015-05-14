@@ -65,7 +65,7 @@ def getFirst2Outputs(txStr:str):
     out2ndScriptIndex = cursor
     ###########################################################
 
-    return([out1stSatoshis, out1stScriptIndex, out2ndScriptIndex], items=3)
+    return([out1stSatoshis, out1stScriptIndex, out2ndScriptIndex]:arr)
 
 
 
@@ -126,4 +126,4 @@ def getUnsignedBitsLE(txStr:str, pos, bits):
         j += 1
 
     # need to return size/2 since we don't know the next offset with getVarintNum
-    return([size/2, result], items=2)
+    return([size/2, result]:arr)

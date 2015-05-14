@@ -1,5 +1,7 @@
 # This file is designed to parse general Bitcoin transactions
 
+# TODO items= syntax may need to be replaced per updated Serpent
+
 # contains the string to be deserialized/parse (currently a tx or blockheader)
 data gStr[]
 
