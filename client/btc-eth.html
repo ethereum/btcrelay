@@ -26,7 +26,7 @@
 
 <script type="text/javascript">
 var web3 = require('web3');
-    web3.setProvider(new web3.providers.HttpProvider('http://localhost:8080'));  // port 8545 for Mist
+    web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
 
 // web3.setProvider(new web3.providers.AutoProvider());
 // web3.setProvider(new web3.providers.WebSocketProvider('ws://localhost:40404/eth'));
@@ -77,8 +77,8 @@ if (gBtcTestnet) {
   gOurBtcAddr = 'mvBWJFv8Uc84YEyZKBm8HZQ7qrvmBiH7zR';
 }
 else {
-  gRelayAddr = '0xb61662398570293e4f0d25525e2b3002b7fe0836';
-  gExchangeContractAddr = '0x0a6d622f333d9c3b9c9a5c34e3de554d76ce4061';
+  gRelayAddr = '0xcffaf1199ff8b486a20728424879dd59ecb38a92';
+  gExchangeContractAddr = '0xf073d7b459592fc9552f6015473c44d50d802d6d';
   // gExchangeContractAddr = '0x95e32f338d28bed978b3ef948bd73ec20d1eb60a'; // Go
 
   gOurBtcAddr = '61cf5af7bb84348df3fd695672e53c7d5b3f3db9'  // tx1 of block300K
@@ -235,7 +235,7 @@ function callContract() {
 
   // TODO rename away from poc9 name since there's only a relay contract
   var BridgeOrRelayContract = web3.eth.contract(abiToUse);
-  var contract = new BridgeOrRelayContract(bethAddress);
+  var contract = BridgeOrRelayContract.at(bethAddress);
   console.log('@@@@ contract: ', contract)
 
   // block300K tx1
@@ -257,12 +257,12 @@ function callContract() {
     console.log('@@@@ going to call() verifyTx')
     var startTime = Date.now();
 
+    // OLD ways
     // var res = contract.call({from:gFromAccount, gas: 3000000}).computeMerkle(txHash, proofLen, merkleSibling, merklePath);
+    // var res = contract.call({from:gFromAccount, gas: 3000000}).verifyTx(txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash);
 
-    var res = contract.call({from:gFromAccount, gas: 3000000}).verifyTx(txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash);
-
-    // var objParam = {from:gFromAccount, gas: 3000000};
-    // var res = contract.verifyTx.call(txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash, objParam);
+    var objParam = {from:gFromAccount, gas: 3000000};
+    var res = contract.verifyTx.call(txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash, objParam);
 
 
     var endTime = Date.now();
@@ -281,11 +281,12 @@ function callContract() {
   var exchangeContractAddr = new BigNumber(gExchangeContractAddr);
 
   var startTime = Date.now();
-  var objParam = {from:gFromAccount, gas: 3000000, gasPrice: 0};
+  var objParam = {from:gFromAccount, gas: 3000000-10, gasPrice: 0};
 
-  contract.sendTransaction(objParam).relayTx(txHex, txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash, exchangeContractAddr);
+  // OLD way
+  // contract.sendTransaction(objParam).relayTx(txHex, txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash, exchangeContractAddr);
 
-  // contract.relayTx.sendTransaction(txHex, txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash, exchangeContractAddr, objParam);
+  contract.relayTx.sendTransaction(txHex, txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash, exchangeContractAddr, objParam);
   document.getElementById('result').innerText = 'Ethereum transaction is in progress...'
 }
 
