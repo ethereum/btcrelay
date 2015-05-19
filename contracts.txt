@@ -1,3 +1,24 @@
+May 19
+Setting up new instance
+
+https://www.digitalocean.com/community/articles/initial-server-setup-with-ubuntu-14-04
+create demo user, don't give it a password
+make it sudo-able without password by editing /etc/sudoers.d/90-cloud-init-users
+
+This guide for nginx
+https://www.digitalocean.com/community/tutorials/how-to-set-up-nginx-server-blocks-virtual-hosts-on-ubuntu-14-04-lts
+
+Install Ubuntu libs before installing pyenv:
+https://gist.github.com/ethers/082428dcf31f498cdb40 is a guide to history of commands
+
+clone and built Serpent (pip install -e .) since need 1.8.2
+to verify:
+ from serpent import *
+ >>> hex(get_prefix('bulkStoreHeader', 'si'))
+ '0x13f955e1'  <- should get
+
+
+
 May 14
 1st tx via frontend: 0x87fff4eccb764766df8f20534a0078b10579557ab9b0da1be68ecf3e10955ab5
 
