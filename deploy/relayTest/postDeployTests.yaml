@@ -1,7 +1,7 @@
 
 -
   set:
-    RelayWithBulkStore: "0xcffaf1199ff8b486a20728424879dd59ecb38a92"
+    RelayWithBulkStore: "0x7b00810140bab9c2bcf51ff22d92e818a66965b2"
 
 # fastHashBlock became a macro
 # exp result: 3207223183672972000823575025715994760747264838119535178324L
