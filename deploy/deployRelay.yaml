@@ -15,7 +15,22 @@
       fun_name: setInitialParent
       sig: iii
       data:
-        - 0x00000000000000000f745df11926d17bf9e61e3bcfb27dcbccd03263486e1d18
-        - 353671
-        - 7752624141721183493029888
+        - 0x00000000000000000cc275f19b84e9abe8b802b515d376f0a6679d3f06956458
+        - 357186
+        - 1972864076427707
       wait: True
+
+# OLD
+# -
+#   transact:
+#     SetInitialParent:
+#       gas: 3000000
+#       gas_price: 0  # 10000000000000
+#       to: $RelayWithBulkStore
+#       fun_name: setInitialParent
+#       sig: iii
+#       data:
+#         - 0x00000000000000000f745df11926d17bf9e61e3bcfb27dcbccd03263486e1d18
+#         - 353671
+#         - 1805020926069643
+#       wait: True
