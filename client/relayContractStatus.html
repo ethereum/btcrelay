@@ -17,23 +17,24 @@
   web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
 
   $(function() {
-    var relayAddr = '0x5f556780ddb00cacc26977d199dae86bf6294495';
+    var relayAddr = '0x798d86e782c8c34da97f7389a464c8af76ea3442';
 
     $('#relayAddr').text(relayAddr);
 
     var bethAddress = relayAddr;
     var abiToUse = btcRelayAbi;
     var RelayContract = web3.eth.contract(abiToUse);
-    var contract = new RelayContract(bethAddress);
+    var contract = RelayContract.at(bethAddress);
     // console.log('@@@@ contract: ', contract)
 
-    var height = contract.call().getLastBlockHeight();
+
+    var height = contract.getLastBlockHeight.call();
     $('#latestBlockHeight').text(height);
 
-    var headHash = contract.call().getBlockchainHead();
+    var headHash = contract.getBlockchainHead.call();
     $('#latestBlockHash').text(web3.toHex(headHash));
 
-    var headScore = contract.call().getCumulativeDifficulty();
+    var headScore = contract.getCumulativeDifficulty.call();
     $('#latestBlockScore').text(web3.toBigNumber(headScore).toString(10));
   });
 
