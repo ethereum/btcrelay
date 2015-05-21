@@ -1,3 +1,21 @@
+May 21
+when relay contract bulkStoreHeader costs around 60K gas, the problem was the
+contract's Head got orphaned.
+
+orphan blocks
+https://blockchain.info/orphaned-blocks?offset=0
+
+To construct the serialized header for an orphan block:
+1. can use this to get the orphaned block:
+https://blockchain.info/rawblock/00000000000000000db6ab0aa23c28fc707f05f1646d25dba684ffe316bcf24d
+
+2. then use pybtctool serialize_header()
+example:
+>>> j={"hash":u"00000000000000000db6ab0aa23c28fc707f05f1646d25dba684ffe316bcf24","version":3,"prevhash":u"00000000000000000a15bda775b0004fca6368c5b8a61cb0d3b73670b9369c2","merkle_root":u"769372785fa20aa262f018be2b20dce06d06c11bdc96af9b1909cd59b571c39","timestamp":1432186810,"bits":404129525,"nonce":2018636838}
+>>> serialize_header(j)
+'03000000c269930b6793b7d3b01ca6b8c56863ca4f00b075a7bd150a0000000000000000391c579bd59cb0199baf96dc1bc1066de0dc202bbe18f062a20aa25f78729376ba6f5d55f586161826f45178'
+
+
 May 19
 Setting up new instance
 
