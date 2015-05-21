@@ -296,7 +296,6 @@ class TestBtcRelay(object):
         assert g2 < 0.36 * g1  # 0.36 is as of aae201c
 
 
-
     def testStoreBlockHeader(self):
         block300K = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
         self.c.setInitialParent(block300K, 299999, 1)

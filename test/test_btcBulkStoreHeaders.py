@@ -1,7 +1,7 @@
 from ethereum import tester
 from datetime import datetime, date
 
-from utilRelay import makeMerkleProof
+from utilRelay import makeMerkleProof, dblSha256Flip
 
 import pytest
 slow = pytest.mark.slow
@@ -68,6 +68,21 @@ class TestBtcBulkStoreHeaders(object):
         txStr = '01000000015f43d26fc7ea7049a2fc63a5cd47e767ac1f8cd8bf388045e06dc5faab9e9756010000006b483045022100a51893da50d180cd3481625ce7193a43cf54b9c5ca6eedda75cef471c1afc19c022008255285e37be092ce9d793f8430cef6cc1ad12de50c56a870ee6b443f6068eb012103481e57ba7df07d0b29a827a2380f83bd349002fab509bc865c62f43e79baeb33ffffffff0356dffdfd000000001976a914c9dea40941945cf8a8955c4ee3be117d195df0f488ac20ebb304000000001976a914a9a955323f97ec609bc334fc65cc700913aa66e688acccef9201000000001976a9146f4664e7632d6e2fefc065e540eba4b71ebb371f88ac00000000'
         btcAddr = 0xc9dea40941945cf8a8955c4ee3be117d195df0f4
         self.checkRelay(txStr, txIndex, btcAddr, hh)
+
+
+    def testStore357370(self):
+        parent = 0x00000000000000000db6ab0aa23c28fc707f05f1646d25dba684ffe316bcf24d
+        height = 357369
+        cumulDifficulty = 1981795846593359
+        self.c.setInitialParent(parent, height, cumulDifficulty)
+
+        headerStr = '020000003904195c8b149dba2ef3369368c4ce5cfa389a15bc79f307000000000000000015a1c9c15e580d812ae4e11e7c721107012533ce85916041eafdb4dfa495f97990705d55f5861618e479e283'
+        headerBins = headerStr.decode('hex')
+
+        hash357370 = 0x00000000000000000e9192bf0b3ce68e50f9fbc919c4f3947b8307be3cdc7c00
+        assert dblSha256Flip(headerBins) == hash357370
+
+        assert self.c.bulkStoreHeader(headerBins, 1) == height + 1
 
 
     def testDifficulty(self):
