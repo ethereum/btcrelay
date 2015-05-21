@@ -84,10 +84,25 @@ def run(doFetch=False, network=BITCOIN_TESTNET):
     chainHead = blockHashHex(getBlockchainHead())
     print('@@@ chainHead: %s' % chainHead)
 
-    # if network == BITCOIN_MAINNET:
-    #     blockInfoUrl = "https://btc.blockr.io/api/v1/block/info/"
-    # else:
-    #     blockInfoUrl = "https://tbtc.blockr.io/api/v1/block/info/"
+    # refetch if needed in case contract's HEAD was orphaned
+    contractHeight = getLastBlockHeight()
+    realHead = blockr_get_block_header_data(contractHeight, network=network)['hash']
+    heightToRefetch = contractHeight
+    while chainHead != realHead:
+        print('@@@ chainHead: {0}  realHead: {1}').format(chainHead, realHead)
+        fetchHeaders(heightToRefetch, 1, 1, network=network)
+        instance.wait_for_next_block(from_block=instance.last_block(),
+            verbose=True)
+
+        chainHead = blockHashHex(getBlockchainHead())
+        realHead = blockr_get_block_header_data(heightToRefetch, network=network)['hash']
+
+        heightToRefetch -= 1
+
+        if heightToRefetch < contractHeight - 10:
+            print('@@@@ TERMINATING big reorg? {0}').format(heightToRefetch)
+            sys.exit()
+
 
     actualHeight = last_block_height(network)  # in my fork of pybitcointools
 
