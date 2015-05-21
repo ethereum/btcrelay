@@ -70,21 +70,6 @@ class TestBtcBulkStoreHeaders(object):
         self.checkRelay(txStr, txIndex, btcAddr, hh)
 
 
-    def testStore357370(self):
-        parent = 0x00000000000000000db6ab0aa23c28fc707f05f1646d25dba684ffe316bcf24d
-        height = 357369
-        cumulDifficulty = 1981795846593359
-        self.c.setInitialParent(parent, height, cumulDifficulty)
-
-        headerStr = '020000003904195c8b149dba2ef3369368c4ce5cfa389a15bc79f307000000000000000015a1c9c15e580d812ae4e11e7c721107012533ce85916041eafdb4dfa495f97990705d55f5861618e479e283'
-        headerBins = headerStr.decode('hex')
-
-        hash357370 = 0x00000000000000000e9192bf0b3ce68e50f9fbc919c4f3947b8307be3cdc7c00
-        assert dblSha256Flip(headerBins) == hash357370
-
-        assert self.c.bulkStoreHeader(headerBins, 1) == height + 1
-
-
     def testDifficulty(self):
         self.bulkStore11FromGenesis()
         cumulDiff = self.c.getCumulativeDifficulty()

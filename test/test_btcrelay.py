@@ -283,6 +283,36 @@ class TestBtcRelay(object):
         assert self.c.getCumulativeDifficulty() == 2 + 1  # +1 since setInitialParent was called with imaginary block
 
 
+    def testStoreNewHead(self):
+        parent = 0x00000000000000000a15bda775b0004fca6368c5b8a61cb0d3b793670b9369c2
+        height = 357368
+        cumulDifficulty = 1981747039106115  # 1981795846593359 - 48807487244 (diff at 357369)
+        self.c.setInitialParent(parent, height, cumulDifficulty)
+
+        orphanStr = '03000000c269930b6793b7d3b01ca6b8c56863ca4f00b075a7bd150a0000000000000000391c579bd59cb0199baf96dc1bc1066de0dc202bbe18f062a20aa25f78729376ba6f5d55f586161826f45178'
+        bhBinary = orphanStr.decode('hex')
+
+        orphanHash = 0x00000000000000000db6ab0aa23c28fc707f05f1646d25dba684ffe316bcf24d
+        assert dblSha256Flip(bhBinary) == orphanHash
+
+        assert self.c.storeBlockHeader(bhBinary) == height + 1
+        assert self.c.getBlockchainHead() == orphanHash
+        assert self.c.getLastBlockHeight() == height + 1
+        assert self.c.getCumulativeDifficulty() == 1981795846593359
+
+        # real 357369
+        headerStr = '03000000c269930b6793b7d3b01ca6b8c56863ca4f00b075a7bd150a00000000000000004bdc09e5405944a6319baf5e90335f221d5b91d44f5212c05bb1e751b997cc74db6f5d55f5861618351ec186'
+        bhBinary = headerStr.decode('hex')
+
+        hash357369 = 0x000000000000000007f379bc159a38fa5ccec4689336f32eba9d148b5c190439
+        assert dblSha256Flip(bhBinary) == hash357369
+
+        assert self.c.storeBlockHeader(bhBinary) == height + 1
+        assert self.c.getBlockchainHead() == hash357369
+        assert self.c.getLastBlockHeight() == height + 1
+        assert self.c.getCumulativeDifficulty() == 1981795846593359
+
+
     def testStoreExistingHeader(self):
         res = self.storeGenesisBlock()
         g1 = res['gas']

@@ -97,7 +97,9 @@ def storeBlockHeader(blockHeaderBinary:str):
         difficulty = 0x00000000FFFF0000000000000000000000000000000000000000000000000000 / target # https://en.bitcoin.it/wiki/Difficulty
         m_setScore(blockHash, m_getScore(hashPrevBlock) + difficulty)
 
-        if m_getScore(blockHash) > self.highScore:
+        # equality allows block with same score to become the Head, so that
+        # when a Head is orphaned, the chain can still continue
+        if m_getScore(blockHash) >= self.highScore:
             self.heaviestBlock = blockHash
             self.highScore = m_getScore(blockHash)
 
