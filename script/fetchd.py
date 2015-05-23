@@ -84,24 +84,45 @@ def run(doFetch=False, network=BITCOIN_TESTNET):
     chainHead = blockHashHex(getBlockchainHead())
     print('@@@ chainHead: %s' % chainHead)
 
-    # refetch if needed in case contract's HEAD was orphaned
-    contractHeight = getLastBlockHeight()
-    realHead = blockr_get_block_header_data(contractHeight, network=network)['hash']
-    heightToRefetch = contractHeight
-    while chainHead != realHead:
-        print('@@@ chainHead: {0}  realHead: {1}').format(chainHead, realHead)
-        fetchHeaders(heightToRefetch, 1, 1, network=network)
-        instance.wait_for_next_block(from_block=instance.last_block(),
-            verbose=True)
+    # loop in case contract stored correct HEAD, but reorg in *Ethereum* chain
+    # so that contract lost the correct HEAD.  we try 3 times since it would
+    # be quite unlucky for 3 Ethereum reorgs to coincide with storing the
+    # non-orphaned Bitcoin block
+    nTime = 3
+    for i in range(nTime):
+        # refetch if needed in case contract's HEAD was orphaned
+        contractHeight = getLastBlockHeight()
+        realHead = blockr_get_block_header_data(contractHeight, network=network)['hash']
+        heightToRefetch = contractHeight
+        while chainHead != realHead:
+            print('@@@ chainHead: {0}  realHead: {1}').format(chainHead, realHead)
+            fetchHeaders(heightToRefetch, 1, 1, network=network)
 
-        chainHead = blockHashHex(getBlockchainHead())
-        realHead = blockr_get_block_header_data(heightToRefetch, network=network)['hash']
+            # wait for some blocks because Geth has a delay (at least in RPC), of
+            # returning the correct data.  the non-orphaned header may already
+            # be in the Ethereum blockchain, so we should give it a chance before
+            # adjusting realHead to the previous parent
+            #
+            # realHead is adjusted to previous parent in the off-chance that
+            # there is more than 1 orphan block
+            for j in range(4):
+                instance.wait_for_next_block(from_block=instance.last_block(),
+                    verbose=True)
 
-        heightToRefetch -= 1
+            chainHead = blockHashHex(getBlockchainHead())
+            realHead = blockr_get_block_header_data(heightToRefetch, network=network)['hash']
 
-        if heightToRefetch < contractHeight - 10:
-            print('@@@@ TERMINATING big reorg? {0}').format(heightToRefetch)
-            sys.exit()
+            heightToRefetch -= 1
+
+            if heightToRefetch < contractHeight - 10:
+                if i == nTime-1:
+                    # this really shouldn't happen since 2 orphans are already
+                    # rare, let alone 10
+                    print('@@@@ TERMINATING big reorg? {0}').format(heightToRefetch)
+                    sys.exit()
+                else:
+                    break  # start the refetch again, this time ++i
+        break  # chainHead is same realHead
 
 
     actualHeight = last_block_height(network)  # in my fork of pybitcointools
