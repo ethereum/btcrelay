@@ -32,7 +32,7 @@ def main():
     parser.add_argument('--rpcPort', default='8545', type=int, help='RPC port')
     # parser.add_argument('--startBlock', default=0, type=int, help='block number to start fetching from')
     parser.add_argument('-w', '--waitFor', default=0, type=int, help='number of blocks to wait between fetches')
-    parser.add_argument('--gasPrice', default=10e12, type=int, help='gas price')  # default 10 szabo
+    parser.add_argument('--gasPrice', default=int(10e12), type=int, help='gas price')  # default 10 szabo
     parser.add_argument('--fetch', action='store_true', help='fetch blockheaders')
     parser.add_argument('-n', '--network', default=BITCOIN_TESTNET, choices=[BITCOIN_TESTNET, BITCOIN_MAINNET], help='Bitcoin network')
     parser.add_argument('-d', '--daemon', default=False, action='store_true', help='run as daemon')
