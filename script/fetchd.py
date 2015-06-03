@@ -86,9 +86,9 @@ def run(doFetch=False, network=BITCOIN_TESTNET):
 
     # loop in case contract stored correct HEAD, but reorg in *Ethereum* chain
     # so that contract lost the correct HEAD.  we try 3 times since it would
-    # be quite unlucky for 3 Ethereum reorgs to coincide with storing the
+    # be quite unlucky for 5 Ethereum reorgs to coincide with storing the
     # non-orphaned Bitcoin block
-    nTime = 3
+    nTime = 5
     for i in range(nTime):
         # refetch if needed in case contract's HEAD was orphaned
         contractHeight = getLastBlockHeight()
@@ -121,6 +121,7 @@ def run(doFetch=False, network=BITCOIN_TESTNET):
                     print('@@@@ TERMINATING big reorg? {0}').format(heightToRefetch)
                     sys.exit()
                 else:
+                    print('@@@@ handle orphan did not succeed iteration {0}').format(i)
                     break  # start the refetch again, this time ++i
         break  # chainHead is same realHead
 
