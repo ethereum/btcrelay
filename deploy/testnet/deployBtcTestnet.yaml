@@ -16,30 +16,31 @@
       fun_name: setInitialParent
       sig: iii
       data:
-        - 0x00000000147948125423f7c1236bde19341e61eee36c804bd06ff02cf28e3b4f
-        - 374609
+        - 0x0000000000001bdc2fa07813595a57f0016066ba9003e7e2537b7ef6bafc86c8
+        - 446947
         - 1
       wait: True
 
+# btc-eth was a simple version and no longer used in lieu of EthereumBitcoinSwap
 # for btc testnet, change btc-eth.py BTC_NEED to 170000
--
-  deploy:
-    BtcEth:
-      contract: ../../btc-eth.py
-      gas: 3000000
-      endowment: 1600
-      wait: True
-
--
-  transact:
-    SetTrustedBtcRelay:
-      gas: 100000
-      to: $BtcEth
-      fun_name: setTrustedBtcRelay
-      sig: i
-      data:
-        - $BtcRelay
-      wait: True
+# -
+#   deploy:
+#     BtcEth:
+#       contract: ../../btc-eth.py
+#       gas: 3000000
+#       endowment: 1600
+#       wait: True
+#
+# -
+#   transact:
+#     SetTrustedBtcRelay:
+#       gas: 100000
+#       to: $BtcEth
+#       fun_name: setTrustedBtcRelay
+#       sig: i
+#       data:
+#         - $BtcRelay
+#       wait: True
 
 
 # testnet bitcoin address is mvBWJFv8Uc84YEyZKBm8HZQ7qrvmBiH7zR
@@ -47,13 +48,13 @@
 # When testing with the frontend, all the should be needed is to
 # change (temporarily) the btcAddr data below, use the same btcAddr in the frontend,
 # and update the frontend's gExchangeContractAddr
--
-  transact:
-    SetBtcAddr:
-      gas: 100000
-      to: $BtcEth
-      fun_name: testingonlySetBtcAddr
-      sig: i
-      data:
-        - 0xa0dc485fc3ade71be5e1b68397abded386c0adb7
-      wait: True
+# -
+#   transact:
+#     SetBtcAddr:
+#       gas: 100000
+#       to: $BtcEth
+#       fun_name: testingonlySetBtcAddr
+#       sig: i
+#       data:
+#         - 0xa0dc485fc3ade71be5e1b68397abded386c0adb7
+#       wait: True
