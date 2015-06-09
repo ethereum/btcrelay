@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Ethereum: Bitcoin Testnet Relay Contract Status</title>
+  <link rel="stylesheet" href="./css/bootstrap.min.css">
+  <link rel="stylesheet" href="./css/dapp.css">
+  <script src="./js/jquery-2.1.3.min.js"></script>
+  <script src="./js/bootstrap.min.js"></script>
+
+  <script src="./js/btcRelayAbi.js"></script>
+
+  <script src="./js/bignumber.js"></script>
+  <script src="./js/web3.min.js"></script>
+
+  <script>
+  var web3 = require('web3');
+  web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
+
+  $(function() {
+    var relayAddr = '0x4fcd57b507a237409e5a7bb2a244dd5206441642';
+
+    $('#relayAddr').text(relayAddr);
+
+    var bethAddress = relayAddr;
+    var abiToUse = btcRelayAbi;
+    var RelayContract = web3.eth.contract(abiToUse);
+    var contract = RelayContract.at(bethAddress);
+    // console.log('@@@@ contract: ', contract)
+
+
+    var height = contract.getLastBlockHeight.call();
+    $('#latestBlockHeight').text(height);
+
+    var headHash = contract.getBlockchainHead.call();
+    $('#latestBlockHash').text(web3.toHex(headHash));
+
+    var headScore = contract.getCumulativeDifficulty.call();
+    $('#latestBlockScore').text(web3.toBigNumber(headScore).toString(10));
+  });
+
+  </script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="logo">
+      <img src="./images/ethereum-logo-small.png"/>
+    </div>
+
+    <h2>Ethereum Bitcoin Testnet Relay Contract Status</h2>
+
+    <div class="jumbotron">
+      <h3>Testnet Relay Contract Address: <strong id="relayAddr"></strong></h3>
+      <h3>Latest Block#: <strong id="latestBlockHeight"></strong></h3>
+      <h3>Latest Block Hash: <strong id="latestBlockHash"></strong></h3>
+      <h3>Latest Block Cumulative Difficulty: <strong id="latestBlockScore"></strong></h3>
+      <br>
+    </div>
+
+    <div class="footer-logo">
+      <img src="./images/ETH_DEV_LOGO_LARGE.svg"/>
+    </div>
+  </div>
+</body>
+
+</html>
