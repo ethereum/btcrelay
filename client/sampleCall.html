@@ -16,16 +16,16 @@
 
   <script type="text/javascript">
   var web3 = require('web3');
-      web3.setProvider(new web3.providers.HttpProvider('http://localhost:8549'));
-
+      web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
   var btcproof = require('btcproof');
 
   var gRelayAddr = '0x61f836ebad27a6a3cbb5c070ca6b99925eabd9a3';
-
   var gMerkleProof;
   var gBlockHashOfTx;
   var gRawTx;
 
+  // shows how to use web3 to make an eth_call to the relay contract
+  // verifyTx returns 1 (success) or 0 (verify failed)
   function callVerifyTx(txHash, txIndex, merkleSibling, txBlockHash) {
     var RelayContract = web3.eth.contract(btcRelayAbi);  // see ./js/btcRelayAbi.js
     var contract = RelayContract.at(gRelayAddr);
@@ -39,7 +39,7 @@
   function callContract() {
     var transHex = $('#transHex').val();
     var txHash = '0x' + transHex;
-    var txBlockHash = '0x'+gBlockHashOfTx;
+    var txBlockHash = '0x' + gBlockHashOfTx;
 
     // web3.js wants 0x prepended
     var merkleSibling = gMerkleProof.sibling.map(function(sib) {
@@ -78,13 +78,10 @@
     })
   }
 
-
   $(function() {
     // tx[1] of block 360276
     $('#transHex').val('be44a9201e8016b1772e7331f3c3c8a4820060307df4603033dc5350a01ac279');
-
     $('#btn-get-tx').click(getTxInfo);
-
     $('#relayAddr').text(gRelayAddr);
   });
 
@@ -102,30 +99,40 @@
     <p>This is a sample of calling the verifyTx method on the btcrelay contract
     </p>
 
-    <form class="form">
-      <div class="form-group">
-        <label for="transHex">Bitcoin Transaction Hash</label>
-        <input type="text" class="form-control" id="transHex" size="64" maxlength="64"></input>
-      </div>
-      <button type="button" class="btn btn-default" id="btn-get-tx">Lookup</button>
-    </form>
-
-    <form>
-      <div class="form-group">
-        <label for="txHexText">Raw Transaction</label>
-        <textarea readonly class="form-control" name="textarea" id="txHexText" rows="6" cols="50"></textarea>
-
-        <label for="mProof">Merkle Proof</label>
-        <textarea readonly class="form-control" name="textarea" id="mProof" rows="6" cols="50"></textarea>
-
-        <label class="col-md-1 control-label">Block Hash</label>
-        <div class="col-md-9">
-          <p class="form-control-static" id="txBlockHash">0</p>
+    <h2>1.</h2>
+    <div class="row">
+      <form class="form">
+        <div class="form-group">
+          <label for="transHex">Bitcoin Transaction Hash</label>
+          <input type="text" class="form-control" id="transHex" size="64" maxlength="64"></input>
         </div>
-      </div>
-      <br><br>
-      <button type="button" class="btn btn-default" onclick="callContract();">Call verifyTx</button>
-    </form>
+        <button type="button" class="btn btn-default" id="btn-get-tx">Lookup</button>
+      </form>
+    </div>
+
+    <h2>2.</h2>
+    <div class="row">
+      <form>
+        <div class="form-group">
+          <label for="txHexText">Raw Transaction</label>
+          <textarea readonly class="form-control" name="textarea" id="txHexText" rows="6" cols="50"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="mProof">Merkle Proof</label>
+          <textarea readonly class="form-control" name="textarea" id="mProof" rows="6" cols="50"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="col-md-1 control-label">Block Hash</label>
+          <div class="col-md-9">
+            <p class="form-control-static" id="txBlockHash">0</p>
+          </div>
+        </div>
+        <br><br><br>
+        <button type="button" class="btn btn-default" onclick="callContract();">Call verifyTx</button>
+      </form>
+    </div>
 
     <div id="result"></div>
 
