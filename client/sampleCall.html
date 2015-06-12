@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Ethereum: get ether with bitcoin</title>
+  <link rel="stylesheet" href="./css/bootstrap.min.css">
+  <link rel="stylesheet" href="./css/dapp.css">
+  <script src="./js/jquery-2.1.3.min.js"></script>
+  <script src="./js/bootstrap.min.js"></script>
+
+  <script src="./js/btcRelayAbi.js"></script>
+  <script src="./js/btc-ethAbi.js"></script>
+
+
+  <!-- TODO may not all be needed -->
+  <!--
+  <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/components/core-min.js"></script>
+  <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/components/enc-utf16-min.js"></script>
+  <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/components/enc-base64-min.js"></script>
+  -->
+
+  <script src="./js/bignumber.js"></script>
+  <script src="./js/web3.min.js"></script>
+
+
+  <script src="./js/btcproof.js"></script>
+
+<script type="text/javascript">
+var web3 = require('web3');
+    web3.setProvider(new web3.providers.HttpProvider('http://localhost:8549'));
+
+// web3.setProvider(new web3.providers.AutoProvider());
+// web3.setProvider(new web3.providers.WebSocketProvider('ws://localhost:40404/eth'));
+
+///First web3.eth.watch code to monitor coinbase
+// web3.eth.watch('pending').changed(function(){
+//     var coinbase = web3.eth.coinbase;
+//   	document.getElementById('coinbase').innerText = coinbase;
+//
+//     var balance = web3.eth.balanceAt(coinbase);
+//   	document.getElementById('balance').innerText = balance;
+// });
+
+var btcproof = require('btcproof');
+
+///Insert your contract address var here:
+
+
+///Second web3.eth.watch code to monitor block number
+// web3.eth.watch().changed(function(){
+// 	web3.eth.block(web3.eth.number).then(function(result){
+//     	document.getElementById('latestBlock').innerText = web3.eth.number._result;
+//     	document.getElementById('latestBlockHash').innerText = result.hash;
+//     	document.getElementById('latestBlockTimestamp').innerText = Date(result.timestamp);
+//   	})
+// });
+
+
+// curl -X POST --data '{"jsonrpc":"2.0","method":"eth_balanceAt","params":["0x205215f022af4950618730bcfae161b28397bc41"],"id":1}' http://localhost:8080
+
+
+// def verifyTx(tx, proofLen, hash:arr, path:arr, txBlockHash):
+
+// note this version of btcrelay does not getCumulativeDifficulty, or return blockChainHead...
+// 0x3432c7f5ca6552fca2f641575135578cb724eb1f
+
+var gRelayAddr;
+var gExchangeContractAddr;
+var gBtcTestnet;
+var gOurBtcAddr;
+
+
+// gBtcTestnet = true;
+if (gBtcTestnet) {
+  gRelayAddr = '0x7d5a9e09786d628603ce7f5819b21f5ac14e6baf';
+  gExchangeContractAddr = '0xa5bbd4e59bdc2c17e52e7056afe43ba9f52462f2';
+
+  gOurBtcAddr = 'mvBWJFv8Uc84YEyZKBm8HZQ7qrvmBiH7zR';
+}
+else {
+  gRelayAddr = '0x61f836ebad27a6a3cbb5c070ca6b99925eabd9a3';
+  gExchangeContractAddr = '0xf073d7b459592fc9552f6015473c44d50d802d6d';
+  // gExchangeContractAddr = '0x95e32f338d28bed978b3ef948bd73ec20d1eb60a'; // Go
+
+  gOurBtcAddr = '61cf5af7bb84348df3fd695672e53c7d5b3f3db9'  // tx1 of block300K
+  // var gOurBtcAddr = '29a158767437cd82ccf4bd3e34ecd16c267fc363'  // tx3 of block300K
+  // var gOurBtcAddr = 'c398efa9c392ba6013c5e04ee729755ef7f58b32'  // tx1 of block100K
+}
+
+var gFromAccount = '0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826';
+
+
+function c22allContract() {
+  var abi = [{
+    "name": "foo(string,int256)",
+    "type": "function",
+    "inputs": [{ "name": "mystr", "type": "bytes" }, { "name": "num", "type": "int256" }],
+    "outputs": [{ "name": "out", "type": "int256" }]
+  }];
+
+  var addr = '0xcdbb08538b8f548b1ad9a1abffd35fb423e91c37';
+  var contract = web3.eth.contract(addr, abi);
+
+  var useCall;
+  // useCall = true;
+
+  if (useCall) {
+    var res = contract.call({from:gFromAccount, gas:500000}).foo('ab', 3);
+    console.log('@@@@ foo res: ', res)
+    document.getElementById('result').innerText = res.toString(10);
+  }
+  else {
+    var sendObj = contract.sendTransaction({from:gFromAccount, gas:500000}, function(err, result) {
+      var res = result;
+      console.log('@@@@ foo res: ', res)
+      document.getElementById('result').innerText = res.toString(10);
+    });
+
+    sendObj.foo('bc', 3);
+  }
+
+}
+
+
+// This requires that blocks are from block300K
+// this should no longer work because processTransaction can only
+// be called by the (trusted) BtcRelay contract
+function c22allContract() {
+  console.log('@@@ in testDirectprocessTransaction')
+  console.log('@@@ btcToEthAbi: ', btcToEthAbi, ' gExchangeContractAddr: ', gExchangeContractAddr)
+
+  var ExchangeContract = web3.eth.contract(btcToEthAbi);
+  var exch = new ExchangeContract(gExchangeContractAddr);
+
+  var txHex = '01000000014dff4050dcee16672e48d755c6dd25d324492b5ea306f85a3ab23b4df26e16e9000000008c493046022100cb6dc911ef0bae0ab0e6265a45f25e081fc7ea4975517c9f848f82bc2b80a909022100e30fb6bb4fb64f414c351ed3abaed7491b8f0b1b9bcd75286036df8bfabc3ea5014104b70574006425b61867d2cbb8de7c26095fbc00ba4041b061cf75b85699cb2b449c6758741f640adffa356406632610efb267cb1efa0442c207059dd7fd652eeaffffffff020049d971020000001976a91461cf5af7bb84348df3fd695672e53c7d5b3f3db988ac30601c0c060000001976a914fd4ed114ef85d350d6d40ed3f6dc23743f8f99c488ac00000000';
+  var txHash = new BigNumber('0x7301b595279ece985f0c415e420e425451fcf7f684fcce087ba14d10ffec1121')
+
+  // 'from' should be the address of the bulk/bridge contract (instead of coinbase)
+  var from = gFromAccount;
+  console.log('@@@ from gFrom: ', from)
+
+  var res;
+  // res = exch.call({from:from, gas:500000}).processTransaction(txHex, txHash);
+
+  var startTime = Date.now();
+  var sendObj = exch.sendTransaction({from:gFromAccount, gas: 3000000}, function(err, result) {
+      var res = result;
+      var endTime = Date.now();
+      var durationSec = (endTime - startTime) / 1000;
+      console.log('@@@@ processTransaction res: ', res, ' duration: ', durationSec)
+      document.getElementById('result').innerText = res.toString(10) + "    " + durationSec+ "secs";
+  });
+  sendObj.processTransaction(txHex, txHash);
+
+
+  if (res) {
+    console.log('@@@@ res.toString(10): ', res.toString(10))
+    document.getElementById('result').innerText = res.toString(10);
+  }
+}
+
+
+// CPP apparently can call watch() multiple times and doesn't protect against duplicates
+web3.eth.filter({'address': gExchangeContractAddr}).watch(function(err, res) {
+  if (err) {
+    console.log('@@@ ERROR gExchangeContractAddr filter: ', err)
+    return;
+  }
+  console.log('@@@ gExchangeContractAddr filter')
+  console.log(res)
+
+  var contractReturnData = res.data;
+
+  if (web3.toDecimal(contractReturnData) === 1) {
+    document.getElementById('result').innerText = 'ether sent.  Check your address!';
+  }
+  else {
+    document.getElementById('result').innerText = 'Bitcoin Transaction not accepted.  Make sure you have sent enough Bitcoins.';
+  }
+});
+
+// CPP apparently can call watch() multiple times and doesn't protect against duplicates
+web3.eth.filter({'address': gRelayAddr}).watch(function(err, res) {
+  if (err) {
+    console.log('@@@ ERROR gRelayAddr filter: ', err)
+    return;
+  }
+  console.log('@@@ gRelayAddr filter')
+  console.log(res)
+
+  var logDataFromRelay = res.data;
+
+  // if (web3.toDecimal(logDataFromRelay) === -9999) {
+  if (logDataFromRelay === '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd8f1') {
+    document.getElementById('result').innerText = 'Bitcoin Transaction not accepted.  Wait for more confirmations or send your Bitcoins again.';
+  }
+});
+
+
+// web3.eth.filter('pending').watch(function (log) {
+//   console.log('@@@ pending filter')
+//   console.log(log); //  {"address":"0x0000000000000000000000000000000000000000","data":"0x0000000000000000000000000000000000000000000000000000000000000000","number":0}
+// });
+//
+//
+// web3.eth.filter('latest').watch(function (log) {
+//   console.log('@@@ latest filter')
+//   console.log(log); //  {"address":"0x0000000000000000000000000000000000000000","data":"0x0000000000000000000000000000000000000000000000000000000000000000","number":0}
+// });
+
+
+
+var gMerkleProof;
+var gBlockHashOfTx;
+var gRawTx;
+function callContract() {
+  console.log('@@@ in callContract')
+  console.log('@@@ btcRelayAbi: ', btcRelayAbi)
+  console.log('@@@ gFromAccount: ', gFromAccount)
+
+
+  var verifyTx;
+  verifyTx = true;  // if commented, it will call relayTx
+
+
+  // TODO don't forget to update the ABI (btcRelayAbi.js & btcEthAbi.js)
+  //
+  // TODO relayTx is in bridge/bulk abi; verifyTx is in btcRelayAbi.js
+  // for btcRelayAbi.js, since btcrelay was split up, need to
+  // use bridge/bulk such as serpent mk_full_signature ~/projects/eth/dapp-bin/btcrelay/btcBulkStoreHeaders.py > client/js/btcRelayAbi.js
+  // when the Serpent is updated
+  var bethAddress = gRelayAddr;
+  var abiToUse;
+  abiToUse = btcRelayAbi;
+
+
+  // TODO rename away from poc9 name since there's only a relay contract
+  var BridgeOrRelayContract = web3.eth.contract(abiToUse);
+  var contract = BridgeOrRelayContract.at(bethAddress);
+  console.log('@@@@ contract: ', contract)
+
+  // block300K tx1
+  // var tx1300K = '7301b595279ece985f0c415e420e425451fcf7f684fcce087ba14d10ffec1121';
+
+  var transHex = $('#transHex').val();
+  // TODO check if transHex is prefixed with 0x
+  var txHash = new BigNumber('0x' + transHex);
+
+  var txBlockHash = new BigNumber('0x'+gBlockHashOfTx);
+
+  // web3.js wants 0x prepended
+  var merkleSibling = gMerkleProof.sibling.map(function(sib) {
+    return '0x' + sib;
+    // return new BigNumber('0x' + sib);
+  });
+
+  if (verifyTx) {
+    console.log('@@@@ going to call() verifyTx')
+    var startTime = Date.now();
+
+    // OLD ways
+    // var res = contract.call({from:gFromAccount, gas: 3000000}).computeMerkle(txHash, proofLen, merkleSibling, merklePath);
+    // var res = contract.call({from:gFromAccount, gas: 3000000}).verifyTx(txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash);
+
+    var objParam = {from:gFromAccount, gas: 3000000};
+    var res = contract.verifyTx.call(txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash, objParam);
+
+
+    var endTime = Date.now();
+    var durationSec = (endTime - startTime) / 1000;
+    console.log('@@@@ verifyTx res: ', res, ' duration: ', durationSec)
+    document.getElementById('result').innerText = res.toString(10) + "    " + durationSec+ "secs";
+    return;
+  }
+
+
+
+  var txHex = gRawTx;
+  // var words = CryptoJS.enc.Hex.parse(txHex);
+  // var txBinaryStr = CryptoJS.enc.Latin1.stringify(words);
+
+  var exchangeContractAddr = new BigNumber(gExchangeContractAddr);
+
+  var startTime = Date.now();
+  var objParam = {from:gFromAccount, gas: 3000000-10, gasPrice: 0};
+
+  // OLD way
+  // contract.sendTransaction(objParam).relayTx(txHex, txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash, exchangeContractAddr);
+
+  contract.relayTx.sendTransaction(txHex, txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash, exchangeContractAddr, objParam);
+  document.getElementById('result').innerText = 'Ethereum transaction is in progress...'
+}
+
+
+function getTxInfo() {
+  var txid = $('#transHex').val();
+  console.log('@@@ txid: ', txid);
+
+  var urlJsonTx;
+  if (gBtcTestnet) {
+      urlJsonTx = "https://tbtc.blockr.io/api/v1/tx/raw/" + txid;
+  }
+  else {
+      urlJsonTx = "https://btc.blockr.io/api/v1/tx/raw/" + txid;
+  }
+  $.getJSON(urlJsonTx, function(data) {
+      console.log('@@@ data: ', data)
+
+      gRawTx = data.data.tx.hex;
+      $('#txHexText').val(gRawTx);
+
+      var blockNum = data.data.tx.blockhash; // blockr does not easily provide block height
+      $('#txBlockNum').text('n/a for blockr.io');
+      // $('#txBlockNum').text(blockNum);
+
+      var blockInfoUrl;
+      if (gBtcTestnet) {
+          blockInfoUrl = "http://tbtc.blockr.io/api/v1/block/raw/"+blockNum;
+      }
+      else {
+          blockInfoUrl = "http://btc.blockr.io/api/v1/block/raw/"+blockNum;
+      }
+      $.getJSON(blockInfoUrl, function(res) {
+          console.log('@@@ res: ', res)
+
+          gBlockHashOfTx = res.data.hash;
+          $('#txBlockHash').text(gBlockHashOfTx)
+
+          var txIndex;
+          for (var key in res.data.tx) {
+            if (res.data.tx[key] == txid) {
+              txIndex = key;
+              break;
+            }
+          }
+
+          // var txIndex = Object.keys(res.data.tx).indexOf(txid);
+          console.log('@@@@ txIndex: ', txIndex)
+
+          gMerkleProof = btcproof.getProof(res.data.tx, txIndex);
+          console.log('@@@ mp: ', gMerkleProof)
+          $('#mProof').val(JSON.stringify(gMerkleProof));
+      })
+
+  })
+}
+
+
+$(function() {
+  // tx[1] of block 360276
+  $('#transHex').val('be44a9201e8016b1772e7331f3c3c8a4820060307df4603033dc5350a01ac279');
+
+  $('#btn-get-tx').click(getTxInfo);
+
+  $('#exchAddr').text(gExchangeContractAddr);
+});
+
+
+
+</script>
+
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="logo">
+      <img src="./images/ethereum-logo-small.png"/>
+    </div>
+
+    <p class="lead">btcrelay at <span id="exchAddr"></span> has
+      <span id="exchBal"></span> ether.
+    </p>
+
+    <p>This is a sample of calling the verifyTx method on the btcrelay contract
+    </p>
+
+    <form class="form">
+      <div class="form-group">
+        <label for="transHex">Bitcoin Transaction Hash</label>
+        <input type="text" class="form-control" id="transHex" size="64" maxlength="64"></input>
+      </div>
+      <button type="button" class="btn btn-default" id="btn-get-tx">Lookup</button>
+    </form>
+
+    <form>
+      <div class="form-group">
+        <label for="txHexText">Raw Transaction</label>
+        <textarea readonly class="form-control" name="textarea" id="txHexText" rows="6" cols="50"></textarea>
+
+        <label for="mProof">Merkle Proof</label>
+        <textarea readonly class="form-control" name="textarea" id="mProof" rows="6" cols="50"></textarea>
+
+        <label class="col-md-1 control-label">Block Number</label>
+        <div class="col-md-1">
+          <p class="form-control-static" id="txBlockNum">0</p>
+        </div>
+
+        <label class="col-md-1 control-label">Block Hash</label>
+        <div class="col-md-9">
+          <p class="form-control-static" id="txBlockHash">0</p>
+        </div>
+      </div>
+      <br><br>
+      <button type="button" class="btn btn-default" onclick="callContract();">Call verifyTx</button>
+    </form>
+
+
+    <div id="result"></div>
+
+    <div class="footer-logo">
+      <img src="./images/ETH_DEV_LOGO_LARGE.svg"/>
+    </div>
+  </div>
+
+</body>
+
+</html>
