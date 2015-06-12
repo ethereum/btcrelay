@@ -23,40 +23,14 @@ var btcproof = require('btcproof');
 var gRelayAddr = '0x61f836ebad27a6a3cbb5c070ca6b99925eabd9a3';
 var gFromAccount = '0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826';
 
-
-// CPP apparently can call watch() multiple times and doesn't protect against duplicates
-web3.eth.filter({'address': gRelayAddr}).watch(function(err, res) {
-  if (err) {
-    console.log('@@@ ERROR gRelayAddr filter: ', err)
-    return;
-  }
-  console.log('@@@ gRelayAddr filter')
-  console.log(res)
-
-  var logDataFromRelay = res.data;
-
-  // if (web3.toDecimal(logDataFromRelay) === -9999) {
-  if (logDataFromRelay === '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd8f1') {
-    document.getElementById('result').innerText = 'Bitcoin Transaction not accepted.  Wait for more confirmations or send your Bitcoins again.';
-  }
-});
-
-
-
 var gMerkleProof;
 var gBlockHashOfTx;
 var gRawTx;
-function callContract() {
-  console.log('@@@ in callContract')
-  console.log('@@@ btcRelayAbi: ', btcRelayAbi)
-  console.log('@@@ gFromAccount: ', gFromAccount)
 
+function callVerifyTx(txHash, txIndex, merkleSibling, txBlockHash) {
+  console.log('@@@@ going to call() verifyTx')
 
-  var verifyTx;
-  verifyTx = true;  // if commented, it will call relayTx
-
-var relayAddr = '0x61f836ebad27a6a3cbb5c070ca6b99925eabd9a3';
-
+  var relayAddr = '0x61f836ebad27a6a3cbb5c070ca6b99925eabd9a3';
 
   var bethAddress = relayAddr;
   var abiToUse = btcRelayAbi;
@@ -64,8 +38,19 @@ var relayAddr = '0x61f836ebad27a6a3cbb5c070ca6b99925eabd9a3';
   var contract = RelayContract.at(bethAddress);
   console.log('@@@@ contract: ', contract)
 
-  // block300K tx1
-  // var tx1300K = '7301b595279ece985f0c415e420e425451fcf7f684fcce087ba14d10ffec1121';
+  var objParam = { from: web3.eth.coinbase, gas: 3000000 };
+  var res = contract.verifyTx.call(txHash, txIndex, merkleSibling, txBlockHash, objParam);
+
+  console.log('@@@@ verifyTx res: ', res)
+  document.getElementById('result').innerText = 'btcrelay verifyTx returned: ' + res.toString(10);
+  return;
+}
+
+function callContract() {
+  console.log('@@@ in callContract')
+  console.log('@@@ btcRelayAbi: ', btcRelayAbi)
+  console.log('@@@ gFromAccount: ', gFromAccount)
+
 
   var transHex = $('#transHex').val();
   // TODO check if transHex is prefixed with 0x
@@ -79,24 +64,8 @@ var relayAddr = '0x61f836ebad27a6a3cbb5c070ca6b99925eabd9a3';
     // return new BigNumber('0x' + sib);
   });
 
-  if (verifyTx) {
-    console.log('@@@@ going to call() verifyTx')
-    var startTime = Date.now();
-
-    var objParam = {from:web3.eth.coinbase, gas: 3000000};
-    var res = contract.verifyTx.call(txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash, objParam);
-
-
-    var endTime = Date.now();
-    var durationSec = (endTime - startTime) / 1000;
-    console.log('@@@@ verifyTx res: ', res, ' duration: ', durationSec)
-    document.getElementById('result').innerText = res.toString(10) + "    " + durationSec+ "secs";
-    return;
-  }
-
-  document.getElementById('result').innerText = 'Ethereum transaction is in progress...'
+  callVerifyTx(txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash);
 }
-
 
 function getTxInfo() {
   var txid = $('#transHex').val();
@@ -109,10 +78,7 @@ function getTxInfo() {
       gRawTx = data.data.tx.hex;
       $('#txHexText').val(gRawTx);
 
-      var blockNum = data.data.tx.blockhash; // blockr does not easily provide block height
-      $('#txBlockNum').text('n/a for blockr.io');
-      // $('#txBlockNum').text(blockNum);
-
+      var blockNum = data.data.tx.blockhash;
       var blockInfoUrl = "http://btc.blockr.io/api/v1/block/raw/"+blockNum;
       $.getJSON(blockInfoUrl, function(res) {
           console.log('@@@ res: ', res)
@@ -162,9 +128,7 @@ $(function() {
       <img src="./images/ethereum-logo-small.png"/>
     </div>
 
-    <p class="lead">btcrelay at <span id="relayAddr"></span> has
-      <span id="exchBal"></span> ether.
-    </p>
+    <p class="lead">btcrelay at <span id="relayAddr"></span></p>
 
     <p>This is a sample of calling the verifyTx method on the btcrelay contract
     </p>
@@ -185,11 +149,6 @@ $(function() {
         <label for="mProof">Merkle Proof</label>
         <textarea readonly class="form-control" name="textarea" id="mProof" rows="6" cols="50"></textarea>
 
-        <label class="col-md-1 control-label">Block Number</label>
-        <div class="col-md-1">
-          <p class="form-control-static" id="txBlockNum">0</p>
-        </div>
-
         <label class="col-md-1 control-label">Block Hash</label>
         <div class="col-md-9">
           <p class="form-control-static" id="txBlockHash">0</p>
@@ -198,7 +157,6 @@ $(function() {
       <br><br>
       <button type="button" class="btn btn-default" onclick="callContract();">Call verifyTx</button>
     </form>
-
 
     <div id="result"></div>
 
