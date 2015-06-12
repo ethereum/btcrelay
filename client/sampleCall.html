@@ -14,115 +14,84 @@
 
   <script src="./js/btcproof.js"></script>
 
-<script type="text/javascript">
-var web3 = require('web3');
-    web3.setProvider(new web3.providers.HttpProvider('http://localhost:8549'));
+  <script type="text/javascript">
+  var web3 = require('web3');
+      web3.setProvider(new web3.providers.HttpProvider('http://localhost:8549'));
 
-var btcproof = require('btcproof');
+  var btcproof = require('btcproof');
 
-var gRelayAddr = '0x61f836ebad27a6a3cbb5c070ca6b99925eabd9a3';
-var gFromAccount = '0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826';
+  var gRelayAddr = '0x61f836ebad27a6a3cbb5c070ca6b99925eabd9a3';
 
-var gMerkleProof;
-var gBlockHashOfTx;
-var gRawTx;
+  var gMerkleProof;
+  var gBlockHashOfTx;
+  var gRawTx;
 
-function callVerifyTx(txHash, txIndex, merkleSibling, txBlockHash) {
-  console.log('@@@@ going to call() verifyTx')
+  function callVerifyTx(txHash, txIndex, merkleSibling, txBlockHash) {
+    var RelayContract = web3.eth.contract(btcRelayAbi);  // see ./js/btcRelayAbi.js
+    var contract = RelayContract.at(gRelayAddr);
 
-  var relayAddr = '0x61f836ebad27a6a3cbb5c070ca6b99925eabd9a3';
+    var objParam = { from: web3.eth.coinbase, gas: 3000000 };
+    var res = contract.verifyTx.call(txHash, txIndex, merkleSibling, txBlockHash, objParam);
 
-  var bethAddress = relayAddr;
-  var abiToUse = btcRelayAbi;
-  var RelayContract = web3.eth.contract(abiToUse);
-  var contract = RelayContract.at(bethAddress);
-  console.log('@@@@ contract: ', contract)
+    document.getElementById('result').innerText = 'btcrelay verifyTx returned: ' + res.toString(10);
+  }
 
-  var objParam = { from: web3.eth.coinbase, gas: 3000000 };
-  var res = contract.verifyTx.call(txHash, txIndex, merkleSibling, txBlockHash, objParam);
+  function callContract() {
+    var transHex = $('#transHex').val();
+    var txHash = '0x' + transHex;
+    var txBlockHash = '0x'+gBlockHashOfTx;
 
-  console.log('@@@@ verifyTx res: ', res)
-  document.getElementById('result').innerText = 'btcrelay verifyTx returned: ' + res.toString(10);
-  return;
-}
+    // web3.js wants 0x prepended
+    var merkleSibling = gMerkleProof.sibling.map(function(sib) {
+      return '0x' + sib;
+    });
 
-function callContract() {
-  console.log('@@@ in callContract')
-  console.log('@@@ btcRelayAbi: ', btcRelayAbi)
-  console.log('@@@ gFromAccount: ', gFromAccount)
+    callVerifyTx(txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash);
+  }
+
+  // includes sample of using the btcproof module
+  function getTxInfo() {
+    var txid = $('#transHex').val();
+    var urlJsonTx = "https://btc.blockr.io/api/v1/tx/raw/" + txid;
+    $.getJSON(urlJsonTx, function(data) {
+        gRawTx = data.data.tx.hex;
+        $('#txHexText').val(gRawTx);
+
+        var blockNum = data.data.tx.blockhash;
+        var blockInfoUrl = "http://btc.blockr.io/api/v1/block/raw/"+blockNum;
+        $.getJSON(blockInfoUrl, function(res) {
+            gBlockHashOfTx = res.data.hash;
+            $('#txBlockHash').text(gBlockHashOfTx)
+
+            var txIndex;
+            for (var key in res.data.tx) {
+              if (res.data.tx[key] == txid) {
+                txIndex = key;
+                break;
+              }
+            }
+
+            gMerkleProof = btcproof.getProof(res.data.tx, txIndex);
+            console.log('merkle proof: ', gMerkleProof)
+            $('#mProof').val(JSON.stringify(gMerkleProof));
+        })
+    })
+  }
 
 
-  var transHex = $('#transHex').val();
-  // TODO check if transHex is prefixed with 0x
-  var txHash = new BigNumber('0x' + transHex);
+  $(function() {
+    // tx[1] of block 360276
+    $('#transHex').val('be44a9201e8016b1772e7331f3c3c8a4820060307df4603033dc5350a01ac279');
 
-  var txBlockHash = new BigNumber('0x'+gBlockHashOfTx);
+    $('#btn-get-tx').click(getTxInfo);
 
-  // web3.js wants 0x prepended
-  var merkleSibling = gMerkleProof.sibling.map(function(sib) {
-    return '0x' + sib;
-    // return new BigNumber('0x' + sib);
+    $('#relayAddr').text(gRelayAddr);
   });
 
-  callVerifyTx(txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash);
-}
-
-function getTxInfo() {
-  var txid = $('#transHex').val();
-  console.log('@@@ txid: ', txid);
-
-  var urlJsonTx = "https://btc.blockr.io/api/v1/tx/raw/" + txid;
-  $.getJSON(urlJsonTx, function(data) {
-      console.log('@@@ data: ', data)
-
-      gRawTx = data.data.tx.hex;
-      $('#txHexText').val(gRawTx);
-
-      var blockNum = data.data.tx.blockhash;
-      var blockInfoUrl = "http://btc.blockr.io/api/v1/block/raw/"+blockNum;
-      $.getJSON(blockInfoUrl, function(res) {
-          console.log('@@@ res: ', res)
-
-          gBlockHashOfTx = res.data.hash;
-          $('#txBlockHash').text(gBlockHashOfTx)
-
-          var txIndex;
-          for (var key in res.data.tx) {
-            if (res.data.tx[key] == txid) {
-              txIndex = key;
-              break;
-            }
-          }
-
-          // var txIndex = Object.keys(res.data.tx).indexOf(txid);
-          console.log('@@@@ txIndex: ', txIndex)
-
-          gMerkleProof = btcproof.getProof(res.data.tx, txIndex);
-          console.log('@@@ mp: ', gMerkleProof)
-          $('#mProof').val(JSON.stringify(gMerkleProof));
-      })
-
-  })
-}
-
-
-$(function() {
-  // tx[1] of block 360276
-  $('#transHex').val('be44a9201e8016b1772e7331f3c3c8a4820060307df4603033dc5350a01ac279');
-
-  $('#btn-get-tx').click(getTxInfo);
-
-  $('#relayAddr').text(gRelayAddr);
-});
-
-
-
-</script>
-
+  </script>
 </head>
 
 <body>
-
   <div class="container">
     <div class="logo">
       <img src="./images/ethereum-logo-small.png"/>
@@ -164,7 +133,5 @@ $(function() {
       <img src="./images/ETH_DEV_LOGO_LARGE.svg"/>
     </div>
   </div>
-
 </body>
-
 </html>
