@@ -28,11 +28,16 @@
     $('#latestBlockHeight').text(height);
 
     var headHash = contract.getBlockchainHead.call();
-    $('#latestBlockHash').text(web3.toHex(headHash));
+    $('#latestBlockHash').text(formatHash(headHash));
 
     var headScore = contract.getCumulativeDifficulty.call();
     $('#latestBlockScore').text(web3.toBigNumber(headScore).toString(10));
   });
+
+  function formatHash(bnHash) {
+    var hash = bnHash.toString(16);
+    return Array(64 - hash.length + 1).join('0') + hash;
+  }
 
   </script>
 </head>
