@@ -106,7 +106,7 @@ class TestBtcBulkStoreHeaders(object):
 
         strings = ""
         i = 1
-        with open("test/headers/500from300k.txt") as f:
+        with open("test/headers/100from300k.txt") as f:
             for header in f:
                 strings += header[:-1]  # [:-1] to remove trailing \n
                 if i==numBlock:
