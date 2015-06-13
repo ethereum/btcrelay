@@ -15740,7 +15740,7 @@ module.exports = function(arr, obj){
   }
   return -1;
 };
-},{}],"btcproof":[function(require,module,exports){
+},{}],"bitcoin-proof":[function(require,module,exports){
 (function (Buffer){
 const crypto = require('crypto');
 

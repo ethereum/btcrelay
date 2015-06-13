@@ -12,12 +12,12 @@
   <script src="./js/bignumber.js"></script>
   <script src="./js/web3.min.js"></script>
 
-  <script src="./js/btcproof.js"></script>
+  <script src="./js/bitcoin-proof.js"></script>
 
   <script type="text/javascript">
   var web3 = require('web3');
-      web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
-  var btcproof = require('btcproof');
+      web3.setProvider(new web3.providers.HttpProvider('http://localhost:8549'));
+  var btcproof = require('bitcoin-proof');
 
   var gRelayAddr = '0x61f836ebad27a6a3cbb5c070ca6b99925eabd9a3';
   var gMerkleProof;
@@ -49,7 +49,7 @@
     callVerifyTx(txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash);
   }
 
-  // includes sample of using the btcproof module
+  // includes sample of using the bitcoin-proof module
   function getTxInfo() {
     var txid = $('#transHex').val();
     var urlJsonTx = "https://btc.blockr.io/api/v1/tx/raw/" + txid;
