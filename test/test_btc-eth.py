@@ -8,6 +8,11 @@ import struct
 import pytest
 slow = pytest.mark.slow
 
+from utilRelay import disablePyethLogging
+
+disablePyethLogging()
+
+
 class TestBtcEth(object):
 
     CONTRACT = 'btc-eth.py'

@@ -5,7 +5,10 @@ import struct
 import pytest
 slow = pytest.mark.slow
 
-from utilRelay import dblSha256Flip
+from utilRelay import dblSha256Flip, disablePyethLogging
+
+disablePyethLogging()
+
 
 class TestBtcRelay(object):
 

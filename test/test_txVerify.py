@@ -2,13 +2,14 @@ from ethereum import tester
 from datetime import datetime, date
 from functools import partial
 
-from utilRelay import makeMerkleProof, randomMerkleProof
-
 import time
 
 import pytest
 slow = pytest.mark.slow
 
+from utilRelay import makeMerkleProof, randomMerkleProof, disablePyethLogging
+
+disablePyethLogging()
 
 
 class TestTxVerify(object):

@@ -5,6 +5,11 @@ import math
 import pytest
 slow = pytest.mark.slow
 
+from utilRelay import dblSha256Flip, disablePyethLogging
+
+disablePyethLogging()
+
+
 class TestBtcSpecialTx(object):
 
     CONTRACT = 'btcSpecialTx.py'

@@ -3,6 +3,11 @@ from ethereum import tester
 import pytest
 slow = pytest.mark.slow
 
+from utilRelay import dblSha256Flip, disablePyethLogging
+
+disablePyethLogging()
+
+
 class TestBtcTx(object):
 
     CONTRACT = 'btcTx.py'

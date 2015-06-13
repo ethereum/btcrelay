@@ -1,4 +1,5 @@
 import math
+import logging
 from functools import partial
 
 from bitcoin import *
@@ -46,3 +47,16 @@ def randomMerkleProof(blocknum, txIndex=-1, withMerkle=False):
 
 def dblSha256Flip(rawBytes):
     return int(bin_sha256(bin_sha256(rawBytes))[::-1].encode('hex'), 16)
+
+
+def disablePyethLogging():
+    logging.getLogger('eth.pb').setLevel('INFO')
+    logging.getLogger('eth.pb.msg').setLevel('INFO')
+    logging.getLogger('eth.pb.msg.state').setLevel('INFO')
+    logging.getLogger('eth.pb.tx').setLevel('INFO')
+    logging.getLogger('eth.vm').setLevel('INFO')
+    logging.getLogger('eth.vm.op').setLevel('INFO')
+    logging.getLogger('eth.vm.exit').setLevel('INFO')
+    logging.getLogger('eth.chain.tx').setLevel('INFO')
+    logging.getLogger('transactions.py').setLevel('INFO')
+    logging.getLogger('eth.msg').setLevel('INFO')

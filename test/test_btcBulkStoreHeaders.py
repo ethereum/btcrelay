@@ -1,10 +1,13 @@
 from ethereum import tester
 from datetime import datetime, date
 
-from utilRelay import makeMerkleProof, dblSha256Flip
-
 import pytest
 slow = pytest.mark.slow
+
+from utilRelay import makeMerkleProof, dblSha256Flip, disablePyethLogging
+
+disablePyethLogging()
+
 
 class TestBtcBulkStoreHeaders(object):
 
