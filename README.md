@@ -22,7 +22,7 @@ Returns
 * `1` if transaction is verified to be on the Bitcoin blockchain
 * `0` otherwise
 
-*Note* See [examples/sampleCall.html](blob/master/examples/sampleCall.html) including use of [bitcoin-proof](https://www.npmjs.com/package/bitcoin-proof) for constructing `merkleSibling`.
+*Note* See [examples/sampleCall.html](examples/sampleCall.html) including use of [bitcoin-proof](https://www.npmjs.com/package/bitcoin-proof) for constructing `merkleSibling`.
 
 ---
 
@@ -45,6 +45,10 @@ Returns
 
 
 ### Examples
+
+* [sampleCall.html](examples/sampleCall.html) for calling `verifyTx` including use of [bitcoin-proof](https://www.npmjs.com/package/bitcoin-proof) for constructing `merkleSibling`.
+
+* [relayContractStatus.html](examples/relayContractStatus.html) for calling other basic functions.
 
 
 ### Development
