@@ -5,9 +5,6 @@ btcrelay is an Ethereum contract for Bitcoin SPV.  The main functionality it pro
 1. verification of a Bitcoin transaction
 1. optionally relay the Bitcoin transaction to any Ethereum contract
 
-### Examples
-
-
 
 ### API
 
@@ -24,6 +21,8 @@ Verifies the presence of a transaction on the Bitcoin blockchain, primarily that
 Returns
 * `1` if transaction is verified to be on the Bitcoin blockchain
 * `0` otherwise
+
+*Note* See [examples/sampleCall.html](blob/master/examples/sampleCall.html) including use of [bitcoin-proof](https://www.npmjs.com/package/bitcoin-proof) for constructing `merkleSibling`.
 
 ---
 
@@ -45,9 +44,12 @@ Returns
 * `0` otherwise
 
 
+### Examples
+
+
+### Development
 
 Requirements
-------------
 * [Serpent](https://github.com/ethereum/serpent)
 * [pyethereum](https://github.com/ethereum/pyethereum) Python Ethereum (needed to run tests)
 
