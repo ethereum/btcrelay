@@ -21,12 +21,8 @@
 
     $('#relayAddr').text(relayAddr);
 
-    var bethAddress = relayAddr;
-    var abiToUse = btcRelayAbi;
-    var RelayContract = web3.eth.contract(abiToUse);
-    var contract = RelayContract.at(bethAddress);
-    // console.log('@@@@ contract: ', contract)
-
+    var RelayContract = web3.eth.contract(btcRelayAbi);  // see ./js/btcRelayAbi.js
+    var contract = RelayContract.at(relayAddr);
 
     var height = contract.getLastBlockHeight.call();
     $('#latestBlockHeight').text(height);
