@@ -22,7 +22,7 @@ Returns
 * `1` if transaction is verified to be on the Bitcoin blockchain
 * `0` otherwise
 
-*Note* See [examples/sampleCall.html](examples/sampleCall.html) including use of [bitcoin-proof](https://www.npmjs.com/package/bitcoin-proof) for constructing `merkleSibling`.
+*Note:* See [examples/sampleCall.html](examples/sampleCall.html) including use of [bitcoin-proof](https://www.npmjs.com/package/bitcoin-proof) for constructing `merkleSibling`.
 
 ---
 
@@ -37,16 +37,17 @@ Verifies a Bitcoin transaction per `verifyTx()` and relays the verified transact
 * `blockHash` - hash of the block that contains the transaction, as `int256`
 * `contractAddress` - address of the Ethereum contract that will receive the verified Bitcoin transaction, as `int256`
 
-The Ethereum contract should have a function of signature `processTransaction(rawTransaction, transactionHash)` and is what will be invoked by `relayTx` if the transaction passes verification.
+The Ethereum contract should have a function of signature `processTransaction(rawTransaction, transactionHash)` and is what will be invoked by `relayTx` if the transaction passes verification.  For an example, see [example-btc-eth](example-btc-eth)
 
 Returns
 * `value` returned by the Ethereum contract's `processTransaction` function
 * `0` otherwise
 
-
 ### Examples
 
 * [sampleCall.html](examples/sampleCall.html) for calling `verifyTx` including use of [bitcoin-proof](https://www.npmjs.com/package/bitcoin-proof) for constructing `merkleSibling`.
+
+* [example-btc-eth](example-btc-eth) for relaying a Bitcoin transaction to an Ethereum contract using `relayTx`.
 
 * [relayContractStatus.html](examples/relayContractStatus.html) for calling other basic functions.
 
