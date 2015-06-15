@@ -4,7 +4,8 @@ btcrelay is an Ethereum contract for Bitcoin SPV.  The main functionality it pro
 
 1. verification of a Bitcoin transaction
 1. optionally relay the Bitcoin transaction to any Ethereum contract
-1. storage of Bitcoin blockheaders
+1. storage of Bitcoin block headers
+1. inspection of the latest Bitcoin block header that is stored
 
 ### API
 
@@ -71,6 +72,17 @@ Returns `int256`
 
 *Note:* See [deploy/relayTest/testBulkDeploy.yaml](deploy/relayTest/testBulkDeploy.yaml) for an example of the data for storing multiple headers.  Also, to avoid exceeding Ethereum's block gas limit, a guideline is to store only 5 headers at time.
 
+----
+
+##### getBlockchainHead(), getLastBlockHeight(), others
+
+`getBlockchainHead` - returns the hash of the latest block, as`int256`
+
+`getLastBlockHeight` - returns the block height of the latest block, as `int256`
+
+See (btcRelayAbi.js)[examples/js/btcRelayAbi.js] for other APIs and [relayContractStatus.html](examples/relayContractStatus.html) for an example of calling some of them.
+
+----
 
 ### Examples
 
