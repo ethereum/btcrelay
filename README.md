@@ -7,6 +7,9 @@ btcrelay is an Ethereum contract for Bitcoin SPV.  The main functionality it pro
 1. storage of Bitcoin block headers
 1. inspection of the latest Bitcoin block header that is stored
 
+btcrelay is on the Olympic testnet.  Use `web3.eth.namereg.addr('btcrelay')` or run Ethereum JSON-RPC (default port 8545) and click [here](https://cdn.rawgit.com/ethereum/btcrelay/master/examples/relayContractStatus.html)
+
+
 ### API
 
 
