@@ -18,7 +18,7 @@ Verifies the presence of a transaction on the Bitcoin blockchain, primarily that
 * `merkleSibling` - array of the hashes of sibling transactions comprising the Merkle proof, as `int256[]`
 * `blockHash` - hash of the block that contains the transaction, as `int256`
 
-Returns
+Returns `int256`
 * `1` if transaction is verified to be on the Bitcoin blockchain
 * `0` otherwise
 
@@ -39,18 +39,37 @@ Verifies a Bitcoin transaction per `verifyTx()` and relays the verified transact
 
 The Ethereum contract should have a function of signature `processTransaction(rawTransaction, transactionHash)` and is what will be invoked by `relayTx` if the transaction passes verification.  For an example, see [example-btc-eth](example-btc-eth)
 
-Returns
-* `value` returned by the Ethereum contract's `processTransaction` function
+Returns `int256`
+* value returned by the Ethereum contract's `processTransaction` function
 * `0` otherwise
 
 ----
 
 ##### storeBlockHeader(blockHeader)
 
-Store the block header if it is valid, such as a valid Proof-of-Work and the previous block it reference exists.
+Store a single block header if it is valid, such as a valid Proof-of-Work and the previous block it reference exists.
 
 * `blockHeader` - raw `bytes` of the block header (not the hex string, but the actual bytes).
 
+Returns `int256`
+* block height of the header if it was successfully stored
+* `0` otherwise
+
+
+----
+
+##### bulkStoreHeader(bytesOfHeaders, numberOfHeaders)
+
+Store multiple block headers if they are valid.
+
+* `bytesOfHeaders` - raw `bytes` of the block headers (not the hex string, but the actual bytes), with one following immediately the other.
+* `numberOfHeaders` - `int256` count of the number of headers being stored.
+
+Returns `int256`
+* block height of the last header if all block headers were successfully stored
+* `0` if any of the block headers were not successfully stored
+
+*Note:* See [deploy/relayTest/testBulkDeploy.yaml](deploy/relayTest/testBulkDeploy.yaml) for an example of the data for storing multiple headers.  Also, to avoid exceeding Ethereum's block gas limit, a guideline is to store only 5 headers at time.
 
 
 ### Examples
