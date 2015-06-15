@@ -16,10 +16,10 @@
 
   <script type="text/javascript">
   var web3 = require('web3');
-      web3.setProvider(new web3.providers.HttpProvider('http://localhost:8549'));
+      web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
   var btcproof = require('bitcoin-proof');
 
-  var gRelayAddr = '0x61f836ebad27a6a3cbb5c070ca6b99925eabd9a3';
+  var gRelayAddr = web3.eth.namereg.addr('btcrelay');
   var gMerkleProof;
   var gBlockHashOfTx;
   var gRawTx;

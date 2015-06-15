@@ -17,7 +17,7 @@
   web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
 
   $(function() {
-    var relayAddr = '0x4fcd57b507a237409e5a7bb2a244dd5206441642';
+    var relayAddr = web3.eth.namereg.addr('btcrelay');
 
     $('#relayAddr').text(relayAddr);
 
