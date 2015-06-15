@@ -80,7 +80,7 @@ Returns `int256`
 
 `getLastBlockHeight` - returns the block height of the latest block, as `int256`
 
-See (btcRelayAbi.js)[examples/js/btcRelayAbi.js] for other APIs and [relayContractStatus.html](examples/relayContractStatus.html) for an example of calling some of them.
+See [btcRelayAbi.js](examples/js/btcRelayAbi.js) for other APIs and [relayContractStatus.html](examples/relayContractStatus.html) for an example of calling some of them.
 
 ----
 
