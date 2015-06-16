@@ -127,3 +127,8 @@ All tests:
 ```
 py.test test/ -s
 ```
+
+
+### License
+
+[MIT](LICENSE)
