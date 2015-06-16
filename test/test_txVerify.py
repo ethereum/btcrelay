@@ -15,7 +15,7 @@ disablePyethLogging()
 class TestTxVerify(object):
 
     CONTRACT = 'btcrelay.py'
-    CONTRACT_GAS = 55000
+    BTC_ETH_CONTRACT = 'test/btc-eth_debug.py'
 
     ETHER = 10 ** 18
 
@@ -118,7 +118,7 @@ class TestTxVerify(object):
     # since tester.k1 is the owner, it is allowed to claim multiple times
     # tester.k0 is not allowed to reclaim since it is not the owner of the exchange contract
     def testRelayTx(self):
-        BTC_ETH = self.s.abi_contract('btc-eth.py', endowment=2000*self.ETHER, sender=tester.k1)
+        BTC_ETH = self.s.abi_contract(self.BTC_ETH_CONTRACT, endowment=2000*self.ETHER, sender=tester.k1)
         assert BTC_ETH.setTrustedBtcRelay(self.c.address, sender=tester.k1) == 1
 
         #
@@ -180,7 +180,7 @@ class TestTxVerify(object):
 
     # tx[2] of block 100K does NOT send enough BTC, so ether should NOT be transferred
     def testInsufficientBTCSent(self):
-        BTC_ETH = self.s.abi_contract('btc-eth.py', endowment=2000*self.ETHER)
+        BTC_ETH = self.s.abi_contract(self.BTC_ETH_CONTRACT, endowment=2000*self.ETHER)
         BTC_ETH.setTrustedBtcRelay(self.c.address)
 
         txIndex = 2
@@ -222,7 +222,7 @@ class TestTxVerify(object):
 
 
     def testEachConfirmation(self):
-        BTC_ETH = self.s.abi_contract('btc-eth.py', endowment=2000*self.ETHER)
+        BTC_ETH = self.s.abi_contract(self.BTC_ETH_CONTRACT, endowment=2000*self.ETHER)
         BTC_ETH.setTrustedBtcRelay(self.c.address)
 
         # tx[1] fff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4

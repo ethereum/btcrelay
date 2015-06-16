@@ -12,7 +12,7 @@ disablePyethLogging()
 class TestBtcBulkStoreHeaders(object):
 
     CONTRACT = 'btcBulkStoreHeaders.py'
-    CONTRACT_GAS = 55000
+    BTC_ETH_CONTRACT = 'test/btc-eth_debug.py'
 
     ETHER = 10 ** 18
 
@@ -142,7 +142,7 @@ class TestBtcBulkStoreHeaders(object):
 
         # verify the proof and then hand the proof to the btc-eth contract, which will check
         # the tx outputs and send ether as appropriate
-        BTC_ETH = self.s.abi_contract('btc-eth.py', endowment=2000*self.ETHER, sender=tester.k1)
+        BTC_ETH = self.s.abi_contract(self.BTC_ETH_CONTRACT, endowment=2000*self.ETHER, sender=tester.k1)
         assert BTC_ETH.setTrustedBtcRelay(self.c.address, sender=tester.k1) == 1
         assert BTC_ETH.testingonlySetBtcAddr(btcAddr, sender=tester.k1) == 1
         res = self.c.relayTx(txStr, txHash, txIndex, siblings, txBlockHash, BTC_ETH.address, profiling=True)
