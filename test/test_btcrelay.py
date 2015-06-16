@@ -16,7 +16,7 @@ class TestBtcRelay(object):
     ETHER = 10 ** 18
 
     def setup_class(cls):
-        tester.gas_limit = int(2.25e6)
+        tester.gas_limit = int(2.55e6)  # include costs of debug methods
         cls.s = tester.state()
         cls.c = cls.s.abi_contract(cls.CONTRACT_DEBUG, endowment=2000*cls.ETHER)
         cls.snapshot = cls.s.snapshot()
@@ -369,3 +369,24 @@ class TestBtcRelay(object):
     def testsetInitialParentOnlyOnce(self):
         assert self.c.setInitialParent(0, 0, 1) == 1
         assert self.c.setInitialParent(0, 0, 1) == 0
+
+
+    #
+    # macro tests start
+    #
+
+    def testTargetFromBits(self):
+        bits = 0x19015f53
+        exp = 8614444778121073626993210829679478604092861119379437256704
+        res = self.c.funcTargetFromBits(bits)
+        assert res == exp
+
+    def testConcatHash(self):
+        tx1 = 0x8c14f0db3df150123e6f3dbbf30f8b955a8249b62ac1d1ff16284aefa3d06d87
+        tx2 = 0xfff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4
+        r = self.c.funcConcatHash(tx1, tx2)
+        assert r % 2**256 == 0xccdafb73d8dcd0173d5d5c3c9a0770d0b3953db889dab99ef05b1907518cb815
+
+    #
+    # end of macro tests
+    #
