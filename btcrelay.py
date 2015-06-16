@@ -30,11 +30,6 @@ data highScore
     # issues such as https://github.com/ethereum/serpent/issues/77 78 ...
 
 
-#TODO for testing only; should be omitted for production
-def testingonlySetHeaviest(blockHash):
-    self.heaviestBlock = blockHash
-
-
 # this can only be called once and allows testing of storing
 # arbitrary headers and verifying/relaying transactions,
 # say from block 300K, instead of Satoshi's genesis block which
