@@ -32,7 +32,21 @@
 
     var headScore = contract.getCumulativeDifficulty.call();
     $('#latestBlockScore').text(web3.toBigNumber(headScore).toString(10));
+
+    updateBCI();
   });
+
+  function updateBCI() {
+    // 2 calls needed since https://blockchain.info/latestblock is missing CORS
+    $.getJSON('https://blockchain.info/q/getblockcount?cors=true', function(data) {
+      $('#bciBlockHeight').text(data);
+    });
+
+    // https://github.com/blockchain/api-v1-client-python/issues/17
+    // $.getJSON('https://blockchain.info/q/latesthash?cors=true', function(data) {
+    //   $('#bciBlockHash').text(data);
+    // });
+  }
 
   function formatHash(bnHash) {
     var hash = bnHash.toString(16);
@@ -56,6 +70,8 @@
       <h3>Latest Block Hash: <strong id="latestBlockHash"></strong></h3>
       <h3>Latest Block Cumulative Difficulty: <strong id="latestBlockScore"></strong></h3>
       <br>
+      <h3>blockchain.info Latest Block#: <strong id="bciBlockHeight"></strong></h3>
+      <!-- <h3>blockchain.info Latest Block Hash: <strong id="bciBlockHash"></strong></h3> -->
     </div>
 
     <div class="footer-logo">
