@@ -7,10 +7,10 @@ btcrelay is an Ethereum contract for Bitcoin SPV.  The main functionality it pro
 1. storage of Bitcoin block headers
 1. inspection of the latest Bitcoin block header that is stored
 
-btcrelay is on the Olympic testnet.  Use `web3.eth.namereg.addr('btcrelay')` or run Ethereum JSON-RPC (default port 8545) and click [here](https://cdn.rawgit.com/ethereum/btcrelay/master/examples/relayContractStatus.html)
+btcrelay is on the Olympic testnet.  Use `web3.eth.namereg.addr('btcrelay')` or run Ethereum JSON-RPC (default port 8545) and click [here](http://cdn.rawgit.com/ethereum/btcrelay/master/examples/relayContractStatus.html)
 
 
-### API
+## API
 
 
 ##### verifyTx(transactionHash, transactionIndex, merkleSibling, blockHash)
@@ -95,7 +95,7 @@ See [btcRelayAbi.js](examples/js/btcRelayAbi.js) for other APIs and [relayContra
 
 ----
 
-### Examples
+## Examples
 
 * [sampleCall.html](examples/sampleCall.html) for calling `verifyTx` including use of [bitcoin-proof](https://www.npmjs.com/package/bitcoin-proof) for constructing `merkleSibling`.
 
@@ -104,7 +104,7 @@ See [btcRelayAbi.js](examples/js/btcRelayAbi.js) for other APIs and [relayContra
 * [relayContractStatus.html](examples/relayContractStatus.html) for calling other basic functions.
 
 
-### Development
+## Development
 
 Requirements
 * [Serpent](https://github.com/ethereum/serpent)
@@ -129,6 +129,6 @@ py.test test/ -s
 ```
 
 
-### License
+## License
 
 [MIT](LICENSE)
