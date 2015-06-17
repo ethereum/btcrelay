@@ -16,16 +16,20 @@
   var web3 = require('web3');
   web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
 
+  var heightPerRelay;
+
   $(function() {
     var relayAddr = web3.eth.namereg.addr('btcrelay');
-
     $('#relayAddr').text(relayAddr);
+
+    updateBCI();
+    updateBlockr();
 
     var RelayContract = web3.eth.contract(btcRelayAbi);  // see ./js/btcRelayAbi.js
     var contract = RelayContract.at(relayAddr);
 
-    var height = contract.getLastBlockHeight.call();
-    $('#latestBlockHeight').text(height);
+    heightPerRelay = contract.getLastBlockHeight.call().toString();
+    $('#latestBlockHeight').text(heightPerRelay);
 
     var headHash = contract.getBlockchainHead.call();
     $('#latestBlockHash').text(formatHash(headHash));
@@ -33,9 +37,7 @@
     var headScore = contract.getCumulativeDifficulty.call();
     $('#latestBlockScore').text(web3.toBigNumber(headScore).toString(10));
 
-    updateBCI();
-    updateBlockr();
-    updateNodeBlockNum();
+    setTimeout(checkHeights, 1000);
   });
 
   function updateBCI() {
@@ -56,8 +58,17 @@
     });
   }
 
-  function updateNodeBlockNum() {
-    $('#nodeBlockNum').text(web3.eth.blockNumber);
+  function checkHeights() {
+    var bciHeight = $('#bciBlockHeight').text();
+    var blockrHeight = $('#blockrBlockHeight').text();
+    if (!bciHeight || !blockrHeight ||
+      heightPerRelay === bciHeight || heightPerRelay === blockrHeight) {
+        $('#warnSync').hide();
+    }
+    else {
+      $('#nodeBlockNum').text(web3.eth.blockNumber);
+      $('#warnSync').show();
+    }
   }
 
   function formatHash(bnHash) {
@@ -81,7 +92,7 @@
       <h3>Latest Block Hash: <strong id="latestBlockHash"></strong></h3>
       <h3>Latest Block Cumulative Difficulty: <strong id="latestBlockScore"></strong></h3>
       <br>
-      <h3>Your Ethereum node doesn't seem to be fully synced: <span id=nodeBlockNum></span>.  Check <a href="https://stats.ethdev.com" target="_">stats</a>
+      <h3 id="warnSync" style="display: none">Your Ethereum node may not be fully synced: <span id=nodeBlockNum></span>.  Check <a href="https://stats.ethdev.com" target="_">stats</a>
         for the latest blocks.
       </h3>
     </div>
