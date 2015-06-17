@@ -34,6 +34,7 @@
     $('#latestBlockScore').text(web3.toBigNumber(headScore).toString(10));
 
     updateBCI();
+    updateBlockr()
   });
 
   function updateBCI() {
@@ -46,6 +47,12 @@
     // $.getJSON('https://blockchain.info/q/latesthash?cors=true', function(data) {
     //   $('#bciBlockHash').text(data);
     // });
+  }
+
+  function updateBlockr() {
+    $.getJSON('http://btc.blockr.io/api/v1/block/info/last', function(data) {
+      $('#blockrBlockHeight').text(data.data.nb);
+    });
   }
 
   function formatHash(bnHash) {
@@ -70,7 +77,8 @@
       <h3>Latest Block Hash: <strong id="latestBlockHash"></strong></h3>
       <h3>Latest Block Cumulative Difficulty: <strong id="latestBlockScore"></strong></h3>
       <br>
-      <h3>blockchain.info Latest Block#: <strong id="bciBlockHeight"></strong></h3>
+      <h3><a href="https://blockchain.info" target="_">blockchain.info</a> Latest Block#: <strong id="bciBlockHeight"></strong></h3>
+      <h3><a href="https://btc.blockr.io" target="_">btc.blockr.io</a> Latest Block#: <strong id="blockrBlockHeight"></strong></h3>
       <!-- <h3>blockchain.info Latest Block Hash: <strong id="bciBlockHash"></strong></h3> -->
     </div>
 
