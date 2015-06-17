@@ -34,7 +34,8 @@
     $('#latestBlockScore').text(web3.toBigNumber(headScore).toString(10));
 
     updateBCI();
-    updateBlockr()
+    updateBlockr();
+    updateNodeBlockNum();
   });
 
   function updateBCI() {
@@ -55,6 +56,10 @@
     });
   }
 
+  function updateNodeBlockNum() {
+    $('#nodeBlockNum').text(web3.eth.blockNumber);
+  }
+
   function formatHash(bnHash) {
     var hash = bnHash.toString(16);
     return Array(64 - hash.length + 1).join('0') + hash;
@@ -69,18 +74,21 @@
       <img src="./images/ethereum-logo-small.png"/>
     </div>
 
-    <h2>Ethereum Bitcoin Relay Contract Status</h2>
-
     <div class="jumbotron">
-      <h3>Address: <strong id="relayAddr"></strong></h3>
+      <h2>Ethereum Bitcoin Relay Contract Status</h2>
+      <h3>btcrelay: <strong id="relayAddr"></strong></h3>
       <h3>Latest Block#: <strong id="latestBlockHeight"></strong></h3>
       <h3>Latest Block Hash: <strong id="latestBlockHash"></strong></h3>
       <h3>Latest Block Cumulative Difficulty: <strong id="latestBlockScore"></strong></h3>
       <br>
-      <h3><a href="https://blockchain.info" target="_">blockchain.info</a> Latest Block#: <strong id="bciBlockHeight"></strong></h3>
-      <h3><a href="https://btc.blockr.io" target="_">btc.blockr.io</a> Latest Block#: <strong id="blockrBlockHeight"></strong></h3>
-      <!-- <h3>blockchain.info Latest Block Hash: <strong id="bciBlockHash"></strong></h3> -->
+      <h3>Your Ethereum node doesn't seem to be fully synced: <span id=nodeBlockNum></span>.  Check <a href="https://stats.ethdev.com" target="_">stats</a>
+        for the latest blocks.
+      </h3>
     </div>
+
+    <h3><a href="https://blockchain.info" target="_">blockchain.info</a> Latest Block#: <strong id="bciBlockHeight"></strong></h3>
+    <h3><a href="https://btc.blockr.io" target="_">btc.blockr.io</a> Latest Block#: <strong id="blockrBlockHeight"></strong></h3>
+    <!-- <h3>blockchain.info Latest Block Hash: <strong id="bciBlockHash"></strong></h3> -->
 
     <div class="footer-logo">
       <img src="./images/ETH_DEV_LOGO_LARGE.svg"/>
