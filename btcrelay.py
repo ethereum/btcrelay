@@ -85,7 +85,7 @@ def storeBlockHeader(blockHeaderBinary:str):
     # we only check the target and do not do other validation (eg timestamp)
     # to save gas
     if blockHash > 0 && blockHash < target:
-        self.saveAncestors(blockHash, hashPrevBlock)
+        m_saveAncestors(blockHash, hashPrevBlock)
 
         save(self.block[blockHash]._blockHeader[0], blockHeaderBinary, chars=80) # or 160?
 

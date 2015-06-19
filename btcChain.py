@@ -17,33 +17,36 @@ data ibIndex
 
 
 # save the ancestors for a block, as well as updating the height
-def saveAncestors(blockHash, hashPrevBlock):
-    self.internalBlock[self.ibIndex] = blockHash
-    m_setIbIndex(blockHash, self.ibIndex)
-    self.ibIndex += 1
+# ntoe: this is internal/private so make it into a macro
+macro m_saveAncestors($blockHashArg, $hashPrevBlockArg):
+    with $blockHash = $blockHashArg:
+        with $hashPrevBlock = $blockHashArg:
+            self.internalBlock[self.ibIndex] = blockHash
+            m_setIbIndex(blockHash, self.ibIndex)
+            self.ibIndex += 1
 
-    m_setHeight(blockHash, m_getHeight(hashPrevBlock) + 1)
+            m_setHeight(blockHash, m_getHeight(hashPrevBlock) + 1)
 
-    # 8 indexes into internalBlock can be stored inside one ancestor (32 byte) word
-    ancWord = 0
+            # 8 indexes into internalBlock can be stored inside one ancestor (32 byte) word
+            ancWord = 0
 
-    # the first ancestor is the index to hashPrevBlock, and write it to ancWord
-    prevIbIndex = m_getIbIndex(hashPrevBlock)
-    m_mwrite32(ref(ancWord), prevIbIndex)
+            # the first ancestor is the index to hashPrevBlock, and write it to ancWord
+            prevIbIndex = m_getIbIndex(hashPrevBlock)
+            m_mwrite32(ref(ancWord), prevIbIndex)
 
-    # update ancWord with the remaining indexes
-    i = 1
-    while i < NUM_ANCESTOR_DEPTHS:
-        depth = m_getAncDepth(i)
+            # update ancWord with the remaining indexes
+            i = 1
+            while i < NUM_ANCESTOR_DEPTHS:
+                depth = m_getAncDepth(i)
 
-        if m_getHeight(blockHash) % depth == 1:
-            m_mwrite32(ref(ancWord) + 4*i, prevIbIndex)
-        else:
-            m_mwrite32(ref(ancWord) + 4*i, m_getAncestor(hashPrevBlock, i))
-        i += 1
+                if m_getHeight(blockHash) % depth == 1:
+                    m_mwrite32(ref(ancWord) + 4*i, prevIbIndex)
+                else:
+                    m_mwrite32(ref(ancWord) + 4*i, m_getAncestor(hashPrevBlock, i))
+                i += 1
 
-    # write the ancestor word to storage
-    self.block[blockHash]._ancestor = ancWord
+            # write the ancestor word to storage
+            self.block[blockHash]._ancestor = ancWord
 
 
 # returns 1 if 'txBlockHash' is in the main chain, ie not a fork

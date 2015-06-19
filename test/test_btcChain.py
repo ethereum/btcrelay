@@ -11,7 +11,7 @@ disablePyethLogging()
 
 
 class TestBtcChain(object):
-    CONTRACT_DEBUG = 'test/btcrelay_debug.py'
+    CONTRACT_DEBUG = 'test/btcChain_debug.py'
 
     ETHER = 10 ** 18
 
@@ -35,7 +35,7 @@ class TestBtcChain(object):
 
 
         for i in range(1, heaviest+1):
-            self.c.saveAncestors(i, i-1)
+            self.c.funcSaveAncestors(i, i-1)
         self.c.testingonlySetHeaviest(heaviest)
 
 
@@ -43,7 +43,7 @@ class TestBtcChain(object):
         parentOfFork = 2
         numBlocksInFork = 3
         for i in range(numBlocksInFork):
-            self.c.saveAncestors(forkStartBlock+i, parentOfFork)
+            self.c.funcSaveAncestors(forkStartBlock+i, parentOfFork)
             parentOfFork = forkStartBlock
 
 
@@ -65,7 +65,7 @@ class TestBtcChain(object):
 
 
         for i in range(1, heaviest+1):
-            self.c.saveAncestors(i, i-1)
+            self.c.funcSaveAncestors(i, i-1)
         self.c.testingonlySetHeaviest(heaviest)
 
 
@@ -73,7 +73,7 @@ class TestBtcChain(object):
         parentOfFork = 2
         numBlocksInFork = 3
         for i in range(numBlocksInFork):
-            self.c.saveAncestors(forkStartBlock+i, parentOfFork)
+            self.c.funcSaveAncestors(forkStartBlock+i, parentOfFork)
             parentOfFork = forkStartBlock
 
 
@@ -91,8 +91,8 @@ class TestBtcChain(object):
 
     def testTiny(self):
 
-        self.c.saveAncestors(1, 0)
-        self.c.saveAncestors(2, 1)
+        self.c.funcSaveAncestors(1, 0)
+        self.c.funcSaveAncestors(2, 1)
         self.c.testingonlySetHeaviest(2)
 
         assert self.c.inMainChain(1) == 1
@@ -100,8 +100,8 @@ class TestBtcChain(object):
 
     def testNonExistingBlock(self):
 
-        self.c.saveAncestors(1, 0)
-        self.c.saveAncestors(2, 1)
+        self.c.funcSaveAncestors(1, 0)
+        self.c.funcSaveAncestors(2, 1)
         self.c.testingonlySetHeaviest(2)
 
         assert self.c.inMainChain(9876) == 0
@@ -112,7 +112,7 @@ class TestBtcChain(object):
 
 
         for i in range(1, heaviest+1):
-            self.c.saveAncestors(i, i-1)
+            self.c.funcSaveAncestors(i, i-1)
         self.c.testingonlySetHeaviest(heaviest)
 
         self.c.logAnc(heaviest)
@@ -123,14 +123,14 @@ class TestBtcChain(object):
 
 
         for i in range(1, heaviest+1):
-            self.c.saveAncestors(i, i-1)
+            self.c.funcSaveAncestors(i, i-1)
         self.c.testingonlySetHeaviest(heaviest)
 
         forkStartBlock = 999000
         parentOfFork = 2
         numBlocksInFork = 3
         for i in range(numBlocksInFork):
-            self.c.saveAncestors(forkStartBlock+i, parentOfFork)
+            self.c.funcSaveAncestors(forkStartBlock+i, parentOfFork)
             parentOfFork = forkStartBlock
 
         for i in range(1, heaviest+1):
@@ -145,12 +145,12 @@ class TestBtcChain(object):
 
 
         for i in range(1, heaviest+1):
-            self.c.saveAncestors(i, i-1)
+            self.c.funcSaveAncestors(i, i-1)
         self.c.testingonlySetHeaviest(heaviest)
 
-        self.c.saveAncestors(30, 2)
-        self.c.saveAncestors(31, 30)
-        self.c.saveAncestors(32, 31)
+        self.c.funcSaveAncestors(30, 2)
+        self.c.funcSaveAncestors(31, 30)
+        self.c.funcSaveAncestors(32, 31)
 
         for i in range(1, heaviest+1):
             assert self.c.inMainChain(i) == 1
@@ -176,11 +176,11 @@ class TestBtcChain(object):
 
 
         for i in range(1, heaviest+1):
-            self.c.saveAncestors(i, i-1)
+            self.c.funcSaveAncestors(i, i-1)
 
-        self.c.saveAncestors(30, 2)
-        self.c.saveAncestors(31, 30)
-        self.c.saveAncestors(32, 31)
+        self.c.funcSaveAncestors(30, 2)
+        self.c.funcSaveAncestors(31, 30)
+        self.c.funcSaveAncestors(32, 31)
 
         self.c.testingonlySetHeaviest(32)
 
@@ -199,17 +199,17 @@ class TestBtcChain(object):
 
 
         for i in range(1, heaviest+1):
-            self.c.saveAncestors(i, i-1)
+            self.c.funcSaveAncestors(i, i-1)
 
         # first fork
-        self.c.saveAncestors(30, 2)
-        self.c.saveAncestors(31, 30)
-        self.c.saveAncestors(32, 31)
+        self.c.funcSaveAncestors(30, 2)
+        self.c.funcSaveAncestors(31, 30)
+        self.c.funcSaveAncestors(32, 31)
 
         # second fork
-        self.c.saveAncestors(300, 2)
-        self.c.saveAncestors(310, 300)
-        self.c.saveAncestors(320, 310)
+        self.c.funcSaveAncestors(300, 2)
+        self.c.funcSaveAncestors(310, 300)
+        self.c.funcSaveAncestors(320, 310)
 
         self.c.testingonlySetHeaviest(heaviest)
         for i in range(1, heaviest+1):
