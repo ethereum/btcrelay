@@ -13,11 +13,10 @@
       gas: 3000000
       gas_price: 10000000000000
       to: $RelayWithBulkStore
-      fun_name: setInitialParent
-      sig: iii
+      sig: setInitialParent:[int256,int256,int256]:int256
       data:
-        - 0x00000000649cadf7d1ed811ed8cc59ade50138c13a090766276016c5a861c951
-        - 447760
+        - 0x0000000000704d08083d29baf3d2da64d8d548d656dfdcd90b103ddd00ee0298
+        - 486832
         - 1
       wait: True
 
