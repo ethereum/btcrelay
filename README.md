@@ -15,7 +15,7 @@ btcrelay is on the Olympic testnet.  Use `web3.eth.namereg.addr('btcrelay')` or 
 
 ##### verifyTx(transactionHash, transactionIndex, merkleSibling, blockHash)
 
-Verifies the presence of a transaction on the Bitcoin blockchain, primarily that the transaction is on Bitcoin's main chain and has 6 confirmations.
+Verifies the presence of a transaction on the Bitcoin blockchain, primarily that the transaction is on Bitcoin's main chain and has at least 6 confirmations.
 
 * `transactionHash` - hash of the transaction, as `int256`
 * `transactionIndex` - transaction's index within the block, as `int256`

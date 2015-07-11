@@ -87,7 +87,7 @@ def storeBlockHeader(blockHeaderBinary:str):
     if blockHash > 0 && blockHash < target:
         m_saveAncestors(blockHash, hashPrevBlock)
 
-        save(self.block[blockHash]._blockHeader[0], blockHeaderBinary, chars=80) # or 160?
+        save(self.block[blockHash]._blockHeader[0], blockHeaderBinary, chars=80)
 
         difficulty = 0x00000000FFFF0000000000000000000000000000000000000000000000000000 / target # https://en.bitcoin.it/wiki/Difficulty
         m_setScore(blockHash, m_getScore(hashPrevBlock) + difficulty)
