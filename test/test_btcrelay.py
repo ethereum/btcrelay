@@ -340,8 +340,9 @@ class TestBtcRelay(object):
         # blockNumber = 333001
         blockHeaderStr = '0200000059c786bb379b65487f373279354f8ccc91ffcea2200c36080000000000000000dd9d7757a736fec629ab0ed0f602ba23c77afe7edec85a7026f641fd90bcf8f658ca8154747b1b1894fc742f'
         bhBinary = blockHeaderStr.decode('hex')
-
-        assert self.c.storeBlockHeader(bhBinary) == 300000
+        res = self.c.storeBlockHeader(bhBinary, profiling=True)
+        print('GAS: %s' % res['gas'])
+        assert res['output'] == 300000
 
     # was converted to macro
     # def testFastHashBlock(self):
