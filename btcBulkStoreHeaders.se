@@ -1,4 +1,4 @@
-inset('btcrelay.py')
+inset('btcrelay.se')
 
 # store 'count' number of Bitcoin blockheaders represented as one
 # continuous 'headersBinary' (which should have length 80*count

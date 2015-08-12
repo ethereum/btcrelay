@@ -11,8 +11,7 @@
 #       gas: 500000
 #       gas_price: 10000000000000
 #       to: $RelayWithBulkStore
-#       fun_name: fastHashBlock
-#       sig: s
+#       sig: fastHashBlock:[bytes]:int256
 #       data:
 #         - \x02\x00\x00\x00~\xf0U\xe1gM.eQ\xdb\xa4\x1c\xd2\x14\xde\xbb\xee4\xae\xb5D\xc7\xecg\x00\x00\x00\x00\x00\x00\x00\x00\xd3\x99\x89c\xf8\x0c[\xabC\xfe\x8c&"\x8e\x98\xd00\xed\xf4\xdc\xbeH\xa6f\xf5\xc3\x9e-z\x88\\\x91\x02\xc8mSl\x89\x00\x19Y:G\r
 
@@ -23,8 +22,7 @@
       gas: 3000000
       gas_price: 10000000000000
       to: $RelayWithBulkStore
-      fun_name: computeMerkle
-      sig: iia
+      sig: computeMerkle:[int256,int256,int256[]]:int256
       data:
         - 0x7301b595279ece985f0c415e420e425451fcf7f684fcce087ba14d10ffec1121
         - 1
@@ -37,8 +35,7 @@
       gas: 3000000
       gas_price: 10000000000000
       to: $RelayWithBulkStore
-      fun_name: within6Confirms
-      sig: i
+      sig: within6Confirms:[]:int256
       data:
         - 0x000000000000000082ccf8f1557c5d40b21edabb18d2d691cfbf87118bac7254
 
@@ -49,8 +46,7 @@
       gas: 3000000
       gas_price: 10000000000000
       to: $RelayWithBulkStore
-      fun_name: getBlockchainHead
-      sig: ''
+      sig: getBlockchainHead:[]:int256
 
 # exp result: 1
 -
@@ -59,8 +55,7 @@
       gas: 3000000
       gas_price: 10000000000000
       to: $RelayWithBulkStore
-      fun_name: inMainChain
-      sig: i
+      sig: inMainChain:[int256]:int256
       data:
         - 0x000000000000000082ccf8f1557c5d40b21edabb18d2d691cfbf87118bac7254
 
@@ -84,8 +79,7 @@
       gas: 3000000
       gas_price: 10000000000000
       to: $RelayWithBulkStore
-      fun_name: verifyTx
-      sig: iiai
+      sig: verifyTx:[int256,int256,int256[],int256]:int256
       data:
         - 0x7301b595279ece985f0c415e420e425451fcf7f684fcce087ba14d10ffec1121
         - 1

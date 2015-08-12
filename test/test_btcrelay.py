@@ -11,7 +11,7 @@ disablePyethLogging()
 
 
 class TestBtcRelay(object):
-    CONTRACT_DEBUG = 'test/btcrelay_debug.py'
+    CONTRACT_DEBUG = 'test/btcrelay_debug.se'
 
     ETHER = 10 ** 18
 

@@ -1,24 +1,21 @@
 -
   set:
-    RelayWithBulkStore: "0x61f836ebad27a6a3cbb5c070ca6b99925eabd9a3"
+    RelayWithBulkStore: "0x73b1c6d725eafb2b9514e2af092f9f61fd005088"
 
 -
   call:
     getBlockchainHead:
       to: $RelayWithBulkStore
-      fun_name: getBlockchainHead
-      sig: ''
+      sig: getBlockchainHead:[]:int256
 
 -
   call:
     getLastBlockHeight:
       to: $RelayWithBulkStore
-      fun_name: getLastBlockHeight
-      sig: ''
+      sig: getLastBlockHeight:[]:int256
 
 -
   call:
     getCumulativeDifficulty:
       to: $RelayWithBulkStore
-      fun_name: getCumulativeDifficulty
-      sig: ''
+      sig: getCumulativeDifficulty:[]:int256

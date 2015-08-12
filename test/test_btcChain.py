@@ -11,7 +11,7 @@ disablePyethLogging()
 
 
 class TestBtcChain(object):
-    CONTRACT_DEBUG = 'test/btcChain_debug.py'
+    CONTRACT_DEBUG = 'test/btcChain_debug.se'
 
     ETHER = 10 ** 18
 

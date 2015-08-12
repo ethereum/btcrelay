@@ -1,4 +1,4 @@
-inset('btcSpecialTx.py')
+inset('btcSpecialTx.se')
 
 data owner
 data trustedBtcRelay

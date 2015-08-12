@@ -15,7 +15,7 @@ disablePyethLogging()
 
 class TestBtcEth(object):
 
-    CONTRACT = 'btc-eth.py'
+    CONTRACT = 'example-btc-eth/btc-eth.se'
     CONTRACT_GAS = 55000
 
     ETHER = 10 ** 18
