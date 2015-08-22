@@ -16,7 +16,7 @@
       to: $RelayWithBulkStore
       sig: setInitialParent:[int256,int256,int256]:int256
       data:
-        - 0x0000000003857aa239ea78acfab7f429141c584ece466106126cd438bdc0ef11
-        - 529948
+        - 0x000000005e3057223f82d5ebd26d6a771ed50522fe7d3428a876a073e7cdd1d5
+        - 532655
         - 1
       wait: True

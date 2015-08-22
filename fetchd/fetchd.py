@@ -168,6 +168,7 @@ def fetchHeaders(chunkStartNum, chunkSize, numChunk, network=BITCOIN_TESTNET):
             bhJson = blockr_get_block_header_data(blockNum, network=network)
             bhStr = serialize_header(bhJson)
             logger.info("@@@ {0}: {1}".format(blockNum, bhStr))
+            logger.debug("Block header: %s" % repr(bhStr.decode('hex')))
             strings += bhStr
 
         storeHeaders(strings.decode('hex'), chunkSize)
@@ -197,7 +198,6 @@ def storeHeaders(bhBinary, chunkSize):
 
     sig = 'bulkStoreHeader:[bytes,int256]:int256'
 
-    # bhBinary = '\x02\x00\x00\x00~\xf0U\xe1gM.eQ\xdb\xa4\x1c\xd2\x14\xde\xbb...
     data = [bhBinary, chunkSize]
 
     gas = 900000
