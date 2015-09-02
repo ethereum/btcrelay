@@ -14,8 +14,8 @@ disablePyethLogging()
 
 class TestTxVerify(object):
 
-    CONTRACT = 'btcrelay.py'
-    BTC_ETH_CONTRACT = 'test/btc-eth_debug.py'
+    CONTRACT = 'btcrelay.se'
+    BTC_ETH_CONTRACT = 'test/btc-eth_debug.se'
 
     ETHER = 10 ** 18
 

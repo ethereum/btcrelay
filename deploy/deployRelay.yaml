@@ -1,36 +1,20 @@
 -
   deploy:
     RelayWithBulkStore:
-      contract: ../btcBulkStoreHeaders.py
+      contract: ../btcBulkStoreHeaders.se
       gas: 3000000
-      gas_price: 0  # 10000000000000
       wait: True
 
+# Livenet
 -
   transact:
     SetInitialParent:
-      gas: 3000000
-      gas_price: 0  # 10000000000000
+      gas: 150000
       to: $RelayWithBulkStore
-      fun_name: setInitialParent
-      sig: iii
+      sig: setInitialParent:[int256,int256,int256]:int256
       data:
-        - 0x00000000000000000cc275f19b84e9abe8b802b515d376f0a6679d3f06956458
-        - 357186
-        - 1972864076427707
+        - 0x0000000000000000145e40f68881e8d693bdf122361dd200188d46804e2e1dbc
+        - 369528
+        - 1
+      retry: 60
       wait: True
-
-# OLD
-# -
-#   transact:
-#     SetInitialParent:
-#       gas: 3000000
-#       gas_price: 0  # 10000000000000
-#       to: $RelayWithBulkStore
-#       fun_name: setInitialParent
-#       sig: iii
-#       data:
-#         - 0x00000000000000000f745df11926d17bf9e61e3bcfb27dcbccd03263486e1d18
-#         - 353671
-#         - 1805020926069643
-#       wait: True

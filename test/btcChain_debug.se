@@ -1,20 +1,16 @@
-inset('../btcrelay.py')
+inset('../btcrelay.se')  # btcrelay is still the contract under test
 
 # test only method required by some tests
 def testingonlySetHeaviest(blockHash):
     self.heaviestBlock = blockHash
 
 
-
 #
 # macro wrappers (since only functions are testable)
 #
 
-def funcTargetFromBits(bits):
-    return(targetFromBits(bits))
-
-def funcConcatHash(tx1, tx2):
-    return(concatHash(tx1, tx2))
+def funcSaveAncestors(blockHash, hashPrevBlock):
+    m_saveAncestors(blockHash, hashPrevBlock)
 
 #
 # end of macro wrappers

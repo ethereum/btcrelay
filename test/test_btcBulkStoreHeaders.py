@@ -11,8 +11,8 @@ disablePyethLogging()
 
 class TestBtcBulkStoreHeaders(object):
 
-    CONTRACT = 'btcBulkStoreHeaders.py'
-    BTC_ETH_CONTRACT = 'test/btc-eth_debug.py'
+    CONTRACT = 'btcBulkStoreHeaders.se'
+    BTC_ETH_CONTRACT = 'test/btc-eth_debug.se'
 
     ETHER = 10 ** 18
 

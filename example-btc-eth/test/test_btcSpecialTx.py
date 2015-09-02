@@ -12,7 +12,7 @@ disablePyethLogging()
 
 class TestBtcSpecialTx(object):
 
-    CONTRACT = 'btcSpecialTx.py'
+    CONTRACT = 'example-btc-eth/btcSpecialTx.se'
     CONTRACT_GAS = 55000
 
     ETHER = 10 ** 18

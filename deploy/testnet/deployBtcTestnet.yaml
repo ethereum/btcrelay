@@ -1,59 +1,22 @@
 # Deploy contracts
+# -
+#   set:
+#     RelayWithBulkStore: "0x6f217ded6c86a57f1211f464302e6fa544045b4f"
 -
   deploy:
     RelayWithBulkStore:
-      contract: ../../btcBulkStoreHeaders.py
+      contract: ../../btcBulkStoreHeaders.se
       gas: 3000000
-      gas_price: 10000000000000
+      retry: True
       wait: True
-
 -
   transact:
     SetInitialParent:
-      gas: 3000000
-      gas_price: 10000000000000
+      gas: 150000
       to: $RelayWithBulkStore
       sig: setInitialParent:[int256,int256,int256]:int256
       data:
-        - 0x0000000000704d08083d29baf3d2da64d8d548d656dfdcd90b103ddd00ee0298
-        - 486832
+        - 0x000000005e3057223f82d5ebd26d6a771ed50522fe7d3428a876a073e7cdd1d5
+        - 532655
         - 1
       wait: True
-
-# btc-eth was a simple version and no longer used in lieu of EthereumBitcoinSwap
-# for btc testnet, change btc-eth.py BTC_NEED to 170000
-# -
-#   deploy:
-#     BtcEth:
-#       contract: ../../btc-eth.py
-#       gas: 3000000
-#       endowment: 1600
-#       wait: True
-#
-# -
-#   transact:
-#     SetTrustedBtcRelay:
-#       gas: 100000
-#       to: $BtcEth
-#       fun_name: setTrustedBtcRelay
-#       sig: i
-#       data:
-#         - $BtcRelay
-#       wait: True
-
-
-# testnet bitcoin address is mvBWJFv8Uc84YEyZKBm8HZQ7qrvmBiH7zR
-#
-# When testing with the frontend, all the should be needed is to
-# change (temporarily) the btcAddr data below, use the same btcAddr in the frontend,
-# and update the frontend's gExchangeContractAddr
-# -
-#   transact:
-#     SetBtcAddr:
-#       gas: 100000
-#       to: $BtcEth
-#       fun_name: testingonlySetBtcAddr
-#       sig: i
-#       data:
-#         - 0xa0dc485fc3ade71be5e1b68397abded386c0adb7
-#       wait: True

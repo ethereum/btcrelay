@@ -1,17 +1,14 @@
 
 -
   set:
-    RelayWithBulkStore: "0x1bd026d1f219dc824bb38daed18a209d28e7c3e7"
+    RelayWithBulkStore: "0x73b1c6d725eafb2b9514e2af092f9f61fd005088"
 
 # exp result: 3207223183672972000823575025715994760747264838119535178324L
 -
   call:
     fastHashBlock:
-      gas: 500000
-      gas_price: 10000000000000
       to: $RelayWithBulkStore
-      fun_name: fastHashBlock
-      sig: s
+      sig: fastHashBlock:[bytes]:int256
       data:
         - \x02\x00\x00\x00~\xf0U\xe1gM.eQ\xdb\xa4\x1c\xd2\x14\xde\xbb\xee4\xae\xb5D\xc7\xecg\x00\x00\x00\x00\x00\x00\x00\x00\xd3\x99\x89c\xf8\x0c[\xabC\xfe\x8c&"\x8e\x98\xd00\xed\xf4\xdc\xbeH\xa6f\xf5\xc3\x9e-z\x88\\\x91\x02\xc8mSl\x89\x00\x19Y:G\r
 
@@ -19,11 +16,8 @@
 -
   call:
     computeMerkle:
-      gas: 3000000
-      gas_price: 10000000000000
       to: $RelayWithBulkStore
-      fun_name: computeMerkle
-      sig: iia
+      sig: computeMerkle:[int256,int256,int256[]]:int256
       data:
         - 0xa51a71f8094f9b4e266fcccd55068e809277ec79bfa44b7bdb8f1355e9bb8460
         - 9
@@ -33,11 +27,8 @@
 -
   call:
     within6Confirms:
-      gas: 3000000
-      gas_price: 10000000000000
       to: $RelayWithBulkStore
-      fun_name: within6Confirms
-      sig: i
+      sig: within6Confirms:[int256]:int256
       data:
         - 0x00000000bc3a2a5be97f86eb3c0044cfa570968f5a3075b85abeb352691de70b
 
@@ -45,21 +36,15 @@
 -
   call:
     getBlockchainHead:
-      gas: 3000000
-      gas_price: 10000000000000
       to: $RelayWithBulkStore
-      fun_name: getBlockchainHead
-      sig: ''
+      sig: getBlockchainHead:[]:int256
 
 # exp result: 1
 -
   call:
     inMainChain:
-      gas: 3000000
-      gas_price: 10000000000000
       to: $RelayWithBulkStore
-      fun_name: inMainChain
-      sig: i
+      sig: inMainChain:[int256]:int256
       data:
         - 0x00000000bc3a2a5be97f86eb3c0044cfa570968f5a3075b85abeb352691de70b
 
@@ -80,11 +65,8 @@
 -
   call:
     VerifyTx:
-      gas: 3000000
-      gas_price: 10000000000000
       to: $RelayWithBulkStore
-      fun_name: verifyTx
-      sig: iiai
+      sig: verifyTx:[int256,int256,int256[],int256]:int256
       data:
         - 0xa51a71f8094f9b4e266fcccd55068e809277ec79bfa44b7bdb8f1355e9bb8460
         - 9

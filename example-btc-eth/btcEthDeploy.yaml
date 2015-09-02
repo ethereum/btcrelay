@@ -8,7 +8,7 @@
 -
   deploy:
     BtcEth:
-      contract: btc-eth.py
+      contract: btc-eth.se
       gas: 3000000
       endowment: 1600
       wait: True
@@ -18,8 +18,7 @@
     SetTrustedBtcRelay:
       gas: 100000
       to: $BtcEth
-      fun_name: setTrustedBtcRelay
-      sig: i
+      sig: setTrustedBtcRelay:[int256]:int256
       data:
         - $BtcRelay
       wait: True
@@ -35,8 +34,7 @@
     SetBtcAddr:
       gas: 100000
       to: $BtcEth
-      fun_name: testingonlySetBtcAddr
-      sig: i
+      sig: testingonlySetBtcAddr:[int256]:int256
       data:
         - 0x61cf5af7bb84348df3fd695672e53c7d5b3f3db9
       wait: True
