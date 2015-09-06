@@ -4,6 +4,9 @@ inset('btcChain.se')
 # name 'processTransaction' with signature si:i
 extern relayDestination: [processTransaction:[bytes,int256]:int256]
 
+# TODO check ints vs uints
+extern btcrelayToken: [sendCoin:[int256,bytes]:int256, createStandardToken:[uint256]:int256]
+
 
 # note: _ancestor[9]
 #
@@ -23,8 +26,17 @@ data heaviestBlock
 # highest score among all blocks (so far)
 data highScore
 
+# address of contract that will issue btcrelay tokens
+data tokenContract
 
-# def init():
+# TODO move to constants.se
+macro TOKEN_FACTORY: 0xfd5aee44be7195a704a86c18dfc0b65813486f7e
+macro TOKEN_ENDOWMENT: 2**200
+macro REWARD_PER_HEADER: 1000
+
+
+def init():
+    tokenContract = TOKEN_FACTORY.createStandardToken(TOKEN_ENDOWMENT)
     # TODO anything else to init ?
     # carefully test if adding anything to init() since
     # issues such as https://github.com/ethereum/serpent/issues/77 78 ...
@@ -99,6 +111,7 @@ def storeBlockHeader(blockHeaderBinary:str):
         if scoreBlock >= self.highScore:
             self.heaviestBlock = blockHash
             self.highScore = scoreBlock
+            self.tokenContract.sendCoin(msg.sender, REWARD_PER_HEADER)
 
         return(m_getHeight(blockHash))
 
