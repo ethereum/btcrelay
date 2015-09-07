@@ -30,17 +30,20 @@ data highScore
 data tokenContract
 
 # TODO move to constants.se
-macro TOKEN_FACTORY: 0xfd5aee44be7195a704a86c18dfc0b65813486f7e
+#macro TOKEN_FACTORY: 0xfd5aee44be7195a704a86c18dfc0b65813486f7e
 macro TOKEN_ENDOWMENT: 2**200
 macro REWARD_PER_HEADER: 1000
 macro FEE_VERIFY_TX: 12 * REWARD_PER_HEADER  # ~2 hours worth of blockheaders
 
 
-def init():
-    tokenContract = TOKEN_FACTORY.createStandardToken(TOKEN_ENDOWMENT)
+# def init():
+    # self.tokenContract = TOKEN_FACTORY.createStandardToken(TOKEN_ENDOWMENT)
     # TODO anything else to init ?
     # carefully test if adding anything to init() since
     # issues such as https://github.com/ethereum/serpent/issues/77 78 ...
+
+def setTokenFactory(tfAddr):
+    self.tokenContract = tfAddr.createStandardToken(TOKEN_ENDOWMENT)
 
 
 # this can only be called once and allows testing of storing
