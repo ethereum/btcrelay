@@ -5,7 +5,7 @@ inset('btcChain.se')
 extern relayDestination: [processTransaction:[bytes,int256]:int256]
 
 # TODO check ints vs uints
-extern btcrelayToken: [sendCoin:[int256,bytes]:int256, createStandardToken:[uint256]:int256]
+extern btcrelayToken: [sendCoin:[uint256,int256]:int256, createStandardToken:[uint256]:int256]
 
 
 # note: _ancestor[9]
@@ -115,7 +115,7 @@ def storeBlockHeader(blockHeaderBinary:str):
         if scoreBlock >= self.highScore:
             self.heaviestBlock = blockHash
             self.highScore = scoreBlock
-            self.tokenContract.sendCoin(msg.sender, REWARD_PER_HEADER)
+            self.tokenContract.sendCoin(REWARD_PER_HEADER, msg.sender)
 
         return(m_getHeight(blockHash))
 
