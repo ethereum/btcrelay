@@ -33,6 +33,7 @@ data tokenContract
 macro TOKEN_FACTORY: 0xfd5aee44be7195a704a86c18dfc0b65813486f7e
 macro TOKEN_ENDOWMENT: 2**200
 macro REWARD_PER_HEADER: 1000
+macro FEE_VERIFY_TX: 12 * REWARD_PER_HEADER  # ~2 hours worth of blockheaders
 
 
 def init():
@@ -126,6 +127,7 @@ def storeBlockHeader(blockHeaderBinary:str):
 # - 'txIndex' is the index of the tx within the block
 # - 'sibling' are the merkle siblings of tx
 def verifyTx(txHash, txIndex, sibling:arr, txBlockHash):
+    # self.tokenContract.sendCoinFrom(msg.sender, FEE_VERIFY_TX, self)
     if self.within6Confirms(txBlockHash) || !self.inMainChain(txBlockHash):
         return(0)
 
