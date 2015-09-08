@@ -42,8 +42,9 @@ macro FEE_VERIFY_TX: 12 * REWARD_PER_HEADER  # ~2 hours worth of blockheaders
     # carefully test if adding anything to init() since
     # issues such as https://github.com/ethereum/serpent/issues/77 78 ...
 
-def setTokenFactory(tfAddr):
-    self.tokenContract = tfAddr.createStandardToken(TOKEN_ENDOWMENT)
+def setTokenContract(tokenFactoryAddr):
+    self.tokenContract = tokenFactoryAddr.createStandardToken(TOKEN_ENDOWMENT)
+    return(self.tokenContract)
 
 
 # this can only be called once and allows testing of storing
