@@ -5,7 +5,8 @@ import struct
 import pytest
 slow = pytest.mark.slow
 
-from utilRelay import initBtcRelayTokens, TOKEN_ENDOWMENT, REWARD_PER_HEADER, FEE_VERIFY_TX, dblSha256Flip, disablePyethLogging
+from initBtcRelayTokens import *
+from utilRelay import dblSha256Flip, disablePyethLogging
 
 disablePyethLogging()
 
