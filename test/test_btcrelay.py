@@ -30,13 +30,27 @@ class TestBtcRelay(object):
         tester.gas_limit = int(2.55e6)  # include costs of debug methods
         cls.s = tester.state()
         cls.c = cls.s.abi_contract(cls.CONTRACT_DEBUG, endowment=2000*cls.ETHER)
+
+        cls.initTokenContract()
+
         cls.snapshot = cls.s.snapshot()
         cls.seed = tester.seed
+
+    @classmethod
+    def initTokenContract(cls):
+        tfAddr = cls.s.evm(cls.TOKEN_FACTORY_BINARY.decode('hex'))
+        _abi = cls.TOKEN_FACTORY_ABI
+        TOKEN_FACTORY = tester.ABIContract(cls.s, _abi, tfAddr, listen=True, log_listener=None)
+
+        tokenContractAddr = cls.c.initTokenContract(TOKEN_FACTORY.address)
+
+        _abi = cls.TOKEN_CONTRACT_ABI
+        _address = hex(tokenContractAddr)[2:-1].decode('hex')
+        cls.xcoin = tester.ABIContract(cls.s, _abi, _address, listen=True, log_listener=None)
 
     def setup_method(self, method):
         self.s.revert(self.snapshot)
         tester.seed = self.seed
-
 
 
     def getBlockHeaderBinary(self, ver, prev_block, mrkl_root, time_, bits, nonce):
@@ -339,23 +353,7 @@ class TestBtcRelay(object):
 
 
     def testStoreBlockHeader(self):
-
-        # serpent = __import__('serpent')
-        # evm = serpent.compile(self.CONTRACT_DEBUG)
-        # print('@@@@ evm: '+evm)
-
-        tfAddr = self.s.evm(self.TOKEN_FACTORY_BINARY.decode('hex'))
-        _abi = self.TOKEN_FACTORY_ABI
-        TOKEN_FACTORY = tester.ABIContract(self.s, _abi, tfAddr, listen=True, log_listener=None)
-
-        tokenContractAddr = self.c.initTokenContract(TOKEN_FACTORY.address)
-        print('@@@@ tokenContractAddr: ')
-        print(tokenContractAddr)
-        _abi = self.TOKEN_CONTRACT_ABI
-        _address = hex(tokenContractAddr)[2:-1].decode('hex')
-        TOKEN_CONTRACT = tester.ABIContract(self.s, _abi, _address, listen=True, log_listener=None)
-
-        bal = TOKEN_CONTRACT.coinBalanceOf(self.c.address)
+        bal = self.xcoin.coinBalanceOf(self.c.address)
         assert bal == self.TOKEN_ENDOWMENT
 
         block300K = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
@@ -374,9 +372,9 @@ class TestBtcRelay(object):
         print('GAS: %s' % res['gas'])
         assert res['output'] == 300000
 
-        assert TOKEN_CONTRACT.coinBalanceOf(tester.a1) == self.REWARD_PER_HEADER
+        assert self.xcoin.coinBalanceOf(tester.a1) == self.REWARD_PER_HEADER
 
-        bal = TOKEN_CONTRACT.coinBalanceOf(self.c.address)
+        bal = self.xcoin.coinBalanceOf(self.c.address)
         assert bal == self.TOKEN_ENDOWMENT - self.REWARD_PER_HEADER
 
     # was converted to macro
