@@ -4,7 +4,7 @@ from datetime import datetime, date
 import pytest
 slow = pytest.mark.slow
 
-from utilRelay import makeMerkleProof, dblSha256Flip, disablePyethLogging
+from utilRelay import initBtcRelayTokens, makeMerkleProof, dblSha256Flip, disablePyethLogging
 
 disablePyethLogging()
 
@@ -21,6 +21,9 @@ class TestBtcBulkStoreHeaders(object):
         tester.gas_limit = 5 * 10**6
         cls.s = tester.state()
         cls.c = cls.s.abi_contract(cls.CONTRACT, endowment=2000*cls.ETHER)
+
+        initBtcRelayTokens(cls, tester)
+
         cls.snapshot = cls.s.snapshot()
         cls.seed = tester.seed
 
