@@ -18,8 +18,6 @@ class TestBtcBulkStoreHeaders(object):
     ETHER = 10 ** 18
 
     def setup_class(cls):
-        # needed for 10 headers testing only since max is 3M
-        tester.gas_limit = 5 * 10**6
         cls.s = tester.state()
         cls.c = cls.s.abi_contract(cls.CONTRACT, endowment=2000*cls.ETHER)
 
