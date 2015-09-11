@@ -355,12 +355,24 @@ class TestBtcRelay(object):
         print(self.c.printAddr(tcAddr))
         print('@@@ relayAddr: ')
         print(self.c.printAddr(self.c.address))
+        print('@@@ RAW relayAddr: ')
+        rawAddr = self.c.address
+        print(rawAddr)
+        print(int(rawAddr.encode('hex'),16))
 
         print('@@@ BAL tcAddr: ')
         print(self.c.getBal(tcAddr))
         print('@@@ BAL relayAddr: ')
         print(self.c.getBal(self.c.address))
+        print('@@@ BAL tfAddr: ')
+        print(self.c.getBal(tfAddr))
+        print('@@@ BAL a0: ')
+        print(self.c.getBal(tester.a0))
 
+        print('@@@ b2 tcAddr: ')
+        print(self.c.getBal(self.c.printAddr(tcAddr)))
+        print('@@@ b2 relayAddr: ')
+        print(self.c.getBal(self.c.printAddr(self.c.address)))
 
         jjj = 'O^~\r\xde\x14\xa4\xf5\xd6e\x88emV\xef\x1f\xc4\x81J&'
         print('@@@ BAL jjj: ')
