@@ -5,7 +5,9 @@ inset('btcChain.se')
 extern relayDestination: [processTransaction:[bytes,int256]:int256]
 
 # TODO check ints vs uints
-extern btcrelayToken: [sendCoin:[uint256,int256]:int256, createStandardToken:[uint256]:int256]
+extern btcrelayTokenFactory: [createStandardToken:[uint256]:int256]
+
+extern btcrelayToken: [sendCoin:[uint256,int256]:int256, coinBalance:[]:uint256, coinBalanceOf:[int256]:uint256]
 
 
 # note: _ancestor[9]
@@ -44,7 +46,16 @@ macro FEE_VERIFY_TX: 12 * REWARD_PER_HEADER  # ~2 hours worth of blockheaders
 
 def setTokenContract(tokenFactoryAddr):
     self.tokenContract = tokenFactoryAddr.createStandardToken(TOKEN_ENDOWMENT)
+    # return(self.tokenContract)
+    # return(self.tokenContract.coinBalanceOf(self))
     return(self.tokenContract)
+
+def coinBalanceOf(addr):
+    # return(self.tokenContract.coinBalance())
+    return(self.tokenContract.coinBalanceOf(self))  # should work
+
+    # return(self.tokenContract.coinBalanceOf(self.tokenContract))
+    # return(self.tokenContract.coinBalanceOf(addr))
 
 
 # this can only be called once and allows testing of storing
