@@ -7,7 +7,7 @@ extern relayDestination: [processTransaction:[bytes,int256]:int256]
 # TODO check ints vs uints
 extern btcrelayTokenFactory: [createStandardToken:[uint256]:int256]
 
-extern btcrelayToken: [sendCoin:[uint256,int256]:int256, coinBalance:[]:uint256, coinBalanceOf:[int256]:uint256]
+extern btcrelayToken: [sendCoin:[uint256,int256]:int256, coinBalance:[]:uint256, coinBalanceOf:[int256]:int256]
 
 
 # note: _ancestor[9]
@@ -51,8 +51,9 @@ def setTokenContract(tokenFactoryAddr):
     return(self.tokenContract)
 
 def coinBalanceOf(addr):
+    return(addr)
     # return(self.tokenContract.coinBalance())
-    return(self.tokenContract.coinBalanceOf(self))  # should work
+    # return(self.tokenContract.coinBalanceOf(self))  # should work
 
     # return(self.tokenContract.coinBalanceOf(self.tokenContract))
     # return(self.tokenContract.coinBalanceOf(addr))

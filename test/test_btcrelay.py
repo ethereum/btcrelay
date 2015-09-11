@@ -351,6 +351,12 @@ class TestBtcRelay(object):
         # assert BTC_ETH.setTrustedBtcRelay(self.c.address, sender=tester.k1) == 1
 
         bal = self.c.setTokenContract(TOKEN_FACTORY.address)
+        print('@@@ tcAddr: ')
+        print(self.c.coinBalanceOf(bal))
+        print('@@@ relayAddr: ')
+        print(self.c.coinBalanceOf(self.c.address))
+        assert False
+
         # assert bal == self.c.address
         # tokenContractAddr = self.c.setTokenContract(TOKEN_FACTORY.address)
 
