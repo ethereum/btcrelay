@@ -118,7 +118,9 @@ def storeBlockHeader(blockHeaderBinary:str):
         if scoreBlock >= self.highScore:
             self.heaviestBlock = blockHash
             self.highScore = scoreBlock
-            self.tokenContract.sendCoin(REWARD_PER_HEADER, msg.sender)
+
+            # reward tx.origin, since storeBlockHeader may be called indirectly like bulkStoreHeader
+            self.tokenContract.sendCoin(REWARD_PER_HEADER, tx.origin)
 
         return(m_getHeight(blockHash))
 
