@@ -50,13 +50,15 @@ def setTokenContract(tokenFactoryAddr):
     # return(self.tokenContract.coinBalanceOf(self))
     return(self.tokenContract)
 
-def coinBalanceOf(addr):
+def printAddr(addr):
     return(addr)
+
+def getBal(addr):
     # return(self.tokenContract.coinBalance())
     # return(self.tokenContract.coinBalanceOf(self))  # should work
 
     # return(self.tokenContract.coinBalanceOf(self.tokenContract))
-    # return(self.tokenContract.coinBalanceOf(addr))
+    return(self.tokenContract.coinBalanceOf(addr))
 
 
 # this can only be called once and allows testing of storing

@@ -350,12 +350,28 @@ class TestBtcRelay(object):
         TOKEN_FACTORY = tester.ABIContract(self.s, _abi, tfAddr, listen=True, log_listener=None)
         # assert BTC_ETH.setTrustedBtcRelay(self.c.address, sender=tester.k1) == 1
 
-        bal = self.c.setTokenContract(TOKEN_FACTORY.address)
+        tcAddr = self.c.setTokenContract(TOKEN_FACTORY.address)
         print('@@@ tcAddr: ')
-        print(self.c.coinBalanceOf(bal))
+        print(self.c.printAddr(tcAddr))
         print('@@@ relayAddr: ')
-        print(self.c.coinBalanceOf(self.c.address))
+        print(self.c.printAddr(self.c.address))
+
+        print('@@@ BAL tcAddr: ')
+        print(self.c.getBal(tcAddr))
+        print('@@@ BAL relayAddr: ')
+        print(self.c.getBal(self.c.address))
+
+
+        jjj = 'O^~\r\xde\x14\xa4\xf5\xd6e\x88emV\xef\x1f\xc4\x81J&'
+        print('@@@ BAL jjj: ')
+        print(self.c.getBal(jjj))
+
+        kk = '\xc3\x05\xc9\x01\x07\x87\x81\xc22\xa2\xa5!\xc2\xafy\x80\xf88^\xe9'
+        print('@@@ BAL kk: ')
+        print(self.c.getBal(kk))
+
         assert False
+
 
         # assert bal == self.c.address
         # tokenContractAddr = self.c.setTokenContract(TOKEN_FACTORY.address)
