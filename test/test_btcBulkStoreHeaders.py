@@ -4,7 +4,8 @@ from datetime import datetime, date
 import pytest
 slow = pytest.mark.slow
 
-from utilRelay import initBtcRelayTokens, makeMerkleProof, dblSha256Flip, disablePyethLogging
+from initBtcRelayTokens import *
+from utilRelay import makeMerkleProof, dblSha256Flip, disablePyethLogging
 
 disablePyethLogging()
 
