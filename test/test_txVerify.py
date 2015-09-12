@@ -3,10 +3,12 @@ from datetime import datetime, date
 from functools import partial
 
 import time
+import random
 
 import pytest
 slow = pytest.mark.slow
 
+from initBtcRelayTokens import *
 from utilRelay import makeMerkleProof, randomMerkleProof, disablePyethLogging
 
 disablePyethLogging()
@@ -23,6 +25,9 @@ class TestTxVerify(object):
         tester.gas_limit = int(2.25e6)
         cls.s = tester.state()
         cls.c = cls.s.abi_contract(cls.CONTRACT, endowment=2000*cls.ETHER)
+
+        initBtcRelayTokens(cls, tester)
+
         cls.snapshot = cls.s.snapshot()
         cls.seed = tester.seed
 
@@ -40,20 +45,19 @@ class TestTxVerify(object):
 
     @slow
     def test80from300K(self):
-        startBlockNum = 300000
+        startBlockNumPrev = 300000 - 1
         numBlock = 80
 
         block300kPrev = 0x000000000000000067ecc744b5ae34eebbde14d21ca4db51652e4d67e155f07e
-        self.c.setInitialParent(block300kPrev, startBlockNum-1, 1)
+        self.c.setInitialParent(block300kPrev, startBlockNumPrev, 1)
 
         i = 1
         with open("test/headers/100from300k.txt") as f:
-
             startTime = datetime.now().time()
 
             for header in f:
                 res = self.c.storeBlockHeader(header[:-1].decode('hex'))  # [:-1] to remove trailing \n
-                assert res == i
+                assert res == i+startBlockNumPrev
                 if i==numBlock:
                     break
                 i += 1
@@ -69,11 +73,11 @@ class TestTxVerify(object):
     @pytest.mark.veryslow
     # check params such as timeoutSecs
     def test400from300K(self):
-        startBlockNum = 300000
+        startBlockNumPrev = 300000 - 1
         numBlock = 400
 
         block300kPrev = 0x000000000000000067ecc744b5ae34eebbde14d21ca4db51652e4d67e155f07e
-        self.c.setInitialParent(block300kPrev, startBlockNum-1, 1)
+        self.c.setInitialParent(block300kPrev, startBlockNumPrev, 1)
 
         i = 1
         with open("test/headers/500from300k.txt") as f:
@@ -82,10 +86,10 @@ class TestTxVerify(object):
 
             for header in f:
                 res = self.c.storeBlockHeader(header[:-1].decode('hex'))  # [:-1] to remove trailing \n
+                assert res == i+startBlockNumPrev
                 if i==numBlock:
                     break
                 i += 1
-                assert res == i
 
             endTime = datetime.now().time()
 
@@ -94,6 +98,7 @@ class TestTxVerify(object):
 
         nChecks = 40000
         timeoutSecs = 1  # may need longer to avoid termination by blockchain.info (BCI)
+        startBlockNum = startBlockNumPrev+1
         for i in range(nChecks):
             if i > 20:
                 time.sleep(timeoutSecs)
@@ -285,6 +290,10 @@ class TestTxVerify(object):
         for i in range(7):
             res = self.c.storeBlockHeader(blockHeaderBinary[i])
             assert res == i+100000
+
+            totalReward = REWARD_PER_HEADER * (i+1)
+            assert self.xcoin.coinBalanceOf(tester.a0) == totalReward
+            assert self.xcoin.coinBalanceOf(self.c.address) == TOKEN_ENDOWMENT - totalReward
 
         # block 100000
         header = {'nonce': 274148111, 'hash': u'000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506', 'timestamp': 1293623863, 'merkle_root': u'f3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766', 'version': 1, 'prevhash': u'000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250', 'bits': 453281356}
