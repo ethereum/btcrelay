@@ -3,6 +3,7 @@ from datetime import datetime, date
 from functools import partial
 
 import time
+import random
 
 import pytest
 slow = pytest.mark.slow
@@ -72,11 +73,11 @@ class TestTxVerify(object):
     @pytest.mark.veryslow
     # check params such as timeoutSecs
     def test400from300K(self):
-        startBlockNum = 300000
+        startBlockNumPrev = 300000 - 1
         numBlock = 400
 
         block300kPrev = 0x000000000000000067ecc744b5ae34eebbde14d21ca4db51652e4d67e155f07e
-        self.c.setInitialParent(block300kPrev, startBlockNum-1, 1)
+        self.c.setInitialParent(block300kPrev, startBlockNumPrev, 1)
 
         i = 1
         with open("test/headers/500from300k.txt") as f:
@@ -85,10 +86,10 @@ class TestTxVerify(object):
 
             for header in f:
                 res = self.c.storeBlockHeader(header[:-1].decode('hex'))  # [:-1] to remove trailing \n
+                assert res == i+startBlockNumPrev
                 if i==numBlock:
                     break
                 i += 1
-                assert res == i
 
             endTime = datetime.now().time()
 
@@ -97,6 +98,7 @@ class TestTxVerify(object):
 
         nChecks = 40000
         timeoutSecs = 1  # may need longer to avoid termination by blockchain.info (BCI)
+        startBlockNum = startBlockNumPrev+1
         for i in range(nChecks):
             if i > 20:
                 time.sleep(timeoutSecs)
