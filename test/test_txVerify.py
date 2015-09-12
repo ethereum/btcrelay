@@ -44,20 +44,19 @@ class TestTxVerify(object):
 
     @slow
     def test80from300K(self):
-        startBlockNum = 300000
+        startBlockNumPrev = 300000 - 1
         numBlock = 80
 
         block300kPrev = 0x000000000000000067ecc744b5ae34eebbde14d21ca4db51652e4d67e155f07e
-        self.c.setInitialParent(block300kPrev, startBlockNum-1, 1)
+        self.c.setInitialParent(block300kPrev, startBlockNumPrev, 1)
 
         i = 1
         with open("test/headers/100from300k.txt") as f:
-
             startTime = datetime.now().time()
 
             for header in f:
                 res = self.c.storeBlockHeader(header[:-1].decode('hex'))  # [:-1] to remove trailing \n
-                assert res == i
+                assert res == i+startBlockNumPrev
                 if i==numBlock:
                     break
                 i += 1
