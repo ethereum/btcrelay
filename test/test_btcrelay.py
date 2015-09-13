@@ -44,6 +44,9 @@ class TestBtcRelay(object):
 
     # also tests a (fake) fork
     def testHeadersFrom100K(self):
+        keySender = tester.k1
+        addrSender = tester.a1
+
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
         self.c.setInitialParent(block100kPrev, 99999, 1)
 
@@ -57,10 +60,15 @@ class TestBtcRelay(object):
             "0100000045dc58743362fe8d8898a7506faa816baed7d391c9bc0b13b0da00000000000021728a2f4f975cc801cb3c672747f1ead8a946b2702b7bd52f7b86dd1aa0c975c02a1b4d4c86041b7b47546d"
         ]
         blockHeaderBinary = map(lambda x: x.decode('hex'), headers)
+        expCoinsOfSender = 0
         for i in range(7):
-            res = self.c.storeBlockHeader(blockHeaderBinary[i])
+            res = self.c.storeBlockHeader(blockHeaderBinary[i], sender=keySender)
             # print('@@@@ real chain score: ' + str(self.c.getCumulativeDifficulty()))
             assert res == i+100000
+            expCoinsOfSender += REWARD_PER_HEADER
+            assert self.xcoin.coinBalanceOf(addrSender) == expCoinsOfSender
+            assert self.xcoin.coinBalanceOf(self.c.address) == TOKEN_ENDOWMENT - expCoinsOfSender
+
 
         cumulDiff = self.c.getCumulativeDifficulty()
 
@@ -91,10 +99,20 @@ class TestBtcRelay(object):
         assert res == 0
 
 
+        # self.xcoin.approveOnce(self.c.address, FEE_VERIFY_TX, sender=keySender)
+        self.xcoin.sendCoin(FEE_VERIFY_TX, self.c.address, sender=keySender)
+        expCoinsOfSender -= FEE_VERIFY_TX
+        assert self.xcoin.coinBalanceOf(addrSender) == expCoinsOfSender
+                
+
         # verifyTx should only return 1 for b0
         txBlockHash = b0
         res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
         assert res == 1
+
+        bal = self.xcoin.coinBalanceOf(self.c.address)
+        expBal = TOKEN_ENDOWMENT - expCoinsOfSender + FEE_VERIFY_TX
+        assert bal == expBal
 
         assert b6 == self.c.getBlockchainHead()
 
