@@ -135,8 +135,8 @@ def storeBlockHeader(blockHeaderBinary:str):
 # - 'txIndex' is the index of the tx within the block
 # - 'sibling' are the merkle siblings of tx
 def verifyTx(txHash, txIndex, sibling:arr, txBlockHash):
-    # if !self.tokenContract.sendCoinFrom(msg.sender, FEE_VERIFY_TX, self):
-    #     return(0)
+    if !self.tokenContract.sendCoinFrom(msg.sender, FEE_VERIFY_TX, self):
+        return(0)
 
     if self.within6Confirms(txBlockHash) || !self.inMainChain(txBlockHash):
         return(0)
