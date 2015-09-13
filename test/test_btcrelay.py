@@ -99,11 +99,15 @@ class TestBtcRelay(object):
         assert res == 0
 
 
+        gift = FEE_VERIFY_TX - expCoinsOfSender
+        assert self.c.testingonlySendCoin(gift, addrSender) is True
+
         # self.xcoin.approveOnce(self.c.address, FEE_VERIFY_TX, sender=keySender)
-        self.xcoin.sendCoin(FEE_VERIFY_TX, self.c.address, sender=keySender)
-        expCoinsOfSender -= FEE_VERIFY_TX
+        res = self.xcoin.sendCoin(FEE_VERIFY_TX, self.c.address, sender=keySender)
+        assert res == True
+        expCoinsOfSender = expCoinsOfSender + gift - FEE_VERIFY_TX
         assert self.xcoin.coinBalanceOf(addrSender) == expCoinsOfSender
-                
+
 
         # verifyTx should only return 1 for b0
         txBlockHash = b0

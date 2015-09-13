@@ -7,7 +7,7 @@ extern relayDestination: [processTransaction:[bytes,int256]:int256]
 # TODO check ints vs uints
 extern btcrelayTokenFactory: [createStandardToken:[uint256]:address]
 
-extern btcrelayToken: [sendCoin:[uint256,address]:bool, coinBalance:[]:address, coinBalanceOf:[address]:address]
+extern btcrelayToken: [sendCoin:[uint256,address]:bool, sendCoinFrom:[address,uint256,address]:bool, coinBalance:[]:address, coinBalanceOf:[address]:address]
 
 
 # note: _ancestor[9]
@@ -135,7 +135,9 @@ def storeBlockHeader(blockHeaderBinary:str):
 # - 'txIndex' is the index of the tx within the block
 # - 'sibling' are the merkle siblings of tx
 def verifyTx(txHash, txIndex, sibling:arr, txBlockHash):
-    # self.tokenContract.sendCoinFrom(msg.sender, FEE_VERIFY_TX, self)
+    # if !self.tokenContract.sendCoinFrom(msg.sender, FEE_VERIFY_TX, self):
+    #     return(0)
+
     if self.within6Confirms(txBlockHash) || !self.inMainChain(txBlockHash):
         return(0)
 

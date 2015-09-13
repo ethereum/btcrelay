@@ -4,6 +4,8 @@ inset('../btcrelay.se')
 def testingonlySetHeaviest(blockHash):
     self.heaviestBlock = blockHash
 
+def testingonlySendCoin(value, to):
+    return(self.tokenContract.sendCoin(value, to):bool)
 
 
 #
