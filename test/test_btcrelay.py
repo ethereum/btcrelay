@@ -94,7 +94,12 @@ class TestBtcRelay(object):
 
 
         txBlockHash = 0xdead
-        res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
+        self.xcoin.approveOnce(self.c.address, FEE_VERIFY_TX, sender=keySender)
+        print('@@@ sendr bal')
+        print(self.xcoin.coinBalanceOf(addrSender))
+        res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash, sender=keySender)
+        print('@@@ sendr22 bal')
+        print(self.xcoin.coinBalanceOf(addrSender))
         assert res == 0
 
         # b1 is within6confirms so should NOT verify
@@ -114,6 +119,9 @@ class TestBtcRelay(object):
         # assert self.xcoin.coinBalanceOf(addrSender) == expCoinsOfSender
         # expOwnerBal = TOKEN_ENDOWMENT - gift - expCoinsOfSender + FEE_VERIFY_TX
         # assert self.xcoin.coinBalanceOf(self.c.address) == expOwnerBal
+
+
+        assert self.xcoin.coinBalanceOf(addrSender) > FEE_VERIFY_TX
 
         # verifyTx should only return 1 for b0
         txBlockHash = b0
