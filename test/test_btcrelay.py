@@ -145,6 +145,10 @@ class TestBtcRelay(object):
             res = self.c.storeBlockHeader(blockHeaderBinary)
             hashPrevBlock = dblSha256Flip(blockHeaderBinary)
 
+            # no coin rewards for fake blocks
+            assert self.xcoin.coinBalanceOf(tester.a0) == 0
+            assert self.xcoin.coinBalanceOf(self.c.address) == expOwnerBal
+
             # print('@@@@ fake chain score: ' + str(self.c.getCumulativeDifficulty()))
             assert res == i+100000
 
@@ -165,9 +169,8 @@ class TestBtcRelay(object):
         res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
         assert res == 1
 
-        totalReward = numHeaders * REWARD_PER_HEADER
-        assert self.xcoin.coinBalanceOf(tester.a0) == totalReward
-        assert self.xcoin.coinBalanceOf(self.c.address) == expOwnerBal - totalReward
+        assert self.xcoin.coinBalanceOf(tester.a0) == 0
+        assert self.xcoin.coinBalanceOf(self.c.address) == expOwnerBal
 
 
     # test that a tx that verifies, does not verify after a reorg causes it to
