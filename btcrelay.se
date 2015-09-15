@@ -135,7 +135,7 @@ def storeBlockHeader(blockHeaderBinary:str):
 # - 'txIndex' is the index of the tx within the block
 # - 'sibling' are the merkle siblings of tx
 def verifyTx(txHash, txIndex, sibling:arr, txBlockHash):
-    if !self.tokenContract.sendCoinFrom(msg.sender, FEE_VERIFY_TX, self):
+    if !chargeVerifyTx():
         return(0)
 
     if self.within6Confirms(txBlockHash) || !self.inMainChain(txBlockHash):
@@ -260,6 +260,9 @@ def within6Confirms(txBlockHash):
 #
 # macros
 #
+
+macro chargeVerifyTx():
+    self.tokenContract.sendCoinFrom(msg.sender, FEE_VERIFY_TX, self)
 
 # get the parent of '$blockHash'
 macro getPrevBlock($blockHash):
