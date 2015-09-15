@@ -58,13 +58,16 @@ class TestTokens(object):
         tester.seed = self.seed
 
 
-    def test30BlockValidTx(self):
+    # based on test_txVerify test30BlockValidTx
+    def testChargeOneVerifyTx(self):
         startBlockNum = 300000
         numBlock = 30
 
         block300kPrev = 0x000000000000000067ecc744b5ae34eebbde14d21ca4db51652e4d67e155f07e
         self.c.setInitialParent(block300kPrev, startBlockNum-1, 1)
 
+        addrSender = tester.a0
+        expCoinsOfSender = 0
         i = 1
         with open("test/headers/100from300k.txt") as f:
 
@@ -73,6 +76,11 @@ class TestTokens(object):
             for header in f:
                 res = self.c.storeBlockHeader(header[:-1].decode('hex'))  # [:-1] to remove \n
                 assert res == i-1+startBlockNum
+
+                expCoinsOfSender += REWARD_PER_HEADER
+                assert self.xcoin.coinBalanceOf(addrSender) == expCoinsOfSender
+                assert self.xcoin.coinBalanceOf(self.c.address) == TOKEN_ENDOWMENT - expCoinsOfSender
+
                 if i==numBlock:
                     break
                 i += 1
@@ -92,21 +100,19 @@ class TestTokens(object):
         print('GAS: '+str(res['gas']))
         assert res['output'] == 1  # adjust according to numBlock and the block that the tx belongs to
 
+        expCoinsOfSender -= FEE_VERIFY_TX
+        assert self.xcoin.coinBalanceOf(addrSender) == expCoinsOfSender
+        assert self.xcoin.coinBalanceOf(self.c.address) == TOKEN_ENDOWMENT - expCoinsOfSender
 
-    def testStoreBlockHeader(self):
+
+    # based on test_btcrelay testStoreBlockHeader
+    def testRewardOneBlock(self):
         bal = self.xcoin.coinBalanceOf(self.c.address)
         assert bal == TOKEN_ENDOWMENT
 
         block300K = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
         self.c.setInitialParent(block300K, 299999, 1)
 
-        # version = 2
-        # hashPrevBlock = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
-        # hashMerkleRoot = 0xf6f8bc90fd41f626705ac8de7efe7ac723ba02f6d00eab29c6fe36a757779ddd
-        # time = 1417792088
-        # bits = 0x181b7b74
-        # nonce = 796195988
-        # blockNumber = 333001
         blockHeaderStr = '0200000059c786bb379b65487f373279354f8ccc91ffcea2200c36080000000000000000dd9d7757a736fec629ab0ed0f602ba23c77afe7edec85a7026f641fd90bcf8f658ca8154747b1b1894fc742f'
         bhBinary = blockHeaderStr.decode('hex')
         res = self.c.storeBlockHeader(bhBinary, profiling=True, sender=tester.k1)
@@ -120,8 +126,6 @@ class TestTokens(object):
 
 
 #
-#             assert self.xcoin.coinBalanceOf(addrSender) == expCoinsOfSender
-#             assert self.xcoin.coinBalanceOf(self.c.address) == TOKEN_ENDOWMENT - expCoinsOfSender
 #
 #
 # reward valid store & no reward negative test (fork)
