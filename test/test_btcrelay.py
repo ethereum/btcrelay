@@ -47,10 +47,6 @@ class TestBtcRelay(object):
         keySender = tester.k1
         addrSender = tester.a1
 
-        # gift so that sender can call verifyTx (without needing to store enough block headers)
-        gift = FEE_VERIFY_TX
-        assert self.c.testingonlySendCoin(gift, addrSender) == True
-
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
         self.c.setInitialParent(block100kPrev, 99999, 1)
 
@@ -64,7 +60,7 @@ class TestBtcRelay(object):
             "0100000045dc58743362fe8d8898a7506faa816baed7d391c9bc0b13b0da00000000000021728a2f4f975cc801cb3c672747f1ead8a946b2702b7bd52f7b86dd1aa0c975c02a1b4d4c86041b7b47546d"
         ]
         blockHeaderBinary = map(lambda x: x.decode('hex'), headers)
-        expCoinsOfSender = gift
+        expCoinsOfSender = 0
         for i in range(7):
             res = self.c.storeBlockHeader(blockHeaderBinary[i], sender=keySender)
             # print('@@@@ real chain score: ' + str(self.c.getCumulativeDifficulty()))
@@ -94,41 +90,29 @@ class TestBtcRelay(object):
 
 
         txBlockHash = 0xdead
+        # so that sender can call verifyTx (without needing to store enough block headers)
+        assert self.c.testingonlySendCoin(FEE_VERIFY_TX, addrSender) == True
         self.xcoin.approveOnce(self.c.address, FEE_VERIFY_TX, sender=keySender)
-        print('@@@ sendr bal')
-        print(self.xcoin.coinBalanceOf(addrSender))
         res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash, sender=keySender)
-        print('@@@ sendr22 bal')
-        print(self.xcoin.coinBalanceOf(addrSender))
         assert res == 0
 
         # b1 is within6confirms so should NOT verify
         txBlockHash = b1
-        res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
-        assert res == 0
-
-
+        # so that sender can call verifyTx (without needing to store enough block headers)
+        assert self.c.testingonlySendCoin(FEE_VERIFY_TX, addrSender) == True
         self.xcoin.approveOnce(self.c.address, FEE_VERIFY_TX, sender=keySender)
-        # TODO when token contract updated, check the return value of approveOnce
-        # assert self.xcoin.approveOnce(self.c.address, FEE_VERIFY_TX, sender=keySender) == True
-
-
-        # sendCoin works but sendCoinFrom inside verifyTx doesn't...
-        # assert self.xcoin.sendCoin(FEE_VERIFY_TX, self.c.address, sender=keySender) == True
-        # expCoinsOfSender -= FEE_VERIFY_TX
-        # assert self.xcoin.coinBalanceOf(addrSender) == expCoinsOfSender
-        # expOwnerBal = TOKEN_ENDOWMENT - gift - expCoinsOfSender + FEE_VERIFY_TX
-        # assert self.xcoin.coinBalanceOf(self.c.address) == expOwnerBal
-
-
-        assert self.xcoin.coinBalanceOf(addrSender) > FEE_VERIFY_TX
+        res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash, sender=keySender)
+        assert res == 0
 
         # verifyTx should only return 1 for b0
         txBlockHash = b0
-        res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
+        # so that sender can call verifyTx (without needing to store enough block headers)
+        assert self.c.testingonlySendCoin(FEE_VERIFY_TX, addrSender) == True
+        self.xcoin.approveOnce(self.c.address, FEE_VERIFY_TX+22, sender=keySender)
+        res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash, sender=keySender)
         assert res == 1
 
-        expOwnerBal = TOKEN_ENDOWMENT - gift - expCoinsOfSender + FEE_VERIFY_TX
+        expOwnerBal = TOKEN_ENDOWMENT - 3*FEE_VERIFY_TX - expCoinsOfSender + FEE_VERIFY_TX
         assert self.xcoin.coinBalanceOf(self.c.address) == expOwnerBal
 
 
