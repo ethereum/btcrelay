@@ -2,9 +2,6 @@
 def testingonlySetHeaviest(blockHash):
     self.heaviestBlock = blockHash
 
-# returns success
-macro chargeVerifyTx(): 1
-
 #
 # macro wrappers (since only functions are testable)
 #
@@ -21,4 +18,5 @@ def funcConcatHash(tx1, tx2):
 
 
 # testing overrides should be before the contract being tested
+inset('_skipChargeVerifyTx.se')
 inset('../btcrelay.se')

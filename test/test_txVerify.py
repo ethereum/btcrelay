@@ -16,13 +16,13 @@ disablePyethLogging()
 
 class TestTxVerify(object):
 
-    CONTRACT = 'btcrelay.se'
+    CONTRACT = 'test/btcrelay_debug.se'
     BTC_ETH_CONTRACT = 'test/btc-eth_debug.se'
 
     ETHER = 10 ** 18
 
     def setup_class(cls):
-        tester.gas_limit = int(2.25e6)
+        tester.gas_limit = int(2.55e6)
         cls.s = tester.state()
         cls.c = cls.s.abi_contract(cls.CONTRACT, endowment=2000*cls.ETHER)
 
