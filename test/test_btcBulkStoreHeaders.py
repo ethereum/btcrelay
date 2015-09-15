@@ -12,7 +12,7 @@ disablePyethLogging()
 
 class TestBtcBulkStoreHeaders(object):
 
-    CONTRACT = 'btcBulkStoreHeaders.se'
+    CONTRACT = 'test/btcBulkStoreHeaders_debug.se'
     BTC_ETH_CONTRACT = 'test/btc-eth_debug.se'
 
     ETHER = 10 ** 18

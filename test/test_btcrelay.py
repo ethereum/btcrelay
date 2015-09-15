@@ -103,7 +103,7 @@ class TestBtcRelay(object):
         res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash, sender=keySender)
         assert res == 1
 
-        expOwnerBal = TOKEN_ENDOWMENT - expCoinsOfSender # obtained 3 fees but also "lent" all 3 of them
+        expOwnerBal = TOKEN_ENDOWMENT - expCoinsOfSender
         assert self.xcoin.coinBalanceOf(self.c.address) == expOwnerBal
         assert self.xcoin.coinBalanceOf(addrSender) == expCoinsOfSender
 
