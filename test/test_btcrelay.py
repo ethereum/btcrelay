@@ -108,7 +108,7 @@ class TestBtcRelay(object):
         txBlockHash = b0
         # so that sender can call verifyTx (without needing to store enough block headers)
         assert self.c.testingonlySendCoin(FEE_VERIFY_TX, addrSender) == True
-        self.xcoin.approveOnce(self.c.address, FEE_VERIFY_TX+22, sender=keySender)
+        self.xcoin.approveOnce(self.c.address, FEE_VERIFY_TX, sender=keySender)
         res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash, sender=keySender)
         assert res == 1
 
@@ -119,6 +119,7 @@ class TestBtcRelay(object):
 
         assert b6 == self.c.getBlockchainHead()
 
+        # the tests below are using tester.a0 (instead of tester.a1)
 
         # insert (fake) blocks that will not be on main chain
         # using script/mine.py these are the next 7 blocks
@@ -137,7 +138,8 @@ class TestBtcRelay(object):
         bits = EASIEST_DIFFICULTY_TARGET
         nonce = 1
         hashPrevBlock = block100kPrev
-        for i in range(7):
+        numHeaders = 7
+        for i in range(numHeaders):
             nonce = 1 if (i in [4,5]) else 0
             blockHeaderBinary = self.getBlockHeaderBinary(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
             res = self.c.storeBlockHeader(blockHeaderBinary)
@@ -151,13 +153,21 @@ class TestBtcRelay(object):
 
         # forked block should NOT verify
         txBlockHash = 0x11bb7c5555b8eab7801b1c4384efcab0d869230fcf4a8f043abad255c99105f8
+        assert self.c.testingonlySendCoin(FEE_VERIFY_TX, tester.a0) == True
+        self.xcoin.approveOnce(self.c.address, FEE_VERIFY_TX)  # default sender
         res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
         assert res == 0
 
         # b0 should still verify
         txBlockHash = b0
+        assert self.c.testingonlySendCoin(FEE_VERIFY_TX, tester.a0) == True
+        self.xcoin.approveOnce(self.c.address, FEE_VERIFY_TX)  # default sender
         res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
         assert res == 1
+
+        totalReward = numHeaders * REWARD_PER_HEADER
+        assert self.xcoin.coinBalanceOf(tester.a0) == totalReward
+        assert self.xcoin.coinBalanceOf(self.c.address) == expOwnerBal - totalReward
 
 
     # test that a tx that verifies, does not verify after a reorg causes it to
