@@ -1,12 +1,9 @@
-inset('../btcrelay.se')
-
 # test only method required by some tests
 def testingonlySetHeaviest(blockHash):
     self.heaviestBlock = blockHash
 
-def testingonlySendCoin(value, to):
-    return(self.tokenContract.sendCoin(value, to):bool)
-
+# returns success
+macro chargeVerifyTx(): 1
 
 #
 # macro wrappers (since only functions are testable)
@@ -21,3 +18,7 @@ def funcConcatHash(tx1, tx2):
 #
 # end of macro wrappers
 #
+
+
+# testing overrides should be before the contract being tested
+inset('../btcrelay.se')

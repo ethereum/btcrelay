@@ -17,7 +17,7 @@ class TestBtcRelay(object):
     ETHER = 10 ** 18
 
     def setup_class(cls):
-        tester.gas_limit = int(2.6e6)  # include costs of debug methods
+        tester.gas_limit = int(2.55e6)  # include costs of debug methods
         cls.s = tester.state()
         cls.c = cls.s.abi_contract(cls.CONTRACT_DEBUG, endowment=2000*cls.ETHER)
 
@@ -90,25 +90,16 @@ class TestBtcRelay(object):
 
 
         txBlockHash = 0xdead
-        # so that sender can call verifyTx (without needing to store enough block headers)
-        assert self.c.testingonlySendCoin(FEE_VERIFY_TX, addrSender) == True
-        self.xcoin.approveOnce(self.c.address, FEE_VERIFY_TX, sender=keySender)
         res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash, sender=keySender)
         assert res == 0
 
         # b1 is within6confirms so should NOT verify
         txBlockHash = b1
-        # so that sender can call verifyTx (without needing to store enough block headers)
-        assert self.c.testingonlySendCoin(FEE_VERIFY_TX, addrSender) == True
-        self.xcoin.approveOnce(self.c.address, FEE_VERIFY_TX, sender=keySender)
         res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash, sender=keySender)
         assert res == 0
 
         # verifyTx should only return 1 for b0
         txBlockHash = b0
-        # so that sender can call verifyTx (without needing to store enough block headers)
-        assert self.c.testingonlySendCoin(FEE_VERIFY_TX, addrSender) == True
-        self.xcoin.approveOnce(self.c.address, FEE_VERIFY_TX, sender=keySender)
         res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash, sender=keySender)
         assert res == 1
 
@@ -157,15 +148,11 @@ class TestBtcRelay(object):
 
         # forked block should NOT verify
         txBlockHash = 0x11bb7c5555b8eab7801b1c4384efcab0d869230fcf4a8f043abad255c99105f8
-        assert self.c.testingonlySendCoin(FEE_VERIFY_TX, tester.a0) == True
-        self.xcoin.approveOnce(self.c.address, FEE_VERIFY_TX)  # default sender
         res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
         assert res == 0
 
         # b0 should still verify
         txBlockHash = b0
-        assert self.c.testingonlySendCoin(FEE_VERIFY_TX, tester.a0) == True
-        self.xcoin.approveOnce(self.c.address, FEE_VERIFY_TX)  # default sender
         res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
         assert res == 1
 
