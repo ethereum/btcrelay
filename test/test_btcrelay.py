@@ -5,7 +5,6 @@ import struct
 import pytest
 slow = pytest.mark.slow
 
-from initBtcRelayTokens import *
 from utilRelay import dblSha256Flip, disablePyethLogging
 
 disablePyethLogging()
@@ -20,9 +19,6 @@ class TestBtcRelay(object):
         tester.gas_limit = int(2.55e6)  # include costs of debug methods
         cls.s = tester.state()
         cls.c = cls.s.abi_contract(cls.CONTRACT_DEBUG, endowment=2000*cls.ETHER)
-
-        initBtcRelayTokens(cls, tester)
-
         cls.snapshot = cls.s.snapshot()
         cls.seed = tester.seed
 
@@ -44,9 +40,6 @@ class TestBtcRelay(object):
 
     # also tests a (fake) fork
     def testHeadersFrom100K(self):
-        keySender = tester.k1
-        addrSender = tester.a1
-
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
         self.c.setInitialParent(block100kPrev, 99999, 1)
 
@@ -60,15 +53,10 @@ class TestBtcRelay(object):
             "0100000045dc58743362fe8d8898a7506faa816baed7d391c9bc0b13b0da00000000000021728a2f4f975cc801cb3c672747f1ead8a946b2702b7bd52f7b86dd1aa0c975c02a1b4d4c86041b7b47546d"
         ]
         blockHeaderBinary = map(lambda x: x.decode('hex'), headers)
-        expCoinsOfSender = 0
         for i in range(7):
-            res = self.c.storeBlockHeader(blockHeaderBinary[i], sender=keySender)
+            res = self.c.storeBlockHeader(blockHeaderBinary[i])
             # print('@@@@ real chain score: ' + str(self.c.getCumulativeDifficulty()))
             assert res == i+100000
-            expCoinsOfSender += REWARD_PER_HEADER
-            assert self.xcoin.coinBalanceOf(addrSender) == expCoinsOfSender
-            assert self.xcoin.coinBalanceOf(self.c.address) == TOKEN_ENDOWMENT - expCoinsOfSender
-
 
         cumulDiff = self.c.getCumulativeDifficulty()
 
@@ -90,27 +78,22 @@ class TestBtcRelay(object):
 
 
         txBlockHash = 0xdead
-        res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash, sender=keySender)
+        res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
         assert res == 0
 
         # b1 is within6confirms so should NOT verify
         txBlockHash = b1
-        res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash, sender=keySender)
+        res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
         assert res == 0
+
 
         # verifyTx should only return 1 for b0
         txBlockHash = b0
-        res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash, sender=keySender)
+        res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
         assert res == 1
-
-        expOwnerBal = TOKEN_ENDOWMENT - expCoinsOfSender
-        assert self.xcoin.coinBalanceOf(self.c.address) == expOwnerBal
-        assert self.xcoin.coinBalanceOf(addrSender) == expCoinsOfSender
-
 
         assert b6 == self.c.getBlockchainHead()
 
-        # the tests below are using tester.a0 (instead of tester.a1)
 
         # insert (fake) blocks that will not be on main chain
         # using script/mine.py these are the next 7 blocks
@@ -129,16 +112,11 @@ class TestBtcRelay(object):
         bits = EASIEST_DIFFICULTY_TARGET
         nonce = 1
         hashPrevBlock = block100kPrev
-        numHeaders = 7
-        for i in range(numHeaders):
+        for i in range(7):
             nonce = 1 if (i in [4,5]) else 0
             blockHeaderBinary = self.getBlockHeaderBinary(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
             res = self.c.storeBlockHeader(blockHeaderBinary)
             hashPrevBlock = dblSha256Flip(blockHeaderBinary)
-
-            # no coin rewards for fake blocks
-            assert self.xcoin.coinBalanceOf(tester.a0) == 0
-            assert self.xcoin.coinBalanceOf(self.c.address) == expOwnerBal
 
             # print('@@@@ fake chain score: ' + str(self.c.getCumulativeDifficulty()))
             assert res == i+100000
@@ -155,9 +133,6 @@ class TestBtcRelay(object):
         txBlockHash = b0
         res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
         assert res == 1
-
-        assert self.xcoin.coinBalanceOf(tester.a0) == 0
-        assert self.xcoin.coinBalanceOf(self.c.address) == expOwnerBal
 
 
     # test that a tx that verifies, does not verify after a reorg causes it to
@@ -352,9 +327,6 @@ class TestBtcRelay(object):
 
 
     def testStoreBlockHeader(self):
-        bal = self.xcoin.coinBalanceOf(self.c.address)
-        assert bal == TOKEN_ENDOWMENT
-
         block300K = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
         self.c.setInitialParent(block300K, 299999, 1)
 
@@ -370,11 +342,6 @@ class TestBtcRelay(object):
         res = self.c.storeBlockHeader(bhBinary, profiling=True, sender=tester.k1)
         print('GAS: %s' % res['gas'])
         assert res['output'] == 300000
-
-        assert self.xcoin.coinBalanceOf(tester.a1) == REWARD_PER_HEADER
-
-        bal = self.xcoin.coinBalanceOf(self.c.address)
-        assert bal == TOKEN_ENDOWMENT - REWARD_PER_HEADER
 
     # was converted to macro
     # def testFastHashBlock(self):

@@ -118,9 +118,7 @@ def storeBlockHeader(blockHeaderBinary:str):
         if scoreBlock >= self.highScore:
             self.heaviestBlock = blockHash
             self.highScore = scoreBlock
-
-            # reward tx.origin, since storeBlockHeader may be called indirectly like bulkStoreHeader
-            self.tokenContract.sendCoin(REWARD_PER_HEADER, tx.origin)
+            rewardForBlockHeader()
 
         return(m_getHeight(blockHash))
 
@@ -261,6 +259,12 @@ def within6Confirms(txBlockHash):
 # macros
 #
 
+# issue tokens when a blockHeader is stored
+macro rewardForBlockHeader():
+    # reward tx.origin, since storeBlockHeader may be called indirectly like bulkStoreHeader
+    self.tokenContract.sendCoin(REWARD_PER_HEADER, tx.origin)
+
+# TODO use tx.origin
 macro chargeVerifyTx():
     self.tokenContract.sendCoinFrom(msg.sender, FEE_VERIFY_TX, self)
 

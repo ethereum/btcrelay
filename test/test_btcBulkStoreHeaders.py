@@ -4,7 +4,6 @@ from datetime import datetime, date
 import pytest
 slow = pytest.mark.slow
 
-from initBtcRelayTokens import *
 from utilRelay import makeMerkleProof, dblSha256Flip, disablePyethLogging
 
 disablePyethLogging()
@@ -20,9 +19,6 @@ class TestBtcBulkStoreHeaders(object):
     def setup_class(cls):
         cls.s = tester.state()
         cls.c = cls.s.abi_contract(cls.CONTRACT, endowment=2000*cls.ETHER)
-
-        initBtcRelayTokens(cls, tester)
-
         cls.snapshot = cls.s.snapshot()
         cls.seed = tester.seed
 
@@ -56,13 +52,6 @@ class TestBtcBulkStoreHeaders(object):
         res = self.c.bulkStoreHeader(headerBins, count, profiling=True)
         print('GAS: '+str(res['gas']))
         assert res['output'] == count-1 + 100000
-
-        bal = self.xcoin.coinBalanceOf(tester.a0)
-        reward = REWARD_PER_HEADER * count
-        assert bal == reward
-
-        bal = self.xcoin.coinBalanceOf(self.c.address)
-        assert bal == TOKEN_ENDOWMENT - reward
 
 
     def testTx1In300K(self):

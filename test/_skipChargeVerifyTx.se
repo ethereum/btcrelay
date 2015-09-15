@@ -1,2 +1,5 @@
 # returns success
 macro chargeVerifyTx(): 1
+
+# no-op
+macro rewardForBlockHeader(): 0

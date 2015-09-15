@@ -8,7 +8,6 @@ import random
 import pytest
 slow = pytest.mark.slow
 
-from initBtcRelayTokens import *
 from utilRelay import makeMerkleProof, randomMerkleProof, disablePyethLogging
 
 disablePyethLogging()
@@ -22,12 +21,9 @@ class TestTxVerify(object):
     ETHER = 10 ** 18
 
     def setup_class(cls):
-        tester.gas_limit = int(2.55e6)  # include costs of debug methods
+        tester.gas_limit = int(2.25e6)  # include costs of debug methods
         cls.s = tester.state()
         cls.c = cls.s.abi_contract(cls.CONTRACT, endowment=2000*cls.ETHER)
-
-        initBtcRelayTokens(cls, tester)
-
         cls.snapshot = cls.s.snapshot()
         cls.seed = tester.seed
 
@@ -290,10 +286,6 @@ class TestTxVerify(object):
         for i in range(7):
             res = self.c.storeBlockHeader(blockHeaderBinary[i])
             assert res == i+100000
-
-            totalReward = REWARD_PER_HEADER * (i+1)
-            assert self.xcoin.coinBalanceOf(tester.a0) == totalReward
-            assert self.xcoin.coinBalanceOf(self.c.address) == TOKEN_ENDOWMENT - totalReward
 
         # block 100000
         header = {'nonce': 274148111, 'hash': u'000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506', 'timestamp': 1293623863, 'merkle_root': u'f3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766', 'version': 1, 'prevhash': u'000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250', 'bits': 453281356}
