@@ -5,7 +5,6 @@ import struct
 import pytest
 slow = pytest.mark.slow
 
-from initBtcRelayTokens import *
 from utilRelay import dblSha256Flip, disablePyethLogging
 
 disablePyethLogging()
@@ -20,9 +19,6 @@ class TestBtcRelay(object):
         tester.gas_limit = int(2.55e6)  # include costs of debug methods
         cls.s = tester.state()
         cls.c = cls.s.abi_contract(cls.CONTRACT_DEBUG, endowment=2000*cls.ETHER)
-
-        initBtcRelayTokens(cls, tester)
-
         cls.snapshot = cls.s.snapshot()
         cls.seed = tester.seed
 
@@ -331,9 +327,6 @@ class TestBtcRelay(object):
 
 
     def testStoreBlockHeader(self):
-        bal = self.xcoin.coinBalanceOf(self.c.address)
-        assert bal == TOKEN_ENDOWMENT
-
         block300K = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
         self.c.setInitialParent(block300K, 299999, 1)
 
@@ -349,11 +342,6 @@ class TestBtcRelay(object):
         res = self.c.storeBlockHeader(bhBinary, profiling=True, sender=tester.k1)
         print('GAS: %s' % res['gas'])
         assert res['output'] == 300000
-
-        assert self.xcoin.coinBalanceOf(tester.a1) == REWARD_PER_HEADER
-
-        bal = self.xcoin.coinBalanceOf(self.c.address)
-        assert bal == TOKEN_ENDOWMENT - REWARD_PER_HEADER
 
     # was converted to macro
     # def testFastHashBlock(self):

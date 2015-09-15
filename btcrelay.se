@@ -7,7 +7,7 @@ extern relayDestination: [processTransaction:[bytes,int256]:int256]
 # TODO check ints vs uints
 extern btcrelayTokenFactory: [createStandardToken:[uint256]:address]
 
-extern btcrelayToken: [sendCoin:[uint256,address]:bool, coinBalance:[]:address, coinBalanceOf:[address]:address]
+extern btcrelayToken: [sendCoin:[uint256,address]:bool, sendCoinFrom:[address,uint256,address]:bool, coinBalance:[]:address, coinBalanceOf:[address]:address]
 
 
 # note: _ancestor[9]
@@ -118,9 +118,7 @@ def storeBlockHeader(blockHeaderBinary:str):
         if scoreBlock >= self.highScore:
             self.heaviestBlock = blockHash
             self.highScore = scoreBlock
-
-            # reward tx.origin, since storeBlockHeader may be called indirectly like bulkStoreHeader
-            self.tokenContract.sendCoin(REWARD_PER_HEADER, tx.origin)
+            rewardForBlockHeader()
 
         return(m_getHeight(blockHash))
 
@@ -135,7 +133,9 @@ def storeBlockHeader(blockHeaderBinary:str):
 # - 'txIndex' is the index of the tx within the block
 # - 'sibling' are the merkle siblings of tx
 def verifyTx(txHash, txIndex, sibling:arr, txBlockHash):
-    # self.tokenContract.sendCoinFrom(msg.sender, FEE_VERIFY_TX, self)
+    if !chargeVerifyTx():
+        return(0)
+
     if self.within6Confirms(txBlockHash) || !self.inMainChain(txBlockHash):
         return(0)
 
@@ -258,6 +258,15 @@ def within6Confirms(txBlockHash):
 #
 # macros
 #
+
+# issue tokens when a blockHeader is stored
+macro rewardForBlockHeader():
+    # reward tx.origin, since storeBlockHeader may be called indirectly like bulkStoreHeader
+    self.tokenContract.sendCoin(REWARD_PER_HEADER, tx.origin)
+
+# TODO use tx.origin
+macro chargeVerifyTx():
+    self.tokenContract.sendCoinFrom(msg.sender, FEE_VERIFY_TX, self)
 
 # get the parent of '$blockHash'
 macro getPrevBlock($blockHash):

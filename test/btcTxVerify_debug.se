@@ -1,0 +1,3 @@
+# testing overrides should be before the contract being tested
+inset('_skipChargeVerifyTx.se')
+inset('../btcrelay.se')
