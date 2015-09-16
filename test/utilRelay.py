@@ -45,6 +45,18 @@ def randomMerkleProof(blocknum, txIndex=-1, withMerkle=False):
     return ret
 
 
+def getBlockHeaderBinary(ver, prev_block, mrkl_root, time_, bits, nonce):
+    bytesPrevBlock = format(prev_block, '64x').replace(' ', '0')
+    bytesPrevBlock = bytesPrevBlock.decode('hex')[::-1]
+
+    bytesMerkle = format(mrkl_root, '64x').replace(' ', '0')
+    bytesMerkle = bytesMerkle.decode('hex')[::-1]
+
+    header = ( struct.pack("<L", ver) + bytesPrevBlock +
+          bytesMerkle + struct.pack("<LLL", time_, bits, nonce))
+    return header
+
+
 def dblSha256Flip(rawBytes):
     return int(bin_sha256(bin_sha256(rawBytes))[::-1].encode('hex'), 16)
 

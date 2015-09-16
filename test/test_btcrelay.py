@@ -5,7 +5,7 @@ import struct
 import pytest
 slow = pytest.mark.slow
 
-from utilRelay import dblSha256Flip, disablePyethLogging
+from utilRelay import getBlockHeaderBinary, dblSha256Flip, disablePyethLogging
 
 disablePyethLogging()
 
@@ -26,17 +26,6 @@ class TestBtcRelay(object):
         self.s.revert(self.snapshot)
         tester.seed = self.seed
 
-
-    def getBlockHeaderBinary(self, ver, prev_block, mrkl_root, time_, bits, nonce):
-        bytesPrevBlock = format(prev_block, '64x').replace(' ', '0')
-        bytesPrevBlock = bytesPrevBlock.decode('hex')[::-1]
-
-        bytesMerkle = format(mrkl_root, '64x').replace(' ', '0')
-        bytesMerkle = bytesMerkle.decode('hex')[::-1]
-
-        header = ( struct.pack("<L", ver) + bytesPrevBlock +
-              bytesMerkle + struct.pack("<LLL", time_, bits, nonce))
-        return header
 
     # also tests a (fake) fork
     def testHeadersFrom100K(self):
@@ -114,12 +103,12 @@ class TestBtcRelay(object):
         hashPrevBlock = block100kPrev
         for i in range(7):
             nonce = 1 if (i in [4,5]) else 0
-            blockHeaderBinary = self.getBlockHeaderBinary(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+            blockHeaderBinary = getBlockHeaderBinary(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
             res = self.c.storeBlockHeader(blockHeaderBinary)
             hashPrevBlock = dblSha256Flip(blockHeaderBinary)
 
             # print('@@@@ fake chain score: ' + str(self.c.getCumulativeDifficulty()))
-            assert res == i+100000
+            assert res == i+100000  # fake blocks are stored since there is possibility they can become the main chain
 
         assert self.c.getCumulativeDifficulty() == cumulDiff  # cumulDiff should not change
         assert b6 == self.c.getBlockchainHead()
@@ -172,7 +161,7 @@ class TestBtcRelay(object):
         hashPrevBlock = block100kPrev
         for i in range(7):
             nonce = 1 if (i in [4,5]) else 0
-            blockHeaderBinary = self.getBlockHeaderBinary(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+            blockHeaderBinary = getBlockHeaderBinary(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
             res = self.c.storeBlockHeader(blockHeaderBinary)
             hashPrevBlock = dblSha256Flip(blockHeaderBinary)
             assert res == i+100000
