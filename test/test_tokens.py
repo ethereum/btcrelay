@@ -152,6 +152,7 @@ class TestTokens(object):
         assert self.xcoin.coinBalanceOf(addrSender) == expCoinsOfSender
         assert self.xcoin.coinBalanceOf(self.c.address) == TOKEN_ENDOWMENT - expCoinsOfSender
 
+
     # like testChargeOneVerifyTx but sender does not pre-approve the charge
     def testUnapprovedVerifyTx(self):
         numHeader = 24  # minimum is 24 (block 300017 plus 6 confirmations)
@@ -170,6 +171,32 @@ class TestTokens(object):
         expCoinsOfSender = numHeader*REWARD_PER_HEADER
         assert self.xcoin.coinBalanceOf(addrSender) == expCoinsOfSender
         assert self.xcoin.coinBalanceOf(self.c.address) == TOKEN_ENDOWMENT - expCoinsOfSender
+
+
+    # charge is approved but sender does not have enough balance
+    # this also tests approvals by multiple senders
+    def testInsufficientBalanceVerifyTx(self):
+        numHeader = 24  # minimum is 24 (block 300017 plus 6 confirmations)
+        # headers are stored by k1, but k0 is who makes the verifyTx call
+        self.storeHeadersFrom300K(numHeader, tester.k1, tester.a1)
+
+        # block 300017
+        header = {'nonce': 2022856018, 'hash': u'000000000000000032c0ae55f7f52b179a6346bb0d981af55394a3b9cdc556ea', 'timestamp': 1399708353, 'merkle_root': u'2fcb4296ba8d2cc5748a9310bac31d2652389c4d70014ccf742d0e4409a612c9', 'version': 2, 'prevhash': u'00000000000000002ec86a542e2cefe62dcec8ac2317a1dc92fbb094f9d30941', 'bits': 419465580}
+        hashes = [u'29d2afa00c4947965717542a9fcf31aa0d0f81cbe590c9b794b8c55d7a4803de', u'84d4e48925445ef3b5722edaad229447f6ef7c77dfdb3b67b288a2e9dac97ebf', u'9f1ddd2fed16b0615d8cdd99456f5229ff004ea93234256571972d8c4eda05dd', u'ca31ee6fecd2d054b85449fb52d2b2bd9f8777b5e603a02d7de53c09e300d127', u'521eabbe29ce215b4b309db7807ed8f655ddb34233b2cfe8178522a335154923', u'a03159699523335896ec6d1ce0a18b247a3373b288cefe6ed5d14ddeeb71db45', u'810a3a390a4b565a54606dd0921985047cf940070b0c61a82225fc742aa4a2e3', u'161400e37071b7096ca6746e9aa388e256d2fe8816cec49cdd73de82f9dae15d', u'af355fbfcf63b67a219de308227dca5c2905c47331a8233613e7f7ac4bacc875', u'1c433a2359318372a859c94ace4cd2b1d5f565ae2c8496ef8255e098c710b9d4', u'49e09d2f48a8f11e13864f7daca8c6b1189507511a743149e16e16bca1858f80', u'5fd034ffd19cda72a78f7bacfd7d9b7b0bc64bc2d3135382db29238aa4d3dd03', u'74ab68a617c8419e6cbae05019a2c81fea6439e233550e5257d9411677845f34', u'df2650bdfcb4efe5726269148828ac18e2a1990c15f7d01d572252656421e896', u'1501aa1dbcada110009fe09e9cec5820fce07e4178af45869358651db4e2b282', u'41f96bb7e58018722c4d0dae2f6f4381bb1d461d3a61eac8b77ffe274b535292', u'aaf9b4e66d5dadb4b4f1107750a18e705ce4b4683e161eb3b1eaa04734218356', u'56639831c523b68cac6848f51d2b39e062ab5ff0b6f2a7dea33765f8e049b0b2', u'3a86f1f34e5d4f8cded3f8b22d6fe4b5741247be7ed164ca140bdb18c9ea7f45', u'da0322e4b634ec8dac5f9b173a2fe7f6e18e5220a27834625a0cfe6d0680c6e8', u'f5d94d46d68a6e953356499eb5d962e2a65193cce160af40200ab1c43228752e', u'e725d4efd42d1213824c698ef4172cdbab683fe9c9170cc6ca552f52244806f6', u'e7711581f7f9028f8f8b915fa0ddb091baade88036bf6f309e2d802043c3231d']
+        [txHash, txIndex, siblings, txBlockHash] = makeMerkleProof(header, hashes, 1)
+
+        self.xcoin.approveOnce(self.c.address, FEE_VERIFY_TX)
+        self.xcoin.approveOnce(self.c.address, FEE_VERIFY_TX, sender=tester.k1)
+        assert 0 == self.c.verifyTx(txHash, txIndex, siblings, txBlockHash)
+
+        assert self.xcoin.coinBalanceOf(tester.a0) == 0
+        assert self.xcoin.coinBalanceOf(tester.a1) == numHeader*REWARD_PER_HEADER
+        assert self.xcoin.coinBalanceOf(self.c.address) == TOKEN_ENDOWMENT - numHeader*REWARD_PER_HEADER
+
+        assert 1 == self.c.verifyTx(txHash, txIndex, siblings, txBlockHash, sender=tester.k1)
+        assert self.xcoin.coinBalanceOf(tester.a0) == 0
+        assert self.xcoin.coinBalanceOf(tester.a1) == numHeader*REWARD_PER_HEADER - FEE_VERIFY_TX
+        assert self.xcoin.coinBalanceOf(self.c.address) == TOKEN_ENDOWMENT - numHeader*REWARD_PER_HEADER + FEE_VERIFY_TX
 
 
     def storeHeadersFrom300K(self, numHeader, keySender, addrSender):
