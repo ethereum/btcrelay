@@ -18,5 +18,5 @@ def funcConcatHash(tx1, tx2):
 
 
 # testing overrides should be before the contract being tested
-inset('_skipChargeVerifyTx.se')
+inset('_disableTokens.se')
 inset('../btcrelay.se')

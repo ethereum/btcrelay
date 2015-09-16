@@ -4,7 +4,6 @@ inset('btcChain.se')
 # name 'processTransaction' with signature si:i
 extern relayDestination: [processTransaction:[bytes,int256]:int256]
 
-# TODO check ints vs uints
 extern btcrelayTokenFactory: [createStandardToken:[uint256]:address]
 
 extern btcrelayToken: [sendCoin:[uint256,address]:bool, sendCoinFrom:[address,uint256,address]:bool, coinBalance:[]:address, coinBalanceOf:[address]:address]
