@@ -60,35 +60,10 @@ class TestTokens(object):
 
     # based on test_txVerify test30BlockValidTx
     def testChargeOneVerifyTx(self):
-        startBlockNum = 300000
-        numBlock = 30
-
-        block300kPrev = 0x000000000000000067ecc744b5ae34eebbde14d21ca4db51652e4d67e155f07e
-        self.c.setInitialParent(block300kPrev, startBlockNum-1, 1)
-
+        numHeader = 30
+        keySender = tester.k0
         addrSender = tester.a0
-        expCoinsOfSender = 0
-        i = 1
-        with open("test/headers/100from300k.txt") as f:
-
-            startTime = datetime.now().time()
-
-            for header in f:
-                res = self.c.storeBlockHeader(header[:-1].decode('hex'))  # [:-1] to remove \n
-                assert res == i-1+startBlockNum
-
-                expCoinsOfSender += REWARD_PER_HEADER
-                assert self.xcoin.coinBalanceOf(addrSender) == expCoinsOfSender
-                assert self.xcoin.coinBalanceOf(self.c.address) == TOKEN_ENDOWMENT - expCoinsOfSender
-
-                if i==numBlock:
-                    break
-                i += 1
-
-            endTime = datetime.now().time()
-
-        duration = datetime.combine(date.today(), endTime) - datetime.combine(date.today(), startTime)
-        print("********** duration: "+str(duration)+" ********** start:"+str(startTime)+" end:"+str(endTime))
+        self.storeHeadersFrom300K(numHeader, keySender, addrSender)
 
         # block 300017
         header = {'nonce': 2022856018, 'hash': u'000000000000000032c0ae55f7f52b179a6346bb0d981af55394a3b9cdc556ea', 'timestamp': 1399708353, 'merkle_root': u'2fcb4296ba8d2cc5748a9310bac31d2652389c4d70014ccf742d0e4409a612c9', 'version': 2, 'prevhash': u'00000000000000002ec86a542e2cefe62dcec8ac2317a1dc92fbb094f9d30941', 'bits': 419465580}
@@ -98,11 +73,41 @@ class TestTokens(object):
         self.xcoin.approveOnce(self.c.address, FEE_VERIFY_TX)
         res = self.c.verifyTx(txHash, txIndex, siblings, txBlockHash, profiling=True)
         print('GAS: '+str(res['gas']))
-        assert res['output'] == 1  # adjust according to numBlock and the block that the tx belongs to
+        assert res['output'] == 1  # adjust according to numHeader and the block that the tx belongs to
 
-        expCoinsOfSender -= FEE_VERIFY_TX
+        expCoinsOfSender = numHeader*REWARD_PER_HEADER - FEE_VERIFY_TX
         assert self.xcoin.coinBalanceOf(addrSender) == expCoinsOfSender
         assert self.xcoin.coinBalanceOf(self.c.address) == TOKEN_ENDOWMENT - expCoinsOfSender
+
+
+    def storeHeadersFrom300K(self, numHeader, keySender, addrSender):
+        startBlockNum = 300000
+
+        block300kPrev = 0x000000000000000067ecc744b5ae34eebbde14d21ca4db51652e4d67e155f07e
+        self.c.setInitialParent(block300kPrev, startBlockNum-1, 1)
+
+        expCoinsOfSender = 0
+        i = 1
+        with open("test/headers/100from300k.txt") as f:
+
+            startTime = datetime.now().time()
+
+            for header in f:
+                res = self.c.storeBlockHeader(header[:-1].decode('hex'), sender=keySender)  # [:-1] to remove \n
+                assert res == i-1+startBlockNum
+
+                expCoinsOfSender += REWARD_PER_HEADER
+                assert self.xcoin.coinBalanceOf(addrSender) == expCoinsOfSender
+                assert self.xcoin.coinBalanceOf(self.c.address) == TOKEN_ENDOWMENT - expCoinsOfSender
+
+                if i==numHeader:
+                    break
+                i += 1
+
+            endTime = datetime.now().time()
+
+        # duration = datetime.combine(date.today(), endTime) - datetime.combine(date.today(), startTime)
+        # print("********** duration: "+str(duration)+" ********** start:"+str(startTime)+" end:"+str(endTime))
 
 
     # based on test_btcrelay testStoreBlockHeader
