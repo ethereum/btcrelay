@@ -8,7 +8,8 @@ import time
 import pytest
 slow = pytest.mark.slow
 
-from utilRelay import makeMerkleProof, randomMerkleProof, disablePyethLogging
+from utilRelay import makeMerkleProof, randomMerkleProof, \
+    getBlockHeaderBinary, dblSha256Flip, disablePyethLogging
 
 disablePyethLogging()
 
@@ -57,6 +58,55 @@ class TestTokens(object):
     def setup_method(self, method):
         self.s.revert(self.snapshot)
         tester.seed = self.seed
+
+
+    # based on test_btcrelay testHeadersFrom100K
+    def testRewardOnlyMainChain(self):
+        addrSender = tester.a0
+        block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
+        self.c.setInitialParent(block100kPrev, 99999, 1)
+
+        headers = [
+            "0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710",
+            "0100000006e533fd1ada86391f3f6c343204b0d278d4aaec1c0b20aa27ba0300000000006abbb3eb3d733a9fe18967fd7d4c117e4ccbbac5bec4d910d900b3ae0793e77f54241b4d4c86041b4089cc9b",
+            "0100000090f0a9f110702f808219ebea1173056042a714bad51b916cb6800000000000005275289558f51c9966699404ae2294730c3c9f9bda53523ce50e9b95e558da2fdb261b4d4c86041b1ab1bf93",
+        ]
+        blockHeaderBinary = map(lambda x: x.decode('hex'), headers)
+        # store only 2 headers for now
+        for i in range(2):
+            res = self.c.storeBlockHeader(blockHeaderBinary[i])
+            # print('@@@@ real chain score: ' + str(self.c.getCumulativeDifficulty()))
+            assert res == i+100000
+
+        expCoinsOfSender = 2*REWARD_PER_HEADER
+        assert self.xcoin.coinBalanceOf(addrSender) == expCoinsOfSender
+
+        # these are alternative blocks and store all 3,
+        # but they do not have enough work and will not be on main chain
+        # nonce: 0 blockhash: 11bb7c5555b8eab7801b1c4384efcab0d869230fcf4a8f043abad255c99105f8
+        # nonce: 0 blockhash: 178930a916fa91dd29b2716387b7e024a6b3b2d2efa86bc45c86be223b07a4e5
+        # nonce: 0 blockhash: 7b3c348edbb3645b34b30259105a941890e95e0ecc0a1c243ff48260d746e456
+        EASIEST_DIFFICULTY_TARGET = 0x207fFFFFL
+        version = 1
+        # real merkle of block100k
+        hashMerkleRoot = 0xf3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766
+        time = 1293623863  # from block100k
+        bits = EASIEST_DIFFICULTY_TARGET
+        nonce = 1
+        hashPrevBlock = block100kPrev
+        for i in range(3):
+            nonce = 1 if (i in [4,5]) else 0
+            bhBytes = getBlockHeaderBinary(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+            res = self.c.storeBlockHeader(bhBytes)
+            hashPrevBlock = dblSha256Flip(bhBytes)
+
+            assert res == i+100000  # fake blocks are stored since there is possibility they can become the main chain
+
+        assert self.xcoin.coinBalanceOf(addrSender) == expCoinsOfSender
+
+        # store a block with enough work that it extends the main chain
+        assert 100002 == self.c.storeBlockHeader(blockHeaderBinary[2])
+        assert self.xcoin.coinBalanceOf(addrSender) == expCoinsOfSender + REWARD_PER_HEADER
 
 
     # based on test_btcBulkStoreHeaders testTx1In300K
