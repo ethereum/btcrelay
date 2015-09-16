@@ -22,6 +22,7 @@ TOKEN_CONTRACT_ABI = '[{"inputs":[{"type":"address","name":"_target"},{"type":"a
 TOKEN_ENDOWMENT = 2**200
 REWARD_PER_HEADER = 1000
 FEE_VERIFY_TX = 12 * REWARD_PER_HEADER
+TOTAL_FEE_RELAY_TX = 0 + FEE_VERIFY_TX
 
 
 def initBtcRelayTokens(cls, tester):
@@ -60,21 +61,20 @@ class TestTokens(object):
 
     # based on test_btcBulkStoreHeaders testTx1In300K
     def testChargeOneRelayTx(self):
-        hh = self.bulkStore10From300K()
+        numHeader = 12
+        keySender = tester.k0
+        addrSender = tester.a0
+        hh = self.bulkStoreFrom300K(numHeader, keySender, addrSender)
 
         txIndex = 1
         # block300k tx[1] 7301b595279ece985f0c415e420e425451fcf7f684fcce087ba14d10ffec1121
         txStr = '01000000014dff4050dcee16672e48d755c6dd25d324492b5ea306f85a3ab23b4df26e16e9000000008c493046022100cb6dc911ef0bae0ab0e6265a45f25e081fc7ea4975517c9f848f82bc2b80a909022100e30fb6bb4fb64f414c351ed3abaed7491b8f0b1b9bcd75286036df8bfabc3ea5014104b70574006425b61867d2cbb8de7c26095fbc00ba4041b061cf75b85699cb2b449c6758741f640adffa356406632610efb267cb1efa0442c207059dd7fd652eeaffffffff020049d971020000001976a91461cf5af7bb84348df3fd695672e53c7d5b3f3db988ac30601c0c060000001976a914fd4ed114ef85d350d6d40ed3f6dc23743f8f99c488ac00000000'
         btcAddr = 0x61cf5af7bb84348df3fd695672e53c7d5b3f3db9
-        self.checkRelay(txStr, txIndex, btcAddr, hh)
+        self.checkRelay(txStr, txIndex, btcAddr, hh, numHeader, keySender, addrSender)
 
     # based on test_btcBulkStoreHeaders bulkStore10From300K
-    # TODO numHeaders
-    def bulkStore10From300K(self):
-        addrSender = tester.a0
-
+    def bulkStoreFrom300K(self, numHeader, keySender, addrSender):
         startBlockNum = 300000
-        numBlock = 12
 
         block300kPrev = 0x000000000000000067ecc744b5ae34eebbde14d21ca4db51652e4d67e155f07e
         self.c.setInitialParent(block300kPrev, startBlockNum-1, 1)
@@ -84,18 +84,18 @@ class TestTokens(object):
         with open("test/headers/100from300k.txt") as f:
             for header in f:
                 strings += header[:-1]  # [:-1] to remove trailing \n
-                if i==numBlock:
+                if i==numHeader:
                     break
                 i += 1
 
         headerBins = strings.decode('hex')
 
-        res = self.c.bulkStoreHeader(headerBins, numBlock, profiling=True)
+        res = self.c.bulkStoreHeader(headerBins, numHeader, sender=keySender, profiling=True)
 
         print('GAS: '+str(res['gas']))
-        assert res['output'] == numBlock-1 + startBlockNum
+        assert res['output'] == numHeader-1 + startBlockNum
 
-        expCoinsOfSender = numBlock*REWARD_PER_HEADER
+        expCoinsOfSender = numHeader*REWARD_PER_HEADER
         assert self.xcoin.coinBalanceOf(addrSender) == expCoinsOfSender
 
         # block 300000
@@ -105,11 +105,9 @@ class TestTokens(object):
         return [header, hashes]
 
     # based on test_btcBulkStoreHeaders checkRelay
-    def checkRelay(self, txStr, txIndex, btcAddr, hh):
+    def checkRelay(self, txStr, txIndex, btcAddr, hh, numHeader, keySender, addrSender):
         [header, hashes] = hh
         [txHash, txIndex, siblings, txBlockHash] = makeMerkleProof(header, hashes, txIndex)
-
-        addrSender = tester.a0
 
         # verify the proof and then hand the proof to the btc-eth contract, which will check
         # the tx outputs and send ether as appropriate
@@ -117,8 +115,8 @@ class TestTokens(object):
         assert BTC_ETH.setTrustedBtcRelay(self.c.address, sender=tester.k1) == 1
         assert BTC_ETH.testingonlySetBtcAddr(btcAddr, sender=tester.k1) == 1
 
-        self.xcoin.approveOnce(self.c.address, 0+FEE_VERIFY_TX)
-        res = self.c.relayTx(txStr, txHash, txIndex, siblings, txBlockHash, BTC_ETH.address, profiling=True)
+        self.xcoin.approveOnce(self.c.address, TOTAL_FEE_RELAY_TX, sender=keySender)
+        res = self.c.relayTx(txStr, txHash, txIndex, siblings, txBlockHash, BTC_ETH.address, sender=keySender, profiling=True)
 
         indexOfBtcAddr = txStr.find(format(btcAddr, 'x'))
         ethAddrBin = txStr[indexOfBtcAddr+68:indexOfBtcAddr+108].decode('hex') # assumes ether addr is after btcAddr
@@ -129,11 +127,8 @@ class TestTokens(object):
         assert userEthBalance == expEtherBalance
         assert res['output'] == 1  # ether was transferred
 
-        # exchange contract is owned by tester.k1, while
-        # relay contract is owned by tester.k0
-        # Thus k0 is NOT allowed to reclaim ether using the same tx
-        # TODO no longer valid check since will always fail due to sender lack of funds
-        assert 0 == self.c.relayTx(txStr, txHash, txIndex, siblings, txBlockHash, BTC_ETH.address)
+        expCoinsOfSender = numHeader*REWARD_PER_HEADER - TOTAL_FEE_RELAY_TX
+        assert self.xcoin.coinBalanceOf(addrSender) == expCoinsOfSender
 
 
     # based on test_txVerify test30BlockValidTx
