@@ -272,6 +272,25 @@ class TestTokens(object):
         totalEthFee -= ethGrant
         assert self.s.block.get_balance(self.c.address) == totalEthFee
 
+        #
+        # oneSender cashes out ALL tokens and should get all ETH fees
+        #
+        oneSenderCoins = oneSender.expCoins / 2  # oneSender only has half their tokens left
+        oneBalEth = self.s.block.get_balance(oneSender.addr)
+
+        self.s.block.coinbase = oneSender.addr
+        self.xcoin.approveOnce(self.c.address, oneSenderCoins, sender=oneSender.key)
+        self.c.cashOut(oneSenderCoins, sender=oneSender.key)  # cashes out ALL
+        self.s.block.coinbase = addrSender
+        # coinbase dance needed so that balances are as expected
+        assert self.xcoin.coinBalanceOf(oneSender.addr) == 0
+        contractTokenBal += oneSenderCoins
+        assert self.xcoin.coinBalanceOf(self.c.address) == contractTokenBal
+        ethGrant = totalEthFee
+        assert self.s.block.get_balance(oneSender.addr) == oneBalEth + ethGrant
+
+        totalEthFee -= ethGrant
+        assert self.s.block.get_balance(self.c.address) == totalEthFee
 
 
     def testEndowment(self):
