@@ -133,6 +133,7 @@ def storeBlockHeader(blockHeaderBinary:str):
 # - 'sibling' are the merkle siblings of tx
 def verifyTx(txHash, txIndex, sibling:arr, txBlockHash):
     if !chargeVerifyTx():
+        # insufficient payments are NOT refunded
         return(0)
 
     if self.within6Confirms(txBlockHash) || !self.inMainChain(txBlockHash):
@@ -156,7 +157,7 @@ def verifyTx(txHash, txIndex, sibling:arr, txBlockHash):
 # TODO txHash can eventually be computed (dbl sha256 then flip32Bytes) when
 # txStr becomes txBinary
 def relayTx(txStr:str, txHash, txIndex, sibling:arr, txBlockHash, contract):
-    if self.verifyTx(txHash, txIndex, sibling, txBlockHash) == 1:
+    if self.verifyTx(txHash, txIndex, sibling, txBlockHash, value=msg.value) == 1:
         res = contract.processTransaction(txStr, txHash)
         log(msg.sender, data=[res])
         return(res)
@@ -263,10 +264,10 @@ macro rewardForBlockHeader():
     # reward tx.origin, since storeBlockHeader() may be called indirectly like bulkStoreHeader()
     self.tokenContract.sendCoin(REWARD_PER_HEADER, tx.origin)
 
-# tx.origin is charged when transacting with verifyTx()
+
 macro chargeVerifyTx():
-    # charge tx.origin since internal APIs like relayTx() call verifyTx()
     msg.value >= FEE_VERIFY_TX
+
 
 # get the parent of '$blockHash'
 macro getPrevBlock($blockHash):
