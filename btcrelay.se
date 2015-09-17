@@ -34,7 +34,7 @@ data tokenContract
 #macro TOKEN_FACTORY: 0xfd5aee44be7195a704a86c18dfc0b65813486f7e
 macro TOKEN_ENDOWMENT: 2**200
 macro REWARD_PER_HEADER: 1000
-macro FEE_VERIFY_TX: 12 * REWARD_PER_HEADER  # ~2 hours worth of blockheaders
+macro FEE_VERIFY_TX: 100000000000000000  # 0.1 ETH
 
 
 # def init():
@@ -266,7 +266,7 @@ macro rewardForBlockHeader():
 # tx.origin is charged when transacting with verifyTx()
 macro chargeVerifyTx():
     # charge tx.origin since internal APIs like relayTx() call verifyTx()
-    self.tokenContract.sendCoinFrom(tx.origin, FEE_VERIFY_TX, self)
+    msg.value >= FEE_VERIFY_TX
 
 # get the parent of '$blockHash'
 macro getPrevBlock($blockHash):
