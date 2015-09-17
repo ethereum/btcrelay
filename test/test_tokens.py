@@ -233,12 +233,20 @@ class TestTokens(object):
 
         totalEthFee = FEE_VERIFY_TX
 
+        #
         # twoSender cashes out all and should get 1/3 of the ETH fees
+        #
         twoBalEth = self.s.block.get_balance(twoSender.addr)
+
+        self.s.block.coinbase = twoSender.addr
         self.xcoin.approveOnce(self.c.address, twoSender.expCoins, sender=twoSender.key)
         self.c.cashOut(twoSender.expCoins, sender=twoSender.key)
+        self.s.block.coinbase = addrSender
+
         assert self.xcoin.coinBalanceOf(twoSender.addr) == 0
         assert self.s.block.get_balance(twoSender.addr) == twoBalEth + (totalEthFee / 3)
+
+
 
 
     def testEndowment(self):
