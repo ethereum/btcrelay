@@ -283,6 +283,7 @@ macro chargeVerifyTx():
 macro m_cashOut($numToken):
     if self.tokenContract.sendCoinFrom(msg.sender, $numToken, self):
         $numEth = self.balance * $numToken / self.numTokenIssued
+        self.numTokenIssued -= $numToken
         send(msg.sender, $numEth)
 
 # get the parent of '$blockHash'

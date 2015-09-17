@@ -251,9 +251,6 @@ class TestTokens(object):
         totalEthFee -= ethGrant
         assert self.s.block.get_balance(self.c.address) == totalEthFee
 
-        print('@@@ fee1:')
-        print totalEthFee
-
         #
         # oneSender now has 100% of issued tokens
         # oneSender cashes out HALF of their tokens and should get
