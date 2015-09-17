@@ -189,7 +189,12 @@ class TestTokens(object):
         assert self.xcoin.coinBalanceOf(addrSender) == expCoinsOfSender + REWARD_PER_HEADER
 
 
-    # leverages testRewardOnlyMainChain
+    # oneSender stores 2 headers; twoSender stores 1 header
+    # Thus oneSender has 1/3 and 1/3 of tokens, and twoSender has 1/3.
+    # These thirds are then cashed out in the following order:
+    # twoSender cashes out, then oneSender cashes out half, then oneSender
+    # cashes out remaining half. This effectively tests cashing out 1/3, 50%,
+    # and then 100% of tokens.
     def testThirdsCashOut(self):
         Sender = namedtuple('Sender', ['key', 'addr', 'expCoins'])
         oneSender = Sender(tester.k1, tester.a1, 2*REWARD_PER_HEADER)
