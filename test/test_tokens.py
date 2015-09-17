@@ -1,5 +1,6 @@
 from ethereum import tester
 from datetime import datetime, date
+from collections import namedtuple
 
 import time
 
@@ -186,6 +187,39 @@ class TestTokens(object):
         # store a block with enough work that it extends the main chain
         assert 100002 == self.c.storeBlockHeader(blockHeaderBinary[2])
         assert self.xcoin.coinBalanceOf(addrSender) == expCoinsOfSender + REWARD_PER_HEADER
+
+
+    # leverages testRewardOnlyMainChain
+    def testThirdsCashOut(self):
+        Sender = namedtuple('Sender', ['key', 'addr', 'expCoins'])
+        oneSender = Sender(tester.k2, tester.a2, 2*REWARD_PER_HEADER)
+
+        addrSender = tester.a2
+        block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
+        self.c.setInitialParent(block100kPrev, 99999, 1)
+
+        headers = [
+            "0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710",
+            "0100000006e533fd1ada86391f3f6c343204b0d278d4aaec1c0b20aa27ba0300000000006abbb3eb3d733a9fe18967fd7d4c117e4ccbbac5bec4d910d900b3ae0793e77f54241b4d4c86041b4089cc9b",
+            "0100000090f0a9f110702f808219ebea1173056042a714bad51b916cb6800000000000005275289558f51c9966699404ae2294730c3c9f9bda53523ce50e9b95e558da2fdb261b4d4c86041b1ab1bf93",
+        ]
+        blockHeaderBinary = map(lambda x: x.decode('hex'), headers)
+        # store only 2 headers for now
+        for i in range(2):
+            res = self.c.storeBlockHeader(blockHeaderBinary[i], sender=oneSender.key)
+            # print('@@@@ real chain score: ' + str(self.c.getCumulativeDifficulty()))
+            assert res == i+100000
+
+        assert self.xcoin.coinBalanceOf(oneSender.addr) == oneSender.expCoins
+
+        expCoins2ndSender = REWARD_PER_HEADER
+        assert 100002 == self.c.storeBlockHeader(blockHeaderBinary[2], sender=tester.k1)
+        assert self.xcoin.coinBalanceOf(tester.a1) == REWARD_PER_HEADER
+
+
+
+
+
 
     def testEndowment(self):
         assert self.xcoin.coinBalanceOf(self.c.address) == TOKEN_ENDOWMENT

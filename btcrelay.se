@@ -27,8 +27,13 @@ data heaviestBlock
 # highest score among all blocks (so far)
 data highScore
 
+# TODO pack more data in the slot of tokenContract?
 # address of contract that will issue btcrelay tokens
 data tokenContract
+
+# TODO optimize by avoiding this extra storage slot?
+data numTokenIssued
+
 
 # TODO move to constants.se
 #macro TOKEN_FACTORY: 0xfd5aee44be7195a704a86c18dfc0b65813486f7e
@@ -255,6 +260,10 @@ def within6Confirms(txBlockHash):
     return(0)
 
 
+
+def cashOut(numToken):
+    m_cashOut(numToken)
+
 #
 # macros
 #
@@ -262,12 +271,19 @@ def within6Confirms(txBlockHash):
 # tx.origin is issued tokens when a blockHeader is stored
 macro rewardForBlockHeader():
     # reward tx.origin, since storeBlockHeader() may be called indirectly like bulkStoreHeader()
-    self.tokenContract.sendCoin(REWARD_PER_HEADER, tx.origin)
+    if self.tokenContract.sendCoin(REWARD_PER_HEADER, tx.origin):
+        self.numTokenIssued += REWARD_PER_HEADER
 
 
 macro chargeVerifyTx():
     msg.value >= FEE_VERIFY_TX
 
+
+# TODO tx.origin ?
+macro m_cashOut($numToken):
+    if self.tokenContract.sendCoin($numToken, self):
+        $numEth = self.balance * $numToken / self.numTokenIssued
+        send(msg.sender, $numEth)
 
 # get the parent of '$blockHash'
 macro getPrevBlock($blockHash):
