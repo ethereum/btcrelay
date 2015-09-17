@@ -281,7 +281,7 @@ macro chargeVerifyTx():
 
 # TODO tx.origin ?
 macro m_cashOut($numToken):
-    if self.tokenContract.sendCoin($numToken, self):
+    if self.tokenContract.sendCoinFrom(msg.sender, $numToken, self):
         $numEth = self.balance * $numToken / self.numTokenIssued
         send(msg.sender, $numEth)
 
