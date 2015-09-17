@@ -192,9 +192,8 @@ class TestTokens(object):
     # leverages testRewardOnlyMainChain
     def testThirdsCashOut(self):
         Sender = namedtuple('Sender', ['key', 'addr', 'expCoins'])
-        oneSender = Sender(tester.k2, tester.a2, 2*REWARD_PER_HEADER)
+        oneSender = Sender(tester.k1, tester.a1, 2*REWARD_PER_HEADER)
 
-        addrSender = tester.a2
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
         self.c.setInitialParent(block100kPrev, 99999, 1)
 
@@ -212,9 +211,9 @@ class TestTokens(object):
 
         assert self.xcoin.coinBalanceOf(oneSender.addr) == oneSender.expCoins
 
-        expCoins2ndSender = REWARD_PER_HEADER
-        assert 100002 == self.c.storeBlockHeader(blockHeaderBinary[2], sender=tester.k1)
-        assert self.xcoin.coinBalanceOf(tester.a1) == REWARD_PER_HEADER
+        twoSender = Sender(tester.k2, tester.a2, REWARD_PER_HEADER)
+        assert 100002 == self.c.storeBlockHeader(blockHeaderBinary[2], sender=twoSender.key)
+        assert self.xcoin.coinBalanceOf(twoSender.addr) == twoSender.expCoins
 
 
 
