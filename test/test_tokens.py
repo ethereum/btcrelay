@@ -235,6 +235,7 @@ class TestTokens(object):
         # twoSender cashes out ALL and should get 1/3 of the ETH fees
         #
         twoBalEth = self.s.block.get_balance(twoSender.addr)
+        contractTokenBal = self.xcoin.coinBalanceOf(self.c.address)
 
         self.s.block.coinbase = twoSender.addr
         self.xcoin.approveOnce(self.c.address, twoSender.expCoins, sender=twoSender.key)
@@ -242,11 +243,16 @@ class TestTokens(object):
         self.s.block.coinbase = addrSender
         # coinbase dance needed so that balances are as expected
         assert self.xcoin.coinBalanceOf(twoSender.addr) == 0
+        contractTokenBal += twoSender.expCoins
+        assert self.xcoin.coinBalanceOf(self.c.address) == contractTokenBal
         ethGrant = totalEthFee / 3
         assert self.s.block.get_balance(twoSender.addr) == twoBalEth + ethGrant
 
         totalEthFee -= ethGrant
         assert self.s.block.get_balance(self.c.address) == totalEthFee
+
+        print('@@@ fee1:')
+        print totalEthFee
 
         #
         # oneSender now has 100% of issued tokens
@@ -261,6 +267,8 @@ class TestTokens(object):
         self.s.block.coinbase = addrSender
         # coinbase dance needed so that balances are as expected
         assert self.xcoin.coinBalanceOf(oneSender.addr) == oneSender.expCoins/2
+        contractTokenBal += oneSender.expCoins/2
+        assert self.xcoin.coinBalanceOf(self.c.address) == contractTokenBal
         ethGrant = totalEthFee / 2
         assert self.s.block.get_balance(oneSender.addr) == oneBalEth + ethGrant
 
