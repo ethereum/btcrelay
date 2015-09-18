@@ -1,5 +1,6 @@
 from ethereum import tester
 from datetime import datetime, date
+from collections import namedtuple
 
 import time
 
@@ -20,7 +21,7 @@ TOKEN_CONTRACT_ABI = '[{"inputs":[{"type":"address","name":"_target"},{"type":"a
 
 TOKEN_ENDOWMENT = 2**200
 REWARD_PER_HEADER = 1000
-FEE_VERIFY_TX = 12 * REWARD_PER_HEADER
+FEE_VERIFY_TX = 100000000000000000
 TOTAL_FEE_RELAY_TX = 0 + FEE_VERIFY_TX
 
 
@@ -72,18 +73,16 @@ class TestTokens(object):
         hashes = [u'29d2afa00c4947965717542a9fcf31aa0d0f81cbe590c9b794b8c55d7a4803de', u'84d4e48925445ef3b5722edaad229447f6ef7c77dfdb3b67b288a2e9dac97ebf', u'9f1ddd2fed16b0615d8cdd99456f5229ff004ea93234256571972d8c4eda05dd', u'ca31ee6fecd2d054b85449fb52d2b2bd9f8777b5e603a02d7de53c09e300d127', u'521eabbe29ce215b4b309db7807ed8f655ddb34233b2cfe8178522a335154923', u'a03159699523335896ec6d1ce0a18b247a3373b288cefe6ed5d14ddeeb71db45', u'810a3a390a4b565a54606dd0921985047cf940070b0c61a82225fc742aa4a2e3', u'161400e37071b7096ca6746e9aa388e256d2fe8816cec49cdd73de82f9dae15d', u'af355fbfcf63b67a219de308227dca5c2905c47331a8233613e7f7ac4bacc875', u'1c433a2359318372a859c94ace4cd2b1d5f565ae2c8496ef8255e098c710b9d4', u'49e09d2f48a8f11e13864f7daca8c6b1189507511a743149e16e16bca1858f80', u'5fd034ffd19cda72a78f7bacfd7d9b7b0bc64bc2d3135382db29238aa4d3dd03', u'74ab68a617c8419e6cbae05019a2c81fea6439e233550e5257d9411677845f34', u'df2650bdfcb4efe5726269148828ac18e2a1990c15f7d01d572252656421e896', u'1501aa1dbcada110009fe09e9cec5820fce07e4178af45869358651db4e2b282', u'41f96bb7e58018722c4d0dae2f6f4381bb1d461d3a61eac8b77ffe274b535292', u'aaf9b4e66d5dadb4b4f1107750a18e705ce4b4683e161eb3b1eaa04734218356', u'56639831c523b68cac6848f51d2b39e062ab5ff0b6f2a7dea33765f8e049b0b2', u'3a86f1f34e5d4f8cded3f8b22d6fe4b5741247be7ed164ca140bdb18c9ea7f45', u'da0322e4b634ec8dac5f9b173a2fe7f6e18e5220a27834625a0cfe6d0680c6e8', u'f5d94d46d68a6e953356499eb5d962e2a65193cce160af40200ab1c43228752e', u'e725d4efd42d1213824c698ef4172cdbab683fe9c9170cc6ca552f52244806f6', u'e7711581f7f9028f8f8b915fa0ddb091baade88036bf6f309e2d802043c3231d']
         [txHash, txIndex, siblings, txBlockHash] = makeMerkleProof(header, hashes, 1)
 
-        self.xcoin.approveOnce(self.c.address, FEE_VERIFY_TX)
-        res = self.c.verifyTx(txHash, txIndex, siblings, txBlockHash, profiling=True)
+        ethBal = self.s.block.get_balance(addrSender)
+        res = self.c.verifyTx(txHash, txIndex, siblings, txBlockHash, sender=keySender, value=FEE_VERIFY_TX, profiling=True)
         print('GAS: '+str(res['gas']))
         assert res['output'] == 1  # adjust according to numHeader and the block that the tx belongs to
 
-        expCoinsOfSender = numHeader*REWARD_PER_HEADER - FEE_VERIFY_TX
-        assert self.xcoin.coinBalanceOf(addrSender) == expCoinsOfSender
-        assert self.xcoin.coinBalanceOf(self.c.address) == TOKEN_ENDOWMENT - expCoinsOfSender
+        assert self.s.block.get_balance(addrSender) == ethBal - FEE_VERIFY_TX
+        assert self.s.block.get_balance(self.c.address) == FEE_VERIFY_TX
 
 
-    # like testChargeOneVerifyTx but sender does not pre-approve the charge
-    def testUnapprovedVerifyTx(self):
+    def testNoPayVerifyTx(self):
         numHeader = 24  # minimum is 24 (block 300017 plus 6 confirmations)
         keySender = tester.k0
         addrSender = tester.a0
@@ -94,38 +93,31 @@ class TestTokens(object):
         hashes = [u'29d2afa00c4947965717542a9fcf31aa0d0f81cbe590c9b794b8c55d7a4803de', u'84d4e48925445ef3b5722edaad229447f6ef7c77dfdb3b67b288a2e9dac97ebf', u'9f1ddd2fed16b0615d8cdd99456f5229ff004ea93234256571972d8c4eda05dd', u'ca31ee6fecd2d054b85449fb52d2b2bd9f8777b5e603a02d7de53c09e300d127', u'521eabbe29ce215b4b309db7807ed8f655ddb34233b2cfe8178522a335154923', u'a03159699523335896ec6d1ce0a18b247a3373b288cefe6ed5d14ddeeb71db45', u'810a3a390a4b565a54606dd0921985047cf940070b0c61a82225fc742aa4a2e3', u'161400e37071b7096ca6746e9aa388e256d2fe8816cec49cdd73de82f9dae15d', u'af355fbfcf63b67a219de308227dca5c2905c47331a8233613e7f7ac4bacc875', u'1c433a2359318372a859c94ace4cd2b1d5f565ae2c8496ef8255e098c710b9d4', u'49e09d2f48a8f11e13864f7daca8c6b1189507511a743149e16e16bca1858f80', u'5fd034ffd19cda72a78f7bacfd7d9b7b0bc64bc2d3135382db29238aa4d3dd03', u'74ab68a617c8419e6cbae05019a2c81fea6439e233550e5257d9411677845f34', u'df2650bdfcb4efe5726269148828ac18e2a1990c15f7d01d572252656421e896', u'1501aa1dbcada110009fe09e9cec5820fce07e4178af45869358651db4e2b282', u'41f96bb7e58018722c4d0dae2f6f4381bb1d461d3a61eac8b77ffe274b535292', u'aaf9b4e66d5dadb4b4f1107750a18e705ce4b4683e161eb3b1eaa04734218356', u'56639831c523b68cac6848f51d2b39e062ab5ff0b6f2a7dea33765f8e049b0b2', u'3a86f1f34e5d4f8cded3f8b22d6fe4b5741247be7ed164ca140bdb18c9ea7f45', u'da0322e4b634ec8dac5f9b173a2fe7f6e18e5220a27834625a0cfe6d0680c6e8', u'f5d94d46d68a6e953356499eb5d962e2a65193cce160af40200ab1c43228752e', u'e725d4efd42d1213824c698ef4172cdbab683fe9c9170cc6ca552f52244806f6', u'e7711581f7f9028f8f8b915fa0ddb091baade88036bf6f309e2d802043c3231d']
         [txHash, txIndex, siblings, txBlockHash] = makeMerkleProof(header, hashes, 1)
 
-        # note: no approveOnce
-        assert 0 == self.c.verifyTx(txHash, txIndex, siblings, txBlockHash)
+        ethBal = self.s.block.get_balance(addrSender)
+        assert 0 == self.c.verifyTx(txHash, txIndex, siblings, txBlockHash)  # zero ETH sent
 
-        expCoinsOfSender = numHeader*REWARD_PER_HEADER
-        assert self.xcoin.coinBalanceOf(addrSender) == expCoinsOfSender
-        assert self.xcoin.coinBalanceOf(self.c.address) == TOKEN_ENDOWMENT - expCoinsOfSender
+        assert self.s.block.get_balance(addrSender) == ethBal
+        assert self.s.block.get_balance(self.c.address) == 0
 
 
-    # charge is approved but sender does not have enough balance
-    # this also tests approvals by multiple senders
-    def testInsufficientBalanceVerifyTx(self):
+    def testInsufficientPayVerifyTx(self):
         numHeader = 24  # minimum is 24 (block 300017 plus 6 confirmations)
         # headers are stored by k1, but k0 is who makes the verifyTx call
         self.storeHeadersFrom300K(numHeader, tester.k1, tester.a1)
+        keySender = tester.k0
+        addrSender = tester.a0
 
         # block 300017
         header = {'nonce': 2022856018, 'hash': u'000000000000000032c0ae55f7f52b179a6346bb0d981af55394a3b9cdc556ea', 'timestamp': 1399708353, 'merkle_root': u'2fcb4296ba8d2cc5748a9310bac31d2652389c4d70014ccf742d0e4409a612c9', 'version': 2, 'prevhash': u'00000000000000002ec86a542e2cefe62dcec8ac2317a1dc92fbb094f9d30941', 'bits': 419465580}
         hashes = [u'29d2afa00c4947965717542a9fcf31aa0d0f81cbe590c9b794b8c55d7a4803de', u'84d4e48925445ef3b5722edaad229447f6ef7c77dfdb3b67b288a2e9dac97ebf', u'9f1ddd2fed16b0615d8cdd99456f5229ff004ea93234256571972d8c4eda05dd', u'ca31ee6fecd2d054b85449fb52d2b2bd9f8777b5e603a02d7de53c09e300d127', u'521eabbe29ce215b4b309db7807ed8f655ddb34233b2cfe8178522a335154923', u'a03159699523335896ec6d1ce0a18b247a3373b288cefe6ed5d14ddeeb71db45', u'810a3a390a4b565a54606dd0921985047cf940070b0c61a82225fc742aa4a2e3', u'161400e37071b7096ca6746e9aa388e256d2fe8816cec49cdd73de82f9dae15d', u'af355fbfcf63b67a219de308227dca5c2905c47331a8233613e7f7ac4bacc875', u'1c433a2359318372a859c94ace4cd2b1d5f565ae2c8496ef8255e098c710b9d4', u'49e09d2f48a8f11e13864f7daca8c6b1189507511a743149e16e16bca1858f80', u'5fd034ffd19cda72a78f7bacfd7d9b7b0bc64bc2d3135382db29238aa4d3dd03', u'74ab68a617c8419e6cbae05019a2c81fea6439e233550e5257d9411677845f34', u'df2650bdfcb4efe5726269148828ac18e2a1990c15f7d01d572252656421e896', u'1501aa1dbcada110009fe09e9cec5820fce07e4178af45869358651db4e2b282', u'41f96bb7e58018722c4d0dae2f6f4381bb1d461d3a61eac8b77ffe274b535292', u'aaf9b4e66d5dadb4b4f1107750a18e705ce4b4683e161eb3b1eaa04734218356', u'56639831c523b68cac6848f51d2b39e062ab5ff0b6f2a7dea33765f8e049b0b2', u'3a86f1f34e5d4f8cded3f8b22d6fe4b5741247be7ed164ca140bdb18c9ea7f45', u'da0322e4b634ec8dac5f9b173a2fe7f6e18e5220a27834625a0cfe6d0680c6e8', u'f5d94d46d68a6e953356499eb5d962e2a65193cce160af40200ab1c43228752e', u'e725d4efd42d1213824c698ef4172cdbab683fe9c9170cc6ca552f52244806f6', u'e7711581f7f9028f8f8b915fa0ddb091baade88036bf6f309e2d802043c3231d']
         [txHash, txIndex, siblings, txBlockHash] = makeMerkleProof(header, hashes, 1)
 
-        self.xcoin.approveOnce(self.c.address, FEE_VERIFY_TX)
-        self.xcoin.approveOnce(self.c.address, FEE_VERIFY_TX, sender=tester.k1)
-        assert 0 == self.c.verifyTx(txHash, txIndex, siblings, txBlockHash)
+        ethPaid = FEE_VERIFY_TX - 1
+        ethBal = self.s.block.get_balance(addrSender)
+        assert 0 == self.c.verifyTx(txHash, txIndex, siblings, txBlockHash, sender=keySender, value=ethPaid)
 
-        assert self.xcoin.coinBalanceOf(tester.a0) == 0
-        assert self.xcoin.coinBalanceOf(tester.a1) == numHeader*REWARD_PER_HEADER
-        assert self.xcoin.coinBalanceOf(self.c.address) == TOKEN_ENDOWMENT - numHeader*REWARD_PER_HEADER
-
-        assert 1 == self.c.verifyTx(txHash, txIndex, siblings, txBlockHash, sender=tester.k1)
-        assert self.xcoin.coinBalanceOf(tester.a0) == 0
-        assert self.xcoin.coinBalanceOf(tester.a1) == numHeader*REWARD_PER_HEADER - FEE_VERIFY_TX
-        assert self.xcoin.coinBalanceOf(self.c.address) == TOKEN_ENDOWMENT - numHeader*REWARD_PER_HEADER + FEE_VERIFY_TX
+        assert self.s.block.get_balance(addrSender) == ethBal - ethPaid
+        assert self.s.block.get_balance(self.c.address) == ethPaid
 
 
     # based on test_btcrelay testStoreBlockHeader
@@ -196,6 +188,116 @@ class TestTokens(object):
         assert 100002 == self.c.storeBlockHeader(blockHeaderBinary[2])
         assert self.xcoin.coinBalanceOf(addrSender) == expCoinsOfSender + REWARD_PER_HEADER
 
+
+    # oneSender stores 2 headers; twoSender stores 1 header
+    # Thus oneSender has 1/3 and 1/3 of tokens, and twoSender has 1/3.
+    # These thirds are then cashed out in the following order:
+    # twoSender cashes out, then oneSender cashes out half, then oneSender
+    # cashes out remaining half. This effectively tests cashing out 1/3, 50%,
+    # and then 100% of tokens.
+    def testThirdsCashOut(self):
+        Sender = namedtuple('Sender', ['key', 'addr', 'expCoins'])
+        oneSender = Sender(tester.k1, tester.a1, 2*REWARD_PER_HEADER)
+
+        block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
+        self.c.setInitialParent(block100kPrev, 99999, 1)
+
+        headers = [
+            "0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710",
+            "0100000006e533fd1ada86391f3f6c343204b0d278d4aaec1c0b20aa27ba0300000000006abbb3eb3d733a9fe18967fd7d4c117e4ccbbac5bec4d910d900b3ae0793e77f54241b4d4c86041b4089cc9b",
+            "0100000090f0a9f110702f808219ebea1173056042a714bad51b916cb6800000000000005275289558f51c9966699404ae2294730c3c9f9bda53523ce50e9b95e558da2fdb261b4d4c86041b1ab1bf93",
+        ]
+        blockHeaderBinary = map(lambda x: x.decode('hex'), headers)
+        # store only 2 headers for now
+        for i in range(2):
+            res = self.c.storeBlockHeader(blockHeaderBinary[i], sender=oneSender.key)
+            # print('@@@@ real chain score: ' + str(self.c.getCumulativeDifficulty()))
+            assert res == i+100000
+
+        assert self.xcoin.coinBalanceOf(oneSender.addr) == oneSender.expCoins
+
+        twoSender = Sender(tester.k2, tester.a2, REWARD_PER_HEADER)
+        assert 100002 == self.c.storeBlockHeader(blockHeaderBinary[2], sender=twoSender.key)
+        assert self.xcoin.coinBalanceOf(twoSender.addr) == twoSender.expCoins
+
+
+        keySender = tester.k0
+        addrSender = tester.a0  # should be a0
+        # block 300017
+        header = {'nonce': 2022856018, 'hash': u'000000000000000032c0ae55f7f52b179a6346bb0d981af55394a3b9cdc556ea', 'timestamp': 1399708353, 'merkle_root': u'2fcb4296ba8d2cc5748a9310bac31d2652389c4d70014ccf742d0e4409a612c9', 'version': 2, 'prevhash': u'00000000000000002ec86a542e2cefe62dcec8ac2317a1dc92fbb094f9d30941', 'bits': 419465580}
+        hashes = [u'29d2afa00c4947965717542a9fcf31aa0d0f81cbe590c9b794b8c55d7a4803de', u'84d4e48925445ef3b5722edaad229447f6ef7c77dfdb3b67b288a2e9dac97ebf', u'9f1ddd2fed16b0615d8cdd99456f5229ff004ea93234256571972d8c4eda05dd', u'ca31ee6fecd2d054b85449fb52d2b2bd9f8777b5e603a02d7de53c09e300d127', u'521eabbe29ce215b4b309db7807ed8f655ddb34233b2cfe8178522a335154923', u'a03159699523335896ec6d1ce0a18b247a3373b288cefe6ed5d14ddeeb71db45', u'810a3a390a4b565a54606dd0921985047cf940070b0c61a82225fc742aa4a2e3', u'161400e37071b7096ca6746e9aa388e256d2fe8816cec49cdd73de82f9dae15d', u'af355fbfcf63b67a219de308227dca5c2905c47331a8233613e7f7ac4bacc875', u'1c433a2359318372a859c94ace4cd2b1d5f565ae2c8496ef8255e098c710b9d4', u'49e09d2f48a8f11e13864f7daca8c6b1189507511a743149e16e16bca1858f80', u'5fd034ffd19cda72a78f7bacfd7d9b7b0bc64bc2d3135382db29238aa4d3dd03', u'74ab68a617c8419e6cbae05019a2c81fea6439e233550e5257d9411677845f34', u'df2650bdfcb4efe5726269148828ac18e2a1990c15f7d01d572252656421e896', u'1501aa1dbcada110009fe09e9cec5820fce07e4178af45869358651db4e2b282', u'41f96bb7e58018722c4d0dae2f6f4381bb1d461d3a61eac8b77ffe274b535292', u'aaf9b4e66d5dadb4b4f1107750a18e705ce4b4683e161eb3b1eaa04734218356', u'56639831c523b68cac6848f51d2b39e062ab5ff0b6f2a7dea33765f8e049b0b2', u'3a86f1f34e5d4f8cded3f8b22d6fe4b5741247be7ed164ca140bdb18c9ea7f45', u'da0322e4b634ec8dac5f9b173a2fe7f6e18e5220a27834625a0cfe6d0680c6e8', u'f5d94d46d68a6e953356499eb5d962e2a65193cce160af40200ab1c43228752e', u'e725d4efd42d1213824c698ef4172cdbab683fe9c9170cc6ca552f52244806f6', u'e7711581f7f9028f8f8b915fa0ddb091baade88036bf6f309e2d802043c3231d']
+        [txHash, txIndex, siblings, txBlockHash] = makeMerkleProof(header, hashes, 1)
+
+        ethBal = self.s.block.get_balance(addrSender)
+        res = self.c.verifyTx(txHash, txIndex, siblings, txBlockHash, sender=keySender, value=FEE_VERIFY_TX, profiling=True)
+        assert res['output'] == 0  # verify fails but not the point of this test
+
+        totalEthFee = FEE_VERIFY_TX
+        assert self.s.block.get_balance(addrSender) == ethBal - FEE_VERIFY_TX
+        assert self.s.block.get_balance(self.c.address) == FEE_VERIFY_TX
+
+        #
+        # twoSender cashes out ALL and should get 1/3 of the ETH fees
+        #
+        twoBalEth = self.s.block.get_balance(twoSender.addr)
+        contractTokenBal = self.xcoin.coinBalanceOf(self.c.address)
+
+        self.s.block.coinbase = twoSender.addr
+        self.xcoin.approveOnce(self.c.address, twoSender.expCoins, sender=twoSender.key)
+        self.c.cashOut(twoSender.expCoins, sender=twoSender.key)  # cashes out ALL
+        self.s.block.coinbase = addrSender
+        # coinbase dance needed so that balances are as expected
+        assert self.xcoin.coinBalanceOf(twoSender.addr) == 0
+        contractTokenBal += twoSender.expCoins
+        assert self.xcoin.coinBalanceOf(self.c.address) == contractTokenBal
+        ethGrant = totalEthFee / 3
+        assert self.s.block.get_balance(twoSender.addr) == twoBalEth + ethGrant
+
+        totalEthFee -= ethGrant
+        assert self.s.block.get_balance(self.c.address) == totalEthFee
+
+        #
+        # oneSender now has 100% of issued tokens
+        # oneSender cashes out HALF of their tokens and should get
+        # 1/2 of the ETH fees
+        #
+        oneBalEth = self.s.block.get_balance(oneSender.addr)
+
+        self.s.block.coinbase = oneSender.addr
+        self.xcoin.approveOnce(self.c.address, oneSender.expCoins/2, sender=oneSender.key)
+        self.c.cashOut(oneSender.expCoins/2, sender=oneSender.key)  # cashes out HALF
+        self.s.block.coinbase = addrSender
+        # coinbase dance needed so that balances are as expected
+        assert self.xcoin.coinBalanceOf(oneSender.addr) == oneSender.expCoins/2
+        contractTokenBal += oneSender.expCoins/2
+        assert self.xcoin.coinBalanceOf(self.c.address) == contractTokenBal
+        ethGrant = totalEthFee / 2
+        assert self.s.block.get_balance(oneSender.addr) == oneBalEth + ethGrant
+
+        totalEthFee -= ethGrant
+        assert self.s.block.get_balance(self.c.address) == totalEthFee
+
+        #
+        # oneSender cashes out ALL tokens and should get all ETH fees
+        #
+        oneSenderCoins = oneSender.expCoins / 2  # oneSender only has half their tokens left
+        oneBalEth = self.s.block.get_balance(oneSender.addr)
+
+        self.s.block.coinbase = oneSender.addr
+        self.xcoin.approveOnce(self.c.address, oneSenderCoins, sender=oneSender.key)
+        self.c.cashOut(oneSenderCoins, sender=oneSender.key)  # cashes out ALL
+        self.s.block.coinbase = addrSender
+        # coinbase dance needed so that balances are as expected
+        assert self.xcoin.coinBalanceOf(oneSender.addr) == 0
+        contractTokenBal += oneSenderCoins
+        assert self.xcoin.coinBalanceOf(self.c.address) == contractTokenBal
+        ethGrant = totalEthFee
+        assert self.s.block.get_balance(oneSender.addr) == oneBalEth + ethGrant
+
+        totalEthFee -= ethGrant
+        assert self.s.block.get_balance(self.c.address) == totalEthFee
+
+
     def testEndowment(self):
         assert self.xcoin.coinBalanceOf(self.c.address) == TOKEN_ENDOWMENT
 
@@ -243,8 +345,8 @@ class TestTokens(object):
         assert BTC_ETH.setTrustedBtcRelay(self.c.address, sender=tester.k1) == 1
         assert BTC_ETH.testingonlySetBtcAddr(btcAddr, sender=tester.k1) == 1
 
-        self.xcoin.approveOnce(self.c.address, TOTAL_FEE_RELAY_TX, sender=keySender)
-        res = self.c.relayTx(txStr, txHash, txIndex, siblings, txBlockHash, BTC_ETH.address, sender=keySender, profiling=True)
+        ethBal = self.s.block.get_balance(addrSender)
+        res = self.c.relayTx(txStr, txHash, txIndex, siblings, txBlockHash, BTC_ETH.address, sender=keySender, value=TOTAL_FEE_RELAY_TX, profiling=True)
 
         indexOfBtcAddr = txStr.find(format(btcAddr, 'x'))
         ethAddrBin = txStr[indexOfBtcAddr+68:indexOfBtcAddr+108].decode('hex') # assumes ether addr is after btcAddr
@@ -255,8 +357,8 @@ class TestTokens(object):
         assert userEthBalance == expEtherBalance
         assert res['output'] == 1  # ether was transferred
 
-        expCoinsOfSender = numHeader*REWARD_PER_HEADER - TOTAL_FEE_RELAY_TX
-        assert self.xcoin.coinBalanceOf(addrSender) == expCoinsOfSender
+        assert self.s.block.get_balance(addrSender) == ethBal - TOTAL_FEE_RELAY_TX
+        assert self.s.block.get_balance(self.c.address) == TOTAL_FEE_RELAY_TX
 
 
     def storeHeadersFrom300K(self, numHeader, keySender, addrSender):

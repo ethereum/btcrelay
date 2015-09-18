@@ -27,14 +27,19 @@ data heaviestBlock
 # highest score among all blocks (so far)
 data highScore
 
+# TODO pack more data in the slot of tokenContract?
 # address of contract that will issue btcrelay tokens
 data tokenContract
+
+# TODO optimize by avoiding this extra storage slot?
+data numTokenIssued
+
 
 # TODO move to constants.se
 #macro TOKEN_FACTORY: 0xfd5aee44be7195a704a86c18dfc0b65813486f7e
 macro TOKEN_ENDOWMENT: 2**200
 macro REWARD_PER_HEADER: 1000
-macro FEE_VERIFY_TX: 12 * REWARD_PER_HEADER  # ~2 hours worth of blockheaders
+macro FEE_VERIFY_TX: 100000000000000000  # 0.1 ETH
 
 
 # def init():
@@ -133,6 +138,7 @@ def storeBlockHeader(blockHeaderBinary:str):
 # - 'sibling' are the merkle siblings of tx
 def verifyTx(txHash, txIndex, sibling:arr, txBlockHash):
     if !chargeVerifyTx():
+        # insufficient payments are NOT refunded
         return(0)
 
     if self.within6Confirms(txBlockHash) || !self.inMainChain(txBlockHash):
@@ -156,7 +162,7 @@ def verifyTx(txHash, txIndex, sibling:arr, txBlockHash):
 # TODO txHash can eventually be computed (dbl sha256 then flip32Bytes) when
 # txStr becomes txBinary
 def relayTx(txStr:str, txHash, txIndex, sibling:arr, txBlockHash, contract):
-    if self.verifyTx(txHash, txIndex, sibling, txBlockHash) == 1:
+    if self.verifyTx(txHash, txIndex, sibling, txBlockHash, value=msg.value) == 1:
         res = contract.processTransaction(txStr, txHash)
         log(msg.sender, data=[res])
         return(res)
@@ -254,6 +260,10 @@ def within6Confirms(txBlockHash):
     return(0)
 
 
+
+def cashOut(numToken):
+    m_cashOut(numToken)
+
 #
 # macros
 #
@@ -261,12 +271,20 @@ def within6Confirms(txBlockHash):
 # tx.origin is issued tokens when a blockHeader is stored
 macro rewardForBlockHeader():
     # reward tx.origin, since storeBlockHeader() may be called indirectly like bulkStoreHeader()
-    self.tokenContract.sendCoin(REWARD_PER_HEADER, tx.origin)
+    if self.tokenContract.sendCoin(REWARD_PER_HEADER, tx.origin):
+        self.numTokenIssued += REWARD_PER_HEADER
 
-# tx.origin is charged when transacting with verifyTx()
+
 macro chargeVerifyTx():
-    # charge tx.origin since internal APIs like relayTx() call verifyTx()
-    self.tokenContract.sendCoinFrom(tx.origin, FEE_VERIFY_TX, self)
+    msg.value >= FEE_VERIFY_TX
+
+
+# TODO tx.origin ?
+macro m_cashOut($numToken):
+    if self.tokenContract.sendCoinFrom(msg.sender, $numToken, self):
+        $numEth = self.balance * $numToken / self.numTokenIssued
+        self.numTokenIssued -= $numToken
+        send(msg.sender, $numEth)
 
 # get the parent of '$blockHash'
 macro getPrevBlock($blockHash):
