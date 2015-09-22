@@ -8,7 +8,7 @@ import pytest
 slow = pytest.mark.slow
 
 from utilRelay import makeMerkleProof, randomMerkleProof, \
-    getBlockHeaderBinary, dblSha256Flip, disablePyethLogging
+    getHeaderBytes, dblSha256Flip, disablePyethLogging
 
 disablePyethLogging()
 
@@ -129,8 +129,8 @@ class TestTokens(object):
         self.c.setInitialParent(block300K, 299999, 1)
 
         blockHeaderStr = '0200000059c786bb379b65487f373279354f8ccc91ffcea2200c36080000000000000000dd9d7757a736fec629ab0ed0f602ba23c77afe7edec85a7026f641fd90bcf8f658ca8154747b1b1894fc742f'
-        bhBinary = blockHeaderStr.decode('hex')
-        res = self.c.storeBlockHeader(bhBinary, profiling=True, sender=tester.k1)
+        bhBytes = blockHeaderStr.decode('hex')
+        res = self.c.storeBlockHeader(bhBytes, profiling=True, sender=tester.k1)
         print('GAS: %s' % res['gas'])
         assert res['output'] == 300000
 
@@ -151,10 +151,10 @@ class TestTokens(object):
             "0100000006e533fd1ada86391f3f6c343204b0d278d4aaec1c0b20aa27ba0300000000006abbb3eb3d733a9fe18967fd7d4c117e4ccbbac5bec4d910d900b3ae0793e77f54241b4d4c86041b4089cc9b",
             "0100000090f0a9f110702f808219ebea1173056042a714bad51b916cb6800000000000005275289558f51c9966699404ae2294730c3c9f9bda53523ce50e9b95e558da2fdb261b4d4c86041b1ab1bf93",
         ]
-        blockHeaderBinary = map(lambda x: x.decode('hex'), headers)
+        blockHeaderBytes = map(lambda x: x.decode('hex'), headers)
         # store only 2 headers for now
         for i in range(2):
-            res = self.c.storeBlockHeader(blockHeaderBinary[i])
+            res = self.c.storeBlockHeader(blockHeaderBytes[i])
             # print('@@@@ real chain score: ' + str(self.c.getCumulativeDifficulty()))
             assert res == i+100000
 
@@ -176,7 +176,7 @@ class TestTokens(object):
         hashPrevBlock = block100kPrev
         for i in range(3):
             nonce = 1 if (i in [4,5]) else 0
-            bhBytes = getBlockHeaderBinary(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+            bhBytes = getHeaderBytes(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
             res = self.c.storeBlockHeader(bhBytes)
             hashPrevBlock = dblSha256Flip(bhBytes)
 
@@ -185,7 +185,7 @@ class TestTokens(object):
         assert self.xcoin.coinBalanceOf(addrSender) == expCoinsOfSender
 
         # store a block with enough work that it extends the main chain
-        assert 100002 == self.c.storeBlockHeader(blockHeaderBinary[2])
+        assert 100002 == self.c.storeBlockHeader(blockHeaderBytes[2])
         assert self.xcoin.coinBalanceOf(addrSender) == expCoinsOfSender + REWARD_PER_HEADER
 
 
@@ -207,17 +207,17 @@ class TestTokens(object):
             "0100000006e533fd1ada86391f3f6c343204b0d278d4aaec1c0b20aa27ba0300000000006abbb3eb3d733a9fe18967fd7d4c117e4ccbbac5bec4d910d900b3ae0793e77f54241b4d4c86041b4089cc9b",
             "0100000090f0a9f110702f808219ebea1173056042a714bad51b916cb6800000000000005275289558f51c9966699404ae2294730c3c9f9bda53523ce50e9b95e558da2fdb261b4d4c86041b1ab1bf93",
         ]
-        blockHeaderBinary = map(lambda x: x.decode('hex'), headers)
+        blockHeaderBytes = map(lambda x: x.decode('hex'), headers)
         # store only 2 headers for now
         for i in range(2):
-            res = self.c.storeBlockHeader(blockHeaderBinary[i], sender=oneSender.key)
+            res = self.c.storeBlockHeader(blockHeaderBytes[i], sender=oneSender.key)
             # print('@@@@ real chain score: ' + str(self.c.getCumulativeDifficulty()))
             assert res == i+100000
 
         assert self.xcoin.coinBalanceOf(oneSender.addr) == oneSender.expCoins
 
         twoSender = Sender(tester.k2, tester.a2, REWARD_PER_HEADER)
-        assert 100002 == self.c.storeBlockHeader(blockHeaderBinary[2], sender=twoSender.key)
+        assert 100002 == self.c.storeBlockHeader(blockHeaderBytes[2], sender=twoSender.key)
         assert self.xcoin.coinBalanceOf(twoSender.addr) == twoSender.expCoins
 
 

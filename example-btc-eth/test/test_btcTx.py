@@ -43,7 +43,7 @@ class TestBtcTx(object):
         # rawTx = rawTx.decode('hex')
         outNum = 0
 
-        # expHashOfOutputScript is by hashing the string (not binary), in this case it is:
+        # expHashOfOutputScript is by hashing the string (not bytes), in this case it is:
         # >>> j
         # '76a914c398efa9c392ba6013c5e04ee729755ef7f58b3288ac'
         # >>> sha256(j)

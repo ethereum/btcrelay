@@ -45,7 +45,7 @@ def randomMerkleProof(blocknum, txIndex=-1, withMerkle=False):
     return ret
 
 
-def getBlockHeaderBinary(ver, prev_block, mrkl_root, time_, bits, nonce):
+def getHeaderBytes(ver, prev_block, mrkl_root, time_, bits, nonce):
     bytesPrevBlock = format(prev_block, '64x').replace(' ', '0')
     bytesPrevBlock = bytesPrevBlock.decode('hex')[::-1]
 

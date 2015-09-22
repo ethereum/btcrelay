@@ -90,14 +90,14 @@ def setInitialParent(blockHash, height, cumulativeDifficulty):
 
 
 # store a Bitcoin block header that must be provided in
-# binary format 'blockHeaderBinary'
-def storeBlockHeader(blockHeaderBinary:str):
+# bytes format 'blockHeaderBytes'
+def storeBlockHeader(blockHeaderBytes:str):
     hashPrevBlock = flip32Bytes(~calldataload(72))  # 68 (header start) + 4 (offset for hashPrevBlock)
 
     scorePrevBlock = m_getScore(hashPrevBlock)
     assert scorePrevBlock  # assert prev block exists
 
-    blockHash = m_hashBlockHeader(blockHeaderBinary)
+    blockHash = m_hashBlockHeader(blockHeaderBytes)
 
     scoreBlock = m_getScore(blockHash)
     if scoreBlock != 0:  # block already stored/exists
@@ -111,7 +111,7 @@ def storeBlockHeader(blockHeaderBinary:str):
     if blockHash > 0 && blockHash < target:
         m_saveAncestors(blockHash, hashPrevBlock)
 
-        save(self.block[blockHash]._blockHeader[0], blockHeaderBinary, chars=80)
+        save(self.block[blockHash]._blockHeader[0], blockHeaderBytes, chars=80)
 
         difficulty = 0x00000000FFFF0000000000000000000000000000000000000000000000000000 / target # https://en.bitcoin.it/wiki/Difficulty
         m_setScore(blockHash, scorePrevBlock + difficulty)
@@ -160,7 +160,7 @@ def verifyTx(txHash, txIndex, sibling:arr, txBlockHash):
 # is logged on both this contract and target contract
 #
 # TODO txHash can eventually be computed (dbl sha256 then flip32Bytes) when
-# txStr becomes txBinary
+# txStr becomes txBytes
 def relayTx(txStr:str, txHash, txIndex, sibling:arr, txBlockHash, contract):
     if self.verifyTx(txHash, txIndex, sibling, txBlockHash, value=msg.value) == 1:
         res = contract.processTransaction(txStr, txHash)

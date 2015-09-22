@@ -1,7 +1,7 @@
 window.btcRelayAbi = [{
     "name": "bulkStoreHeader(bytes,int256)",
     "type": "function",
-    "inputs": [{ "name": "headersBinary", "type": "bytes" }, { "name": "count", "type": "int256" }],
+    "inputs": [{ "name": "headersBytes", "type": "bytes" }, { "name": "count", "type": "int256" }],
     "outputs": [{ "name": "out", "type": "int256" }]
 },
 {
@@ -49,7 +49,7 @@ window.btcRelayAbi = [{
 {
     "name": "storeBlockHeader(bytes)",
     "type": "function",
-    "inputs": [{ "name": "blockHeaderBinary", "type": "bytes" }],
+    "inputs": [{ "name": "blockHeaderBytes", "type": "bytes" }],
     "outputs": [{ "name": "out", "type": "int256" }]
 },
 {

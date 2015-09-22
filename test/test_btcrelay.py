@@ -5,7 +5,7 @@ import struct
 import pytest
 slow = pytest.mark.slow
 
-from utilRelay import getBlockHeaderBinary, dblSha256Flip, disablePyethLogging
+from utilRelay import getHeaderBytes, dblSha256Flip, disablePyethLogging
 
 disablePyethLogging()
 
@@ -41,9 +41,9 @@ class TestBtcRelay(object):
             "0100000079cda856b143d9db2c1caff01d1aecc8630d30625d10e8b4b8b0000000000000b50cc069d6a3e33e3ff84a5c41d9d3febe7c770fdcc96b2c3ff60abe184f196367291b4d4c86041b8fa45d63",
             "0100000045dc58743362fe8d8898a7506faa816baed7d391c9bc0b13b0da00000000000021728a2f4f975cc801cb3c672747f1ead8a946b2702b7bd52f7b86dd1aa0c975c02a1b4d4c86041b7b47546d"
         ]
-        blockHeaderBinary = map(lambda x: x.decode('hex'), headers)
+        blockHeaderBytes = map(lambda x: x.decode('hex'), headers)
         for i in range(7):
-            res = self.c.storeBlockHeader(blockHeaderBinary[i])
+            res = self.c.storeBlockHeader(blockHeaderBytes[i])
             # print('@@@@ real chain score: ' + str(self.c.getCumulativeDifficulty()))
             assert res == i+100000
 
@@ -103,9 +103,9 @@ class TestBtcRelay(object):
         hashPrevBlock = block100kPrev
         for i in range(7):
             nonce = 1 if (i in [4,5]) else 0
-            blockHeaderBinary = getBlockHeaderBinary(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
-            res = self.c.storeBlockHeader(blockHeaderBinary)
-            hashPrevBlock = dblSha256Flip(blockHeaderBinary)
+            blockHeaderBytes = getHeaderBytes(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+            res = self.c.storeBlockHeader(blockHeaderBytes)
+            hashPrevBlock = dblSha256Flip(blockHeaderBytes)
 
             # print('@@@@ fake chain score: ' + str(self.c.getCumulativeDifficulty()))
             assert res == i+100000  # fake blocks are stored since there is possibility they can become the main chain
@@ -161,9 +161,9 @@ class TestBtcRelay(object):
         hashPrevBlock = block100kPrev
         for i in range(7):
             nonce = 1 if (i in [4,5]) else 0
-            blockHeaderBinary = getBlockHeaderBinary(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
-            res = self.c.storeBlockHeader(blockHeaderBinary)
-            hashPrevBlock = dblSha256Flip(blockHeaderBinary)
+            blockHeaderBytes = getHeaderBytes(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+            res = self.c.storeBlockHeader(blockHeaderBytes)
+            hashPrevBlock = dblSha256Flip(blockHeaderBytes)
             assert res == i+100000
 
         # testingonlySetHeaviest is needed because the difficulty from
@@ -188,10 +188,10 @@ class TestBtcRelay(object):
             "0100000079cda856b143d9db2c1caff01d1aecc8630d30625d10e8b4b8b0000000000000b50cc069d6a3e33e3ff84a5c41d9d3febe7c770fdcc96b2c3ff60abe184f196367291b4d4c86041b8fa45d63",
             "0100000045dc58743362fe8d8898a7506faa816baed7d391c9bc0b13b0da00000000000021728a2f4f975cc801cb3c672747f1ead8a946b2702b7bd52f7b86dd1aa0c975c02a1b4d4c86041b7b47546d"
         ]
-        blockHeaderBinary = map(lambda x: x.decode('hex'), headers)
+        blockHeaderBytes = map(lambda x: x.decode('hex'), headers)
         block100k = 0x000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506
         for i in range(7):
-            res = self.c.storeBlockHeader(blockHeaderBinary[i])
+            res = self.c.storeBlockHeader(blockHeaderBytes[i])
             assert res == i+100000
 
             # firstEasyBlock should no longer verify since it is no longer on the main chain
@@ -218,9 +218,9 @@ class TestBtcRelay(object):
             "0100000079cda856b143d9db2c1caff01d1aecc8630d30625d10e8b4b8b0000000000000b50cc069d6a3e33e3ff84a5c41d9d3febe7c770fdcc96b2c3ff60abe184f196367291b4d4c86041b8fa45d63",
             "0100000045dc58743362fe8d8898a7506faa816baed7d391c9bc0b13b0da00000000000021728a2f4f975cc801cb3c672747f1ead8a946b2702b7bd52f7b86dd1aa0c975c02a1b4d4c86041b7b47546d"
         ]
-        blockHeaderBinary = map(lambda x: x.decode('hex'), headers)
+        blockHeaderBytes = map(lambda x: x.decode('hex'), headers)
         for i in range(7):
-            res = self.c.storeBlockHeader(blockHeaderBinary[i])
+            res = self.c.storeBlockHeader(blockHeaderBytes[i])
             assert res == i+100000
 
 
@@ -245,15 +245,15 @@ class TestBtcRelay(object):
         self.c.setInitialParent(0, 0, 1)
 
         blockHeaderStr = ("0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c")
-        bhBinary = blockHeaderStr.decode('hex')
-        res = self.c.storeBlockHeader(bhBinary, profiling=True)
+        bhBytes = blockHeaderStr.decode('hex')
+        res = self.c.storeBlockHeader(bhBytes, profiling=True)
         return res
 
     def storeBlock1(self):
         # block 1
         blockHeaderStr = ("010000006fe28c0ab6f1b372c1a6a246ae63f74f931e8365e15a089c68d6190000000000982051fd1e4ba744bbbe680e1fee14677ba1a3c3540bf7b1cdb606e857233e0e61bc6649ffff001d01e36299")
-        bhBinary = blockHeaderStr.decode('hex')
-        res = self.c.storeBlockHeader(bhBinary, profiling=True)
+        bhBytes = blockHeaderStr.decode('hex')
+        res = self.c.storeBlockHeader(bhBytes, profiling=True)
         print('GAS: '+str(res['gas']))
         assert res['output'] == 2  # genesis block is at height 1
 
@@ -279,24 +279,24 @@ class TestBtcRelay(object):
         self.c.setInitialParent(parent, height, cumulDifficulty)
 
         orphanStr = '03000000c269930b6793b7d3b01ca6b8c56863ca4f00b075a7bd150a0000000000000000391c579bd59cb0199baf96dc1bc1066de0dc202bbe18f062a20aa25f78729376ba6f5d55f586161826f45178'
-        bhBinary = orphanStr.decode('hex')
+        bhBytes = orphanStr.decode('hex')
 
         orphanHash = 0x00000000000000000db6ab0aa23c28fc707f05f1646d25dba684ffe316bcf24d
-        assert dblSha256Flip(bhBinary) == orphanHash
+        assert dblSha256Flip(bhBytes) == orphanHash
 
-        assert self.c.storeBlockHeader(bhBinary) == height + 1
+        assert self.c.storeBlockHeader(bhBytes) == height + 1
         assert self.c.getBlockchainHead() == orphanHash
         assert self.c.getLastBlockHeight() == height + 1
         assert self.c.getCumulativeDifficulty() == 1981795846593359
 
         # real 357369
         headerStr = '03000000c269930b6793b7d3b01ca6b8c56863ca4f00b075a7bd150a00000000000000004bdc09e5405944a6319baf5e90335f221d5b91d44f5212c05bb1e751b997cc74db6f5d55f5861618351ec186'
-        bhBinary = headerStr.decode('hex')
+        bhBytes = headerStr.decode('hex')
 
         hash357369 = 0x000000000000000007f379bc159a38fa5ccec4689336f32eba9d148b5c190439
-        assert dblSha256Flip(bhBinary) == hash357369
+        assert dblSha256Flip(bhBytes) == hash357369
 
-        assert self.c.storeBlockHeader(bhBinary) == height + 1
+        assert self.c.storeBlockHeader(bhBytes) == height + 1
         assert self.c.getBlockchainHead() == hash357369
         assert self.c.getLastBlockHeight() == height + 1
         assert self.c.getCumulativeDifficulty() == 1981795846593359
@@ -327,16 +327,16 @@ class TestBtcRelay(object):
         # nonce = 796195988
         # blockNumber = 333001
         blockHeaderStr = '0200000059c786bb379b65487f373279354f8ccc91ffcea2200c36080000000000000000dd9d7757a736fec629ab0ed0f602ba23c77afe7edec85a7026f641fd90bcf8f658ca8154747b1b1894fc742f'
-        bhBinary = blockHeaderStr.decode('hex')
-        res = self.c.storeBlockHeader(bhBinary, profiling=True, sender=tester.k1)
+        bhBytes = blockHeaderStr.decode('hex')
+        res = self.c.storeBlockHeader(bhBytes, profiling=True, sender=tester.k1)
         print('GAS: %s' % res['gas'])
         assert res['output'] == 300000
 
     # was converted to macro
     # def testFastHashBlock(self):
     #     blockHeaderStr = "0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710"
-    #     bhBinary = blockHeaderStr.decode('hex')
-    #     res = self.c.fastHashBlock(bhBinary, profiling=True)
+    #     bhBytes = blockHeaderStr.decode('hex')
+    #     res = self.c.fastHashBlock(bhBytes, profiling=True)
     #     print('GAS: '+str(res['gas']))
     #     exp = 0x000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506
     #     assert res['output'] == exp
