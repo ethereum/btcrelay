@@ -49,7 +49,11 @@ macro FEE_VERIFY_TX: 100000000000000000  # 0.1 ETH
     # issues such as https://github.com/ethereum/serpent/issues/77 78 ...
 
 def initTokenContract(tokenFactoryAddr):
-    self.tokenContract = tokenFactoryAddr.createStandardToken(TOKEN_ENDOWMENT)
+    if !self.tokenContract:  # can only be set once
+        self.tokenContract = tokenFactoryAddr.createStandardToken(TOKEN_ENDOWMENT)
+        return(self.tokenContract)
+
+def getTokenContract():
     return(self.tokenContract)
 
 

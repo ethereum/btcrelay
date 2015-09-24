@@ -401,3 +401,5 @@ def initBtcRelayTokens(cls, tester):
     _abi = TOKEN_CONTRACT_ABI
     _address = hex(tokenContractAddr)[2:-1].decode('hex')
     cls.xcoin = tester.ABIContract(cls.s, _abi, _address, listen=True, log_listener=None)
+
+    assert cls.c.getTokenContract() == tokenContractAddr
