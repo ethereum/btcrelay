@@ -2,4 +2,4 @@
 macro chargeVerifyTx(): 1
 
 # no-op
-macro rewardForBlockHeader(): 0
+macro rewardForBlockHeader($blockHeight): 0

@@ -273,12 +273,20 @@ def within6Confirms(txBlockHash):
     return(0)
 
 
+# TODO: should this charge fee?  what about other APIs?
+# getBlockHeaders costs around 23K gas
+def getBlockHeader(blockHash):
+    return(load(self.block[blockHash]._blockHeader[0], chars=80):str)
+
 
 def cashOut(numToken):
     m_cashOut(numToken)
 
 #
 # macros
+# (when running tests, ensure the testing macro overrides have the
+# same signatures as the actual macros, otherwise tests will fail with
+# an obscure message such as tester.py:201: TransactionFailed)
 #
 
 # tx.origin is issued tokens when a blockHeader is stored
