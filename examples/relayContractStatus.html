@@ -8,6 +8,7 @@
   <script src="./js/bootstrap.min.js"></script>
 
   <script src="./js/btcRelayAbi.js"></script>
+  <script src="./js/tokenContractAbi.js"></script>
 
   <script src="./js/bignumber.js"></script>
   <script src="./js/web3.min.js"></script>
@@ -19,8 +20,20 @@
   var heightPerRelay;
 
   $(function() {
-    var relayAddr = web3.eth.namereg.addr('btcrelay');
+    /*
+      do NOT forget to update ABI files when needed
+     */
+
+     var tokenContractAddr = '0x0624e55d8cd4b83611ea17b129a68f5ff814fe4c';
+     var relayAddr = '0x2fd4f3ae10608cd6192339e72d4f6a0c182dee22'; // ConsenSys testnet
+
+
+    // var tokenContractAddr = '0xb095b0b20af8b7c2a83afda756a7146e03c0687c';  // NOT the factory's address
+    // var tokenContractAddr = '0x79c6915b618b0896b1c98d30526fa4aa1fb74bb2';  // NOT the factory's address
+    // var relayAddr = '0xb27c1f181a14bb5c281c91df8d72352cb5e7dc39';  // ConsenSys testnet
+    // var relayAddr = web3.eth.namereg.addr('btcrelay');  // Olympic
     $('#relayAddr').text(relayAddr);
+
 
     updateBCI();
     updateBlockr();
@@ -33,6 +46,29 @@
 
     var headHash = contract.getBlockchainHead.call();
     $('#latestBlockHash').text(formatHash(headHash));
+
+
+    var TokenContract = web3.eth.contract(tokenContractAbi);  // see ./js/tokenContractAbi.js
+    var xbrContract = TokenContract.at(tokenContractAddr);
+
+    var ethTotal = web3.fromWei(web3.eth.getBalance(relayAddr), 'ether');
+    $('#ethTotal').text(ethTotal);
+
+    var userAddr = web3.eth.coinbase;  // assumption
+    $('#userAddr').text(userAddr);
+
+    var userXBR = xbrContract.coinBalanceOf.call(userAddr);
+    $('#userXBR').text(userXBR);
+
+
+    window.btcrelayTester = contract;
+    // signature of verifyTx is (txHash, txIndex, merkleSiblingArray, txBlockHash)
+    // to make a call to verifyTx so that btcrelay will get some fees,
+    // run this code in the browser developer console: fees will be sent
+    // from the coinbase
+    // res = btcrelayTester.verifyTx.sendTransaction(0, 1, [], 0, {from: web3.eth.coinbase, value: web3.toWei('0.1', 'ether')});
+    // console.log('txHash for verifyTx: ', res)
+
 
     setTimeout(checkHeights, 1000);
   });
@@ -96,11 +132,29 @@
       </h3>
     </div>
 
+    <div>
+      <h3>btcrelay collected ETH: <strong id="ethTotal"></strong></h3>
+      <h3>Your address: <strong id="userAddr"></strong></h3>
+      <h3>Your XBR balance: <strong id="userXBR"></strong></h3>
+    </div>
+
+    <div>
+      <form class="form-inline">
+        <div class="form-group">
+          <label for="numXBR">XBR amount to cash out:</label>
+          <input type="number" class="form-control" id="numXBR"></input>
+        </div>
+        <button type="button" class="btn btn-default" id="btn-compute-cashout">Compute</button>
+      </form>
+      <h3>ETH to receive: <strong id="ethToReceive"></strong></h3>
+    </div>
+
+
     <!-- <h3>blockchain.info Latest Block Hash: <strong id="bciBlockHash"></strong></h3> -->
 
-    <div class="footer-logo">
+    <!-- <div class="footer-logo">
       <img src="./images/ETH_DEV_LOGO_LARGE.svg"/>
-    </div>
+    </div> -->
   </div>
 </body>
 

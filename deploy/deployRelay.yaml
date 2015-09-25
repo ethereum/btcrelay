@@ -5,7 +5,20 @@
       gas: 3000000
       wait: True
 
-# Livenet
+# token contracts are on private testnet
+# ensure enough gas!
+-
+  transact:
+    initTokenContract:
+      gas: 1200000
+      to: $RelayWithBulkStore
+      sig: initTokenContract:[int256]:int256
+      data:
+        - 0x55a285c6f02fcb7ba51c44d5a019153d8e39390e
+      retry: 60
+      wait: True
+
+# parent block is Bitcoin Livenet
 -
   transact:
     SetInitialParent:
@@ -13,8 +26,8 @@
       to: $RelayWithBulkStore
       sig: setInitialParent:[int256,int256,int256]:int256
       data:
-        - 0x00000000000000000d26d1ec7eee34b726fba0d4d776392dae0b9cb960a1ddb3
-        - 375948
+        - 0x000000000000000002cc95d0ac3fb6e8afbda5ccb93ca235d52a6baedb2d23dd
+        - 376621
         - 1
       retry: 60
       wait: True

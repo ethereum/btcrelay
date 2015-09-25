@@ -13,6 +13,7 @@ from bitcoin import *  # NOQA
 BITCOIN_MAINNET = 'btc'
 BITCOIN_TESTNET = 'testnet'
 SLEEP_TIME = 5 * 60  # 5 mins.  If changing, check retry logic
+GAS_FOR_STORE_HEADERS = 1200000  # it should take less than 1M gas, but buffer to avoid running out
 
 
 api_config = config.read_config()
@@ -200,7 +201,7 @@ def storeHeaders(bhBytes, chunkSize):
 
     data = [bhBytes, chunkSize]
 
-    gas = 900000
+    gas = GAS_FOR_STORE_HEADERS
     value = 0
 
     #

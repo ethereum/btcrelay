@@ -1,6 +1,6 @@
 -
   set:
-    RelayWithBulkStore: "0x73b1c6d725eafb2b9514e2af092f9f61fd005088"
+    RelayWithBulkStore: "0x2fd4f3ae10608cd6192339e72d4f6a0c182dee22"
 
 -
   call:
@@ -19,3 +19,9 @@
     getCumulativeDifficulty:
       to: $RelayWithBulkStore
       sig: getCumulativeDifficulty:[]:int256
+
+-
+  call:
+    getTokenContract:
+      to: $RelayWithBulkStore
+      sig: getTokenContract:[]:int256
