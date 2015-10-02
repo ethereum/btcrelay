@@ -9,12 +9,15 @@ extern btcrelayTokenFactory: [createStandardToken:[uint256]:address]
 extern btcrelayToken: [sendCoin:[uint256,address]:bool, sendCoinFrom:[address,uint256,address]:bool, coinBalance:[]:address, coinBalanceOf:[address]:address]
 
 
+# TODO: "_height" is 1 more than the typical Bitcoin term height/blocknumber [see setInitialParent()]
+#        or should an additional terminology `blockNumber` be added that equals height-1 ?
+#
 # note: _ancestor[9]
 #
 # a Bitcoin block (header) is stored as:
 # - _blockHeader 80 bytes
 # - _info who's 32 bytes are comprised of "_height" 8bytes, "_ibIndex" 8bytes, "_score" 16bytes
-# -   "_height" is 1 more than the typical Bitcoin term height/blocknumber [see setPreGensesis()]
+# -   "_height" is 1 more than the typical Bitcoin term height/blocknumber [see setInitialParent()]
 # -   "_ibIndex" is the block's index to internalBlock (see btcChain)
 # -   "_score" is 1 more than the cumulative difficulty [see setInitialParent()]
 # - _ancestor stores 8 32bit ancestor indices for more efficient backtracking (see btcChain)
@@ -41,6 +44,9 @@ macro TOKEN_ENDOWMENT: 2**200
 macro REWARD_PER_HEADER: 1000
 macro FEE_VERIFY_TX: 100000000000000000  # 0.1 ETH
 
+
+event rewardToken(blockHeight:indexed, rewardAddr:address)  # TODO: indexed or not?
+event ethPayment()
 
 # def init():
     # self.tokenContract = TOKEN_FACTORY.createStandardToken(TOKEN_ENDOWMENT)
@@ -123,12 +129,13 @@ def storeBlockHeader(blockHeaderBytes:str):
         # equality allows block with same score to become the Head, so that
         # when a Head is orphaned, the chain can still continue
         scoreBlock = m_getScore(blockHash)
+        blockHeight = m_getHeight(blockHash)
         if scoreBlock >= self.highScore:
             self.heaviestBlock = blockHash
             self.highScore = scoreBlock
-            rewardForBlockHeader()
+            rewardForBlockHeader(blockHeight)
 
-        return(m_getHeight(blockHash))
+        return(blockHeight)
 
     return(0)
 
@@ -144,6 +151,8 @@ def verifyTx(txHash, txIndex, sibling:arr, txBlockHash):
     if !chargeVerifyTx():
         # insufficient payments are NOT refunded
         return(0)
+
+    log(type=ethPayment)
 
     if self.within6Confirms(txBlockHash) || !self.inMainChain(txBlockHash):
         return(0)
@@ -273,10 +282,11 @@ def cashOut(numToken):
 #
 
 # tx.origin is issued tokens when a blockHeader is stored
-macro rewardForBlockHeader():
+macro rewardForBlockHeader($blockHeight):
     # reward tx.origin, since storeBlockHeader() may be called indirectly like bulkStoreHeader()
     if self.tokenContract.sendCoin(REWARD_PER_HEADER, tx.origin):
         self.numTokenIssued += REWARD_PER_HEADER
+        log(type=rewardToken, $blockHeight, tx.origin)  # TODO: should msg.sender also be logged
 
 
 macro chargeVerifyTx():
