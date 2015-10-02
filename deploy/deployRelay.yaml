@@ -6,7 +6,8 @@
       wait: True
 
 # token contracts are on private testnet
-# ensure enough gas!
+# NOTE initTokenContract requires the address of the TokenFactory
+# must also ensure enough gas!
 -
   transact:
     initTokenContract:
@@ -26,8 +27,8 @@
       to: $RelayWithBulkStore
       sig: setInitialParent:[int256,int256,int256]:int256
       data:
-        - 0x000000000000000002cc95d0ac3fb6e8afbda5ccb93ca235d52a6baedb2d23dd
-        - 376621
+        - 0x000000000000000004a24a396c1077a0089572123df7c3e2732c258374dc2fe2
+        - 377089
         - 1
       retry: 60
       wait: True

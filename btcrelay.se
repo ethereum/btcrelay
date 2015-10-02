@@ -282,6 +282,15 @@ def getBlockHeader(blockHash):
 def cashOut(numToken):
     m_cashOut(numToken)
 
+
+# TODO is an API like getInitialParent() needed? it could be obtained using
+# web3.eth.getStorageAt using index 0x4000000000001
+#
+# Are other APIs needed?
+# eg getBlockNumber(given a blockHash)
+# getBlockHash(given a blockNumber)
+
+
 #
 # macros
 # (when running tests, ensure the testing macro overrides have the
