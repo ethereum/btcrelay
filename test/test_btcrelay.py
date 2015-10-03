@@ -16,7 +16,7 @@ class TestBtcRelay(object):
     ETHER = 10 ** 18
 
     def setup_class(cls):
-        tester.gas_limit = int(2.85e6)  # include costs of debug methods
+        tester.gas_limit = int(2.95e6)  # include costs of debug methods
         cls.s = tester.state()
         cls.c = cls.s.abi_contract(cls.CONTRACT_DEBUG, endowment=2000*cls.ETHER)
         cls.snapshot = cls.s.snapshot()
@@ -338,6 +338,8 @@ class TestBtcRelay(object):
         assert res['output'] == bhBytes
 
         assert self.c.funcPrevBlock(blockHash) == block300K
+
+        assert self.c.funcGetBits(blockHash) == 0x181b7b74
 
 
     # was converted to macro

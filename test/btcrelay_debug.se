@@ -9,6 +9,9 @@ def testingonlySetHeaviest(blockHash):
 def funcPrevBlock(blockHash):
     return(getPrevBlock(blockHash))
 
+def funcGetBits(blockHash):
+    return(m_getBits(blockHash))
+
 def funcTargetFromBits(bits):
     return(targetFromBits(bits))
 
