@@ -113,12 +113,12 @@ def storeBlockHeader(blockHeaderBytes:str):
     if scoreBlock != 0:  # block already stored/exists
         return(0)
 
-    bits = m_bitsFromBlockHeader()
+    bits = m_bitsFromCurrentBlockHeader()
     target = targetFromBits(bits)
 
     # we only check the target and do not do other validation (eg timestamp)
     # to save gas
-    if blockHash > 0 && blockHash < target:
+    if blockHash > 0 && m_targetIsValid(target) && blockHash < target:
         m_saveAncestors(blockHash, hashPrevBlock)
 
         save(self.block[blockHash]._blockHeader[0], blockHeaderBytes, chars=80)
@@ -317,6 +317,20 @@ macro m_cashOut($numToken):
         self.numTokenIssued -= $numToken
         send(msg.sender, $numEth)
 
+
+# TODO
+macro m_targetIsValid($target):
+    1
+
+
+
+# TODO
+macro m_getBits($blockHash):
+    with $addr = ref(self.block[$blockHash]._blockHeader[0]):
+        $tmp = sload($addr) * BYTES_4 + div(sload($addr+3), BYTES_28)  # must use div()
+    flip32Bytes($tmp)
+
+
 # get the parent of '$blockHash'
 macro getPrevBlock($blockHash):
     with $addr = ref(self.block[$blockHash]._blockHeader[0]):
@@ -337,7 +351,7 @@ macro m_hashBlockHeader($blockHeaderBytes):
 
 
 # get the 'bits' field from a Bitcoin blockheader
-macro m_bitsFromBlockHeader():
+macro m_bitsFromCurrentBlockHeader():
     with $w = ~calldataload(68+72):  # 68 (header start) + 72 (offset for 'bits')
         byte(0, $w) + byte(1, $w)*BYTES_1 + byte(2, $w)*BYTES_2 + byte(3, $w)*BYTES_3
 

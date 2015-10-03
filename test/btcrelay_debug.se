@@ -6,6 +6,9 @@ def testingonlySetHeaviest(blockHash):
 # macro wrappers (since only functions are testable)
 #
 
+def funcPrevBlock(blockHash):
+    return(getPrevBlock(blockHash))
+
 def funcTargetFromBits(bits):
     return(targetFromBits(bits))
 
