@@ -27,7 +27,7 @@ class TestBtcRelay(object):
         tester.seed = self.seed
 
 
-
+    # fork from 6 blocks ago, using blocks with same difficulty
     def testForkingPast(self):
         block10Prev = 0x000000008d9dc510f23c2657fc4f67bea30078cc05a90eb89e84cc475c080805
         self.c.setInitialParent(block10Prev, 9, 1)
@@ -82,9 +82,9 @@ class TestBtcRelay(object):
         assert b6 == self.c.getBlockchainHead()
 
 
-        # insert (fake) blocks that will not be on main chain
-        # using script/mine.py (commit 2ad9bc7) these are the next 7 blocks
-        # nonce: 0 blockhash: 11bb7c5555b8eab7801b1c4384efcab0d869230fcf4a8f043abad255c99105f8
+        # insert blocks to create a fork from the start (block 9)
+        # using script/mine.py these are the next 7 blocks
+        # nonce: 0 blockhash: fill txBlockHash first
         # nonce: 0 blockhash: 178930a916fa91dd29b2716387b7e024a6b3b2d2efa86bc45c86be223b07a4e5
         # nonce: 0 blockhash: 7b3c348edbb3645b34b30259105a941890e95e0ecc0a1c243ff48260d746e456
         # nonce: 0 blockhash: 02c67135bd91986f9aaf3f0818baab439202fe5c34400c2c10bff6cd1336d436
@@ -92,18 +92,11 @@ class TestBtcRelay(object):
         # nonce: 1 blockhash: 38a052cdf4ef0fddf2de88e687163db7f39cb8de738fa9f5e871a72fc74c57c1
         # nonce: 0 blockhash: 2b80a2f4b68e9ebfd4975f5f14a340501d24c3adf041ad9be4cd2576e827328c
 
-        # https://bitcoin.org/en/developer-reference#target-nbits
-        # Difficulty 1, the minimum allowed difficulty, is represented on
-        # mainnet and the current testnet by the nBits value 0x1d00ffff.
-        # Regtest mode uses a different difficulty 1 value of 0x207fffff,
-        # the highest possible value below uint32_max which can be encoded;
-        # this allows near-instant building of blocks in regtest mode.
-        REGTEST_EASIEST_DIFFICULTY = 0x207fFFFFL
         version = 1
         # real merkle of block100k
-        hashMerkleRoot = 0xf3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766
-        time = 1293623863  # from block100k
-        bits = REGTEST_EASIEST_DIFFICULTY
+        hashMerkleRoot = 0xd3ad39fa52a89997ac7381c95eeffeaf40b66af7a57e9eba144be0a175a12b11
+        time = 1231473952  # from block10
+        bits = 0x1d00ffff  # from block10
         nonce = 1
         hashPrevBlock = block10Prev
         for i in range(7):
@@ -113,7 +106,7 @@ class TestBtcRelay(object):
             hashPrevBlock = dblSha256Flip(blockHeaderBytes)
 
             # print('@@@@ fake chain score: ' + str(self.c.getCumulativeDifficulty()))
-            assert res == i+100000  # fake blocks are stored since there is possibility they can become the main chain
+            assert res == i+10  # fake blocks are stored since there is possibility they can become the main chain
 
         assert self.c.getCumulativeDifficulty() == cumulDiff  # cumulDiff should not change
         assert b6 == self.c.getBlockchainHead()
@@ -128,7 +121,8 @@ class TestBtcRelay(object):
         res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
         assert res == 1
 
-    # also tests a (fake) fork
+
+    # TODO
     def testHeadersFrom100K(self):
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
         self.c.setInitialParent(block100kPrev, 99999, 1)
