@@ -50,20 +50,18 @@ class TestBtcRelay(object):
         cumulDiff = self.c.getCumulativeDifficulty()
 
         # block hashes
-        b0 = 0x000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506
-        b1 = 0x00000000000080b66c911bd5ba14a74260057311eaeb1982802f7010f1a9f090 # block #100001
-        b2 = 0x0000000000013b8ab2cd513b0261a14096412195a72a0c4827d229dcc7e0f7af
-        b3 = 0x000000000002a0a74129007b1481d498d0ff29725e9f403837d517683abac5e1
-        b4 = 0x000000000000b0b8b4e8105d62300d63c8ec1a1df0af1c2cdbd943b156a8cd79
-        b5 = 0x000000000000dab0130bbcc991d3d7ae6b81aa6f50a798888dfe62337458dc45
-        b6 = 0x0000000000009b958a82c10804bd667722799cc3b457bc061cd4b7779110cd60
+        b0 = 0x000000002c05cc2e78923c34df87fd108b22221ac6076c18f3ade378a4d915e9
+        b1 = 0x0000000097be56d606cdd9c54b04d4747e957d3608abe69198c661f2add73073 # block #100001
+        b2 = 0x0000000027c2488e2510d1acf4369787784fa20ee084c258b58d9fbd43802b5e
+        b3 = 0x000000005c51de2031a895adc145ee2242e919a01c6d61fb222a54a54b4d3089
+        b4 = 0x0000000080f17a0c5a67f663a9bc9969eb37e81666d9321125f0e293656f8a37
+        b5 = 0x00000000b3322c8c3ef7d2cf6da009a776e6a99ee65ec5a32f3f345712238473
+        b6 = 0x00000000174a25bb399b009cc8deff1c4b3ea84df7e93affaaf60dc3416cc4f5
 
-        # values are from block 100K
-        tx = 0x8c14f0db3df150123e6f3dbbf30f8b955a8249b62ac1d1ff16284aefa3d06d87
+        # values are from block 10
+        tx = 0xd3ad39fa52a89997ac7381c95eeffeaf40b66af7a57e9eba144be0a175a12b11
         txIndex = 0
-        sibling = [None] * 2
-        sibling[0] = 0xfff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4
-        sibling[1] = 0x8e30899078ca1813be036a073bbf80b86cdddde1c96e9e9c99e9e3782df4ae49
+        sibling = []
 
 
         txBlockHash = 0xdead
@@ -107,7 +105,7 @@ class TestBtcRelay(object):
         time = 1293623863  # from block100k
         bits = REGTEST_EASIEST_DIFFICULTY
         nonce = 1
-        hashPrevBlock = block100kPrev
+        hashPrevBlock = block10Prev
         for i in range(7):
             nonce = 1 if (i in [4,5]) else 0
             blockHeaderBytes = getHeaderBytes(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
