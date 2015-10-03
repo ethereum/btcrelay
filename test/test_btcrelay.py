@@ -27,6 +27,109 @@ class TestBtcRelay(object):
         tester.seed = self.seed
 
 
+
+    def testForkingPast(self):
+        block10Prev = 0x000000008d9dc510f23c2657fc4f67bea30078cc05a90eb89e84cc475c080805
+        self.c.setInitialParent(block10Prev, 9, 1)
+
+        headers = [
+            '010000000508085c47cc849eb80ea905cc7800a3be674ffc57263cf210c59d8d00000000112ba175a1e04b14ba9e7ea5f76ab640affeef5ec98173ac9799a852fa39add320cd6649ffff001d1e2de565',
+            '01000000e915d9a478e3adf3186c07c61a22228b10fd87df343c92782ecc052c000000006e06373c80de397406dc3d19c90d71d230058d28293614ea58d6a57f8f5d32f8b8ce6649ffff001d173807f8',
+            '010000007330d7adf261c69891e6ab08367d957e74d4044bc5d9cd06d656be9700000000b8c8754fabb0ffeb04ca263a1368c39c059ca0d4af3151b876f27e197ebb963bc8d06649ffff001d3f596a0c',
+            '010000005e2b8043bd9f8db558c284e00ea24f78879736f4acd110258e48c2270000000071b22998921efddf90c75ac3151cacee8f8084d3e9cb64332427ec04c7d562994cd16649ffff001d37d1ae86',
+            '0100000089304d4ba5542a22fb616d1ca019e94222ee45c1ad95a83120de515c00000000560164b8bad7675061aa0f43ced718884bdd8528cae07f24c58bb69592d8afe185d36649ffff001d29cbad24',
+            '01000000378a6f6593e2f0251132d96616e837eb6999bca963f6675a0c7af180000000000d080260d107d269ccba9247cfc64c952f1d13514b49e9f1230b3a197a8b7450fa276849ffff001d38d8fb98',
+            '010000007384231257343f2fa3c55ee69ea9e676a709a06dcfd2f73e8c2c32b300000000442ee91b2b999fb15d61f6a88ecf2988e9c8ed48f002476128e670d3dac19fe706286849ffff001d049e12d6'
+        ]
+        blockHeaderBytes = map(lambda x: x.decode('hex'), headers)
+        for i in range(7):
+            res = self.c.storeBlockHeader(blockHeaderBytes[i])
+            # print('@@@@ real chain score: ' + str(self.c.getCumulativeDifficulty()))
+            assert res == i+10
+
+        cumulDiff = self.c.getCumulativeDifficulty()
+
+        # block hashes
+        b0 = 0x000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506
+        b1 = 0x00000000000080b66c911bd5ba14a74260057311eaeb1982802f7010f1a9f090 # block #100001
+        b2 = 0x0000000000013b8ab2cd513b0261a14096412195a72a0c4827d229dcc7e0f7af
+        b3 = 0x000000000002a0a74129007b1481d498d0ff29725e9f403837d517683abac5e1
+        b4 = 0x000000000000b0b8b4e8105d62300d63c8ec1a1df0af1c2cdbd943b156a8cd79
+        b5 = 0x000000000000dab0130bbcc991d3d7ae6b81aa6f50a798888dfe62337458dc45
+        b6 = 0x0000000000009b958a82c10804bd667722799cc3b457bc061cd4b7779110cd60
+
+        # values are from block 100K
+        tx = 0x8c14f0db3df150123e6f3dbbf30f8b955a8249b62ac1d1ff16284aefa3d06d87
+        txIndex = 0
+        sibling = [None] * 2
+        sibling[0] = 0xfff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4
+        sibling[1] = 0x8e30899078ca1813be036a073bbf80b86cdddde1c96e9e9c99e9e3782df4ae49
+
+
+        txBlockHash = 0xdead
+        res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
+        assert res == 0
+
+        # b1 is within6confirms so should NOT verify
+        txBlockHash = b1
+        res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
+        assert res == 0
+
+
+        # verifyTx should only return 1 for b0
+        txBlockHash = b0
+        res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
+        assert res == 1
+
+        assert b6 == self.c.getBlockchainHead()
+
+
+        # insert (fake) blocks that will not be on main chain
+        # using script/mine.py (commit 2ad9bc7) these are the next 7 blocks
+        # nonce: 0 blockhash: 11bb7c5555b8eab7801b1c4384efcab0d869230fcf4a8f043abad255c99105f8
+        # nonce: 0 blockhash: 178930a916fa91dd29b2716387b7e024a6b3b2d2efa86bc45c86be223b07a4e5
+        # nonce: 0 blockhash: 7b3c348edbb3645b34b30259105a941890e95e0ecc0a1c243ff48260d746e456
+        # nonce: 0 blockhash: 02c67135bd91986f9aaf3f0818baab439202fe5c34400c2c10bff6cd1336d436
+        # nonce: 1 blockhash: 6e60065cc981914c23897143c75f0cde6e456df65f23afd41ddc6e6ce86b2b63
+        # nonce: 1 blockhash: 38a052cdf4ef0fddf2de88e687163db7f39cb8de738fa9f5e871a72fc74c57c1
+        # nonce: 0 blockhash: 2b80a2f4b68e9ebfd4975f5f14a340501d24c3adf041ad9be4cd2576e827328c
+
+        # https://bitcoin.org/en/developer-reference#target-nbits
+        # Difficulty 1, the minimum allowed difficulty, is represented on
+        # mainnet and the current testnet by the nBits value 0x1d00ffff.
+        # Regtest mode uses a different difficulty 1 value of 0x207fffff,
+        # the highest possible value below uint32_max which can be encoded;
+        # this allows near-instant building of blocks in regtest mode.
+        REGTEST_EASIEST_DIFFICULTY = 0x207fFFFFL
+        version = 1
+        # real merkle of block100k
+        hashMerkleRoot = 0xf3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766
+        time = 1293623863  # from block100k
+        bits = REGTEST_EASIEST_DIFFICULTY
+        nonce = 1
+        hashPrevBlock = block100kPrev
+        for i in range(7):
+            nonce = 1 if (i in [4,5]) else 0
+            blockHeaderBytes = getHeaderBytes(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+            res = self.c.storeBlockHeader(blockHeaderBytes)
+            hashPrevBlock = dblSha256Flip(blockHeaderBytes)
+
+            # print('@@@@ fake chain score: ' + str(self.c.getCumulativeDifficulty()))
+            assert res == i+100000  # fake blocks are stored since there is possibility they can become the main chain
+
+        assert self.c.getCumulativeDifficulty() == cumulDiff  # cumulDiff should not change
+        assert b6 == self.c.getBlockchainHead()
+
+        # forked block should NOT verify
+        txBlockHash = 0x11bb7c5555b8eab7801b1c4384efcab0d869230fcf4a8f043abad255c99105f8
+        res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
+        assert res == 0
+
+        # b0 should still verify
+        txBlockHash = b0
+        res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
+        assert res == 1
+
     # also tests a (fake) fork
     def testHeadersFrom100K(self):
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
