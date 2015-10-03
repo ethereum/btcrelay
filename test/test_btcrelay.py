@@ -85,7 +85,7 @@ class TestBtcRelay(object):
 
 
         # insert (fake) blocks that will not be on main chain
-        # using script/mine.py these are the next 7 blocks
+        # using script/mine.py (commit 2ad9bc7) these are the next 7 blocks
         # nonce: 0 blockhash: 11bb7c5555b8eab7801b1c4384efcab0d869230fcf4a8f043abad255c99105f8
         # nonce: 0 blockhash: 178930a916fa91dd29b2716387b7e024a6b3b2d2efa86bc45c86be223b07a4e5
         # nonce: 0 blockhash: 7b3c348edbb3645b34b30259105a941890e95e0ecc0a1c243ff48260d746e456
@@ -93,12 +93,19 @@ class TestBtcRelay(object):
         # nonce: 1 blockhash: 6e60065cc981914c23897143c75f0cde6e456df65f23afd41ddc6e6ce86b2b63
         # nonce: 1 blockhash: 38a052cdf4ef0fddf2de88e687163db7f39cb8de738fa9f5e871a72fc74c57c1
         # nonce: 0 blockhash: 2b80a2f4b68e9ebfd4975f5f14a340501d24c3adf041ad9be4cd2576e827328c
-        EASIEST_DIFFICULTY_TARGET = 0x207fFFFFL
+
+        # https://bitcoin.org/en/developer-reference#target-nbits
+        # Difficulty 1, the minimum allowed difficulty, is represented on
+        # mainnet and the current testnet by the nBits value 0x1d00ffff.
+        # Regtest mode uses a different difficulty 1 value of 0x207fffff,
+        # the highest possible value below uint32_max which can be encoded;
+        # this allows near-instant building of blocks in regtest mode.
+        REGTEST_EASIEST_DIFFICULTY = 0x207fFFFFL
         version = 1
         # real merkle of block100k
         hashMerkleRoot = 0xf3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766
         time = 1293623863  # from block100k
-        bits = EASIEST_DIFFICULTY_TARGET
+        bits = REGTEST_EASIEST_DIFFICULTY
         nonce = 1
         hashPrevBlock = block100kPrev
         for i in range(7):
@@ -151,12 +158,12 @@ class TestBtcRelay(object):
         # nonce: 1 blockhash: 6e60065cc981914c23897143c75f0cde6e456df65f23afd41ddc6e6ce86b2b63
         # nonce: 1 blockhash: 38a052cdf4ef0fddf2de88e687163db7f39cb8de738fa9f5e871a72fc74c57c1
         # nonce: 0 blockhash: 2b80a2f4b68e9ebfd4975f5f14a340501d24c3adf041ad9be4cd2576e827328c
-        EASIEST_DIFFICULTY_TARGET = 0x207fFFFFL
+        REGTEST_EASIEST_DIFFICULTY = 0x207fFFFFL
         version = 1
         # real merkle of block100k
         hashMerkleRoot = 0xf3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766
         time = 1293623863  # from block100k
-        bits = EASIEST_DIFFICULTY_TARGET
+        bits = REGTEST_EASIEST_DIFFICULTY
         nonce = 1
         hashPrevBlock = block100kPrev
         for i in range(7):
@@ -167,7 +174,7 @@ class TestBtcRelay(object):
             assert res == i+100000
 
         # testingonlySetHeaviest is needed because the difficulty from
-        # EASIEST_DIFFICULTY_TARGET becomes 0 and so the score does not
+        # REGTEST_EASIEST_DIFFICULTY becomes 0 and so the score does not
         # increase, meaning that heaviesBlock also does not change
         self.c.testingonlySetHeaviest(0x2b80a2f4b68e9ebfd4975f5f14a340501d24c3adf041ad9be4cd2576e827328c)
 
