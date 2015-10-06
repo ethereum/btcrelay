@@ -14,6 +14,10 @@ from bitcoin import *
 def makeMerkleProof(header, hashes, txIndex):
     proof = mk_merkle_proof(header, hashes, txIndex)  # from pybitcointools
 
+    return argsForVerifyTx(proof)
+
+
+def argsForVerifyTx(proof, txIndex):
     txHash = int(proof['hash'], 16)
     siblings = map(partial(int,base=16), proof['siblings'])
     txBlockHash = int(proof['header']['hash'], 16)
