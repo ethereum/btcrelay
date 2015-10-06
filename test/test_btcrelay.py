@@ -62,8 +62,8 @@ class TestBtcRelay(object):
                 hashPrevBlock = int(blockJson['hash'], 16)
                 assert hashPrevBlock == dblSha256Flip(blockHeaderBytes)
 
-                b1 == hashPrevBlock if i==1 else 0
-                b6 == hashPrevBlock if i==6 else 0
+                b1 = hashPrevBlock if i==1 else b1
+                b6 = hashPrevBlock if i==6 else b6
 
                 # print('@@@@ chain score: ' + str(self.c.getCumulativeDifficulty()))
                 assert res == i+forkPrevNum
