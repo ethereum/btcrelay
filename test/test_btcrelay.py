@@ -3,6 +3,7 @@ from ethereum import tester
 import datetime
 import struct
 import json
+from functools import partial
 import pytest
 slow = pytest.mark.slow
 
@@ -28,12 +29,19 @@ class TestBtcRelay(object):
         tester.seed = self.seed
 
 
-    # fork from 6 blocks ago, using blocks with same difficulty
+    # fork at block 363731
     def testForkingPast(self):
+        forkGrandParent = 0x000000000000000011e40c5deb1a1e3438b350ea3db3fa2dedd285db9650a6e6
         forkPrevHash = 0x000000000000000006a320d752b46b532ec0f3f815c5dae467aff5715a6e579e
         forkPrevNum = 363730
-        self.c.setInitialParent(forkPrevHash, forkPrevNum, 1)
+        self.c.setInitialParent(forkGrandParent, forkPrevNum-1, 1)
 
+        forkPrevHashHeader = "03000000e6a65096db85d2ed2dfab33dea50b338341e1aeb5d0ce411000000000000000098420532fa55a0bca5f043f8f8f16a2b73761e822178692cb99ced039e2a32a0ea3f97558e4116183a9cc34a"
+        assert self.c.storeBlockHeader(forkPrevHashHeader.decode('hex')) == forkPrevNum
+
+        b0 = forkPrevHash
+        b1 = 0
+        b6 = 0
         hashPrevBlock = forkPrevHash
         for i in range(1, 7):
             with open('test/headers/fork/20150704/36373'+str(i)+'.json') as dataFile:
@@ -54,58 +62,40 @@ class TestBtcRelay(object):
                 hashPrevBlock = int(blockJson['hash'], 16)
                 assert hashPrevBlock == dblSha256Flip(blockHeaderBytes)
 
+                b1 == hashPrevBlock if i==1 else 0
+                b6 == hashPrevBlock if i==6 else 0
+
                 # print('@@@@ chain score: ' + str(self.c.getCumulativeDifficulty()))
                 assert res == i+forkPrevNum
 
-        assert self.c.getCumulativeDifficulty() == 49402014931*6 + 1  # 1 is the initial score
+        assert self.c.getCumulativeDifficulty() == 49402014931*7 + 1  # 1 is the initial score
 
-        assert 0
+        # tx[1] of block 363730
+        txIndex = 1
+        txOne = 0xb58e45ee29d7ad51923855cc04f926e23fa0e0d9645b7326f97c31f9ec5ff983
+        # the following was ran offline (since there are 135 txs in
+        # block 363730 and bci rate limits) in a python console with bitcoin module imported
+        # header = get_block_header_data(363730)
+        # hashes = get_txs_in_block(363730)
+        # merkleProof = mk_merkle_proof(header, hashes, txIndex)
+        merkleProof = {'siblings': ['7db80bd2051a1e8e7b6186c60306e0d774600e23d37172ef24b4f21ede5c50bc', 'ff2323064d268d365f324fbf70bc514835f843ad4bb1bfa335e2b603895adb19', 'c4ed3cc5ba175cca50749b8a4cad5abc3cdeeec4d25aa66917924e2d6e22ec6c', '4c09b1d4255d334e507c42ebcf663cd25ca75faa02fcd490fab63d3a1f695f51', '572959e56447bbc8df6a2d6e9f89d340d60a8f99867a03de0816eff4f95b630b', '0c418846ad446e8b65fc8d0dd31fb3e6c72c4931062cfb0a4d3d34248630fec5', '1ddafddbd52b86ce9988c7b573af24fa4712c0504646c1d016da03e33adf5e00', '045ca7d0156bf1b136d884eada3d53286d2e6bedbe4e1f33699fa9172b469d06'], 'hash': u'b58e45ee29d7ad51923855cc04f926e23fa0e0d9645b7326f97c31f9ec5ff983', 'header': {'nonce': 1254333498, 'hash': u'000000000000000006a320d752b46b532ec0f3f815c5dae467aff5715a6e579e', 'timestamp': 1435975658, 'merkle_root': u'a0322a9e03ed9cb92c697821821e76732b6af1f8f843f0a5bca055fa32054298', 'version': 3, 'prevhash': u'000000000000000011e40c5deb1a1e3438b350ea3db3fa2dedd285db9650a6e6', 'bits': 404111758}}
+        txHash = int(merkleProof['hash'], 16)
+        sibling = map(partial(int,base=16), merkleProof['siblings'])
+        txBlockHash = int(merkleProof['header']['hash'], 16)
 
-        headers = [
-            '0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4dffff7f2000000000',
-            '01000000f80591c955d2ba3a048f4acf0f2369d8b0caef84431c1b80b7eab855557cbb116657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4dffff7f2000000000',
-            '01000000e5a4073b22be865cc46ba8efd2b2b3a624e0b7876371b229dd91fa16a93089176657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4dffff7f2000000000',
-            '0100000056e446d76082f43f241c0acc0e5ee99018945a105902b3345b64b3db8e343c7b6657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4dffff7f2000000000',
-            '0100000036d43613cdf6bf102c0c40345cfe029243abba18083faf9a6f9891bd3571c6026657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4dffff7f2001000000',
-            '01000000632b6be86c6edc1dd4af235ff66d456ede0c5fc7437189234c9181c95c06606e6657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4dffff7f2001000000',
-            '01000000c1574cc72fa771e8f5a98f73deb89cf3b73d1687e688def2dd0feff4cd52a0386657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4dffff7f2000000000'
-        ]
-        blockHeaderBytes = map(lambda x: x.decode('hex'), headers)
-        for i in range(7):
-            res = self.c.storeBlockHeader(blockHeaderBytes[i])
-            # print('@@@@ real chain score: ' + str(self.c.getCumulativeDifficulty()))
-            assert res == i+10
-
-        cumulDiff = self.c.getCumulativeDifficulty()
-
-        # block hashes
-        b0 = 0x000000002c05cc2e78923c34df87fd108b22221ac6076c18f3ade378a4d915e9
-        b1 = 0x0000000097be56d606cdd9c54b04d4747e957d3608abe69198c661f2add73073 # block #100001
-        b2 = 0x0000000027c2488e2510d1acf4369787784fa20ee084c258b58d9fbd43802b5e
-        b3 = 0x000000005c51de2031a895adc145ee2242e919a01c6d61fb222a54a54b4d3089
-        b4 = 0x0000000080f17a0c5a67f663a9bc9969eb37e81666d9321125f0e293656f8a37
-        b5 = 0x00000000b3322c8c3ef7d2cf6da009a776e6a99ee65ec5a32f3f345712238473
-        b6 = 0x00000000174a25bb399b009cc8deff1c4b3ea84df7e93affaaf60dc3416cc4f5
-
-        # values are from block 10
-        tx = 0xd3ad39fa52a89997ac7381c95eeffeaf40b66af7a57e9eba144be0a175a12b11
-        txIndex = 0
-        sibling = []
+        assert txHash == txOne
+        assert txBlockHash == b0
 
 
-        txBlockHash = 0xdead
-        res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
-        assert res == 0
-
+        # TODO
         # b1 is within6confirms so should NOT verify
-        txBlockHash = b1
-        res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
-        assert res == 0
+        # txBlockHash = b1
+        # res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
+        # assert res == 0
 
 
         # verifyTx should only return 1 for b0
-        txBlockHash = b0
-        res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
+        res = self.c.verifyTx(txHash, txIndex, sibling, txBlockHash)
         assert res == 1
 
         assert b6 == self.c.getBlockchainHead()
@@ -151,7 +141,7 @@ class TestBtcRelay(object):
         assert res == 1
 
 
-    # TODO
+    # TODO verify tx in b1
     def testHeadersFrom100K(self):
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
         self.c.setInitialParent(block100kPrev, 99999, 1)
@@ -195,6 +185,8 @@ class TestBtcRelay(object):
         assert res == 0
 
         # b1 is within6confirms so should NOT verify
+        # TODO use proper tx, txIndex, sibling.  Should also test that
+        # when another header is added, the tx does verify
         txBlockHash = b1
         res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
         assert res == 0
