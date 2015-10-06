@@ -84,6 +84,7 @@ class TestBtcRelay(object):
         txHash = int(merkleProof['hash'], 16)
         sibling = map(partial(int,base=16), merkleProof['siblings'])
         txBlockHash = int(merkleProof['header']['hash'], 16)
+        txInBlockZero = [txHash, txIndex, sibling, txBlockHash]
 
         assert txHash == txOne
         assert txBlockHash == b0
@@ -97,7 +98,7 @@ class TestBtcRelay(object):
 
 
         # verifyTx should only return 1 for b0
-        res = self.c.verifyTx(txHash, txIndex, sibling, txBlockHash)
+        res = self.c.verifyTx(*txInBlockZero)
         assert res == 1
 
         assert b6 == self.c.getBlockchainHead()
@@ -124,15 +125,23 @@ class TestBtcRelay(object):
         assert self.c.getCumulativeDifficulty() == cumulDiff  # cumulDiff should not change
         assert self.c.getBlockchainHead() == dblSha256Flip(blockHeaderBytes[-2])
 
-        # forked block should NOT verify
-        txBlockHash = 0x11bb7c5555b8eab7801b1c4384efcab0d869230fcf4a8f043abad255c99105f8
-        res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
+        # tx[1] block 363731
+        # Ran this offline since many txs in 363731
+        # merkleProof = merkle_prove('fcf7daef2123a30a472e3ee9358b950e684f5a61af61295f06688a283f1d1cd7')
+        merkleProof = {'siblings': ['2587cd4d66c1baaba5d4534ff84f4880d7cc14f399c9ebffd5527b4e5fc88870', '41cdaf2bd64ca88648eeb2529e9ef594a40d83e26d048ddee815c8a36aa470e1', '22e557f4c63fd85683a949064add7397c22121e371b5617ef1063dda063fe9c9', 'a3d258a75fcb7df2d9e1904236888fa2a50b139f9146ea60f78716e6240947fc', 'c6ef6fe56abb6d1cbbe042bf1fb304bb708a1f05a4805c451e3680b671c01a7d', '30b0f61f406f37346f002d9eed518dd22aed68c111c3e6543d013703813f2662', '26ec8b0a87da3335f773c35c308c85867733f7e93c185c164aab3f9d3e42730a', '31535344a3d72372df8321540c38f58881d6e49b0b64a69a9bf2b80fa4e31c0f', '96e441b6876b3f72394b4c1e5e4f851df4ba4cd186801879b13873183bbb1968', 'c23c775e159c2af628e4a90d4657557b2cb15212e0ef3b23caf1187e8d779646', 'c6a1286ef43a26b5f9bed22ddad0d9fcae79fb380bdeb43236e8f41e1deab13f'], 'hash': u'fcf7daef2123a30a472e3ee9358b950e684f5a61af61295f06688a283f1d1cd7', 'header': {'nonce': 992806987, 'hash': u'00000000000000000c28e23330c29046f19e817fe8fe039f4044b2b2882aef53', 'timestamp': 1435977973, 'merkle_root': u'cf159bb2dc81a0237359fa31606aa89ae8b9abd0e08e8e86e5cb6c42fc2b8622', 'version': 3, 'prevhash': u'000000000000000006a320d752b46b532ec0f3f815c5dae467aff5715a6e579e', 'bits': 404111758}}
+        txHash = int(merkleProof['hash'], 16)
+        sibling = map(partial(int,base=16), merkleProof['siblings'])
+        txBlockHash = int(merkleProof['header']['hash'], 16)
+        txInBlockOne = [txHash, txIndex, sibling, txBlockHash]
+
+        res = self.c.verifyTx(*txInBlockOne)
         assert res == 0
 
         # b0 should still verify
-        txBlockHash = b0
-        res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
+        res = self.c.verifyTx(*txInBlockZero)
         assert res == 1
+
+        #TODO add another header and txInBlockOne should pass verifyTx
 
 
     # TODO verify tx in b1
