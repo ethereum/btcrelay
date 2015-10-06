@@ -29,8 +29,10 @@ class TestBtcRelay(object):
         tester.seed = self.seed
 
 
-    # fork at block 363731
-    def testForkingPast(self):
+    # store 6 blocks from block Fake363731 (unfortunately no 7th block test data available)
+    # then start a fork at Main363731 and verify that a reorg will verify a tx in
+    # Main363731
+    def testReorg(self):
         forkGrandParent = 0x000000000000000011e40c5deb1a1e3438b350ea3db3fa2dedd285db9650a6e6
         forkPrevHash = 0x000000000000000006a320d752b46b532ec0f3f815c5dae467aff5715a6e579e
         forkPrevNum = 363730
@@ -98,8 +100,7 @@ class TestBtcRelay(object):
 
 
         # verifyTx should only return 1 for b0
-        res = self.c.verifyTx(*txInBlockZero)
-        assert res == 1
+        assert self.c.verifyTx(*txInBlockZero) == 1
 
         assert b6 == self.c.getBlockchainHead()
 
@@ -134,14 +135,17 @@ class TestBtcRelay(object):
         txBlockHash = int(merkleProof['header']['hash'], 16)
         txInBlockOne = [txHash, txIndex, sibling, txBlockHash]
 
-        res = self.c.verifyTx(*txInBlockOne)
-        assert res == 0
+        assert self.c.verifyTx(*txInBlockOne) == 0
 
         # b0 should still verify
-        res = self.c.verifyTx(*txInBlockZero)
-        assert res == 1
+        assert self.c.verifyTx(*txInBlockZero) == 1
 
-        #TODO add another header and txInBlockOne should pass verifyTx
+        # add another header and b1 should now verify
+        assert self.c.storeBlockHeader(blockHeaderBytes[-1]) == 363737
+        assert self.c.verifyTx(*txInBlockZero) == 1
+
+        # b0 should still verify
+        assert self.c.verifyTx(*txInBlockZero) == 1
 
 
     # TODO verify tx in b1
@@ -252,7 +256,7 @@ class TestBtcRelay(object):
 
     # test that a tx that verifies, does not verify after a reorg causes it to
     # no longer be on the main chain
-    def testReorg(self):
+    def testOldReorg(self):
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
         self.c.setInitialParent(block100kPrev, 99999, 1)
 
