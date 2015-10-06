@@ -39,6 +39,7 @@ class TestBtcRelay(object):
         forkPrevHashHeader = "03000000e6a65096db85d2ed2dfab33dea50b338341e1aeb5d0ce411000000000000000098420532fa55a0bca5f043f8f8f16a2b73761e822178692cb99ced039e2a32a0ea3f97558e4116183a9cc34a"
         assert self.c.storeBlockHeader(forkPrevHashHeader.decode('hex')) == forkPrevNum
 
+        # insert the 6 blocks from the fork that will be orphaned
         b0 = forkPrevHash
         b1 = 0
         b6 = 0
@@ -68,7 +69,8 @@ class TestBtcRelay(object):
                 # print('@@@@ chain score: ' + str(self.c.getCumulativeDifficulty()))
                 assert res == i+forkPrevNum
 
-        assert self.c.getCumulativeDifficulty() == 49402014931*7 + 1  # 1 is the initial score
+        cumulDiff = self.c.getCumulativeDifficulty()
+        assert cumulDiff == 49402014931*7 + 1  # 1 is the initial score
 
         # tx[1] of block 363730
         txIndex = 1
@@ -101,31 +103,23 @@ class TestBtcRelay(object):
         assert b6 == self.c.getBlockchainHead()
 
 
-        # insert blocks to create a fork from the start (block 9)
-        # using script/mine.py these are the next 7 blocks
-        # nonce: 0 blockhash: fill txBlockHash first
-        # nonce: 0 blockhash: 178930a916fa91dd29b2716387b7e024a6b3b2d2efa86bc45c86be223b07a4e5
-        # nonce: 0 blockhash: 7b3c348edbb3645b34b30259105a941890e95e0ecc0a1c243ff48260d746e456
-        # nonce: 0 blockhash: 02c67135bd91986f9aaf3f0818baab439202fe5c34400c2c10bff6cd1336d436
-        # nonce: 1 blockhash: 6e60065cc981914c23897143c75f0cde6e456df65f23afd41ddc6e6ce86b2b63
-        # nonce: 1 blockhash: 38a052cdf4ef0fddf2de88e687163db7f39cb8de738fa9f5e871a72fc74c57c1
-        # nonce: 0 blockhash: 2b80a2f4b68e9ebfd4975f5f14a340501d24c3adf041ad9be4cd2576e827328c
+        # insert the blocks that will cause reorg as main chain
 
-        version = 1
-        # real merkle of block100k
-        hashMerkleRoot = 0xf3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766  # from block100K
-        time = 1231473952  # from block10
-        bits = 0x207fFFFF  # REGTEST_EASIEST_DIFFICULTY
-        nonce = 1
-        hashPrevBlock = block10Prev
-        for i in range(7):
-            nonce = 1 if (i in [4,5]) else 0
-            blockHeaderBytes = getHeaderBytes(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
-            res = self.c.storeBlockHeader(blockHeaderBytes)
-            hashPrevBlock = dblSha256Flip(blockHeaderBytes)
+        headers = [
+            "030000009e576e5a71f5af67e4dac515f8f3c02e536bb452d720a306000000000000000022862bfc426ccbe5868e8ee0d0abb9e89aa86a6031fa597323a081dcb29b15cff54897558e4116184b082d3b",
+            "0300000053ef2a88b2b244409f03fee87f819ef14690c23033e2280c00000000000000009e90b9ad092c3f37393f163f70fcc054cbc7dc38210f213840fa9cf9791493b3954997558e4116186d536b51",
+            "03000000d691c32ec84e22c0b9c8fbec184c0ec5f113b16e21e04212000000000000000092ccf4a5399e2436948a6917471135340a51967704bff3c55e57f5f0af6ca7d4275397558e411618d0abe918",
+            "03000000eea345978c6b095148670d6128e1cc9069ac6bb3075c35060000000000000000b00ecf72f6d247a60eca5fc70d760939139cc0bc008d483c90b43e22596e0ed1dc5497558e41161884e655a3",
+            "0300000036191cd0a5e5b1f04dec4cbb97170883fa621013e18a35150000000000000000d8f418aa2714981e26938ccd1620649a5c6fbe839eabc133ac0fac49deafe7dcb75597558e41161810d85d32",
+            "03000000deab448a286a2873fcb3eac032aa1fbb13b7c96a3f24950600000000000000005df3fffaf0b0d3db741bf96cbf35830e3497f0634c819779281b4a2e5d301d65cd5697558e411618983a2772",
 
-            # print('@@@@ fake chain score: ' + str(self.c.getCumulativeDifficulty()))
-            assert res == i+10  # fake blocks are stored since there is possibility they can become the main chain
+            "0300000033c784021ffbbdfff3bea3b4b9a7caa7f4f8c60713f7bc0300000000000000006e28294eb3195a9fe49845bd090bd69afe1e2b9301a8da1c27fd14a819d86da9a25797558e4116181625905a"
+        ]
+        blockHeaderBytes = map(lambda x: x.decode('hex'), headers)
+        for i in range(6):  # only 6 blocks first
+            res = self.c.storeBlockHeader(blockHeaderBytes[i])
+            # print('@@@@ real chain score: ' + str(self.c.getCumulativeDifficulty()))
+            assert res == i+1+forkPrevNum
 
         assert self.c.getCumulativeDifficulty() == cumulDiff  # cumulDiff should not change
         assert b6 == self.c.getBlockchainHead()
