@@ -180,7 +180,7 @@ class TestBtcRelay(object):
 
 
         # insert (fake) blocks that will not be on main chain
-        # using script/mine.py (commit 2ad9bc7) these are the next 7 blocks
+        # using script/mine.py (commit 3908709) these are the next 7 blocks
         # nonce: 0 blockhash: 11bb7c5555b8eab7801b1c4384efcab0d869230fcf4a8f043abad255c99105f8
         # nonce: 0 blockhash: 178930a916fa91dd29b2716387b7e024a6b3b2d2efa86bc45c86be223b07a4e5
         # nonce: 0 blockhash: 7b3c348edbb3645b34b30259105a941890e95e0ecc0a1c243ff48260d746e456
