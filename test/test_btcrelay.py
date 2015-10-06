@@ -69,10 +69,9 @@ class TestBtcRelay(object):
         # hashes = get_txs_in_block(363730)
         # merkleProof = mk_merkle_proof(header, hashes, txIndex)
         merkleProof = {'siblings': ['7db80bd2051a1e8e7b6186c60306e0d774600e23d37172ef24b4f21ede5c50bc', 'ff2323064d268d365f324fbf70bc514835f843ad4bb1bfa335e2b603895adb19', 'c4ed3cc5ba175cca50749b8a4cad5abc3cdeeec4d25aa66917924e2d6e22ec6c', '4c09b1d4255d334e507c42ebcf663cd25ca75faa02fcd490fab63d3a1f695f51', '572959e56447bbc8df6a2d6e9f89d340d60a8f99867a03de0816eff4f95b630b', '0c418846ad446e8b65fc8d0dd31fb3e6c72c4931062cfb0a4d3d34248630fec5', '1ddafddbd52b86ce9988c7b573af24fa4712c0504646c1d016da03e33adf5e00', '045ca7d0156bf1b136d884eada3d53286d2e6bedbe4e1f33699fa9172b469d06'], 'hash': u'b58e45ee29d7ad51923855cc04f926e23fa0e0d9645b7326f97c31f9ec5ff983', 'header': {'nonce': 1254333498, 'hash': u'000000000000000006a320d752b46b532ec0f3f815c5dae467aff5715a6e579e', 'timestamp': 1435975658, 'merkle_root': u'a0322a9e03ed9cb92c697821821e76732b6af1f8f843f0a5bca055fa32054298', 'version': 3, 'prevhash': u'000000000000000011e40c5deb1a1e3438b350ea3db3fa2dedd285db9650a6e6', 'bits': 404111758}}
-        txInBlockZero = argsForVerifyTx(merkleProof, txIndex)
-
         assert int(merkleProof['hash'], 16) == txB0
         assert int(merkleProof['header']['hash'], 16) == b0
+        txInBlockZero = argsForVerifyTx(merkleProof, txIndex)
 
 
         # TODO
@@ -116,10 +115,9 @@ class TestBtcRelay(object):
         # Ran this offline since many txs in 363731
         # merkleProof = merkle_prove('fcf7daef2123a30a472e3ee9358b950e684f5a61af61295f06688a283f1d1cd7')
         merkleProof = {'siblings': ['2587cd4d66c1baaba5d4534ff84f4880d7cc14f399c9ebffd5527b4e5fc88870', '41cdaf2bd64ca88648eeb2529e9ef594a40d83e26d048ddee815c8a36aa470e1', '22e557f4c63fd85683a949064add7397c22121e371b5617ef1063dda063fe9c9', 'a3d258a75fcb7df2d9e1904236888fa2a50b139f9146ea60f78716e6240947fc', 'c6ef6fe56abb6d1cbbe042bf1fb304bb708a1f05a4805c451e3680b671c01a7d', '30b0f61f406f37346f002d9eed518dd22aed68c111c3e6543d013703813f2662', '26ec8b0a87da3335f773c35c308c85867733f7e93c185c164aab3f9d3e42730a', '31535344a3d72372df8321540c38f58881d6e49b0b64a69a9bf2b80fa4e31c0f', '96e441b6876b3f72394b4c1e5e4f851df4ba4cd186801879b13873183bbb1968', 'c23c775e159c2af628e4a90d4657557b2cb15212e0ef3b23caf1187e8d779646', 'c6a1286ef43a26b5f9bed22ddad0d9fcae79fb380bdeb43236e8f41e1deab13f'], 'hash': u'fcf7daef2123a30a472e3ee9358b950e684f5a61af61295f06688a283f1d1cd7', 'header': {'nonce': 992806987, 'hash': u'00000000000000000c28e23330c29046f19e817fe8fe039f4044b2b2882aef53', 'timestamp': 1435977973, 'merkle_root': u'cf159bb2dc81a0237359fa31606aa89ae8b9abd0e08e8e86e5cb6c42fc2b8622', 'version': 3, 'prevhash': u'000000000000000006a320d752b46b532ec0f3f815c5dae467aff5715a6e579e', 'bits': 404111758}}
-        txInBlockOne = argsForVerifyTx(merkleProof, txIndex)
-
         assert int(merkleProof['hash'], 16) == txB1
         assert int(merkleProof['header']['hash'], 16) == mainB1
+        txInBlockOne = argsForVerifyTx(merkleProof, txIndex)
 
         assert self.c.verifyTx(*txInBlockOne) == 0
 
@@ -159,6 +157,14 @@ class TestBtcRelay(object):
         cumulDiff = self.c.getCumulativeDifficulty()
 
         # store 5 'fake' blocks
+        with open('test/headers/fork/20150704/6headers.bin') as dataFile:
+            for i in range(6):
+                blockHeaderBytes = dataFile.read(80)
+                res = self.c.storeBlockHeader(blockHeaderBytes)
+
+                # print('@@@@ chain score: ' + str(self.c.getCumulativeDifficulty()))
+                assert res == i+1+forkPrevNum
+
 
 
     # TODO verify tx in b1
