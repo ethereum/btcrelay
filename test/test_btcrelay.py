@@ -122,7 +122,7 @@ class TestBtcRelay(object):
             assert res == i+1+forkPrevNum
 
         assert self.c.getCumulativeDifficulty() == cumulDiff  # cumulDiff should not change
-        assert b6 == self.c.getBlockchainHead()
+        assert self.c.getBlockchainHead() == dblSha256Flip(blockHeaderBytes[-2])
 
         # forked block should NOT verify
         txBlockHash = 0x11bb7c5555b8eab7801b1c4384efcab0d869230fcf4a8f043abad255c99105f8
