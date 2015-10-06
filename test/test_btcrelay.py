@@ -2,6 +2,7 @@ from ethereum import tester
 
 import datetime
 import struct
+import json
 import pytest
 slow = pytest.mark.slow
 
@@ -29,17 +30,44 @@ class TestBtcRelay(object):
 
     # fork from 6 blocks ago, using blocks with same difficulty
     def testForkingPast(self):
-        block10Prev = 0x000000008d9dc510f23c2657fc4f67bea30078cc05a90eb89e84cc475c080805
-        self.c.setInitialParent(block10Prev, 9, 1)
+        forkPrevHash = 0x000000000000000006a320d752b46b532ec0f3f815c5dae467aff5715a6e579e
+        forkPrevNum = 363730
+        self.c.setInitialParent(forkPrevHash, forkPrevNum, 1)
+
+        hashPrevBlock = forkPrevHash
+        for i in range(1, 7):
+            with open('test/headers/fork/20150704/36373'+str(i)+'.json') as dataFile:
+                blockJson = json.load(dataFile)
+                # print blockJson['hash']
+
+                version = blockJson['ver']
+                assert int(blockJson['prev_block'], 16) == hashPrevBlock
+                hashMerkleRoot = int(blockJson['mrkl_root'], 16)
+                time = blockJson['time']
+                bits = blockJson['bits']
+                nonce = blockJson['nonce']
+
+                blockHeaderBytes = getHeaderBytes(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+                res = self.c.storeBlockHeader(blockHeaderBytes)
+
+                # set the next hashPrevBlock
+                hashPrevBlock = int(blockJson['hash'], 16)
+                assert hashPrevBlock == dblSha256Flip(blockHeaderBytes)
+
+                # print('@@@@ chain score: ' + str(self.c.getCumulativeDifficulty()))
+                assert res == i+forkPrevNum  #
+
+
+        assert 0
 
         headers = [
-            '010000000508085c47cc849eb80ea905cc7800a3be674ffc57263cf210c59d8d00000000112ba175a1e04b14ba9e7ea5f76ab640affeef5ec98173ac9799a852fa39add320cd6649ffff001d1e2de565',
-            '01000000e915d9a478e3adf3186c07c61a22228b10fd87df343c92782ecc052c000000006e06373c80de397406dc3d19c90d71d230058d28293614ea58d6a57f8f5d32f8b8ce6649ffff001d173807f8',
-            '010000007330d7adf261c69891e6ab08367d957e74d4044bc5d9cd06d656be9700000000b8c8754fabb0ffeb04ca263a1368c39c059ca0d4af3151b876f27e197ebb963bc8d06649ffff001d3f596a0c',
-            '010000005e2b8043bd9f8db558c284e00ea24f78879736f4acd110258e48c2270000000071b22998921efddf90c75ac3151cacee8f8084d3e9cb64332427ec04c7d562994cd16649ffff001d37d1ae86',
-            '0100000089304d4ba5542a22fb616d1ca019e94222ee45c1ad95a83120de515c00000000560164b8bad7675061aa0f43ced718884bdd8528cae07f24c58bb69592d8afe185d36649ffff001d29cbad24',
-            '01000000378a6f6593e2f0251132d96616e837eb6999bca963f6675a0c7af180000000000d080260d107d269ccba9247cfc64c952f1d13514b49e9f1230b3a197a8b7450fa276849ffff001d38d8fb98',
-            '010000007384231257343f2fa3c55ee69ea9e676a709a06dcfd2f73e8c2c32b300000000442ee91b2b999fb15d61f6a88ecf2988e9c8ed48f002476128e670d3dac19fe706286849ffff001d049e12d6'
+            '0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4dffff7f2000000000',
+            '01000000f80591c955d2ba3a048f4acf0f2369d8b0caef84431c1b80b7eab855557cbb116657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4dffff7f2000000000',
+            '01000000e5a4073b22be865cc46ba8efd2b2b3a624e0b7876371b229dd91fa16a93089176657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4dffff7f2000000000',
+            '0100000056e446d76082f43f241c0acc0e5ee99018945a105902b3345b64b3db8e343c7b6657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4dffff7f2000000000',
+            '0100000036d43613cdf6bf102c0c40345cfe029243abba18083faf9a6f9891bd3571c6026657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4dffff7f2001000000',
+            '01000000632b6be86c6edc1dd4af235ff66d456ede0c5fc7437189234c9181c95c06606e6657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4dffff7f2001000000',
+            '01000000c1574cc72fa771e8f5a98f73deb89cf3b73d1687e688def2dd0feff4cd52a0386657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4dffff7f2000000000'
         ]
         blockHeaderBytes = map(lambda x: x.decode('hex'), headers)
         for i in range(7):
@@ -94,9 +122,9 @@ class TestBtcRelay(object):
 
         version = 1
         # real merkle of block100k
-        hashMerkleRoot = 0xd3ad39fa52a89997ac7381c95eeffeaf40b66af7a57e9eba144be0a175a12b11
+        hashMerkleRoot = 0xf3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766  # from block100K
         time = 1231473952  # from block10
-        bits = 0x1d00ffff  # from block10
+        bits = 0x207fFFFF  # REGTEST_EASIEST_DIFFICULTY
         nonce = 1
         hashPrevBlock = block10Prev
         for i in range(7):
