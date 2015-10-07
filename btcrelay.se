@@ -342,6 +342,16 @@ macro getPrevBlock($blockHash):
     flip32Bytes($tmp)
 
 
+# get the timestamp from a Bitcoin blockheader
+macro m_getTimestamp($blockHash):
+    with $addr = ref(self.block[$blockHash]._blockHeader[0]):
+        # get the 3rd chunk
+        $tmp = sload($addr+2)
+    # the timestamp are the 4th to 7th bytes of the 3rd chunk
+    # but we also have to flip them
+    BYTES_3*byte(7, $tmp) + BYTES_2*byte(6, $tmp) + BYTES_1*byte(5, $tmp) + byte(4, $tmp)
+
+
 # get the 'bits' field from a Bitcoin blockheader
 macro m_getBits($blockHash):
     with $addr = ref(self.block[$blockHash]._blockHeader[0]):

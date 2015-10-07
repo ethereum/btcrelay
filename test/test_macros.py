@@ -50,7 +50,7 @@ class TestBtcRelay(object):
         assert res['output'] == bhBytes
 
         assert self.c.funcPrevBlock(blockHash) == block300K
-
+        assert self.c.funcGetTimestamp(blockHash) == 1417792088
         assert self.c.funcGetBits(blockHash) == 0x181b7b74
 
 
