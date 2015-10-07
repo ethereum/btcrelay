@@ -117,22 +117,25 @@ def storeBlockHeader(blockHeaderBytes:str):
     bits = m_bitsFromCurrentBlockHeader()
     target = targetFromBits(bits)
 
-    blockHeight = m_lastBlockHeight() + 1
-    if !mod(blockHeight, 2016):
-        prevBits = m_getBits(hashPrevBlock)
-        if bits != prevBits && prevBits != 0:  # prevBits will be 0 for the 1st header
-            # TODO log?
-            return(0)
-    # TODO
-    # else:
-        # bits should not change by more than a factor of 4
-
     # we only check the target and do not do other validation (eg timestamp)
     # to save gas
     if blockHash > 0 && blockHash < target:
         m_saveAncestors(blockHash, hashPrevBlock)
 
         save(self.block[blockHash]._blockHeader[0], blockHeaderBytes, chars=80)
+
+
+        blockHeight = m_getHeight(blockHash)
+        if !mod(blockHeight, 2016):
+            prevBits = m_getBits(hashPrevBlock)
+            if bits != prevBits && prevBits != 0:  # prevBits will be 0 for the 1st header
+                # TODO log?
+                return(0)
+        # TODO
+        # else:
+            # bits should not change by more than a factor of 4
+
+
 
         difficulty = 0x00000000FFFF0000000000000000000000000000000000000000000000000000 / target # https://en.bitcoin.it/wiki/Difficulty
         m_setScore(blockHash, scorePrevBlock + difficulty)
