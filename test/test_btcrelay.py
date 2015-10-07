@@ -137,9 +137,21 @@ class TestBtcRelay(object):
 
 
     def testTwiceReorg(self):
+        # we want to store real headers from 363729 so that at 363735 we
+        # can verify a tx in 363730 (which requires examining 363729, and
+        # will raise TransactionFailed unless 363729 has been stored)
+        forkGrandParent = 0x000000000000000011e40c5deb1a1e3438b350ea3db3fa2dedd285db9650a6e6
         forkPrevHash = 0x000000000000000006a320d752b46b532ec0f3f815c5dae467aff5715a6e579e
         forkPrevNum = 363730
-        self.c.setInitialParent(forkPrevHash, forkPrevNum, 1)
+        self.c.setInitialParent(forkGrandParent, forkPrevNum-1, 1)
+
+        forkPrevHashHeader = "03000000e6a65096db85d2ed2dfab33dea50b338341e1aeb5d0ce411000000000000000098420532fa55a0bca5f043f8f8f16a2b73761e822178692cb99ced039e2a32a0ea3f97558e4116183a9cc34a"
+        assert self.c.storeBlockHeader(forkPrevHashHeader.decode('hex')) == forkPrevNum
+
+        #
+        # forkPrevHash = 0x000000000000000006a320d752b46b532ec0f3f815c5dae467aff5715a6e579e
+        # forkPrevNum = 363730
+        # self.c.setInitialParent(forkPrevHash, forkPrevNum, 1)
 
         headers = [
             "030000009e576e5a71f5af67e4dac515f8f3c02e536bb452d720a306000000000000000022862bfc426ccbe5868e8ee0d0abb9e89aa86a6031fa597323a081dcb29b15cff54897558e4116184b082d3b",
@@ -159,7 +171,7 @@ class TestBtcRelay(object):
             assert res == i+1+forkPrevNum
 
         cumulDiff = self.c.getCumulativeDifficulty()
-        assert cumulDiff == 49402014931*5 + 1  # 1 is the initial score
+        assert cumulDiff == 49402014931*6 + 1  # 1 is the initial score
 
         # store 5 'fake' blocks
         with open('test/headers/fork/20150704/6headers.bin') as dataFile:
@@ -176,14 +188,14 @@ class TestBtcRelay(object):
         assert self.c.verifyTx(*txInBlockZero) == 0
 
         # add 6th (fake) block and txInBlockZero should succeed verification
-        # with open('test/headers/fork/20150704/6headers.bin') as dataFile:
-        #     dataFile.seek(80*5)
-        #     blockHeaderBytes = dataFile.read(80)
-        #     res = self.c.storeBlockHeader(blockHeaderBytes)
-        #     assert res == forkPrevNum + 6
-        #
-        # assert self.c.getCumulativeDifficulty() == 49402014931*6 + 1
-        # assert self.c.verifyTx(*txInBlockZero) == 1
+        with open('test/headers/fork/20150704/6headers.bin') as dataFile:
+            dataFile.seek(80*5)
+            blockHeaderBytes = dataFile.read(80)
+            res = self.c.storeBlockHeader(blockHeaderBytes)
+            assert res == forkPrevNum + 6
+
+        assert self.c.getCumulativeDifficulty() == 49402014931*7 + 1
+        assert self.c.verifyTx(*txInBlockZero) == 1
 
 
     # exception when verifying a tx in the block of the initial parent,
