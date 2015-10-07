@@ -130,7 +130,7 @@ class TestBtcRelay(object):
 
         # add another header and b1 should now verify
         assert self.c.storeBlockHeader(blockHeaderBytes[-1]) == 363737
-        assert self.c.verifyTx(*txInBlockZero) == 1
+        assert self.c.verifyTx(*txInBlockOne) == 1
 
         # b0 should still verify
         assert self.c.verifyTx(*txInBlockZero) == 1
@@ -168,6 +168,11 @@ class TestBtcRelay(object):
 
                 # print('@@@@ chain score: ' + str(self.c.getCumulativeDifficulty()))
                 assert res == i+1+forkPrevNum
+
+        txInBlockZero = argsForVerifyTx(*self.tx1ofBlock363730())
+        # assert self.c.verifyTx(*txInBlockZero) == 0  #TODO 'crashes'
+        #
+        # # add 6th (fake) block
 
 
 
