@@ -175,7 +175,15 @@ class TestBtcRelay(object):
         txInBlockZero = argsForVerifyTx(*self.tx1ofBlock363730())
         assert self.c.verifyTx(*txInBlockZero) == 0
 
-        # add 6th (fake) block
+        # add 6th (fake) block and txInBlockZero should succeed verification
+        with open('test/headers/fork/20150704/6headers.bin') as dataFile:
+            dataFile.seek(80*5)
+            blockHeaderBytes = dataFile.read(80)
+            res = self.c.storeBlockHeader(blockHeaderBytes)
+            assert res == forkPrevNum + 6
+
+        assert self.c.getCumulativeDifficulty() == 49402014931*6 + 1
+        assert self.c.verifyTx(*txInBlockZero) == 1
 
 
 
