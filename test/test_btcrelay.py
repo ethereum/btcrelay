@@ -176,8 +176,7 @@ class TestBtcRelay(object):
         # store 5 'fake' blocks
         with open('test/headers/fork/20150704/6headers.bin') as dataFile:
             for i in range(5):
-                blockHeaderBytes = dataFile.read(80)
-                res = self.c.storeBlockHeader(blockHeaderBytes)
+                res = self.c.storeBlockHeader(dataFile.read(80))
 
                 # print('@@@@ chain score: ' + str(self.c.getCumulativeDifficulty()))
                 assert res == i+1+forkPrevNum
@@ -190,12 +189,22 @@ class TestBtcRelay(object):
         # add 6th (fake) block and txInBlockZero should succeed verification
         with open('test/headers/fork/20150704/6headers.bin') as dataFile:
             dataFile.seek(80*5)
-            blockHeaderBytes = dataFile.read(80)
-            res = self.c.storeBlockHeader(blockHeaderBytes)
+            res = self.c.storeBlockHeader(dataFile.read(80))
             assert res == forkPrevNum + 6
 
         assert self.c.getCumulativeDifficulty() == 49402014931*7 + 1
         assert self.c.verifyTx(*txInBlockZero) == 1
+
+        # add newBlock6 with same difficulty as current block6
+        # and txInBlockZero should still succeed verification
+
+        assert self.c.storeBlockHeader(blockHeaderBytes[-2]) == 363736
+        # assert self.c.getBlockchainHead() == dblSha256Flip(blockHeaderBytes[-2])
+        assert self.c.verifyTx(*txInBlockZero) == 1
+
+        # assert self.c.getBlockchainHead() == dblSha256Flip(blockHeaderBytes[-1])
+
+
 
 
     # exception when verifying a tx in the block of the initial parent,
@@ -271,15 +280,12 @@ class TestBtcRelay(object):
 
         # verifyTx should only return 1 for b0
         txBlockHash = b0
-        res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
-        assert res == 0
+        assert self.c.verifyTx(tx, txIndex, sibling, txBlockHash) == 0
 
-        res = self.c.storeBlockHeader(blockHeaderBytes[-1])
-
-        res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
-        assert res == 1
-
+        self.c.storeBlockHeader(blockHeaderBytes[-1])
         assert b6 == self.c.getBlockchainHead()
+
+        assert self.c.verifyTx(tx, txIndex, sibling, txBlockHash) == 1
 
 
     # TODO verify tx in b1
