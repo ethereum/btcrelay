@@ -37,6 +37,7 @@ data tokenContract
 # TODO optimize by avoiding this extra storage slot?
 data numTokenIssued
 
+macro DIFFICULTY_ADJUSTMENT_INTERVAL: 2016  # Bitcoin adjusts every 2 weeks
 
 # TODO move to constants.se
 #macro TOKEN_FACTORY: 0xfd5aee44be7195a704a86c18dfc0b65813486f7e
@@ -126,7 +127,7 @@ def storeBlockHeader(blockHeaderBytes:str):
 
 
         blockHeight = m_getHeight(blockHash)
-        if !mod(blockHeight, 2016):
+        if !m_difficultyShouldBeAdjusted(blockHeight):
             prevBits = m_getBits(hashPrevBlock)
             if bits != prevBits && prevBits != 0:  # prevBits will be 0 for the 1st header
                 # TODO log?
@@ -336,6 +337,10 @@ macro m_targetIsValid($target, $bits, $hashPrevBlock):
     # 1
     prevBits = m_getBits($hashPrevBlock)
     $bits <= prevBits || prevBits == 0  # prevBits zero allows the 1st header to be stored, otherwise the initial parents bits will be 0 and smaller than anything
+
+
+macro m_difficultyShouldBeAdjusted($blockHeight):
+    mod(blockHeight, DIFFICULTY_ADJUSTMENT_INTERVAL)
 
 
 # get the parent of '$blockHash'
