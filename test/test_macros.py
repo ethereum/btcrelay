@@ -70,6 +70,11 @@ class TestBtcRelay(object):
         res = self.c.funcTargetFromBits(bits)
         assert res == exp
 
+        maxTarget = (2**16 - 1) * 2**208  # http://bitcoin.stackexchange.com/questions/8806/what-is-difficulty-and-how-it-relates-to-target
+        bits = 0x1d00ffff  # EASIEST_DIFFICULTY_TARGET
+        assert self.c.funcTargetFromBits(bits) == maxTarget
+
+
     def testConcatHash(self):
         tx1 = 0x8c14f0db3df150123e6f3dbbf30f8b955a8249b62ac1d1ff16284aefa3d06d87
         tx2 = 0xfff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4

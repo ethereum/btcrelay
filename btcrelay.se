@@ -118,7 +118,7 @@ def storeBlockHeader(blockHeaderBytes:str):
 
     # we only check the target and do not do other validation (eg timestamp)
     # to save gas
-    if blockHash > 0 && m_targetIsValid(target) && blockHash < target:
+    if blockHash > 0 && m_targetIsValid(target, bits, hashPrevBlock) && blockHash < target:
         m_saveAncestors(blockHash, hashPrevBlock)
 
         save(self.block[blockHash]._blockHeader[0], blockHeaderBytes, chars=80)
@@ -319,8 +319,10 @@ macro m_cashOut($numToken):
 
 
 # TODO
-macro m_targetIsValid($target):
-    1
+macro m_targetIsValid($target, $bits, $hashPrevBlock):
+    # 1
+    prevBits = m_getBits($hashPrevBlock)
+    $bits <= prevBits || prevBits == 0  # prevBits zero allows the 1st header to be stored, otherwise the initial parents bits will be 0 and smaller than anything
 
 
 # get the parent of '$blockHash'
