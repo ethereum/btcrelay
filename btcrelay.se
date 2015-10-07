@@ -131,7 +131,7 @@ def storeBlockHeader(blockHeaderBytes:str):
             prevBits = m_getBits(hashPrevBlock)
             if bits != prevBits && prevBits != 0:  # prevBits will be 0 for the 1st header
                 # TODO log?
-                return(0)
+                return(99)
         # TODO
         else:
             # bits should not change by more than a factor of 4
