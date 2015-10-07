@@ -133,8 +133,10 @@ def storeBlockHeader(blockHeaderBytes:str):
                 # TODO log?
                 return(0)
         # TODO
-        # else:
+        else:
             # bits should not change by more than a factor of 4
+            if bits != prevBits && prevBits != 0:
+                return(7)
 
 
 
