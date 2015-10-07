@@ -176,6 +176,38 @@ class TestBtcRelay(object):
         assert self.c.verifyTx(*txInBlockZero) == 0
 
         # add 6th (fake) block and txInBlockZero should succeed verification
+        # with open('test/headers/fork/20150704/6headers.bin') as dataFile:
+        #     dataFile.seek(80*5)
+        #     blockHeaderBytes = dataFile.read(80)
+        #     res = self.c.storeBlockHeader(blockHeaderBytes)
+        #     assert res == forkPrevNum + 6
+        #
+        # assert self.c.getCumulativeDifficulty() == 49402014931*6 + 1
+        # assert self.c.verifyTx(*txInBlockZero) == 1
+
+
+    # verify a tx before and after the 6th header is added
+    def testVerifyTxPrePost(self):
+        forkPrevHash = 0x000000000000000006a320d752b46b532ec0f3f815c5dae467aff5715a6e579e
+        forkPrevNum = 363730
+        self.c.setInitialParent(forkPrevHash, forkPrevNum, 1)
+
+        # store 5 'fake' blocks
+        with open('test/headers/fork/20150704/6headers.bin') as dataFile:
+            for i in range(5):
+                blockHeaderBytes = dataFile.read(80)
+                res = self.c.storeBlockHeader(blockHeaderBytes)
+
+                # print('@@@@ chain score: ' + str(self.c.getCumulativeDifficulty()))
+                assert res == i+1+forkPrevNum
+
+        cumulDiff = 49402014931*5 + 1
+        assert self.c.getCumulativeDifficulty() == cumulDiff
+
+        txInBlockZero = argsForVerifyTx(*self.tx1ofBlock363730())
+        assert self.c.verifyTx(*txInBlockZero) == 0
+
+        # add 6th (fake) block and txInBlockZero should succeed verification
         with open('test/headers/fork/20150704/6headers.bin') as dataFile:
             dataFile.seek(80*5)
             blockHeaderBytes = dataFile.read(80)
@@ -184,7 +216,6 @@ class TestBtcRelay(object):
 
         assert self.c.getCumulativeDifficulty() == 49402014931*6 + 1
         assert self.c.verifyTx(*txInBlockZero) == 1
-
 
 
     # TODO verify tx in b1
