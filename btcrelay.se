@@ -135,8 +135,7 @@ def storeBlockHeader(blockHeaderBytes:str):
         # TODO
         else:
             # bits should not change by more than a factor of 4
-            if bits != prevBits && prevBits != 0:
-                return(7)
+            return(7)
 
 
 
@@ -342,7 +341,7 @@ macro m_targetIsValid($target, $bits, $hashPrevBlock):
 
 
 macro m_difficultyShouldBeAdjusted($blockHeight):
-    mod(blockHeight, DIFFICULTY_ADJUSTMENT_INTERVAL)
+    mod($blockHeight, DIFFICULTY_ADJUSTMENT_INTERVAL) == 0
 
 
 # get the parent of '$blockHash'

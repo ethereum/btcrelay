@@ -64,4 +64,4 @@ class TestBtcRelay(object):
         bhBytes = getHeaderBytes(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
         res = self.c.storeBlockHeader(bhBytes)
         # assert res == 100002
-        assert res == 99
+        assert res == 7
