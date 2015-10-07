@@ -99,6 +99,7 @@ def setInitialParent(blockHash, height, cumulativeDifficulty):
     return(1)
 
 
+# TODO what to log?
 # store a Bitcoin block header that must be provided in
 # bytes format 'blockHeaderBytes'
 def storeBlockHeader(blockHeaderBytes:str):
@@ -116,9 +117,19 @@ def storeBlockHeader(blockHeaderBytes:str):
     bits = m_bitsFromCurrentBlockHeader()
     target = targetFromBits(bits)
 
+    blockHeight = m_lastBlockHeight() + 1
+    if !mod(blockHeight, 2016):
+        prevBits = m_getBits(hashPrevBlock)
+        if bits != prevBits && prevBits != 0:  # prevBits will be 0 for the 1st header
+            # TODO log?
+            return(0)
+    # TODO
+    # else:
+        # bits should not change by more than a factor of 4
+
     # we only check the target and do not do other validation (eg timestamp)
     # to save gas
-    if blockHash > 0 && m_targetIsValid(target, bits, hashPrevBlock) && blockHash < target:
+    if blockHash > 0 && blockHash < target:
         m_saveAncestors(blockHash, hashPrevBlock)
 
         save(self.block[blockHash]._blockHeader[0], blockHeaderBytes, chars=80)
@@ -129,7 +140,6 @@ def storeBlockHeader(blockHeaderBytes:str):
         # equality allows block with same score to become the Head, so that
         # when a Head is orphaned, the chain can still continue
         scoreBlock = m_getScore(blockHash)
-        blockHeight = m_getHeight(blockHash)
         if scoreBlock >= self.highScore:
             self.heaviestBlock = blockHash
             self.highScore = scoreBlock
@@ -194,7 +204,7 @@ def getBlockchainHead():
 
 # return the height of the heaviest block aka the Head
 def getLastBlockHeight():
-    return(m_getHeight(self.heaviestBlock))
+    return(m_lastBlockHeight())
 
 
 # return the (total) cumulative difficulty of the Head
@@ -369,9 +379,19 @@ macro getMerkleRoot($blockHash):
     flip32Bytes($tmp)
 
 
+macro m_lastBlockHeight():
+    m_getHeight(self.heaviestBlock)
+
+
 # Bitcoin-way of hashing a block header
 macro m_hashBlockHeader($blockHeaderBytes):
     flip32Bytes(sha256(sha256($blockHeaderBytes:str)))
+
+
+# get the timestamp from the current (calldataload) Bitcoin blockheader
+macro m_timestampFromCurrentBlockHeader():
+    with $w = ~calldataload(68+72):  # 68 (header start) + 68 (offset for timestamp)
+        byte(0, $w) + byte(1, $w)*BYTES_1 + byte(2, $w)*BYTES_2 + byte(3, $w)*BYTES_3
 
 
 # get the 'bits' field from the current (calldataload) Bitcoin blockheader
