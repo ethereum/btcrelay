@@ -153,26 +153,29 @@ class TestBtcRelay(object):
         ]
 
         blockHeaderBytes = map(lambda x: x.decode('hex'), headers)
-        for i in range(6):  # store only 5 blocks first
+        for i in range(5):  # store only 5 blocks first
             res = self.c.storeBlockHeader(blockHeaderBytes[i])
             # print('@@@@ real chain score: ' + str(self.c.getCumulativeDifficulty()))
             assert res == i+1+forkPrevNum
 
         cumulDiff = self.c.getCumulativeDifficulty()
+        assert cumulDiff == 49402014931*5 + 1  # 1 is the initial score
 
         # store 5 'fake' blocks
         with open('test/headers/fork/20150704/6headers.bin') as dataFile:
-            for i in range(6):
+            for i in range(5):
                 blockHeaderBytes = dataFile.read(80)
                 res = self.c.storeBlockHeader(blockHeaderBytes)
 
                 # print('@@@@ chain score: ' + str(self.c.getCumulativeDifficulty()))
                 assert res == i+1+forkPrevNum
 
+        assert self.c.getCumulativeDifficulty() == cumulDiff
+
         txInBlockZero = argsForVerifyTx(*self.tx1ofBlock363730())
-        # assert self.c.verifyTx(*txInBlockZero) == 0  #TODO 'crashes'
-        #
-        # # add 6th (fake) block
+        assert self.c.verifyTx(*txInBlockZero) == 0
+
+        # add 6th (fake) block
 
 
 
