@@ -32,7 +32,7 @@ class TestBtcRelay(object):
     # store 6 blocks from block Fake363731 (unfortunately no 7th block test data available)
     # then start a fork at Main363731 and verify that a reorg will verify a tx in
     # Main363731
-    def testReorg(self):
+    def testVerifySuccessAfterReorg(self):
         forkGrandParent = 0x000000000000000011e40c5deb1a1e3438b350ea3db3fa2dedd285db9650a6e6
         forkPrevHash = 0x000000000000000006a320d752b46b532ec0f3f815c5dae467aff5715a6e579e
         forkPrevNum = 363730
@@ -59,13 +59,20 @@ class TestBtcRelay(object):
         cumulDiff = self.c.getCumulativeDifficulty()
         assert cumulDiff == 49402014931*7 + 1  # 1 is the initial score
 
+        #
+        # fakeB1 is within6confirms so should NOT verify
+        #
+        txIndex = 1
+        fakeB1 = 0x00000000000000000c28e23330c29046f19e817fe8fe039f4044b2b2882aef53
+        fakeTxB1 = 0x3f637aff97a70c89dd279fe14dbd45fda00fe22027f7937d43737464baa247a7
+        # Ran this offline since 99 txs in fake 363731
+        # merkleProof = merkle_prove('3f637aff97a70c89dd279fe14dbd45fda00fe22027f7937d43737464baa247a7')
+        merkleProof = {'siblings': ['54a0adf1fa1645aece159cc08593c2302b032e6e0cb5ab437df7134f1cbb59db', 'd27b7c208f92e9ac0caa6d2011cf09271c25a2a63a4a1df4dee5f451ca47b680', '626a0941ee37afccd19015a429f96df232f9ff54c350fc760ba3a13ae3efd609', '64fd56ba7d5f5e3f7d3e9f3c98a6b6ff487e22ddb64aeecddf5eb048db516b17', 'c6ef6fe56abb6d1cbbe042bf1fb304bb708a1f05a4805c451e3680b671c01a7d', '30b0f61f406f37346f002d9eed518dd22aed68c111c3e6543d013703813f2662', '26ec8b0a87da3335f773c35c308c85867733f7e93c185c164aab3f9d3e42730a', '31535344a3d72372df8321540c38f58881d6e49b0b64a69a9bf2b80fa4e31c0f', '96e441b6876b3f72394b4c1e5e4f851df4ba4cd186801879b13873183bbb1968', 'c23c775e159c2af628e4a90d4657557b2cb15212e0ef3b23caf1187e8d779646', 'c6a1286ef43a26b5f9bed22ddad0d9fcae79fb380bdeb43236e8f41e1deab13f'], 'hash': u'3f637aff97a70c89dd279fe14dbd45fda00fe22027f7937d43737464baa247a7', 'header': {'nonce': 992806987, 'hash': u'00000000000000000c28e23330c29046f19e817fe8fe039f4044b2b2882aef53', 'timestamp': 1435977973, 'merkle_root': u'cf159bb2dc81a0237359fa31606aa89ae8b9abd0e08e8e86e5cb6c42fc2b8622', 'version': 3, 'prevhash': u'000000000000000006a320d752b46b532ec0f3f815c5dae467aff5715a6e579e', 'bits': 404111758}}
+        assert int(merkleProof['hash'], 16) == fakeTxB1
+        assert int(merkleProof['header']['hash'], 16) == fakeB1
 
-        # TODO
-        # b1 is within6confirms so should NOT verify
-        # txBlockHash = b1
-        # res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
-        # assert res == 0
-
+        res = self.c.verifyTx(*argsForVerifyTx(merkleProof, txIndex))
+        assert res == 0
 
         # verifyTx should only return 1 for b0
         txInBlockZero = argsForVerifyTx(*self.tx1ofBlock363730())
@@ -73,9 +80,9 @@ class TestBtcRelay(object):
 
         assert fakeb6 == self.c.getBlockchainHead()
 
-
+        #
         # insert the blocks that will cause reorg as main chain
-
+        #
         headers = [
             "030000009e576e5a71f5af67e4dac515f8f3c02e536bb452d720a306000000000000000022862bfc426ccbe5868e8ee0d0abb9e89aa86a6031fa597323a081dcb29b15cff54897558e4116184b082d3b",
             "0300000053ef2a88b2b244409f03fee87f819ef14690c23033e2280c00000000000000009e90b9ad092c3f37393f163f70fcc054cbc7dc38210f213840fa9cf9791493b3954997558e4116186d536b51",
