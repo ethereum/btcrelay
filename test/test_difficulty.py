@@ -29,6 +29,33 @@ class TestDifficulty(object):
         tester.seed = self.seed
 
 
+    def testNewTargetMinimum(self):
+        # block100002 with all real data (hashes, time) except fake 'bits' and nonce
+        version = 1
+        hashPrevBlock = 0x00000000000080b66c911bd5ba14a74260057311eaeb1982802f7010f1a9f090  # block100001
+        hashMerkleRoot = 0x2fda58e5959b0ee53c5253da9b9f3c0c739422ae04946966991cf55895287552
+        time = 1293625051
+        bits = 0x207fFFFFL # REGTEST_EASIEST_DIFFICULTY
+        nonce = 2
+        bhBytes = getHeaderBytes(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+
+        currTime = self.c.funcTimestampViaCALLDATALOAD(bhBytes)
+        assert currTime == time
+
+        # block100k (100002 - DIFFICULTY_ADJUSTMENT_INTERVAL)
+        startTime = 1293623863
+        currTarget = 0x000000000004864c000000000000000000000000000000000000000000000000
+
+        newTarget = self.c.funcComputeNewTarget(currTime, startTime, currTarget)
+        assert newTarget == 123
+
+
+    def tmp(self):
+        # block 100001
+        header = '0100000006e533fd1ada86391f3f6c343204b0d278d4aaec1c0b20aa27ba0300000000006abbb3eb3d733a9fe18967fd7d4c117e4ccbbac5bec4d910d900b3ae0793e77f54241b4d4c86041b4089cc9b'
+        expTime = 1293624404
+
+
     def testTimestampFromCurrentBlockHeader(self):
         # block100K
         header = '0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710'
@@ -67,9 +94,9 @@ class TestDifficulty(object):
         version = 1
         # real merkle of block100001
         hashMerkleRoot = 0x7fe79307aeb300d910d9c4bec5bacb4c7e114c7dfd6789e19f3a733debb3bb6a
-        time = 1293623863  # from block100k
+        time = 1293625051  # from block100k
         bits = REGTEST_EASIEST_DIFFICULTY
-        nonce = 2
+        nonce = 0
         hashPrevBlock = 0x00000000000080b66c911bd5ba14a74260057311eaeb1982802f7010f1a9f090  # block100001
         bhBytes = getHeaderBytes(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
         res = self.c.storeBlockHeader(bhBytes)

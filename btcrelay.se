@@ -143,13 +143,14 @@ def storeBlockHeader(blockHeaderBytes:str):
                 return(99)
         # TODO
         else:
-            currTime = m_timestampFromCurrentBlockHeader()
+            prevTime = m_getTimestamp(hashPrevBlock)
 
-            # TODO correct or off-by-one?
+            # blockHeight - DIFFICULTY_ADJUSTMENT_INTERVAL is same as
+            # getHeight(hashPrevBlock) - (DIFFICULTY_ADJUSTMENT_INTERVAL - 1)
             startBlock = self.getBlockHash(blockHeight - DIFFICULTY_ADJUSTMENT_INTERVAL)
             startTime = m_getTimestamp(startBlock)
 
-            newTarget = m_computeNewTarget(currTime, startTime, target)
+            newTarget = m_computeNewTarget(prevTime, startTime, target)
 
             # TODO is this sound, or need to convert newTarget to newBits and then compare against bits ?
             if target != newTarget:
@@ -363,13 +364,6 @@ macro m_cashOut($numToken):
         $numEth = self.balance * $numToken / self.numTokenIssued
         self.numTokenIssued -= $numToken
         send(msg.sender, $numEth)
-
-
-# TODO
-macro m_targetIsValid($target, $bits, $hashPrevBlock):
-    # 1
-    prevBits = m_getBits($hashPrevBlock)
-    $bits <= prevBits || prevBits == 0  # prevBits zero allows the 1st header to be stored, otherwise the initial parents bits will be 0 and smaller than anything
 
 
 macro m_difficultyShouldBeAdjusted($blockHeight):

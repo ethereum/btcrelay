@@ -16,7 +16,7 @@ class TestBtcRelay(object):
     ETHER = 10 ** 18
 
     def setup_class(cls):
-        tester.gas_limit = int(2.95e6)  # include costs of debug methods
+        tester.gas_limit = int(3.1e6)  # include costs of debug methods
         cls.s = tester.state()
         cls.c = cls.s.abi_contract(cls.CONTRACT_DEBUG, endowment=2000*cls.ETHER)
         cls.snapshot = cls.s.snapshot()
@@ -67,12 +67,15 @@ class TestBtcRelay(object):
     def testTargetFromBits(self):
         bits = 0x19015f53
         exp = 8614444778121073626993210829679478604092861119379437256704
-        res = self.c.funcTargetFromBits(bits)
-        assert res == exp
+        assert self.c.funcTargetFromBits(bits) == exp
 
-        maxTarget = (2**16 - 1) * 2**208  # http://bitcoin.stackexchange.com/questions/8806/what-is-difficulty-and-how-it-relates-to-target
+        bits = 453281356  # block100k
+        exp = 0x000000000004864c000000000000000000000000000000000000000000000000
+        assert self.c.funcTargetFromBits(bits) == exp
+
+        maxTargetRounded = (2**16 - 1) * 2**208  # http://bitcoin.stackexchange.com/questions/8806/what-is-difficulty-and-how-it-relates-to-target
         bits = 0x1d00ffff  # EASIEST_DIFFICULTY_TARGET
-        assert self.c.funcTargetFromBits(bits) == maxTarget
+        assert self.c.funcTargetFromBits(bits) == maxTargetRounded
 
 
     def testConcatHash(self):
