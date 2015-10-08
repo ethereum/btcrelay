@@ -155,7 +155,7 @@ def storeBlockHeader(blockHeaderBytes:str):
 
             # TODO is this sound, or need to convert newTarget to newBits and then compare against bits ?
             if target != newTarget:
-                return(7)
+                return(77)
 
 
 
