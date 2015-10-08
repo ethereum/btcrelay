@@ -149,15 +149,7 @@ def storeBlockHeader(blockHeaderBytes:str):
             startBlock = self.getBlockHash(blockHeight - DIFFICULTY_ADJUSTMENT_INTERVAL)
             startTime = m_getTimestamp(startBlock)
 
-            actualTimespan = currTime - startTime
-            if actualTimespan < TARGET_TIMESPAN_DIV_4:
-                actualTimespan = TARGET_TIMESPAN_DIV_4
-            if actualTimespan > TARGET_TIMESPAN_MUL_4:
-                actualTimespan = TARGET_TIMESPAN_MUL_4
-
-            newTarget = div(actualTimespan * target, DIFFICULTY_ADJUSTMENT_INTERVAL)
-            if newTarget > UNROUNDED_MAX_TARGET:
-                newTarget = UNROUNDED_MAX_TARGET
+            newTarget = m_computeNewTarget(currTime, startTime, target)
 
             # TODO is this sound, or need to convert newTarget to newBits and then compare against bits ?
             if target != newTarget:
@@ -179,6 +171,20 @@ def storeBlockHeader(blockHeaderBytes:str):
         return(blockHeight)
 
     return(0)
+
+
+macro m_computeNewTarget($currTime, $startTime, $currTarget):
+    # TODO use `with` ?
+    $actualTimespan = $currTime - $startTime
+    if $actualTimespan < TARGET_TIMESPAN_DIV_4:
+        $actualTimespan = TARGET_TIMESPAN_DIV_4
+    if $actualTimespan > TARGET_TIMESPAN_MUL_4:
+        $actualTimespan = TARGET_TIMESPAN_MUL_4
+
+    $newTarget = div($actualTimespan * $currTarget, DIFFICULTY_ADJUSTMENT_INTERVAL)
+    if $newTarget > UNROUNDED_MAX_TARGET:
+        $newTarget = UNROUNDED_MAX_TARGET
+    $newTarget
 
 
 # returns 1 if tx is in the block given by 'txBlockHash' and the block is

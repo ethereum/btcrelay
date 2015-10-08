@@ -67,4 +67,4 @@ class TestDifficulty(object):
         bhBytes = getHeaderBytes(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
         res = self.c.storeBlockHeader(bhBytes)
         # assert res == 100002
-        assert res == 7
+        assert res == 77
