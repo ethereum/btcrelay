@@ -10,7 +10,9 @@ from utilRelay import getHeaderBytes, dblSha256Flip, disablePyethLogging
 disablePyethLogging()
 
 
-class TestBtcRelay(object):
+class TestDifficulty(object):
+
+    # very specialized test
     CONTRACT_DEBUG = 'test/btcrelay_difficulty.se'
 
     ETHER = 10 ** 18

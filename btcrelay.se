@@ -141,17 +141,17 @@ def storeBlockHeader(blockHeaderBytes:str):
 
             # TODO correct or off-by-one?
             startBlock = self.getBlockHash(blockHeight - DIFFICULTY_ADJUSTMENT_INTERVAL)
-            startTime = m_getTimestamp(startBlock)
-
-            actualTimespan = currTime - startTime
-            if actualTimespan < TARGET_TIMESPAN_DIV_4:
-                actualTimespan = TARGET_TIMESPAN_DIV_4
-            if actualTimespan > TARGET_TIMESPAN_MUL_4:
-                actualTimespan = TARGET_TIMESPAN_MUL_4
-
-            newTarget = div(actualTimespan * target, DIFFICULTY_ADJUSTMENT_INTERVAL)
-            if newTarget > UNROUNDED_MAX_TARGET:
-                newTarget = UNROUNDED_MAX_TARGET
+            # startTime = m_getTimestamp(startBlock)
+            #
+            # actualTimespan = currTime - startTime
+            # if actualTimespan < TARGET_TIMESPAN_DIV_4:
+            #     actualTimespan = TARGET_TIMESPAN_DIV_4
+            # if actualTimespan > TARGET_TIMESPAN_MUL_4:
+            #     actualTimespan = TARGET_TIMESPAN_MUL_4
+            #
+            # newTarget = div(actualTimespan * target, DIFFICULTY_ADJUSTMENT_INTERVAL)
+            # if newTarget > UNROUNDED_MAX_TARGET:
+            #     newTarget = UNROUNDED_MAX_TARGET
 
             # TODO is this sound, or need to convert newTarget to newBits and then compare against bits ?
             if target != newTarget:
