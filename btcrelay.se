@@ -130,9 +130,8 @@ def storeBlockHeader(blockHeaderBytes:str):
 
 
         blockHeight = m_getHeight(blockHash)
+        prevBits = m_getBits(hashPrevBlock)
         if !m_difficultyShouldBeAdjusted(blockHeight):
-            prevBits = m_getBits(hashPrevBlock)
-
             # we need to check prevBits isn't 0 otherwise the 1st header
             # will always be rejected (since prevBits doesn't exist for the initial parent)
             # This allows blocks with arbitrary difficulty from being added to
@@ -143,6 +142,7 @@ def storeBlockHeader(blockHeaderBytes:str):
                 return(99)
         # TODO
         else:
+            prevTarget = targetFromBits(prevBits)
             prevTime = m_getTimestamp(hashPrevBlock)
 
             # blockHeight - DIFFICULTY_ADJUSTMENT_INTERVAL is same as
@@ -150,7 +150,7 @@ def storeBlockHeader(blockHeaderBytes:str):
             startBlock = self.getBlockHash(blockHeight - DIFFICULTY_ADJUSTMENT_INTERVAL)
             startTime = m_getTimestamp(startBlock)
 
-            newTarget = m_computeNewTarget(prevTime, startTime, target)
+            newTarget = m_computeNewTarget(prevTime, startTime, prevTarget)
 
             # TODO is this sound, or need to convert newTarget to newBits and then compare against bits ?
             if target != newTarget:
@@ -174,15 +174,15 @@ def storeBlockHeader(blockHeaderBytes:str):
     return(0)
 
 
-macro m_computeNewTarget($currTime, $startTime, $currTarget):
+macro m_computeNewTarget($prevTime, $startTime, $prevTarget):
     # TODO use `with` ?
-    $actualTimespan = $currTime - $startTime
+    $actualTimespan = $prevTime - $startTime
     if $actualTimespan < TARGET_TIMESPAN_DIV_4:
         $actualTimespan = TARGET_TIMESPAN_DIV_4
     if $actualTimespan > TARGET_TIMESPAN_MUL_4:
         $actualTimespan = TARGET_TIMESPAN_MUL_4
 
-    $newTarget = div($actualTimespan * $currTarget, DIFFICULTY_ADJUSTMENT_INTERVAL)
+    $newTarget = div($actualTimespan * $prevTarget, DIFFICULTY_ADJUSTMENT_INTERVAL)
     if $newTarget > UNROUNDED_MAX_TARGET:
         $newTarget = UNROUNDED_MAX_TARGET
     $newTarget

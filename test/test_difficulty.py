@@ -18,7 +18,7 @@ class TestDifficulty(object):
     ETHER = 10 ** 18
 
     def setup_class(cls):
-        tester.gas_limit = int(2.65e6)  # include costs of debug methods
+        tester.gas_limit = int(2.75e6)  # include costs of debug methods
         cls.s = tester.state()
         cls.c = cls.s.abi_contract(cls.CONTRACT_DEBUG, endowment=2000*cls.ETHER)
         cls.snapshot = cls.s.snapshot()
@@ -29,7 +29,18 @@ class TestDifficulty(object):
         tester.seed = self.seed
 
 
-    def testNewTargetMinimum(self):
+    def testTarget376992(self):
+        prevTime = 1443699609  # block 376991
+        startTime = 1442519404 # block 374976
+        prevBits = 403867578
+        prevTarget = self.c.funcTargetFromBits(prevBits)
+
+        expBits = 403838066
+
+        newTarget = self.c.funcComputeNewTarget(prevTime, startTime, prevTarget)
+        assert newTarget == self.c.funcTargetFromBits(expBits)
+
+    def tmp2(self):
         # block100002 with all real data (hashes, time) except fake 'bits' and nonce
         version = 1
         hashPrevBlock = 0x00000000000080b66c911bd5ba14a74260057311eaeb1982802f7010f1a9f090  # block100001
@@ -56,6 +67,7 @@ class TestDifficulty(object):
         expTime = 1293624404
 
 
+    # TODO needed?
     def testTimestampFromCurrentBlockHeader(self):
         # block100K
         header = '0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710'

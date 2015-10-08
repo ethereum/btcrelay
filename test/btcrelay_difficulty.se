@@ -12,8 +12,11 @@ macro DIFFICULTY_ADJUSTMENT_INTERVAL: 3
 def funcTimestampViaCALLDATALOAD(blockHeaderBytes:str):
     return(m_timestampFromCurrentBlockHeader())
 
-def funcComputeNewTarget(currTime, startTime, currTarget):
-    return(m_computeNewTarget(currTime, startTime, currTarget))
+def funcTargetFromBits(bits):
+    return(targetFromBits(bits))
+
+def funcComputeNewTarget(prevTime, startTime, prevTarget):
+    return(m_computeNewTarget(prevTime, startTime, prevTarget))
 
 #
 # end of macro wrappers
