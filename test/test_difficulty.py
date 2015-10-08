@@ -37,6 +37,12 @@ class TestDifficulty(object):
 
         expBits = 403838066
 
+        # simple, not full, manual computation
+        targetTimespan = 14 * 24 * 60 * 60
+        expTarget = (prevTime - startTime) * prevTarget / targetTimespan
+
+        assert expTarget == self.c.funcTargetFromBits(expBits)
+
         newTarget = self.c.funcComputeNewTarget(prevTime, startTime, prevTarget)
         assert newTarget == self.c.funcTargetFromBits(expBits)
 
