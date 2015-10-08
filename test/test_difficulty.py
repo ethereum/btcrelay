@@ -18,7 +18,7 @@ class TestDifficulty(object):
     ETHER = 10 ** 18
 
     def setup_class(cls):
-        tester.gas_limit = int(2.55e6)  # include costs of debug methods
+        tester.gas_limit = int(2.65e6)  # include costs of debug methods
         cls.s = tester.state()
         cls.c = cls.s.abi_contract(cls.CONTRACT_DEBUG, endowment=2000*cls.ETHER)
         cls.snapshot = cls.s.snapshot()
@@ -27,6 +27,13 @@ class TestDifficulty(object):
     def setup_method(self, method):
         self.s.revert(self.snapshot)
         tester.seed = self.seed
+
+
+    def testTimestampFromCurrentBlockHeader(self):
+        # block100K
+        header = '0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710'
+        expTime = 1293623863
+        assert self.c.funcTimestampViaCALLDATALOAD(header.decode('hex')) == expTime
 
 
     def testDifficultyAdjust(self):

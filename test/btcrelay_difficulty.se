@@ -4,6 +4,18 @@ def testingonlySetHeaviest(blockHash):
 
 macro DIFFICULTY_ADJUSTMENT_INTERVAL: 3
 
+
+#
+# macro wrappers (since only functions are testable)
+#
+
+def funcTimestampViaCALLDATALOAD(blockHeaderBytes:str):
+    return(m_timestampFromCurrentBlockHeader())
+
+#
+# end of macro wrappers
+#
+
 # very specialized tests that can only work with initialParent 99999
 macro m_getHeight($blockHash):
     div(sload(ref(self.block[$blockHash]._info)), BYTES_24) - 99999

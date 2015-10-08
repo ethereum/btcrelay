@@ -431,7 +431,7 @@ macro m_hashBlockHeader($blockHeaderBytes):
 
 # get the timestamp from the current (calldataload) Bitcoin blockheader
 macro m_timestampFromCurrentBlockHeader():
-    with $w = ~calldataload(68+72):  # 68 (header start) + 68 (offset for timestamp)
+    with $w = ~calldataload(68+68):  # 68 (header start) + 68 (offset for timestamp)
         byte(0, $w) + byte(1, $w)*BYTES_1 + byte(2, $w)*BYTES_2 + byte(3, $w)*BYTES_3
 
 
