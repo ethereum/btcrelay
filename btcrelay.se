@@ -38,6 +38,9 @@ data tokenContract
 data numTokenIssued
 
 macro DIFFICULTY_ADJUSTMENT_INTERVAL: 2016  # Bitcoin adjusts every 2 weeks
+macro TARGET_TIMESPAN_DIV_4: DIFFICULTY_ADJUSTMENT_INTERVAL / 4
+macro TARGET_TIMESPAN_MUL_4: DIFFICULTY_ADJUSTMENT_INTERVAL * 4
+macro UNROUNDED_MAX_TARGET: 2**224 - 1  # different from (2**16-1)*2**208 http://bitcoin.stackexchange.com/questions/13803/how-exactly-was-the-original-coefficient-for-difficulty-determined
 
 # TODO move to constants.se
 #macro TOKEN_FACTORY: 0xfd5aee44be7195a704a86c18dfc0b65813486f7e
@@ -134,8 +137,25 @@ def storeBlockHeader(blockHeaderBytes:str):
                 return(99)
         # TODO
         else:
-            # bits should not change by more than a factor of 4
-            return(7)
+            currTime = m_timestampFromCurrentBlockHeader()
+
+            # TODO correct or off-by-one?
+            startBlock = self.getBlockHash(blockHeight - DIFFICULTY_ADJUSTMENT_INTERVAL)
+            startTime = m_getTimestamp(startBlock)
+
+            actualTimespan = currTime - startTime
+            if actualTimespan < TARGET_TIMESPAN_DIV_4:
+                actualTimespan = TARGET_TIMESPAN_DIV_4
+            if actualTimespan > TARGET_TIMESPAN_MUL_4:
+                actualTimespan = TARGET_TIMESPAN_MUL_4
+
+            newTarget = div(actualTimespan * target, DIFFICULTY_ADJUSTMENT_INTERVAL)
+            if newTarget > UNROUNDED_MAX_TARGET:
+                newTarget = UNROUNDED_MAX_TARGET
+
+            # TODO is this sound, or need to convert newTarget to newBits and then compare against bits ?
+            if target != newTarget:
+                return(7)
 
 
 
