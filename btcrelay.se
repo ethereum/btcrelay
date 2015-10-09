@@ -151,10 +151,10 @@ def storeBlockHeader(blockHeaderBytes:str):
             startBlock = self.getBlockHash(blockHeight - DIFFICULTY_ADJUSTMENT_INTERVAL)
             startTime = m_getTimestamp(startBlock)
 
-            newTarget = m_computeNewTarget(prevTime, startTime, prevTarget)
+            newBits = m_computeNewBits(prevTime, startTime, prevTarget)
 
             # TODO is this sound, or need to convert newTarget to newBits and then compare against bits ?
-            if target != newTarget:
+            if bits != newBits:
                 return(77)
 
 
@@ -175,7 +175,7 @@ def storeBlockHeader(blockHeaderBytes:str):
     return(0)
 
 
-macro m_computeNewTarget($prevTime, $startTime, $prevTarget):
+macro m_computeNewBits($prevTime, $startTime, $prevTarget):
     # TODO use `with` ?
     $actualTimespan = $prevTime - $startTime
     if $actualTimespan < TARGET_TIMESPAN_DIV_4:
@@ -186,7 +186,7 @@ macro m_computeNewTarget($prevTime, $startTime, $prevTarget):
     $newTarget = div($actualTimespan * $prevTarget, TARGET_TIMESPAN)
     if $newTarget > UNROUNDED_MAX_TARGET:
         $newTarget = UNROUNDED_MAX_TARGET
-    $newTarget
+    m_toCompactBits($newTarget)
 
 
 macro shiftRight($val, $shift):

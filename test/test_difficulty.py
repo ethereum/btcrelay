@@ -18,7 +18,7 @@ class TestDifficulty(object):
     ETHER = 10 ** 18
 
     def setup_class(cls):
-        tester.gas_limit = int(2.75e6)  # include costs of debug methods
+        tester.gas_limit = int(2.85e6)  # include costs of debug methods
         cls.s = tester.state()
         cls.c = cls.s.abi_contract(cls.CONTRACT_DEBUG, endowment=2000*cls.ETHER)
         cls.snapshot = cls.s.snapshot()
@@ -29,25 +29,14 @@ class TestDifficulty(object):
         tester.seed = self.seed
 
 
-    def testTarget376992(self):
+    def testComputeNewBits(self):
         prevTime = 1443699609  # block 376991
         startTime = 1442519404 # block 374976
         prevBits = 403867578
         prevTarget = self.c.funcTargetFromBits(prevBits)
 
         expBits = 403838066
-
-        # simple, not full, manual computation
-        targetTimespan = 14 * 24 * 60 * 60
-        rawTarget = (prevTime - startTime) * prevTarget / targetTimespan
-        compact = self.c.funcToCompactBits(rawTarget)
-
-        assert compact == expBits
-
-        # assert compact == self.c.funcTargetFromBits(expBits)
-        #
-        # newTarget = self.c.funcComputeNewTarget(prevTime, startTime, prevTarget)
-        # assert newTarget == self.c.funcTargetFromBits(expBits)
+        assert self.c.funcComputeNewBits(prevTime, startTime, prevTarget) == expBits
 
     def tmp2(self):
         # block100002 with all real data (hashes, time) except fake 'bits' and nonce

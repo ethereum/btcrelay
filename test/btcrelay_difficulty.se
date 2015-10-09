@@ -19,8 +19,8 @@ def funcTargetFromBits(bits):
 def funcToCompactBits(val):
     return(m_toCompactBits(val))
 
-def funcComputeNewTarget(prevTime, startTime, prevTarget):
-    return(m_computeNewTarget(prevTime, startTime, prevTarget))
+def funcComputeNewBits(prevTime, startTime, prevTarget):
+    return(m_computeNewBits(prevTime, startTime, prevTarget))
 
 #
 # end of macro wrappers
