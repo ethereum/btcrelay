@@ -189,6 +189,39 @@ macro m_computeNewTarget($prevTime, $startTime, $prevTarget):
     $newTarget
 
 
+macro shiftRight($val, $shift):
+    div($val, 2**$shift)
+
+macro shiftLeft($val, $shift):
+    $val * 2**$shift
+
+macro m_bitLen($int_type):
+    $length = 0
+    while ($int_type):
+        $int_type = shiftRight($int_type, 1)
+        $length += 1
+    $length
+
+# Convert uint256 to compact encoding
+# based on https://github.com/petertodd/python-bitcoinlib/blob/2a5dda45b557515fb12a0a18e5dd48d2f5cd13c2/bitcoin/core/serialize.py
+macro m_toCompactBits($val):
+    $nbytes = shiftRight((m_bitLen($val) + 7), 3)
+    $compact = 0
+    if $nbytes <= 3:
+        $compact = shiftLeft(($val & 0xFFFFFF), 8 * (3 - $nbytes))
+    else:
+        $compact = shiftRight($val, 8 * ($nbytes - 3))
+        $compact = $compact & 0xFFFFFF
+
+    # If the sign bit (0x00800000) is set, divide the mantissa by 256 and
+    # increase the exponent to get an encoding without it set.
+    if $compact & 0x00800000:
+        $compact = shiftRight($compact, 8)
+        $nbytes += 1
+
+    $compact | shiftLeft($nbytes, 24)
+
+
 # returns 1 if tx is in the block given by 'txBlockHash' and the block is
 # in Bitcoin's main chain (ie not a fork)
 #
@@ -438,6 +471,7 @@ macro m_bitsFromCurrentBlockHeader():
 
 # Bitcoin-way of computing the target from the 'bits' field of a blockheader
 # based on http://www.righto.com/2014/02/bitcoin-mining-hard-way-algorithms.html#ref3
+# TODO: improve
 macro targetFromBits($bits):
     $exp = div($bits, 0x1000000)  # 2^24
     $mant = $bits & 0xffffff

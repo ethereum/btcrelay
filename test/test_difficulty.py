@@ -29,34 +29,6 @@ class TestDifficulty(object):
         tester.seed = self.seed
 
 
-    def bitLen(self, int_type):
-        length = 0
-        while (int_type):
-            int_type >>= 1
-            length += 1
-        return(length)
-
-    # https://github.com/petertodd/python-bitcoinlib/blob/2a5dda45b557515fb12a0a18e5dd48d2f5cd13c2/bitcoin/core/serialize.py
-    def toCompactBits(self, v):
-        """Convert uint256 to compact encoding
-        """
-        nbytes = (self.bitLen(v) + 7) >> 3
-        compact = 0
-        if nbytes <= 3:
-            compact = (v & 0xFFFFFF) << 8 * (3 - nbytes)
-        else:
-            compact = v >> 8 * (nbytes - 3)
-            compact = compact & 0xFFFFFF
-
-        # If the sign bit (0x00800000) is set, divide the mantissa by 256 and
-        # increase the exponent to get an encoding without it set.
-        if compact & 0x00800000:
-            compact >>= 8
-            nbytes += 1
-
-        return compact | nbytes << 24
-
-
     def testTarget376992(self):
         prevTime = 1443699609  # block 376991
         startTime = 1442519404 # block 374976
@@ -68,7 +40,7 @@ class TestDifficulty(object):
         # simple, not full, manual computation
         targetTimespan = 14 * 24 * 60 * 60
         rawTarget = (prevTime - startTime) * prevTarget / targetTimespan
-        compact = self.toCompactBits(rawTarget)
+        compact = self.c.funcToCompactBits(rawTarget)
 
         assert compact == expBits
 

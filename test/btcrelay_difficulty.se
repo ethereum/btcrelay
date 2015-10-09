@@ -9,11 +9,15 @@ macro DIFFICULTY_ADJUSTMENT_INTERVAL: 3
 # macro wrappers (since only functions are testable)
 #
 
+# TODO needed?
 def funcTimestampViaCALLDATALOAD(blockHeaderBytes:str):
     return(m_timestampFromCurrentBlockHeader())
 
 def funcTargetFromBits(bits):
     return(targetFromBits(bits))
+
+def funcToCompactBits(val):
+    return(m_toCompactBits(val))
 
 def funcComputeNewTarget(prevTime, startTime, prevTarget):
     return(m_computeNewTarget(prevTime, startTime, prevTarget))
