@@ -38,8 +38,8 @@ class TestDifficulty(object):
         assert self.c.funcComputeNewBits(prevTime, startTime, prevTarget) == expBits
 
         # http://bitcoin.stackexchange.com/questions/22581/how-was-the-new-target-for-block-32256-calculated
-        prevTime = 1262152739
-        startTime = 1261130161
+        prevTime = 1262152739  # 32255
+        startTime = 1261130161  # 30240
         prevBits = 0x1d00ffff
         prevTarget = self.c.funcTargetFromBits(prevBits)
         expBits = 0x1d00d86a
@@ -73,13 +73,16 @@ class TestDifficulty(object):
 
     @slow
     def testDifficultyAdjust(self):
-        self.c.setInitialParent(0, 0, 1)
+        prevBlockHash = 0x000000005107662c86452e7365f32f8ffdc70d8d87aa6f78630a79f7d77fbfe6
+        startBlock = 30240
+        self.c.setInitialParent(prevBlockHash, startBlock, 1)
         count = 2015
         with open("test/headers/blockchain_headers") as f:
+            f.seek(80 * startBlock)
             bhBytes = f.read(80 * count)
             res = self.c.bulkStoreHeader(bhBytes, count, profiling=True)
             print('GAS: '+str(res['gas']))
-            assert res['output'] == count
+            assert res['output'] == startBlock + count
             # print bhBytes.encode('hex')
 
         assert 0
