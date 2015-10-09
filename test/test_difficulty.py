@@ -34,9 +34,17 @@ class TestDifficulty(object):
         startTime = 1442519404 # block 374976
         prevBits = 403867578
         prevTarget = self.c.funcTargetFromBits(prevBits)
-
         expBits = 403838066
         assert self.c.funcComputeNewBits(prevTime, startTime, prevTarget) == expBits
+
+        # http://bitcoin.stackexchange.com/questions/22581/how-was-the-new-target-for-block-32256-calculated
+        prevTime = 1262152739
+        startTime = 1261130161
+        prevBits = 0x1d00ffff
+        prevTarget = self.c.funcTargetFromBits(prevBits)
+        expBits = 0x1d00d86a
+        assert self.c.funcComputeNewBits(prevTime, startTime, prevTarget) == expBits
+
 
     def tmp2(self):
         # block100002 with all real data (hashes, time) except fake 'bits' and nonce
