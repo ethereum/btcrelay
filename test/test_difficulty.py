@@ -18,7 +18,7 @@ class TestDifficulty(object):
     ETHER = 10 ** 18
 
     def setup_class(cls):
-        tester.gas_limit = int(2.85e6)  # include costs of debug methods
+        tester.gas_limit = int(3.1e6)  # include costs of debug methods
         cls.s = tester.state()
         cls.c = cls.s.abi_contract(cls.CONTRACT_DEBUG, endowment=2000*cls.ETHER)
         cls.snapshot = cls.s.snapshot()
@@ -52,33 +52,6 @@ class TestDifficulty(object):
         prevTarget = self.c.funcTargetFromBits(prevBits)
         expBits = 438735905
         assert self.c.funcComputeNewBits(prevTime, startTime, prevTarget) == expBits
-
-
-    def tmp2(self):
-        # block100002 with all real data (hashes, time) except fake 'bits' and nonce
-        version = 1
-        hashPrevBlock = 0x00000000000080b66c911bd5ba14a74260057311eaeb1982802f7010f1a9f090  # block100001
-        hashMerkleRoot = 0x2fda58e5959b0ee53c5253da9b9f3c0c739422ae04946966991cf55895287552
-        time = 1293625051
-        bits = 0x207fFFFFL # REGTEST_EASIEST_DIFFICULTY
-        nonce = 2
-        bhBytes = getHeaderBytes(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
-
-        currTime = self.c.funcTimestampViaCALLDATALOAD(bhBytes)
-        assert currTime == time
-
-        # block100k (100002 - DIFFICULTY_ADJUSTMENT_INTERVAL)
-        startTime = 1293623863
-        currTarget = 0x000000000004864c000000000000000000000000000000000000000000000000
-
-        newTarget = self.c.funcComputeNewTarget(currTime, startTime, currTarget)
-        assert newTarget == 123
-
-
-    def tmp(self):
-        # block 100001
-        header = '0100000006e533fd1ada86391f3f6c343204b0d278d4aaec1c0b20aa27ba0300000000006abbb3eb3d733a9fe18967fd7d4c117e4ccbbac5bec4d910d900b3ae0793e77f54241b4d4c86041b4089cc9b'
-        expTime = 1293624404
 
 
     # TODO needed?
@@ -128,3 +101,30 @@ class TestDifficulty(object):
         res = self.c.storeBlockHeader(bhBytes)
         # assert res == 100002
         assert res == 77
+
+
+    def tmp2(self):
+        # block100002 with all real data (hashes, time) except fake 'bits' and nonce
+        version = 1
+        hashPrevBlock = 0x00000000000080b66c911bd5ba14a74260057311eaeb1982802f7010f1a9f090  # block100001
+        hashMerkleRoot = 0x2fda58e5959b0ee53c5253da9b9f3c0c739422ae04946966991cf55895287552
+        time = 1293625051
+        bits = 0x207fFFFFL # REGTEST_EASIEST_DIFFICULTY
+        nonce = 2
+        bhBytes = getHeaderBytes(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+
+        currTime = self.c.funcTimestampViaCALLDATALOAD(bhBytes)
+        assert currTime == time
+
+        # block100k (100002 - DIFFICULTY_ADJUSTMENT_INTERVAL)
+        startTime = 1293623863
+        currTarget = 0x000000000004864c000000000000000000000000000000000000000000000000
+
+        newTarget = self.c.funcComputeNewTarget(currTime, startTime, currTarget)
+        assert newTarget == 123
+
+
+    def tmp(self):
+        # block 100001
+        header = '0100000006e533fd1ada86391f3f6c343204b0d278d4aaec1c0b20aa27ba0300000000006abbb3eb3d733a9fe18967fd7d4c117e4ccbbac5bec4d910d900b3ae0793e77f54241b4d4c86041b4089cc9b'
+        expTime = 1293624404

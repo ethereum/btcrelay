@@ -152,8 +152,6 @@ def storeBlockHeader(blockHeaderBytes:str):
             startTime = m_getTimestamp(startBlock)
 
             newBits = m_computeNewBits(prevTime, startTime, prevTarget)
-
-            # TODO is this sound, or need to convert newTarget to newBits and then compare against bits ?
             if bits != newBits:
                 return(77)
 
@@ -472,7 +470,6 @@ macro m_bitsFromCurrentBlockHeader():
 
 # Bitcoin-way of computing the target from the 'bits' field of a blockheader
 # based on http://www.righto.com/2014/02/bitcoin-mining-hard-way-algorithms.html#ref3
-# TODO: improve
 macro targetFromBits($bits):
     $exp = div($bits, 0x1000000)  # 2^24
     $mant = $bits & 0xffffff
