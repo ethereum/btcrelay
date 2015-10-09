@@ -131,6 +131,8 @@ def storeBlockHeader(blockHeaderBytes:str):
 
 
         blockHeight = m_getHeight(blockHash)
+        # return(blockHeight)
+
         prevBits = m_getBits(hashPrevBlock)
         if !m_difficultyShouldBeAdjusted(blockHeight):
             # we need to check prevBits isn't 0 otherwise the 1st header
@@ -152,7 +154,7 @@ def storeBlockHeader(blockHeaderBytes:str):
             startTime = m_getTimestamp(startBlock)
 
             newBits = m_computeNewBits(prevTime, startTime, prevTarget)
-            if bits != newBits:
+            if bits != newBits && newBits != 0:  # newBits != 0 to allow first header
                 return(77)
 
 

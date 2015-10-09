@@ -64,7 +64,7 @@ class TestDifficulty(object):
 
     def testDifficultyAdjust(self):
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
-        blockPrevNum = 1  # for this special test
+        blockPrevNum = 99999
         self.c.setInitialParent(block100kPrev, blockPrevNum, 1)
 
         # TODO repeat this test but with 1 header, and then 7 headers?
@@ -76,6 +76,8 @@ class TestDifficulty(object):
         blockHeaderBytes = map(lambda x: x.decode('hex'), headers)
         for i in range(len(headers)):
             res = self.c.storeBlockHeader(blockHeaderBytes[i])
+
+            print 'res sb: ' + str(res)
 
             # print('@@@@ real chain score: ' + str(self.c.getCumulativeDifficulty()))
             assert res == i+1+blockPrevNum
