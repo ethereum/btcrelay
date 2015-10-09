@@ -29,6 +29,19 @@ class TestDifficulty(object):
         tester.seed = self.seed
 
 
+    def targetToCompactBits(self, target):
+        nSize = target >> 24
+        nWord = target & 0x007fffff
+        if nSize <= 3:
+            nWord >>= 8*(3-nSize)
+        else:
+            nWord <<= 8*(nSize-3)
+
+        # stuff skipped from https://github.com/bitcoin/bitcoin/blob/ce56f5621a94dcc2159ebe57e43da727eab18e6c/src/arith_uint256.cpp#L204-L222
+
+        return nWord
+
+
     def testTarget376992(self):
         prevTime = 1443699609  # block 376991
         startTime = 1442519404 # block 374976
@@ -39,9 +52,12 @@ class TestDifficulty(object):
 
         # simple, not full, manual computation
         targetTimespan = 14 * 24 * 60 * 60
-        expTarget = (prevTime - startTime) * prevTarget / targetTimespan
+        rawTarget = (prevTime - startTime) * prevTarget / targetTimespan
+        compact = self.targetToCompactBits(rawTarget)
 
-        assert expTarget == self.c.funcTargetFromBits(expBits)
+        assert compact == expBits
+
+        assert compact == self.c.funcTargetFromBits(expBits)
 
         newTarget = self.c.funcComputeNewTarget(prevTime, startTime, prevTarget)
         assert newTarget == self.c.funcTargetFromBits(expBits)
