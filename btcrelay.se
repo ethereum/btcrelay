@@ -195,11 +195,12 @@ macro shiftRight($val, $shift):
 macro shiftLeft($val, $shift):
     $val * 2**$shift
 
-macro m_bitLen($int_type):
+macro m_bitLen($val):
     $length = 0
-    while ($int_type):
-        $int_type = shiftRight($int_type, 1)
-        $length += 1
+    with $int_type = $val:
+        while ($int_type):
+            $int_type = shiftRight($int_type, 1)
+            $length += 1
     $length
 
 # Convert uint256 to compact encoding
