@@ -45,6 +45,14 @@ class TestDifficulty(object):
         expBits = 0x1d00d86a
         assert self.c.funcComputeNewBits(prevTime, startTime, prevTarget) == expBits
 
+        # big difficulty decrease March 25 2011 block number 127008
+        prevTime = 1306435280
+        startTime = 1305756287
+        prevBits = 440711666
+        prevTarget = self.c.funcTargetFromBits(prevBits)
+        expBits = 438735905
+        assert self.c.funcComputeNewBits(prevTime, startTime, prevTarget) == expBits
+
 
     def tmp2(self):
         # block100002 with all real data (hashes, time) except fake 'bits' and nonce
