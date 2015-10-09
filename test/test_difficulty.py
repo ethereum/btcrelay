@@ -53,6 +53,15 @@ class TestDifficulty(object):
         expBits = 438735905
         assert self.c.funcComputeNewBits(prevTime, startTime, prevTarget) == expBits
 
+        # mock uses REGTEST_EASIEST_DIFFICULTY and tests the boundary of
+        # retargeting to DIFFICULTY_1 which is 0x1d00ffff
+        prevTime = 1443699609  # block 376991
+        startTime = 1442519404 # block 374976
+        prevBits = 0x207FFFFF  # REGTEST_EASIEST_DIFFICULTY
+        prevTarget = self.c.funcTargetFromBits(prevBits)
+        expBits = 0x1d00ffff
+        assert self.c.funcComputeNewBits(prevTime, startTime, prevTarget) == expBits
+
 
     # TODO needed?
     def testTimestampFromCurrentBlockHeader(self):
