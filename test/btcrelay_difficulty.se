@@ -2,7 +2,7 @@
 def testingonlySetHeaviest(blockHash):
     self.heaviestBlock = blockHash
 
-macro DIFFICULTY_ADJUSTMENT_INTERVAL: 5
+macro DIFFICULTY_ADJUSTMENT_INTERVAL: 2016
 
 
 #
@@ -32,4 +32,4 @@ def funcComputeNewBits(prevTime, startTime, prevTarget):
 
 # testing overrides should be before the contract being tested
 inset('_disableTokens.se')
-inset('../btcrelay.se')
+inset('../btcBulkStoreHeaders.se')

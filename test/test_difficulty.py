@@ -18,7 +18,7 @@ class TestDifficulty(object):
     ETHER = 10 ** 18
 
     def setup_class(cls):
-        tester.gas_limit = int(4.1e6)  # include costs of debug methods
+        tester.gas_limit = int(500e6)  # include costs of debug methods
         cls.s = tester.state()
         cls.c = cls.s.abi_contract(cls.CONTRACT_DEBUG, endowment=2000*cls.ETHER)
         cls.snapshot = cls.s.snapshot()
@@ -71,7 +71,19 @@ class TestDifficulty(object):
         assert self.c.funcTimestampViaCALLDATALOAD(header.decode('hex')) == expTime
 
 
+    @slow
     def testDifficultyAdjust(self):
+        self.c.setInitialParent(0, 0, 1)
+        count = 2015
+        with open("test/headers/blockchain_headers") as f:
+            bhBytes = f.read(80 * count)
+            res = self.c.bulkStoreHeader(bhBytes, count, profiling=True)
+            print('GAS: '+str(res['gas']))
+            assert res['output'] == count
+            # print bhBytes.encode('hex')
+
+        assert 0
+
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
         blockPrevNum = 0
         self.c.setInitialParent(block100kPrev, blockPrevNum, 1)
