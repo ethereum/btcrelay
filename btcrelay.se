@@ -129,10 +129,7 @@ def storeBlockHeader(blockHeaderBytes:str):
 
         save(self.block[blockHash]._blockHeader[0], blockHeaderBytes, chars=80)
 
-
         blockHeight = m_getHeight(blockHash)
-        # return(blockHeight)
-
         prevBits = m_getBits(hashPrevBlock)
         if !m_difficultyShouldBeAdjusted(blockHeight):
             # we need to check prevBits isn't 0 otherwise the 1st header

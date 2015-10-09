@@ -2,7 +2,7 @@
 def testingonlySetHeaviest(blockHash):
     self.heaviestBlock = blockHash
 
-macro DIFFICULTY_ADJUSTMENT_INTERVAL: 3
+macro DIFFICULTY_ADJUSTMENT_INTERVAL: 5
 
 
 #
