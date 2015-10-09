@@ -29,11 +29,18 @@ class TestDifficulty(object):
         tester.seed = self.seed
 
 
+    def bitLen(self, int_type):
+        length = 0
+        while (int_type):
+            int_type >>= 1
+            length += 1
+        return(length)
+
     # https://github.com/petertodd/python-bitcoinlib/blob/2a5dda45b557515fb12a0a18e5dd48d2f5cd13c2/bitcoin/core/serialize.py
     def toCompactBits(self, v):
         """Convert uint256 to compact encoding
         """
-        nbytes = (v.bit_length() + 7) >> 3
+        nbytes = (self.bitLen(v) + 7) >> 3
         compact = 0
         if nbytes <= 3:
             compact = (v & 0xFFFFFF) << 8 * (3 - nbytes)
