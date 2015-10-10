@@ -73,12 +73,28 @@ class TestDifficulty(object):
 
     @slow
     def testDifficultyAdjust(self):
-        # prevBlockHash = 0x000000005107662c86452e7365f32f8ffdc70d8d87aa6f78630a79f7d77fbfe6
-        # startBlock = 30240
-        # self.c.setInitialParent(prevBlockHash, startBlock, 1)  # start at 0, for difficultyAdjustment tests otherwise getBlockHash out of bounds
+        prevBlockHash = 0x000000005107662c86452e7365f32f8ffdc70d8d87aa6f78630a79f7d77fbfe6
+        startBlock = 30240
+        self.c.setInitialParent(prevBlockHash, 0, 1)  # start at 0, for difficultyAdjustment tests otherwise getBlockHash out of bounds
 
+        count = 2020
+        with open("test/headers/blockchain_headers") as f:
+            f.seek(80 * startBlock)
+            bhBytes = f.read(80 * count)
+            res = self.c.bulkStoreHeader(bhBytes, count, profiling=True)
+            print('GAS: '+str(res['gas']))
+            print('res: '+str(res['output']))
+            assert res['output'] == count
+            # print bhBytes.encode('hex')
+
+        assert 0
+
+    @slow
+    # test storing blocks right from Satoshi's genesis and past the very first
+    # difficulty adjustment (the difficulty remained the same)
+    def testSameDifficulty(self):
         startBlock = 0
-        self.c.setInitialParent(0, startBlock, 1)
+        self.c.setInitialParent(0, startBlock, 1)  # start at 0, for difficultyAdjustment tests otherwise getBlockHash out of bounds
 
         count = 2020
         with open("test/headers/blockchain_headers") as f:
@@ -91,6 +107,7 @@ class TestDifficulty(object):
             # print bhBytes.encode('hex')
 
         assert 0
+
 
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
         blockPrevNum = 0
