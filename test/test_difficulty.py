@@ -74,11 +74,15 @@ class TestDifficulty(object):
 
     @slow
     def testDifficultyAdjust(self):
-        prevBlockHash = 0x000000005107662c86452e7365f32f8ffdc70d8d87aa6f78630a79f7d77fbfe6
-        startBlock = 30240
+        # difficulty change at 344736 was chosen since the data is contained in
+        # blockchain_headers and it is a recent difficulty increase, with large
+        # difficulties and the magnitude is reasonable 5%:
+        # 46684376316 / 44455415962.0 = 1.050139230637394
+        prevBlockHash = 0x000000000000000005d1e9e192a43a19e2fbd933ffb27df2623187ad5ce10adc
+        startBlock = 342720
         self.c.setInitialParent(prevBlockHash, 0, 1)  # start at 0, for difficultyAdjustment tests otherwise getBlockHash out of bounds
 
-        count = 5
+        count = 2020
         with open("test/headers/blockchain_headers") as f:
             f.seek(80 * startBlock)
             bhBytes = f.read(80 * count)
@@ -87,8 +91,8 @@ class TestDifficulty(object):
         assert self.c.getLastBlockHeight() == count
 
         assert self.c.getCumulativeDifficulty() == \
-            self.DIFF_ADJUST*1 + \
-            (count-self.DIFF_ADJUST)*1 + 1  # score starts at 1
+            self.DIFF_ADJUST*44455415962 + \
+            (count-self.DIFF_ADJUST)*46684376316 + 1  # score starts at 1
 
 
     @slow
@@ -129,6 +133,27 @@ class TestDifficulty(object):
         assert self.c.getLastBlockHeight() == count
 
         assert self.c.getCumulativeDifficulty() == count*1 + 1  # score starts at 1
+
+
+    @slow
+    # The difficulty changed from 1.0 to 1.18, but the same since it's rounded
+    # http://bitcoin.stackexchange.com/questions/22581/how-was-the-new-target-for-block-32256-calculated
+    def testDifficultyRoundedSame(self):
+        prevBlockHash = 0x000000005107662c86452e7365f32f8ffdc70d8d87aa6f78630a79f7d77fbfe6
+        startBlock = 30240
+        self.c.setInitialParent(prevBlockHash, 0, 1)  # start at 0, for difficultyAdjustment tests otherwise getBlockHash out of bounds
+
+        count = 2020
+        with open("test/headers/blockchain_headers") as f:
+            f.seek(80 * startBlock)
+            bhBytes = f.read(80 * count)
+            assert self.c.bulkStoreHeader(bhBytes, count) == count
+
+        assert self.c.getLastBlockHeight() == count
+
+        assert self.c.getCumulativeDifficulty() == \
+            self.DIFF_ADJUST*1 + \
+            (count-self.DIFF_ADJUST)*1 + 1  # score starts at 1
 
 
     def tmp3(self):
