@@ -95,6 +95,33 @@ class TestDifficulty(object):
             (count-self.DIFF_ADJUST)*46684376316 + 1  # score starts at 1
 
 
+    # difficulty should be same when not in a block divisible by 2016
+    def testDifficultyShouldBeSame(self):
+        prevBlockHash = 0x000000000000000005d1e9e192a43a19e2fbd933ffb27df2623187ad5ce10adc
+        startBlock = 342720
+        self.c.setInitialParent(prevBlockHash, 0, 1)  # start at 0, for difficultyAdjustment tests otherwise getBlockHash out of bounds
+
+        count = 3
+        with open("test/headers/blockchain_headers") as f:
+            f.seek(80 * startBlock)
+            bhBytes = f.read(80 * count)
+            assert self.c.bulkStoreHeader(bhBytes, count) == count
+
+        assert self.c.getLastBlockHeight() == count
+        assert self.c.getCumulativeDifficulty() == count*44455415962 + 1  # score starts at 1
+
+        version = 1
+        hashMerkleRoot = 0 # doesn't matter
+        time = 1423499049  # same as real block 342723
+        bits = 0x207FFFFF  # REGTEST_EASIEST_DIFFICULTY
+        nonce = 0
+        hashPrevBlock = 0x000000000000000004db26747ccd2feb6341c18282a33e2c5d8eb84a1b12d951  # block 342722
+        bhBytes = getHeaderBytes(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+        assert dblSha256Flip(bhBytes) == 0x2afa6cec2435698406ff2138ae6162469857524c7849970e5bb82039e90a099b
+        res = self.c.storeBlockHeader(bhBytes)
+        assert res == 99
+
+
     @slow
     def testDecreaseDifficulty(self):
         # big difficulty decrease March 25 2011 block number 127008
