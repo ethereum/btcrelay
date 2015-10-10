@@ -49,6 +49,7 @@ macro TOKEN_ENDOWMENT: 2**200
 macro REWARD_PER_HEADER: 1000
 macro FEE_VERIFY_TX: 100000000000000000  # 0.1 ETH
 
+event failure(errCode:indexed)
 
 event rewardToken(blockHeight:indexed, rewardAddr:address)  # TODO: indexed or not?
 event ethPayment()
@@ -104,6 +105,10 @@ def setInitialParent(blockHash, height, cumulativeDifficulty):
     return(1)
 
 
+
+macro ERR_DIFFICULTY:  10010  # difficulty didn't match current difficulty
+macro ERR_RETARGET: 10020  # difficulty didn't match retarget
+
 # TODO what to log?
 # store a Bitcoin block header that must be provided in
 # bytes format 'blockHeaderBytes'
@@ -138,15 +143,12 @@ def storeBlockHeader(blockHeaderBytes:str):
             # the initial parent, but as these forks will have lower score than
             # the main chain, they will not have impact.
             if bits != prevBits && prevBits != 0:
-                # TODO log?
-                return(99)
+                log(type=failure, ERR_DIFFICULTY)
+                return(ERR_DIFFICULTY)
         # TODO
         else:
             prevTarget = targetFromBits(prevBits)
             prevTime = m_getTimestamp(hashPrevBlock)
-
-            # return(bits)
-            # return(blockHeight - DIFFICULTY_ADJUSTMENT_INTERVAL)
 
             # blockHeight - DIFFICULTY_ADJUSTMENT_INTERVAL is same as
             # getHeight(hashPrevBlock) - (DIFFICULTY_ADJUSTMENT_INTERVAL - 1)
@@ -155,12 +157,8 @@ def storeBlockHeader(blockHeaderBytes:str):
 
             newBits = m_computeNewBits(prevTime, startTime, prevTarget)
             if bits != newBits && newBits != 0:  # newBits != 0 to allow first header
-                # return(blockHeight)
-                # return(startBlock)
-                # return(bits)  # was returning 486604799
-                return(77)
-
-
+                log(type=failure, ERR_RETARGET)
+                return(ERR_RETARGET)
 
         difficulty = 0x00000000FFFF0000000000000000000000000000000000000000000000000000 / target # https://en.bitcoin.it/wiki/Difficulty
         m_setScore(blockHash, scorePrevBlock + difficulty)

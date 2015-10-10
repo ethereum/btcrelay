@@ -18,6 +18,9 @@ class TestDifficulty(object):
     ETHER = 10 ** 18
     DIFF_ADJUST = 2016
 
+    ERR_DIFFICULTY = 10010
+    ERR_RETARGET = 10020
+
     def setup_class(cls):
         tester.gas_limit = int(500e6)  # include costs of debug methods
         cls.s = tester.state()
@@ -119,8 +122,17 @@ class TestDifficulty(object):
         hashPrevBlock = 0x000000000000000004db26747ccd2feb6341c18282a33e2c5d8eb84a1b12d951  # block 342722
         bhBytes = getHeaderBytes(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
         assert dblSha256Flip(bhBytes) == 0x2afa6cec2435698406ff2138ae6162469857524c7849970e5bb82039e90a099b
+
+        eventArr = []
+        self.s.block.log_listeners.append(lambda x: eventArr.append(self.c._translator.listen(x)))
+
         res = self.c.storeBlockHeader(bhBytes)
-        assert res == 99
+        assert res == self.ERR_DIFFICULTY
+
+        assert eventArr == [{'_event_type': 'failure',
+            'errCode': self.ERR_DIFFICULTY
+            }]
+        eventArr.pop()
 
 
     @slow
@@ -149,8 +161,17 @@ class TestDifficulty(object):
         bhBytes = getHeaderBytes(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
         assert dblSha256Flip(bhBytes) == 0x0016127022e6debe87071eb0091918d2fccbcef0d46a046bcaf71309b0528044
         assert self.c.getBlockchainHead() == hashPrevBlock
+
+        eventArr = []
+        self.s.block.log_listeners.append(lambda x: eventArr.append(self.c._translator.listen(x)))
+
         res = self.c.storeBlockHeader(bhBytes)
-        assert res == 77
+        assert res == self.ERR_RETARGET
+
+        assert eventArr == [{'_event_type': 'failure',
+            'errCode': self.ERR_RETARGET
+            }]
+        eventArr.pop()
 
         # add the real block
         version = 2
