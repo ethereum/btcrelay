@@ -82,9 +82,13 @@ class TestDifficulty(object):
         with open("test/headers/blockchain_headers") as f:
             f.seek(80 * startBlock)
             bhBytes = f.read(80 * count)
-            res = self.c.bulkStoreHeader(bhBytes, count, profiling=True)
-            # print('GAS: '+str(res['gas']))
-            assert res['output'] == count
+            assert self.c.bulkStoreHeader(bhBytes, count) == count
+
+        assert self.c.getLastBlockHeight() == count
+
+        assert self.c.getCumulativeDifficulty() == \
+            self.DIFF_ADJUST*1 + \
+            (count-self.DIFF_ADJUST)*1 + 1  # score starts at 1
 
 
     @slow
@@ -119,13 +123,15 @@ class TestDifficulty(object):
             f.seek(80 * startBlock)
             bhBytes = f.read(80 * count)
             res = self.c.bulkStoreHeader(bhBytes, count, profiling=True)
-            print('GAS: '+str(res['gas']))
-            print('res: '+str(res['output']))
+            # print('GAS: '+str(res['gas']))
             assert res['output'] == startBlock + count
 
-        assert 0
+        assert self.c.getLastBlockHeight() == count
+
+        assert self.c.getCumulativeDifficulty() == count*1 + 1  # score starts at 1
 
 
+    def tmp3(self):
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
         blockPrevNum = 0
         self.c.setInitialParent(block100kPrev, blockPrevNum, 1)
