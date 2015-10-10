@@ -16,6 +16,7 @@ class TestDifficulty(object):
     CONTRACT_DEBUG = 'test/btcrelay_difficulty.se'
 
     ETHER = 10 ** 18
+    DIFF_ADJUST = 2016
 
     def setup_class(cls):
         tester.gas_limit = int(500e6)  # include costs of debug methods
@@ -77,17 +78,34 @@ class TestDifficulty(object):
         startBlock = 30240
         self.c.setInitialParent(prevBlockHash, 0, 1)  # start at 0, for difficultyAdjustment tests otherwise getBlockHash out of bounds
 
-        count = 2020
+        count = 5
         with open("test/headers/blockchain_headers") as f:
             f.seek(80 * startBlock)
             bhBytes = f.read(80 * count)
             res = self.c.bulkStoreHeader(bhBytes, count, profiling=True)
-            print('GAS: '+str(res['gas']))
-            print('res: '+str(res['output']))
+            # print('GAS: '+str(res['gas']))
             assert res['output'] == count
-            # print bhBytes.encode('hex')
 
-        assert 0
+
+    @slow
+    def testDecreaseDifficulty(self):
+        # big difficulty decrease March 25 2011 block number 127008
+        prevBlockHash = 0x00000000000033e435c4bbddc7eb255146aa7f18e61a832983af3a9ee5dd144d
+        startBlock = 124992
+        self.c.setInitialParent(prevBlockHash, 0, 1)  # start at 0, for difficultyAdjustment tests otherwise getBlockHash out of bounds
+
+        count = 2020
+        with open("test/headers/blockchain_headers") as f:
+            f.seek(80 * startBlock)
+            bhBytes = f.read(80 * count)
+            assert self.c.bulkStoreHeader(bhBytes, count) == count
+
+        assert self.c.getLastBlockHeight() == count
+
+        assert self.c.getCumulativeDifficulty() == \
+            self.DIFF_ADJUST*244112 + \
+            (count-self.DIFF_ADJUST)*434877 + 1  # score starts at 1
+
 
     @slow
     # test storing blocks right from Satoshi's genesis and past the very first
@@ -104,7 +122,6 @@ class TestDifficulty(object):
             print('GAS: '+str(res['gas']))
             print('res: '+str(res['output']))
             assert res['output'] == startBlock + count
-            # print bhBytes.encode('hex')
 
         assert 0
 
@@ -167,7 +184,7 @@ class TestDifficulty(object):
         currTime = self.c.funcTimestampViaCALLDATALOAD(bhBytes)
         assert currTime == time
 
-        # block100k (100002 - DIFFICULTY_ADJUSTMENT_INTERVAL)
+        # block100k (100002 - DIFF_ADJUST)
         startTime = 1293623863
         currTarget = 0x000000000004864c000000000000000000000000000000000000000000000000
 
