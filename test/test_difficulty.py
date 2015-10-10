@@ -123,13 +123,14 @@ class TestDifficulty(object):
         assert res == 99
 
 
+    @slow
     # difficulty should match the computed new difficulty ie bits should equal newBits
     def testNewDifficultyMatch(self):
         prevBlockHash = 0x000000000000000005d1e9e192a43a19e2fbd933ffb27df2623187ad5ce10adc
         startBlock = 342720
         self.c.setInitialParent(prevBlockHash, 0, 1)  # start at 0, for difficultyAdjustment tests otherwise getBlockHash out of bounds
 
-        count = 2015
+        count = 2016
         with open("test/headers/blockchain_headers") as f:
             f.seek(80 * startBlock)
             bhBytes = f.read(80 * count)
@@ -139,29 +140,30 @@ class TestDifficulty(object):
         assert self.c.getCumulativeDifficulty() == count*44455415962 + 1  # score starts at 1
 
         # adding a low difficulty block should fail since bits!=newBits
-        # version = 2
-        # hashMerkleRoot = 0 # doesn't matter
-        # time = 1424648937  # same as real block 344736
-        # bits = 0x207FFFFF  # REGTEST_EASIEST_DIFFICULTY
-        # nonce = 0
-        # hashPrevBlock = 0x00000000000000000f9e30784bd647e91f6923263a674c9c5c18084fe79a41f8  # block 344735
-        # bhBytes = getHeaderBytes(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
-        # assert dblSha256Flip(bhBytes) == 0x0016127022e6debe87071eb0091918d2fccbcef0d46a046bcaf71309b0528044
-        # res = self.c.storeBlockHeader(bhBytes)
-        # assert res == 77
-
+        version = 2
+        hashMerkleRoot = 0 # doesn't matter
+        time = 1424648937  # same as real block 344736
+        bits = 0x207FFFFF  # REGTEST_EASIEST_DIFFICULTY
+        nonce = 0
+        hashPrevBlock = 0x00000000000000000f9e30784bd647e91f6923263a674c9c5c18084fe79a41f8  # block 344735
+        bhBytes = getHeaderBytes(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
+        assert dblSha256Flip(bhBytes) == 0x0016127022e6debe87071eb0091918d2fccbcef0d46a046bcaf71309b0528044
+        assert self.c.getBlockchainHead() == hashPrevBlock
+        res = self.c.storeBlockHeader(bhBytes)
+        assert res == 77
 
         # add the real block
         version = 2
         hashMerkleRoot = 0x734c8b7ea7767005409c23a4b907d07329dadc4bac573b2c809f642eec4de26b
         time = 1424648937
-        bits = 404196666  # REGTEST_EASIEST_DIFFICULTY
+        bits = 404196666
         nonce = 550403378
         hashPrevBlock = 0x00000000000000000f9e30784bd647e91f6923263a674c9c5c18084fe79a41f8  # block 344735
         bhBytes = getHeaderBytes(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
         assert dblSha256Flip(bhBytes) == 0x00000000000000001097f043cca218169e00623c9962b25a0b159eaca2d8ca25
+        assert self.c.getBlockchainHead() == hashPrevBlock
         assert self.c.storeBlockHeader(bhBytes) == count + 1
-        assert count + 1 == 2016
+        assert count + 1 == 2017
 
 
     @slow
