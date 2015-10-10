@@ -131,7 +131,7 @@ def storeBlockHeader(blockHeaderBytes:str):
 
         blockHeight = m_getHeight(blockHash)
         prevBits = m_getBits(hashPrevBlock)
-        if !m_difficultyShouldBeAdjusted(blockHeight):
+        if !m_difficultyShouldBeAdjusted(blockHeight-1) || blockHeight == 1:  # since blockHeight is 1 more than blockNumber; OR clause is special case for 1st header
             # we need to check prevBits isn't 0 otherwise the 1st header
             # will always be rejected (since prevBits doesn't exist for the initial parent)
             # This allows blocks with arbitrary difficulty from being added to
@@ -145,6 +145,9 @@ def storeBlockHeader(blockHeaderBytes:str):
             prevTarget = targetFromBits(prevBits)
             prevTime = m_getTimestamp(hashPrevBlock)
 
+            # return(bits)
+            # return(blockHeight - DIFFICULTY_ADJUSTMENT_INTERVAL)
+
             # blockHeight - DIFFICULTY_ADJUSTMENT_INTERVAL is same as
             # getHeight(hashPrevBlock) - (DIFFICULTY_ADJUSTMENT_INTERVAL - 1)
             startBlock = self.getBlockHash(blockHeight - DIFFICULTY_ADJUSTMENT_INTERVAL)
@@ -152,6 +155,9 @@ def storeBlockHeader(blockHeaderBytes:str):
 
             newBits = m_computeNewBits(prevTime, startTime, prevTarget)
             if bits != newBits && newBits != 0:  # newBits != 0 to allow first header
+                # return(blockHeight)
+                # return(startBlock)
+                # return(bits)  # was returning 486604799
                 return(77)
 
 

@@ -73,15 +73,20 @@ class TestDifficulty(object):
 
     @slow
     def testDifficultyAdjust(self):
-        prevBlockHash = 0x000000005107662c86452e7365f32f8ffdc70d8d87aa6f78630a79f7d77fbfe6
-        startBlock = 30240
-        self.c.setInitialParent(prevBlockHash, startBlock, 1)
-        count = 2015
+        # prevBlockHash = 0x000000005107662c86452e7365f32f8ffdc70d8d87aa6f78630a79f7d77fbfe6
+        # startBlock = 30240
+        # self.c.setInitialParent(prevBlockHash, startBlock, 1)  # start at 0, for difficultyAdjustment tests otherwise getBlockHash out of bounds
+
+        startBlock = 0
+        self.c.setInitialParent(0, startBlock, 1)
+
+        count = 2020
         with open("test/headers/blockchain_headers") as f:
             f.seek(80 * startBlock)
             bhBytes = f.read(80 * count)
             res = self.c.bulkStoreHeader(bhBytes, count, profiling=True)
             print('GAS: '+str(res['gas']))
+            print('res: '+str(res['output']))
             assert res['output'] == startBlock + count
             # print bhBytes.encode('hex')
 

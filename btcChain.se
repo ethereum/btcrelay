@@ -73,13 +73,8 @@ def inMainChain(txBlockHash):
 
 
 # returns the blockHash at the given blockHeight
+# blockHeight must be greater than 0 (otherwise infinite loop since minimum height is 1)
 def getBlockHash(blockHeight):
-    # blockHeight can be 0 when called via btcrelay:
-    # startBlock = self.getBlockHash(blockHeight - DIFFICULTY_ADJUSTMENT_INTERVAL)
-    # This is the scenario when loading block number DIFFICULTY_ADJUSTMENT_INTERVAL 
-    if blockHeight == 0:
-        return(self.heaviestBlock)
-
     blockHash = self.heaviestBlock
     anc_index = NUM_ANCESTOR_DEPTHS - 1
 
