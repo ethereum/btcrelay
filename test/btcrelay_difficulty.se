@@ -1,10 +1,3 @@
-# test only method required by some tests
-def testingonlySetHeaviest(blockHash):
-    self.heaviestBlock = blockHash
-
-macro DIFFICULTY_ADJUSTMENT_INTERVAL: 2016
-
-
 #
 # macro wrappers (since only functions are testable)
 #
@@ -25,10 +18,6 @@ def funcComputeNewBits(prevTime, startTime, prevTarget):
 #
 # end of macro wrappers
 #
-
-# very specialized tests that can only work with initialParent 99999
-# macro m_getHeight($blockHash):
-#     div(sload(ref(self.block[$blockHash]._info)), BYTES_24) - 2
 
 # testing overrides should be before the contract being tested
 inset('_disableTokens.se')
