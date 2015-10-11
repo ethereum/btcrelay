@@ -37,11 +37,6 @@ data tokenContract
 # TODO optimize by avoiding this extra storage slot?
 data numTokenIssued
 
-macro DIFFICULTY_ADJUSTMENT_INTERVAL: 2016  # Bitcoin adjusts every 2 weeks
-macro TARGET_TIMESPAN: 14 * 24 * 60 * 60  # 2 weeks
-macro TARGET_TIMESPAN_DIV_4: TARGET_TIMESPAN / 4
-macro TARGET_TIMESPAN_MUL_4: TARGET_TIMESPAN * 4
-macro UNROUNDED_MAX_TARGET: 2**224 - 1  # different from (2**16-1)*2**208 http://bitcoin.stackexchange.com/questions/13803/how-exactly-was-the-original-coefficient-for-difficulty-determined
 
 # TODO move to constants.se
 #macro TOKEN_FACTORY: 0xfd5aee44be7195a704a86c18dfc0b65813486f7e
@@ -104,10 +99,6 @@ def setInitialParent(blockHash, height, cumulativeDifficulty):
 
     return(1)
 
-
-
-macro ERR_DIFFICULTY:  10010  # difficulty didn't match current difficulty
-macro ERR_RETARGET: 10020  # difficulty didn't match retarget
 
 # TODO what to log?
 # store a Bitcoin block header that must be provided in
@@ -174,54 +165,6 @@ def storeBlockHeader(blockHeaderBytes:str):
         return(blockHeight)
 
     return(0)
-
-
-macro m_computeNewBits($prevTime, $startTime, $prevTarget):
-    # TODO use `with` ?
-    $actualTimespan = $prevTime - $startTime
-    if $actualTimespan < TARGET_TIMESPAN_DIV_4:
-        $actualTimespan = TARGET_TIMESPAN_DIV_4
-    if $actualTimespan > TARGET_TIMESPAN_MUL_4:
-        $actualTimespan = TARGET_TIMESPAN_MUL_4
-
-    $newTarget = div($actualTimespan * $prevTarget, TARGET_TIMESPAN)
-    if $newTarget > UNROUNDED_MAX_TARGET:
-        $newTarget = UNROUNDED_MAX_TARGET
-    m_toCompactBits($newTarget)
-
-
-macro shiftRight($val, $shift):
-    div($val, 2**$shift)
-
-macro shiftLeft($val, $shift):
-    $val * 2**$shift
-
-macro m_bitLen($val):
-    $length = 0
-    with $int_type = $val:
-        while ($int_type):
-            $int_type = shiftRight($int_type, 1)
-            $length += 1
-    $length
-
-# Convert uint256 to compact encoding
-# based on https://github.com/petertodd/python-bitcoinlib/blob/2a5dda45b557515fb12a0a18e5dd48d2f5cd13c2/bitcoin/core/serialize.py
-macro m_toCompactBits($val):
-    $nbytes = shiftRight((m_bitLen($val) + 7), 3)
-    $compact = 0
-    if $nbytes <= 3:
-        $compact = shiftLeft(($val & 0xFFFFFF), 8 * (3 - $nbytes))
-    else:
-        $compact = shiftRight($val, 8 * ($nbytes - 3))
-        $compact = $compact & 0xFFFFFF
-
-    # If the sign bit (0x00800000) is set, divide the mantissa by 256 and
-    # increase the exponent to get an encoding without it set.
-    if $compact & 0x00800000:
-        $compact = shiftRight($compact, 8)
-        $nbytes += 1
-
-    $compact | shiftLeft($nbytes, 24)
 
 
 # returns 1 if tx is in the block given by 'txBlockHash' and the block is
@@ -406,6 +349,40 @@ macro m_difficultyShouldBeAdjusted($blockHeight):
     mod($blockHeight, DIFFICULTY_ADJUSTMENT_INTERVAL) == 0
 
 
+macro m_computeNewBits($prevTime, $startTime, $prevTarget):
+    # TODO use `with` ?
+    $actualTimespan = $prevTime - $startTime
+    if $actualTimespan < TARGET_TIMESPAN_DIV_4:
+        $actualTimespan = TARGET_TIMESPAN_DIV_4
+    if $actualTimespan > TARGET_TIMESPAN_MUL_4:
+        $actualTimespan = TARGET_TIMESPAN_MUL_4
+
+    $newTarget = div($actualTimespan * $prevTarget, TARGET_TIMESPAN)
+    if $newTarget > UNROUNDED_MAX_TARGET:
+        $newTarget = UNROUNDED_MAX_TARGET
+    m_toCompactBits($newTarget)
+
+
+# Convert uint256 to compact encoding
+# based on https://github.com/petertodd/python-bitcoinlib/blob/2a5dda45b557515fb12a0a18e5dd48d2f5cd13c2/bitcoin/core/serialize.py
+macro m_toCompactBits($val):
+    $nbytes = shiftRight((m_bitLen($val) + 7), 3)
+    $compact = 0
+    if $nbytes <= 3:
+        $compact = shiftLeft(($val & 0xFFFFFF), 8 * (3 - $nbytes))
+    else:
+        $compact = shiftRight($val, 8 * ($nbytes - 3))
+        $compact = $compact & 0xFFFFFF
+
+    # If the sign bit (0x00800000) is set, divide the mantissa by 256 and
+    # increase the exponent to get an encoding without it set.
+    if $compact & 0x00800000:
+        $compact = shiftRight($compact, 8)
+        $nbytes += 1
+
+    $compact | shiftLeft($nbytes, 24)
+
+
 # get the parent of '$blockHash'
 macro getPrevBlock($blockHash):
     with $addr = ref(self.block[$blockHash]._blockHeader[0]):
@@ -479,6 +456,21 @@ macro concatHash($tx1, $tx2):
         ~mstore($x, flip32Bytes($tx1))
         ~mstore($x + 32, flip32Bytes($tx2))
         flip32Bytes(sha256(sha256($x, chars=64)))
+
+
+macro shiftRight($val, $shift):
+    div($val, 2**$shift)
+
+macro shiftLeft($val, $shift):
+    $val * 2**$shift
+
+macro m_bitLen($val):
+    $length = 0
+    with $int_type = $val:
+        while ($int_type):
+            $int_type = shiftRight($int_type, 1)
+            $length += 1
+    $length
 
 
 # reverse 32 bytes given by '$b32'
