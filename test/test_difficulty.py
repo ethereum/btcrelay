@@ -238,3 +238,12 @@ class TestDifficulty(object):
         assert self.c.getCumulativeDifficulty() == \
             self.DIFF_ADJUST*1 + \
             (count-self.DIFF_ADJUST)*1 + 1  # score starts at 1
+
+
+    # based on https://github.com/petertodd/python-bitcoinlib/blob/2a5dda45b557515fb12a0a18e5dd48d2f5cd13c2/bitcoin/tests/test_serialize.py#L131
+    def testToCompactBits(self):
+        assert self.c.funcToCompactBits(0x1234) == 0x02123400
+        assert self.c.funcToCompactBits(0x123456) == 0x03123456
+        assert self.c.funcToCompactBits(0x12345600) == 0x04123456
+        assert self.c.funcToCompactBits(0x92340000) == 0x05009234
+        assert self.c.funcToCompactBits(0x1234560000000000000000000000000000000000000000000000000000000000) == 0x20123456
