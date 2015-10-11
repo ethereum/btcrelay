@@ -19,7 +19,7 @@ class TestBtcChain(object):
 
 
     def setup_class(cls):
-        tester.gas_limit = int(2.65e6)  # include costs of debug methods
+        tester.gas_limit = int(2.95e6)  # include costs of debug methods
         cls.s = tester.state()
         cls.c = cls.s.abi_contract(cls.CONTRACT_DEBUG, endowment=2000*cls.ETHER)
         cls.snapshot = cls.s.snapshot()
@@ -89,6 +89,9 @@ class TestBtcChain(object):
         for i in range(numBlocksInFork):
             assert self.c.inMainChain(forkStartBlock+i) == 0
 
+        for i in range(1, heaviest+1):
+            assert self.c.getBlockHash(i) == i
+
     def testTiny(self):
 
         self.c.funcSaveAncestors(1, 0)
@@ -106,16 +109,18 @@ class TestBtcChain(object):
 
         assert self.c.inMainChain(9876) == 0
 
-    @pytest.mark.skipif(True,reason='skip')
+    @slow
     def testPerfOfStore(self):
-        heaviest = 260
-
+        heaviest = 2020
 
         for i in range(1, heaviest+1):
             self.c.funcSaveAncestors(i, i-1)
         self.c.testingonlySetHeaviest(heaviest)
 
-        self.c.logAnc(heaviest)
+        # self.c.logAnc(heaviest)
+
+        for i in range(1, heaviest+1):
+            assert self.c.getBlockHash(i) == i
 
 
     def testSmallChain(self):
