@@ -2,10 +2,6 @@
 # macro wrappers (since only functions are testable)
 #
 
-# TODO needed?
-def funcTimestampViaCALLDATALOAD(blockHeaderBytes:str):
-    return(m_timestampFromCurrentBlockHeader())
-
 def funcTargetFromBits(bits):
     return(targetFromBits(bits))
 

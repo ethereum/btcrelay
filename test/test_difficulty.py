@@ -67,14 +67,6 @@ class TestDifficulty(object):
         assert self.c.funcComputeNewBits(prevTime, startTime, prevTarget) == expBits
 
 
-    # TODO needed?
-    def testTimestampFromCurrentBlockHeader(self):
-        # block100K
-        header = '0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710'
-        expTime = 1293623863
-        assert self.c.funcTimestampViaCALLDATALOAD(header.decode('hex')) == expTime
-
-
     @slow
     def testDifficultyAdjust(self):
         # difficulty change at 344736 was chosen since the data is contained in
