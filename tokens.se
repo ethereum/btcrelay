@@ -32,6 +32,9 @@ def initTokenContract(tokenFactoryAddr):
 def getTokenContract():
     return(self.tokenContract)
 
+def cashOut(numToken):
+    m_cashOut(numToken)
+
 
 
 # tx.origin is issued tokens when a blockHeader is stored

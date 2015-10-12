@@ -1,4 +1,9 @@
 inset('btcChain.se')
+
+# when removing tokens, also remove the following:
+# * calls to rewardForBlockHeader() and chargeVerifyTx()
+# * references to _disableTokens.se
+# * test_tokens.py and tokens.se
 inset('tokens.se')
 
 # btcrelay can relay a transaction to any contract that has a function
@@ -278,16 +283,8 @@ def getBlockHeader(blockHash):
     return(load(self.block[blockHash]._blockHeader[0], chars=80):str)
 
 
-def cashOut(numToken):
-    m_cashOut(numToken)
-
-
 # TODO is an API like getInitialParent() needed? it could be obtained using
 # web3.eth.getStorageAt using index 0x4000000000001
-#
-# Are other APIs needed?
-# eg getBlockNumber(given a blockHash)
-# getBlockHash(given a blockNumber)
 
 
 #
