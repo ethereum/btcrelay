@@ -113,7 +113,6 @@ def storeBlockHeader(blockHeaderBytes:str):
             if bits != prevBits && prevBits != 0:
                 log(type=failure, ERR_DIFFICULTY)
                 return(ERR_DIFFICULTY)
-        # TODO
         else:
             prevTarget = targetFromBits(prevBits)
             prevTime = m_getTimestamp(hashPrevBlock)
@@ -129,11 +128,11 @@ def storeBlockHeader(blockHeaderBytes:str):
                 return(ERR_RETARGET)
 
         difficulty = 0x00000000FFFF0000000000000000000000000000000000000000000000000000 / target # https://en.bitcoin.it/wiki/Difficulty
-        m_setScore(blockHash, scorePrevBlock + difficulty)
+        scoreBlock = scorePrevBlock + difficulty
+        m_setScore(blockHash, scoreBlock)
 
         # equality allows block with same score to become the Head, so that
         # when a Head is orphaned, the chain can still continue
-        scoreBlock = m_getScore(blockHash)  # TODO cheaper to use scorePrevBlock + difficulty
         if scoreBlock >= self.highScore:
             self.heaviestBlock = blockHash
             self.highScore = scoreBlock
