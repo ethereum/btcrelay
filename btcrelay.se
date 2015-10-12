@@ -1,12 +1,9 @@
 inset('btcChain.se')
+inset('tokens.se')
 
 # btcrelay can relay a transaction to any contract that has a function
 # name 'processTransaction' with signature si:i
 extern relayDestination: [processTransaction:[bytes,int256]:int256]
-
-extern btcrelayTokenFactory: [createStandardToken:[uint256]:address]
-
-extern btcrelayToken: [sendCoin:[uint256,address]:bool, sendCoinFrom:[address,uint256,address]:bool, coinBalance:[]:address, coinBalanceOf:[address]:address]
 
 
 # TODO: "_height" is 1 more than the typical Bitcoin term height/blocknumber [see setInitialParent()]
@@ -30,38 +27,13 @@ data heaviestBlock
 # highest score among all blocks (so far)
 data highScore
 
-# TODO pack more data in the slot of tokenContract?
-# address of contract that will issue btcrelay tokens
-data tokenContract
-
-# TODO optimize by avoiding this extra storage slot?
-data numTokenIssued
-
-
-# TODO move to constants.se
-#macro TOKEN_FACTORY: 0xfd5aee44be7195a704a86c18dfc0b65813486f7e
-macro TOKEN_ENDOWMENT: 2**200
-macro REWARD_PER_HEADER: 1000
-macro FEE_VERIFY_TX: 100000000000000000  # 0.1 ETH
-
 event failure(errCode:indexed)
-
-event rewardToken(blockHeight:indexed, rewardAddr:address)  # TODO: indexed or not?
-event ethPayment()
 
 # def init():
     # self.tokenContract = TOKEN_FACTORY.createStandardToken(TOKEN_ENDOWMENT)
     # TODO anything else to init ?
     # carefully test if adding anything to init() since
     # issues such as https://github.com/ethereum/serpent/issues/77 78 ...
-
-def initTokenContract(tokenFactoryAddr):
-    if !self.tokenContract:  # can only be set once
-        self.tokenContract = tokenFactoryAddr.createStandardToken(TOKEN_ENDOWMENT)
-        return(self.tokenContract)
-
-def getTokenContract():
-    return(self.tokenContract)
 
 
 # this can only be called once and allows testing of storing
@@ -324,25 +296,6 @@ def cashOut(numToken):
 # same signatures as the actual macros, otherwise tests will fail with
 # an obscure message such as tester.py:201: TransactionFailed)
 #
-
-# tx.origin is issued tokens when a blockHeader is stored
-macro rewardForBlockHeader($blockHeight):
-    # reward tx.origin, since storeBlockHeader() may be called indirectly like bulkStoreHeader()
-    if self.tokenContract.sendCoin(REWARD_PER_HEADER, tx.origin):
-        self.numTokenIssued += REWARD_PER_HEADER
-        log(type=rewardToken, $blockHeight, tx.origin)  # TODO: should msg.sender also be logged
-
-
-macro chargeVerifyTx():
-    msg.value >= FEE_VERIFY_TX
-
-
-# TODO tx.origin ?
-macro m_cashOut($numToken):
-    if self.tokenContract.sendCoinFrom(msg.sender, $numToken, self):
-        $numEth = self.balance * $numToken / self.numTokenIssued
-        self.numTokenIssued -= $numToken
-        send(msg.sender, $numEth)
 
 
 macro m_difficultyShouldBeAdjusted($blockHeight):
