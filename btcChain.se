@@ -72,6 +72,20 @@ def inMainChain(txBlockHash):
     return(blockHash == txBlockHash)
 
 
+# returns the blockHash at the given blockHeight
+# blockHeight must be greater than 0 (otherwise infinite loop since minimum height is 1)
+def getBlockHash(blockHeight):
+    blockHash = self.heaviestBlock
+    anc_index = NUM_ANCESTOR_DEPTHS - 1
+
+    while m_getHeight(blockHash) > blockHeight:
+        while m_getHeight(blockHash) - blockHeight < m_getAncDepth(anc_index) && anc_index > 0:
+            anc_index -= 1
+        blockHash = self.internalBlock[m_getAncestor(blockHash, anc_index)]
+
+    return(blockHash)
+
+
 #
 # macros
 #

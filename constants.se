@@ -1,3 +1,17 @@
+# Constants
+
+# for verifying Bitcoin difficulty
+macro DIFFICULTY_ADJUSTMENT_INTERVAL: 2016  # Bitcoin adjusts every 2 weeks
+macro TARGET_TIMESPAN: 14 * 24 * 60 * 60  # 2 weeks
+macro TARGET_TIMESPAN_DIV_4: TARGET_TIMESPAN / 4
+macro TARGET_TIMESPAN_MUL_4: TARGET_TIMESPAN * 4
+macro UNROUNDED_MAX_TARGET: 2**224 - 1  # different from (2**16-1)*2**208 http://bitcoin.stackexchange.com/questions/13803/how-exactly-was-the-original-coefficient-for-difficulty-determined
+
+# Error / failure codes
+macro ERR_DIFFICULTY:  10010  # difficulty didn't match current difficulty
+macro ERR_RETARGET: 10020  # difficulty didn't match retarget
+
+
 macro BYTES_1: 2**8
 macro BYTES_2: 2**16
 macro BYTES_3: 2**24

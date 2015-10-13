@@ -1,0 +1,30 @@
+# test only method required by some tests
+def testingonlySetHeaviest(blockHash):
+    self.heaviestBlock = blockHash
+
+#
+# macro wrappers (since only functions are testable)
+#
+
+def funcPrevBlock(blockHash):
+    return(getPrevBlock(blockHash))
+
+def funcGetTimestamp(blockHash):
+    return(m_getTimestamp(blockHash))
+
+def funcGetBits(blockHash):
+    return(m_getBits(blockHash))
+
+def funcTargetFromBits(bits):
+    return(targetFromBits(bits))
+
+def funcConcatHash(tx1, tx2):
+    return(concatHash(tx1, tx2))
+
+#
+# end of macro wrappers
+#
+
+
+# testing overrides should be before the contract being tested
+inset('../btcrelay.se')

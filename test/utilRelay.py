@@ -8,9 +8,16 @@ from bitcoin import *
 # helper functions for relayTx testing
 #
 
+# the inputs to makeMerkleProof can be computed by using pybitcointools:
+# header = get_block_header_data(blocknum)
+# hashes = get_txs_in_block(blocknum)
 def makeMerkleProof(header, hashes, txIndex):
     proof = mk_merkle_proof(header, hashes, txIndex)  # from pybitcointools
 
+    return argsForVerifyTx(proof, txIndex)
+
+
+def argsForVerifyTx(proof, txIndex):
     txHash = int(proof['hash'], 16)
     siblings = map(partial(int,base=16), proof['siblings'])
     txBlockHash = int(proof['header']['hash'], 16)
@@ -43,6 +50,20 @@ def randomMerkleProof(blocknum, txIndex=-1, withMerkle=False):
     if withMerkle:
         ret.append(int(proof['header']['merkle_root'], 16))
     return ret
+
+
+# all input params are integers
+# (eg of a hash: int('000000000000000013fe26675faa8f7dccd55ce5485bb6d0373fa66345901436', 16))
+def getHeaderBytes(ver, prev_block, mrkl_root, time_, bits, nonce):
+    bytesPrevBlock = format(prev_block, '64x').replace(' ', '0')
+    bytesPrevBlock = bytesPrevBlock.decode('hex')[::-1]
+
+    bytesMerkle = format(mrkl_root, '64x').replace(' ', '0')
+    bytesMerkle = bytesMerkle.decode('hex')[::-1]
+
+    header = ( struct.pack("<L", ver) + bytesPrevBlock +
+          bytesMerkle + struct.pack("<LLL", time_, bits, nonce))
+    return header
 
 
 def dblSha256Flip(rawBytes):

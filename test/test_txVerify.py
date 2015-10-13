@@ -3,6 +3,7 @@ from datetime import datetime, date
 from functools import partial
 
 import time
+import random
 
 import pytest
 slow = pytest.mark.slow
@@ -14,13 +15,13 @@ disablePyethLogging()
 
 class TestTxVerify(object):
 
-    CONTRACT = 'btcrelay.se'
+    CONTRACT = 'test/btcTxVerify_debug.se'
     BTC_ETH_CONTRACT = 'test/btc-eth_debug.se'
 
     ETHER = 10 ** 18
 
     def setup_class(cls):
-        tester.gas_limit = int(2.25e6)
+        tester.gas_limit = int(2.75e6)  # include costs of debug methods
         cls.s = tester.state()
         cls.c = cls.s.abi_contract(cls.CONTRACT, endowment=2000*cls.ETHER)
         cls.snapshot = cls.s.snapshot()
@@ -40,20 +41,19 @@ class TestTxVerify(object):
 
     @slow
     def test80from300K(self):
-        startBlockNum = 300000
+        startBlockNumPrev = 300000 - 1
         numBlock = 80
 
         block300kPrev = 0x000000000000000067ecc744b5ae34eebbde14d21ca4db51652e4d67e155f07e
-        self.c.setInitialParent(block300kPrev, startBlockNum-1, 1)
+        self.c.setInitialParent(block300kPrev, startBlockNumPrev, 1)
 
         i = 1
         with open("test/headers/100from300k.txt") as f:
-
             startTime = datetime.now().time()
 
             for header in f:
                 res = self.c.storeBlockHeader(header[:-1].decode('hex'))  # [:-1] to remove trailing \n
-                assert res == i
+                assert res == i+startBlockNumPrev
                 if i==numBlock:
                     break
                 i += 1
@@ -69,11 +69,11 @@ class TestTxVerify(object):
     @pytest.mark.veryslow
     # check params such as timeoutSecs
     def test400from300K(self):
-        startBlockNum = 300000
+        startBlockNumPrev = 300000 - 1
         numBlock = 400
 
         block300kPrev = 0x000000000000000067ecc744b5ae34eebbde14d21ca4db51652e4d67e155f07e
-        self.c.setInitialParent(block300kPrev, startBlockNum-1, 1)
+        self.c.setInitialParent(block300kPrev, startBlockNumPrev, 1)
 
         i = 1
         with open("test/headers/500from300k.txt") as f:
@@ -82,10 +82,10 @@ class TestTxVerify(object):
 
             for header in f:
                 res = self.c.storeBlockHeader(header[:-1].decode('hex'))  # [:-1] to remove trailing \n
+                assert res == i+startBlockNumPrev
                 if i==numBlock:
                     break
                 i += 1
-                assert res == i
 
             endTime = datetime.now().time()
 
@@ -94,6 +94,7 @@ class TestTxVerify(object):
 
         nChecks = 40000
         timeoutSecs = 1  # may need longer to avoid termination by blockchain.info (BCI)
+        startBlockNum = startBlockNumPrev+1
         for i in range(nChecks):
             if i > 20:
                 time.sleep(timeoutSecs)
@@ -136,9 +137,9 @@ class TestTxVerify(object):
             "0100000079cda856b143d9db2c1caff01d1aecc8630d30625d10e8b4b8b0000000000000b50cc069d6a3e33e3ff84a5c41d9d3febe7c770fdcc96b2c3ff60abe184f196367291b4d4c86041b8fa45d63",
             "0100000045dc58743362fe8d8898a7506faa816baed7d391c9bc0b13b0da00000000000021728a2f4f975cc801cb3c672747f1ead8a946b2702b7bd52f7b86dd1aa0c975c02a1b4d4c86041b7b47546d"
         ]
-        blockHeaderBinary = map(lambda x: x.decode('hex'), headers)
+        blockHeaderBytes = map(lambda x: x.decode('hex'), headers)
         for i in range(7):
-            res = self.c.storeBlockHeader(blockHeaderBinary[i])
+            res = self.c.storeBlockHeader(blockHeaderBytes[i])
             assert res == i+100000
 
         # tx[1] fff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4
@@ -201,9 +202,9 @@ class TestTxVerify(object):
             "0100000079cda856b143d9db2c1caff01d1aecc8630d30625d10e8b4b8b0000000000000b50cc069d6a3e33e3ff84a5c41d9d3febe7c770fdcc96b2c3ff60abe184f196367291b4d4c86041b8fa45d63",
             "0100000045dc58743362fe8d8898a7506faa816baed7d391c9bc0b13b0da00000000000021728a2f4f975cc801cb3c672747f1ead8a946b2702b7bd52f7b86dd1aa0c975c02a1b4d4c86041b7b47546d"
         ]
-        blockHeaderBinary = map(lambda x: x.decode('hex'), headers)
+        blockHeaderBytes = map(lambda x: x.decode('hex'), headers)
         for i in range(7):
-            res = self.c.storeBlockHeader(blockHeaderBinary[i])
+            res = self.c.storeBlockHeader(blockHeaderBytes[i])
             assert res == i+100000
 
         # block 100000
@@ -251,9 +252,9 @@ class TestTxVerify(object):
             "0100000079cda856b143d9db2c1caff01d1aecc8630d30625d10e8b4b8b0000000000000b50cc069d6a3e33e3ff84a5c41d9d3febe7c770fdcc96b2c3ff60abe184f196367291b4d4c86041b8fa45d63",
             "0100000045dc58743362fe8d8898a7506faa816baed7d391c9bc0b13b0da00000000000021728a2f4f975cc801cb3c672747f1ead8a946b2702b7bd52f7b86dd1aa0c975c02a1b4d4c86041b7b47546d"
         ]
-        blockHeaderBinary = map(lambda x: x.decode('hex'), headers)
+        blockHeaderBytes = map(lambda x: x.decode('hex'), headers)
         for i in range(7):
-            res = self.c.storeBlockHeader(blockHeaderBinary[i])
+            res = self.c.storeBlockHeader(blockHeaderBytes[i])
             assert res == i+100000
 
             res = self.c.relayTx(txStr, txHash, txIndex, siblings, txBlockHash, BTC_ETH.address)
@@ -281,9 +282,9 @@ class TestTxVerify(object):
             "0100000079cda856b143d9db2c1caff01d1aecc8630d30625d10e8b4b8b0000000000000b50cc069d6a3e33e3ff84a5c41d9d3febe7c770fdcc96b2c3ff60abe184f196367291b4d4c86041b8fa45d63",
             "0100000045dc58743362fe8d8898a7506faa816baed7d391c9bc0b13b0da00000000000021728a2f4f975cc801cb3c672747f1ead8a946b2702b7bd52f7b86dd1aa0c975c02a1b4d4c86041b7b47546d"
         ]
-        blockHeaderBinary = map(lambda x: x.decode('hex'), headers)
+        blockHeaderBytes = map(lambda x: x.decode('hex'), headers)
         for i in range(7):
-            res = self.c.storeBlockHeader(blockHeaderBinary[i])
+            res = self.c.storeBlockHeader(blockHeaderBytes[i])
             assert res == i+100000
 
         # block 100000
@@ -343,9 +344,9 @@ class TestTxVerify(object):
             "0100000079cda856b143d9db2c1caff01d1aecc8630d30625d10e8b4b8b0000000000000b50cc069d6a3e33e3ff84a5c41d9d3febe7c770fdcc96b2c3ff60abe184f196367291b4d4c86041b8fa45d63",
             "0100000045dc58743362fe8d8898a7506faa816baed7d391c9bc0b13b0da00000000000021728a2f4f975cc801cb3c672747f1ead8a946b2702b7bd52f7b86dd1aa0c975c02a1b4d4c86041b7b47546d"
         ]
-        blockHeaderBinary = map(lambda x: x.decode('hex'), headers)
+        blockHeaderBytes = map(lambda x: x.decode('hex'), headers)
         for i in range(7):
-            res = self.c.storeBlockHeader(blockHeaderBinary[i])
+            res = self.c.storeBlockHeader(blockHeaderBytes[i])
             assert res == i+100000
 
         startBlockNum = 100000
@@ -396,7 +397,7 @@ class TestTxVerify(object):
 
 
     #
-    # old tests, eg called storeRawBlockHeader() instead of passing binary to storeBlockHeader()
+    # old tests, eg called storeRawBlockHeader() instead of passing bytes to storeBlockHeader()
     #
 
     # this fails and shows that the correct way to set things up is:
