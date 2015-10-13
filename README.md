@@ -59,7 +59,6 @@ Returns `int256`
 * block height of the header if it was successfully stored
 * `0` otherwise
 
-
 ----
 
 ##### bulkStoreHeader(bytesOfHeaders, numberOfHeaders)
@@ -77,6 +76,29 @@ Returns `int256`
 
 ----
 
+##### getBlockHeader(blockHash)
+
+Get the 80 byte block header for a given `blockHash`.
+
+* `blockHash` - hash of the block as `int256`
+
+Returns `bytes`
+* block header, always as 80 bytes (all zeros if header does not exist)
+
+----
+
+##### getBlockHash(blockHeight)
+
+Get the block hash for a given `blockHeight`.
+
+* `blockHeight` - height of the block as `int256`.  Minimum value is `1`.
+
+Returns `int256`
+* block hash
+* `0` if not found
+
+----
+
 ##### getAverageBlockDifficulty()
 
 Returns the difference between the cumulative difficulty of the latest block and the 10th block prior.
@@ -91,7 +113,7 @@ This is provided in case an Ethereum contract wants to use the Bitcoin network d
 
 `getLastBlockHeight` - returns the block height of the latest block, as `int256`
 
-See [btcRelayAbi.js](examples/js/btcRelayAbi.js) for other APIs and [relayContractStatus.html](examples/relayContractStatus.html) for an example of calling some of them.
+See [BitcoinRelayAbi.js](examples/BitcoinRelayABI.js) for other APIs and [relayContractStatus.html](examples/relayContractStatus.html) for an example of calling some of them.
 
 ----
 
