@@ -13,6 +13,7 @@ from bitcoin import *  # NOQA
 BITCOIN_MAINNET = 'btc'
 BITCOIN_TESTNET = 'testnet'
 SLEEP_TIME = 5 * 60  # 5 mins.  If changing, check retry logic
+GAS_FOR_STORE_HEADERS = 1200000  # it should take less than 1M gas, but buffer to avoid running out
 
 
 api_config = config.read_config()
@@ -180,27 +181,27 @@ def fetchHeaders(chunkStartNum, chunkSize, numChunk, network=BITCOIN_TESTNET):
         chunkStartNum += chunkSize
 
 
-def storeHeaders(bhBinary, chunkSize):
+def storeHeaders(bhBytes, chunkSize):
 
     txCount = instance.transaction_count(defaultBlock='pending')
     logger.info('----------------------------------')
     logger.info('txCount: %s' % txCount)
 
-    hashOne = blockHashHex(int(bin_dbl_sha256(bhBinary[:80])[::-1].encode('hex'), 16))
-    hashLast = blockHashHex(int(bin_dbl_sha256(bhBinary[-80:])[::-1].encode('hex'), 16))
+    hashOne = blockHashHex(int(bin_dbl_sha256(bhBytes[:80])[::-1].encode('hex'), 16))
+    hashLast = blockHashHex(int(bin_dbl_sha256(bhBytes[-80:])[::-1].encode('hex'), 16))
     logger.info('hashOne: %s' % hashOne)
     logger.info('hashLast: %s' % hashLast)
 
-    firstH = bhBinary[:80].encode('hex')
-    lastH = bhBinary[-80:].encode('hex')
+    firstH = bhBytes[:80].encode('hex')
+    lastH = bhBytes[-80:].encode('hex')
     logger.info('firstH: %s' % firstH)
     logger.info('lastH: %s' % lastH)
 
     sig = 'bulkStoreHeader:[bytes,int256]:int256'
 
-    data = [bhBinary, chunkSize]
+    data = [bhBytes, chunkSize]
 
-    gas = 900000
+    gas = GAS_FOR_STORE_HEADERS
     value = 0
 
     #
@@ -224,7 +225,7 @@ def storeHeaders(bhBinary, chunkSize):
             txHash = instance.transact(instance.relayContract, sig=sig, data=data, gas=gas, value=value)
 
     chainHead = getBlockchainHead()
-    expHead = int(bin_dbl_sha256(bhBinary[-80:])[::-1].encode('hex'), 16)
+    expHead = int(bin_dbl_sha256(bhBytes[-80:])[::-1].encode('hex'), 16)
 
     if chainHead != expHead:
         logger.info('@@@@@ MISMATCH chainHead: {0} expHead: {1}'.format(blockHashHex(chainHead), blockHashHex(expHead)))

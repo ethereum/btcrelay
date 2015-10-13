@@ -1,9 +1,9 @@
 inset('btcrelay.se')
 
 # store 'count' number of Bitcoin blockheaders represented as one
-# continuous 'headersBinary' (which should have length 80*count
+# continuous 'headersBytes' (which should have length 80*count
 # since a single Bitcoin block header is 80 bytes)
-def bulkStoreHeader(headersBinary:str, count):
+def bulkStoreHeader(headersBytes:str, count):
     HEADER_SIZE = 80
 
     offset = 0
@@ -11,7 +11,7 @@ def bulkStoreHeader(headersBinary:str, count):
 
     i = 0
     while i < count:
-        currHeader = slice(headersBinary, chars=offset, chars=endIndex)
+        currHeader = slice(headersBytes, chars=offset, chars=endIndex)
         res = self.storeBlockHeader(currHeader)
 
         offset += HEADER_SIZE

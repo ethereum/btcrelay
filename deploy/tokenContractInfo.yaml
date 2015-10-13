@@ -1,0 +1,11 @@
+-
+  set:
+    TokenContract: "0x0624e55d8cd4b83611ea17b129a68f5ff814fe4c"
+
+-
+  call:
+    coinBalanceOf:
+      to: $TokenContract
+      sig: coinBalanceOf:[address]:uint256
+      data:
+        - 0x9fc6fefd7f33ca29ee17f2bfec944695e5f29caf
