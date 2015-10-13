@@ -1,11 +1,5 @@
 inset('btcChain.se')
 
-# when removing tokens, also remove the following:
-# * calls to rewardForBlockHeader() and chargeVerifyTx()
-# * references to _disableTokens.se
-# * test_tokens.py and tokens.se
-inset('tokens.se')
-
 # btcrelay can relay a transaction to any contract that has a function
 # name 'processTransaction' with signature si:i
 extern relayDestination: [processTransaction:[bytes,int256]:int256]
@@ -35,7 +29,6 @@ data highScore
 event failure(errCode:indexed)
 
 # def init():
-    # self.tokenContract = TOKEN_FACTORY.createStandardToken(TOKEN_ENDOWMENT)
     # TODO anything else to init ?
     # carefully test if adding anything to init() since
     # issues such as https://github.com/ethereum/serpent/issues/77 78 ...
@@ -137,7 +130,6 @@ def storeBlockHeader(blockHeaderBytes:str):
         if scoreBlock >= self.highScore:
             self.heaviestBlock = blockHash
             self.highScore = scoreBlock
-            rewardForBlockHeader(blockHeight)
 
         return(blockHeight)
 
@@ -152,12 +144,6 @@ def storeBlockHeader(blockHeaderBytes:str):
 # - 'txIndex' is the index of the tx within the block
 # - 'sibling' are the merkle siblings of tx
 def verifyTx(txHash, txIndex, sibling:arr, txBlockHash):
-    if !chargeVerifyTx():
-        # insufficient payments are NOT refunded
-        return(0)
-
-    log(type=ethPayment)
-
     if self.within6Confirms(txBlockHash) || !self.inMainChain(txBlockHash):
         return(0)
 

@@ -4,5 +4,4 @@ def testingonlySetHeaviest(blockHash):
 
 
 # testing overrides should be before the contract being tested
-inset('_disableTokens.se')
 inset('../btcrelay.se')
