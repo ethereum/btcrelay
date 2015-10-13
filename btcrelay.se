@@ -84,7 +84,8 @@ def storeBlockHeader(blockHeaderBytes:str):
     hashPrevBlock = flip32Bytes(~calldataload(72))  # 68 (header start) + 4 (offset for hashPrevBlock)
 
     scorePrevBlock = m_getScore(hashPrevBlock)
-    assert scorePrevBlock  # assert prev block exists
+    if !scorePrevBlock:
+        return(0)
 
     blockHash = m_hashBlockHeader(blockHeaderBytes)
 
