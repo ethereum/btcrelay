@@ -17,7 +17,7 @@ extern relayDestination: [processTransaction:[bytes,int256]:int256]
 # -   "_ibIndex" is the block's index to internalBlock (see btcChain)
 # -   "_score" is 1 more than the cumulative difficulty [see setInitialParent()]
 # - _ancestor stores 8 32bit ancestor indices for more efficient backtracking (see btcChain)
-data block[2**256](_info, _ancestor, _blockHeader[])
+data block[2**256](_info, _ancestor, _blockHeader[], _feeInfo)
 
 
 # block with the highest score (aka the Head of the blockchain)
@@ -140,6 +140,39 @@ def storeBlockHeader(blockHeaderBytes:str):
     return(0)
 
 
+def storeBlockWithFee(blockHeaderBytes:str, feeWei):
+    if self.storeBlockHeader(blockHeaderBytes):
+        blockHash = m_hashBlockHeader(blockHeaderBytes)
+        m_setFeeInfo(blockHash, feeWei, tx.origin)
+
+
+macro m_setFeeInfo($blockHash, $feeWei, $feeRecipient):
+    $word = m_shiftLeft($feeRecipient, 20*8) + $feeWei
+    self.block[$blockHash]._feeInfo = $word
+
+
+macro m_getFeeInfo($blockHash):
+    self.block[$blockHash]._feeInfo
+
+
+def feePaid(txBlockHash):
+    feeInfo = m_getFeeInfo(txBlockHash)
+    feeRecipient = div(feeInfo, 12*8)
+    feeWei = 0x00000000000000000000 & feeInfo
+    if msg.value >= feeInfo:
+        send(feeRecipient, msg.value)
+        return(1)
+    return(0)
+
+
+def changeFeeRecipient(blockHash, feeWei, feeRecipient):
+    if !self.feePaid():
+        return(0)
+
+    m_setFeeInfo(blockHash, feeWei, feeRecipient)
+
+
+
 # returns 1 if tx is in the block given by 'txBlockHash' and the block is
 # in Bitcoin's main chain (ie not a fork)
 #
@@ -148,6 +181,9 @@ def storeBlockHeader(blockHeaderBytes:str):
 # - 'txIndex' is the index of the tx within the block
 # - 'sibling' are the merkle siblings of tx
 def verifyTx(txHash, txIndex, sibling:arr, txBlockHash):
+    if !self.feePaid():
+        return(0)
+
     if self.within6Confirms(txBlockHash) || !self.inMainChain(txBlockHash):
         return(0)
 
