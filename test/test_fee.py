@@ -106,7 +106,7 @@ class TestFee(object):
         nextFee = prevFee-1
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec) == 0
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=nextFee) == 0
-        assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=nextFee+1) == 0
+        # assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=nextFee+1) == 1  same as paying prevFee below
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=nextFee+1000) == 0
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=prevFee+1) == 0
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=prevFee-1) == 0
