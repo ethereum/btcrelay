@@ -141,9 +141,11 @@ def storeBlockHeader(blockHeaderBytes:str):
 
 
 def storeBlockWithFee(blockHeaderBytes:str, feeWei):
-    if self.storeBlockHeader(blockHeaderBytes):
+    res = self.storeBlockHeader(blockHeaderBytes)
+    if res:
         blockHash = m_hashBlockHeader(blockHeaderBytes)
         m_setFeeInfo(blockHash, feeWei, tx.origin)
+        return(res)
 
 
 macro m_setFeeInfo($blockHash, $feeWei, $feeRecipient):

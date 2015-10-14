@@ -29,22 +29,6 @@ class TestBtcRelay(object):
         tester.seed = self.seed
 
 
-    def testBlockWithFee(self):
-        block300K = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
-        self.c.setInitialParent(block300K, 299999, 1)
-
-        blockHeaderStr = '0200000059c786bb379b65487f373279354f8ccc91ffcea2200c36080000000000000000dd9d7757a736fec629ab0ed0f602ba23c77afe7edec85a7026f641fd90bcf8f658ca8154747b1b1894fc742f'
-        bhBytes = blockHeaderStr.decode('hex')
-        res = self.c.storeBlockWithFee(bhBytes, 15, profiling=True, sender=tester.k1)
-        print('GAS: %s' % res['gas'])
-        assert res['output'] == 300000
-
-        blockHash = self.c.getBlockchainHead()
-        res = self.c.getBlockHeader(blockHash, profiling=True)
-        print('GAS: %s' % res['gas'])
-        assert res['output'] == bhBytes
-
-
     # store 6 blocks from block Fake363731 (unfortunately no 7th block test data available)
     # then start a fork at Main363731 and verify that a reorg will verify a tx in
     # Main363731
