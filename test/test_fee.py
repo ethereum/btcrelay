@@ -125,33 +125,38 @@ class TestFee(object):
 
         assert self.s.block.get_balance(tester.a2) == balNextRec
 
+        #
+        # decrease fee to 1 wei
+        #
+        prevFee = nextFee
+        thirdRec = int(tester.a3.encode('hex'), 16)
+        balThirdRec = self.s.block.get_balance(tester.a3)
+        nextFee = 1
+        assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec) == 0
+        assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec, value=prevFee-1) == 0
+        assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec, value=prevFee+1) == 0
+        assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec, value=prevFee+1000) == 0
 
+        balNextRec += prevFee
+        assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec, value=prevFee) == 1
+        assert self.s.block.get_balance(tester.a2) == balNextRec
 
-	prevFee = nextFee
-	thirdRec = int(tester.a3.encode('hex'), 16)
-	balThirdRec = self.s.block.get_balance(tester.a3)
-	nextFee = 1
-	assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec) == 0
-	assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec, value=prevFee-1) == 0
-	assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec, value=prevFee+1) == 0
-	assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec, value=prevFee+1000) == 0
+        assert self.s.block.get_balance(tester.a3) == balThirdRec
 
-	balNextRec += prevFee
-	assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec, value=prevFee) == 1
-	assert self.s.block.get_balance(tester.a2) == balNextRec
+        #
+        # decrease fee to 0
+        #
+        prevFee = nextFee
+        fourthRec = int(tester.a3.encode('hex'), 16)
+        balFourthRec = self.s.block.get_balance(tester.a4)
+        nextFee = 0
+        assert self.c.changeFeeRecipient(blockHash, nextFee, fourthRec) == 0
+        assert self.c.changeFeeRecipient(blockHash, nextFee, fourthRec, value=prevFee-1) == 0
+        assert self.c.changeFeeRecipient(blockHash, nextFee, fourthRec, value=prevFee+1) == 0
+        assert self.c.changeFeeRecipient(blockHash, nextFee, fourthRec, value=prevFee+1000) == 0
 
-	assert self.s.block.get_balance(tester.a3) == balThirdRec
-	
+        balThirdRec += prevFee
+        assert self.c.changeFeeRecipient(blockHash, nextFee, fourthRec, value=prevFee) == 1
+        assert self.s.block.get_balance(tester.a3) == balThirdRec
 
-
-
-
-
-
-
-
-
-
-
-
-
+        assert self.s.block.get_balance(tester.a4) == balFourthRec
