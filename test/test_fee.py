@@ -124,3 +124,34 @@ class TestFee(object):
         assert self.s.block.get_balance(tester.a1) == balRecipient
 
         assert self.s.block.get_balance(tester.a2) == balNextRec
+
+
+
+	prevFee = nextFee
+	thirdRec = int(tester.a3.encode('hex'), 16)
+	balThirdRec = self.s.block.get_balance(tester.a3)
+	nextFee = 1
+	assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec) == 0
+	assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec, value=prevFee-1) == 0
+	assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec, value=prevFee+1) == 0
+	assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec, value=prevFee+1000) == 0
+
+	balNextRec += prevFee
+	assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec, value=prevFee) == 1
+	assert self.s.block.get_balance(tester.a2) == balNextRec
+
+	assert self.s.block.get_balance(tester.a3) == balThirdRec
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
