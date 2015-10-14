@@ -161,7 +161,7 @@ def feePaid(txBlockHash):
     feeInfo = m_getFeeInfo(txBlockHash)
     feeRecipient = div(feeInfo, 2**(12*8))
     feeWei = 0x0000000000000000000000000000000000000000ffffffffffffffffffffffff & feeInfo
-    if msg.value >= feeInfo:
+    if msg.value >= feeWei:
         send(feeRecipient, msg.value)
         return(1)
     return(0)

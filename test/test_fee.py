@@ -1,4 +1,4 @@
-from ethereum import tester
+from ethereum import tester, exceptions
 
 import datetime
 import struct
@@ -45,9 +45,42 @@ class TestFee(object):
         print('GAS: %s' % res['gas'])
         assert res['output'] == bhBytes
 
+        #
+        # test m_getFeeInfo which implicitly tests m_setFeeInfo
+        #
         feeInfo = self.c.funcGetFeeInfo(blockHash)
         feeRecipient = feeInfo / 2**(12*8)
         feeWei = 0x0000000000000000000000000000000000000000ffffffffffffffffffffffff & feeInfo
 
         assert feeRecipient == int(tester.a1.encode('hex'), 16)
         assert feeWei == expPayWei
+
+        #
+        # test feePaid
+        #
+        balRecipient = self.s.block.get_balance(tester.a1)
+        assert self.c.feePaid(blockHash, value=0) == 0
+        assert self.s.block.get_balance(tester.a1) == balRecipient
+
+        assert self.c.feePaid(blockHash, value=expPayWei-1) == 0
+        assert self.s.block.get_balance(tester.a1) == balRecipient
+
+        toPay = expPayWei
+        assert self.c.feePaid(blockHash, value=toPay) == 1
+        assert self.s.block.get_balance(tester.a1) == balRecipient + toPay
+        balRecipient += toPay
+
+        toPay = expPayWei+1
+        assert self.c.feePaid(blockHash, value=toPay) == 1
+        assert self.s.block.get_balance(tester.a1) == balRecipient + toPay
+        balRecipient += toPay
+
+        toPay = expPayWei + int(10e18)  # 10 ETH extra
+        assert self.c.feePaid(blockHash, value=toPay) == 1
+        assert self.s.block.get_balance(tester.a1) == balRecipient + toPay
+
+        with pytest.raises(exceptions.InsufficientBalance):
+            self.c.feePaid(blockHash, value=2**256-1)
+
+        with pytest.raises(exceptions.InvalidTransaction):
+            self.c.feePaid(blockHash, value=2**256)
