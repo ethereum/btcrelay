@@ -10,7 +10,7 @@ from utilRelay import getHeaderBytes, dblSha256Flip, disablePyethLogging
 disablePyethLogging()
 
 
-class TestBtcRelay(object):
+class TestMacros(object):
     CONTRACT_DEBUG = 'test/btcrelay_macros.se'
 
     ETHER = 10 ** 18

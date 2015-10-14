@@ -559,6 +559,11 @@ class TestBtcRelay(object):
         block300K = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
         self.c.setInitialParent(block300K, 299999, 1)
 
+        emptyHeader = ('0'*160).decode('hex')
+        assert self.c.getBlockHeader(block300K) == emptyHeader
+        assert self.c.getBlockHeader(0xdead) == emptyHeader
+        assert self.c.getBlockHeader(0) == emptyHeader
+
         # version = 2
         # hashPrevBlock = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
         # hashMerkleRoot = 0xf6f8bc90fd41f626705ac8de7efe7ac723ba02f6d00eab29c6fe36a757779ddd
