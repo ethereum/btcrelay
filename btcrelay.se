@@ -161,7 +161,7 @@ def feePaid(txBlockHash):
     feeInfo = m_getFeeInfo(txBlockHash)
     feeRecipient = div(feeInfo, 2**(12*8))
     feeWei = 0x0000000000000000000000000000000000000000ffffffffffffffffffffffff & feeInfo
-    if msg.value >= feeWei:
+    if msg.value == feeWei:  # must not allow overpayment, otherwise fees could be increased via changeFeeRecipient()
         send(feeRecipient, msg.value)
         return(1)
     return(0)
@@ -171,8 +171,13 @@ def changeFeeRecipient(blockHash, feeWei, feeRecipient):
     if !self.feePaid():
         return(0)
 
-    m_setFeeInfo(blockHash, feeWei, feeRecipient)
+    # fees are only allowed to decrease and this requires that overpayments
+    # in feePaid() are NOT allowed
+    if feeWei < msg.value:
+        m_setFeeInfo(blockHash, feeWei, feeRecipient)
+        return(1)
 
+    return(0)
 
 
 # returns 1 if tx is in the block given by 'txBlockHash' and the block is
