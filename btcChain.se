@@ -61,34 +61,38 @@ def inMainChain(txBlockHash):
     if !txBlockHeight:
         return(0)
 
-    blockHash = self.heaviestBlock
-
-    anc_index = NUM_ANCESTOR_DEPTHS - 1
-    while m_getHeight(blockHash) > txBlockHeight:
-        while m_getHeight(blockHash) - txBlockHeight < m_getAncDepth(anc_index) && anc_index > 0:
-            anc_index -= 1
-        blockHash = self.internalBlock[m_getAncestor(blockHash, anc_index)]
-
-    return(blockHash == txBlockHash)
+    return(m_fastGetBlockHash(txBlockHeight) == txBlockHash)
 
 
 # returns the blockHash at the given blockHeight
 # blockHeight must be greater than 0 (otherwise infinite loop since minimum height is 1)
 def getBlockHash(blockHeight):
-    blockHash = self.heaviestBlock
-    anc_index = NUM_ANCESTOR_DEPTHS - 1
-
-    while m_getHeight(blockHash) > blockHeight:
-        while m_getHeight(blockHash) - blockHeight < m_getAncDepth(anc_index) && anc_index > 0:
-            anc_index -= 1
-        blockHash = self.internalBlock[m_getAncestor(blockHash, anc_index)]
-
-    return(blockHash)
+    if blockHeight < 1 || blockHeight > m_getHeight(self.heaviestBlock):
+        return(0)
+    return(m_fastGetBlockHash(blockHeight))
 
 
 #
 # macros
 #
+
+
+# for internal use only since callers must ensure 2 things:
+# * blockHeight is greater than 0 (otherwise infinite loop since
+# minimum height is 1)
+# * blockHeight is less than the height of heaviestBlock, otherwise the
+# heaviestBlock is returned
+macro m_fastGetBlockHash($blockHeight):
+    $blockHash = self.heaviestBlock
+    $anc_index = NUM_ANCESTOR_DEPTHS - 1
+
+    while m_getHeight($blockHash) > $blockHeight:
+        while m_getHeight($blockHash) - $blockHeight < m_getAncDepth($anc_index) && $anc_index > 0:
+            $anc_index -= 1
+        $blockHash = self.internalBlock[m_getAncestor($blockHash, $anc_index)]
+
+    $blockHash
+
 
 # a block's _ancestor storage slot contains 8 indexes into internalBlock, so
 # this macro returns the index that can be used to lookup the desired ancestor

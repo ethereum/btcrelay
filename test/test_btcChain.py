@@ -108,6 +108,11 @@ class TestBtcChain(object):
         self.c.testingonlySetHeaviest(2)
 
         assert self.c.inMainChain(9876) == 0
+        assert self.c.inMainChain(-1) == 0
+
+        assert self.c.getBlockHash(9876) == 0
+        assert self.c.getBlockHash(0) == 0
+        assert self.c.getBlockHash(-1) == 0
 
     @slow
     def testPerfOfStore(self):
