@@ -157,6 +157,8 @@ macro m_getFeeInfo($blockHash):
     self.block[$blockHash]._feeInfo
 
 
+# callers must send EXACTLY the block's current fee
+# This does NOT return any funds to incorrect callers
 def feePaid(txBlockHash):
     feeInfo = m_getFeeInfo(txBlockHash)
     feeRecipient = div(feeInfo, 2**(12*8))
@@ -167,6 +169,9 @@ def feePaid(txBlockHash):
     return(0)
 
 
+# callers must send EXACTLY the block's current fee, AND feeWei must be LESS
+# than the block's current fee
+# This does NOT return any funds to incorrect callers
 def changeFeeRecipient(blockHash, feeWei, feeRecipient):
     if !self.feePaid(blockHash, value=msg.value):
         return(0)
