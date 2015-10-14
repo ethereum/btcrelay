@@ -43,3 +43,11 @@ class TestFee(object):
         res = self.c.getBlockHeader(blockHash, profiling=True)
         print('GAS: %s' % res['gas'])
         assert res['output'] == bhBytes
+
+        feeInfo = self.c.funcGetFeeInfo(blockHash)
+        print('@@@ feeInfo: ' + str(feeInfo))
+        feeRecipient = feeInfo / 2**(12*8)
+        # feeWei = 0x00000000000000000000 & feeInfo
+
+        assert feeRecipient == int(tester.a1.encode('hex'), 16)
+        # assert feeWei == 15

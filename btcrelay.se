@@ -149,7 +149,8 @@ def storeBlockWithFee(blockHeaderBytes:str, feeWei):
 
 
 macro m_setFeeInfo($blockHash, $feeWei, $feeRecipient):
-    $word = m_shiftLeft($feeRecipient, 20*8) + $feeWei
+    # $word = m_shiftLeft($feeRecipient, 12*8) + $feeWei
+    $word = m_shiftLeft($feeRecipient, 12*8)
     self.block[$blockHash]._feeInfo = $word
 
 
@@ -159,7 +160,7 @@ macro m_getFeeInfo($blockHash):
 
 def feePaid(txBlockHash):
     feeInfo = m_getFeeInfo(txBlockHash)
-    feeRecipient = div(feeInfo, 12*8)
+    feeRecipient = div(feeInfo, 2**(12*8))
     feeWei = 0x00000000000000000000 & feeInfo
     if msg.value >= feeInfo:
         send(feeRecipient, msg.value)

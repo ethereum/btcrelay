@@ -1,4 +1,7 @@
 # macro OFFSET_ABI: 68 + 32  # extra 32 bytes since storeBlockWithFee has extra param
 
+def funcGetFeeInfo(blockHash):
+    return(m_getFeeInfo(blockHash))
+
 # testing overrides should be before the contract being tested
 inset('../btcrelay.se')
