@@ -73,8 +73,11 @@ def setInitialParent(blockHash, height, cumulativeDifficulty):
 # TODO what to log?
 # store a Bitcoin block header that must be provided in
 # bytes format 'blockHeaderBytes'
+# Callers must keep same signature since CALLDATALOAD is used to save gas.
+# block header reference: https://en.bitcoin.it/wiki/Block_hashing_algorithm
+macro OFFSET_ABI: 68  # 4 bytes function ID then 2 32bytes before the header begins
 def storeBlockHeader(blockHeaderBytes:str):
-    hashPrevBlock = flip32Bytes(~calldataload(72))  # 68 (header start) + 4 (offset for hashPrevBlock)
+    hashPrevBlock = flip32Bytes(~calldataload(OFFSET_ABI+4))  # 4 is offset for hashPrevBlock
 
     scorePrevBlock = m_getScore(hashPrevBlock)
     if !scorePrevBlock:
@@ -86,7 +89,8 @@ def storeBlockHeader(blockHeaderBytes:str):
     if scoreBlock != 0:  # block already stored/exists
         return(0)
 
-    bits = m_bitsFromCurrentBlockHeader()
+    wordWithBits = ~calldataload(OFFSET_ABI+72)  # 72 is offset for 'bits'
+    bits = byte(0, wordWithBits) + byte(1, wordWithBits)*BYTES_1 + byte(2, wordWithBits)*BYTES_2 + byte(3, wordWithBits)*BYTES_3
     target = targetFromBits(bits)
 
     # we only check the target and do not do other validation (eg timestamp)
@@ -370,12 +374,6 @@ macro m_lastBlockHeight():
 # Bitcoin-way of hashing a block header
 macro m_hashBlockHeader($blockHeaderBytes):
     flip32Bytes(sha256(sha256($blockHeaderBytes:str)))
-
-
-# get the 'bits' field from the current (calldataload) Bitcoin blockheader
-macro m_bitsFromCurrentBlockHeader():
-    with $w = ~calldataload(68+72):  # 68 (header start) + 72 (offset for 'bits')
-        byte(0, $w) + byte(1, $w)*BYTES_1 + byte(2, $w)*BYTES_2 + byte(3, $w)*BYTES_3
 
 
 # Bitcoin-way of computing the target from the 'bits' field of a blockheader
