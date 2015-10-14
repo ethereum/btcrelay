@@ -88,7 +88,8 @@ class TestFee(object):
         # change fee recipient
         #
         nextRec = int(tester.a2.encode('hex'), 16)
-        nextFee = expPayWei+1  # fee increase should not be allowed
+        prevFee = expPayWei
+        nextFee = prevFee+1  # fee increase should not be allowed
         print('@@@ expPayWei: ' + str(expPayWei))
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec) == 0
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=nextFee) == 0
@@ -96,16 +97,17 @@ class TestFee(object):
         assert self.c.changeFeeRecipient(blockHash, nextFee+999, nextRec, value=nextFee+1000) == 0
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=expPayWei) == 0
 
-        nextFee = expPayWei  # equal fee should not be allowed since fees should be decreasing
+        nextFee = prevFee  # equal fee should not be allowed since fees should be decreasing
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec) == 0
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=nextFee) == 0
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=nextFee+1) == 0
+        assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=nextFee+1000) == 0
 
-        nextFee = expPayWei-1
+        nextFee = prevFee-1
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec) == 0
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=nextFee) == 0
-        assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=nextFee+1) == 1
-        assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=nextFee+2) == 1
-        assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=expPayWei) == 1
-        assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=expPayWei+1) == 0
-        assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=expPayWei-1) == 0
+        assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=nextFee+1) == 0
+        assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=nextFee+1000) == 0
+        assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=prevFee+1) == 0
+        assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=prevFee-1) == 0
+        assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=prevFee) == 1
