@@ -144,7 +144,7 @@ def storeBlockWithFee(blockHeaderBytes:str, feeWei):
     res = self.storeBlockHeader(blockHeaderBytes)
     if res:
         blockHash = m_hashBlockHeader(blockHeaderBytes)
-        m_setFeeInfo(blockHash, feeWei, tx.origin)
+        m_setFeeInfo(blockHash, feeWei, tx.origin)  # note: tx.origin
         return(res)
 
 
