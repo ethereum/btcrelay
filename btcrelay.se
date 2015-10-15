@@ -156,6 +156,11 @@ macro m_setFeeInfo($blockHash, $feeWei, $feeRecipient):
 macro m_getFeeInfo($blockHash):
     self.block[$blockHash]._feeInfo
 
+def getFee(blockHash):
+    return(0x0000000000000000000000000000000000000000ffffffffffffffffffffffff & m_getFeeInfo(blockHash))
+
+def getFeeRecipient(blockHash):
+    return(div(m_getFeeInfo(blockHash), 2**(12*8)))
 
 # callers must send EXACTLY the block's current fee
 # This does NOT return any funds to incorrect callers
@@ -193,8 +198,8 @@ def changeFeeRecipient(blockHash, feeWei, feeRecipient):
 # - 'txIndex' is the index of the tx within the block
 # - 'sibling' are the merkle siblings of tx
 def verifyTx(txHash, txIndex, sibling:arr, txBlockHash):
-    # if !self.feePaid(blockHash, value=msg.value):
-    #     return(0)
+    if !self.feePaid(blockHash, value=msg.value):
+        return(0)
 
     if self.within6Confirms(txBlockHash) || !self.inMainChain(txBlockHash):
         return(0)
