@@ -118,7 +118,7 @@ def storeBlockHeader(blockHeaderBytes:str):
 
             # blockHeight - DIFFICULTY_ADJUSTMENT_INTERVAL is same as
             # getHeight(hashPrevBlock) - (DIFFICULTY_ADJUSTMENT_INTERVAL - 1)
-            startBlock = m_fastGetBlockHash(blockHeight - DIFFICULTY_ADJUSTMENT_INTERVAL)
+            startBlock = self.fastGetBlockHash(blockHeight - DIFFICULTY_ADJUSTMENT_INTERVAL)
             startTime = m_getTimestamp(startBlock)
 
             newBits = m_computeNewBits(prevTime, startTime, prevTarget)
