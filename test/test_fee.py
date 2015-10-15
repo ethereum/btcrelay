@@ -16,13 +16,12 @@ disablePyethLogging()
 class TestFee(object):
     CONTRACT_DEBUG = 'test/btcrelay_fee.se'
 
-    ETHER = 10 ** 18
     FEE_VERIFY_TX = 255
 
     def setup_class(cls):
         tester.gas_limit = int(3e6)  # include costs of debug methods
         cls.s = tester.state()
-        cls.c = cls.s.abi_contract(cls.CONTRACT_DEBUG, endowment=2000*cls.ETHER)
+        cls.c = cls.s.abi_contract(cls.CONTRACT_DEBUG)
         cls.snapshot = cls.s.snapshot()
         cls.seed = tester.seed
 
@@ -50,18 +49,46 @@ class TestFee(object):
         # self.s.block.log_listeners.append(lambda x: eventArr.append(self.c._translator.listen(x)))
 
 
-        ethBal = self.s.block.get_balance(addrSender)
+        senderBal = self.s.block.get_balance(addrSender)
         balCaller = self.s.block.get_balance(tester.a0)
         res = self.c.verifyTx(txHash, txIndex, siblings, txBlockHash, sender=tester.k0, value=self.FEE_VERIFY_TX, profiling=True)
         print('GAS: '+str(res['gas']))
         assert res['output'] == 1  # adjust according to numHeader and the block that the tx belongs to
 
-        assert self.s.block.get_balance(addrSender) == ethBal + self.FEE_VERIFY_TX
-        assert self.s.block.get_balance(tester.a0) == balCaller - self.FEE_VERIFY_TX
-
+        senderBal += self.FEE_VERIFY_TX
+        balCaller -= self.FEE_VERIFY_TX
+        assert self.s.block.get_balance(addrSender) == senderBal
+        assert self.s.block.get_balance(tester.a0) == balCaller
 
         # assert eventArr == [{'_event_type': 'ethPayment'}]
         # eventArr.pop()
+
+
+        #
+        # zero payment
+        #
+        assert 0 == self.c.verifyTx(txHash, txIndex, siblings, txBlockHash, sender=tester.k0, value=0)
+        assert self.s.block.get_balance(addrSender) == senderBal
+        assert self.s.block.get_balance(tester.a0) == balCaller
+
+        #
+        # insufficient payment is burned to contract
+        #
+        balCaller -= self.FEE_VERIFY_TX - 1
+        assert 0 == self.c.verifyTx(txHash, txIndex, siblings, txBlockHash, sender=tester.k0, value=self.FEE_VERIFY_TX-1)
+        assert self.s.block.get_balance(addrSender) == senderBal
+        assert self.s.block.get_balance(tester.a0) == balCaller
+        assert self.s.block.get_balance(self.c.address) == self.FEE_VERIFY_TX - 1
+
+        #
+        # overpayment is burned to contract
+        #
+        balCaller -= self.FEE_VERIFY_TX + 1
+        assert 0 == self.c.verifyTx(txHash, txIndex, siblings, txBlockHash, sender=tester.k0, value=self.FEE_VERIFY_TX+1)
+        assert self.s.block.get_balance(addrSender) == senderBal
+        assert self.s.block.get_balance(tester.a0) == balCaller
+        assert self.s.block.get_balance(self.c.address) == self.FEE_VERIFY_TX * 2
+
 
 
     def storeHeadersFrom300K(self, numHeader, keySender, addrSender):
