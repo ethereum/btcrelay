@@ -198,7 +198,7 @@ def changeFeeRecipient(blockHash, feeWei, feeRecipient):
 # - 'txIndex' is the index of the tx within the block
 # - 'sibling' are the merkle siblings of tx
 def verifyTx(txHash, txIndex, sibling:arr, txBlockHash):
-    if !self.feePaid(blockHash, value=msg.value):
+    if !self.feePaid(txBlockHash, value=msg.value):
         return(0)
 
     if self.within6Confirms(txBlockHash) || !self.inMainChain(txBlockHash):
