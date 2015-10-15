@@ -3,5 +3,25 @@
 def funcGetFeeInfo(blockHash):
     return(m_getFeeInfo(blockHash))
 
+
+# TODO move this to btcBulkStoreHeaders.se and remove bulkStoreHeader()
+def bulkStoreHeaderWithFee(headersBytes:str, count, feeWei):
+    HEADER_SIZE = 80
+
+    offset = 0
+    endIndex = HEADER_SIZE
+
+    i = 0
+    while i < count:
+        currHeader = slice(headersBytes, chars=offset, chars=endIndex)
+        res = self.storeBlockWithFee(currHeader, feeWei)
+
+        offset += HEADER_SIZE
+        endIndex += HEADER_SIZE
+        i += 1
+
+    return(res)
+
+
 # testing overrides should be before the contract being tested
 inset('../btcrelay.se')
