@@ -1,9 +1,9 @@
 contract BitcoinProcessor {
-    bytes32 public lastTxHash;
+    uint256 public lastTxHash;
 
-    function processTransaction(bytes txn, bytes32 txHash) returns (uint) {
+    function processTransaction(bytes txn, uint256 txHash) returns (int256) {
         log0("processTransaction called");
-        log0(txHash);
+        log0(bytes32(txHash));
         lastTxHash = txHash;
         // parse & do whatever with txn
         return 1;
