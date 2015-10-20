@@ -26,6 +26,54 @@
   var gBlockHashOfTx;
   var gRawTx;
 
+
+  // var procFilter = web3.eth.filter({'address': gProcessorAddr});
+  // procFilter.watch(function(err, res) {
+  //   try {
+  //     if (err) {
+  //       console.log('@@@ ERROR gProcessorAddr filter: ', err)
+  //       return;
+  //     }
+  //     console.log('@@@ gProcessorAddr filter res: ', res);
+  //
+  //     // var contractReturnData = res.data;
+  //     //
+  //     // if (web3.toDecimal(contractReturnData) === 1) {
+  //     //   document.getElementById('result').innerText = 'ether sent.  Check your address!';
+  //     // }
+  //     // else {
+  //     //   document.getElementById('result').innerText = 'Bitcoin Transaction not accepted.  Make sure you have sent enough Bitcoins.';
+  //     // }
+  //   }
+  //   finally {
+  //     procFilter.stopWatching();
+  //   }
+  // });
+
+
+  var relayFilter = web3.eth.filter({'address': gRelayAddr});
+  relayFilter.watch(function(err, res) {
+    try {
+      if (err) {
+        console.log('@@@ ERROR relayFilter: ', err)
+        return;
+      }
+      console.log('@@@ relayFilter res: ', res);
+
+      // var contractReturnData = res.data;
+      //
+      // if (web3.toDecimal(contractReturnData) === 1) {
+      //   document.getElementById('result').innerText = 'ether sent.  Check your address!';
+      // }
+      // else {
+      //   document.getElementById('result').innerText = 'Bitcoin Transaction not accepted.  Make sure you have sent enough Bitcoins.';
+      // }
+    }
+    finally {
+      relayFilter.stopWatching();
+    }
+  });
+
   // shows how to use web3 to make an eth_call to the relay contract
   // verifyTx returns 1 (success) or 0 (verify failed)
   function doRelayTx(txHex, txHash, txIndex, merkleSibling, txBlockHash) {
@@ -35,8 +83,9 @@
     var ethFeeToPay = web3.toWei('0.2', 'ether');  // open relayContractStatus.html to check current fee
     var objParam = { from: web3.eth.coinbase, value: ethFeeToPay, gas: 1900000 };
 
-    // var res = contract.relayTx.call(txHex, txHash, txIndex, merkleSibling, txBlockHash, gProcessorAddr, objParam);
-    // document.getElementById('result').innerText = 'btcrelay relayTx returned: ' + res.toString(10);
+    // var res = contract.verifyTx.call(txHash, txIndex, merkleSibling, txBlockHash, objParam);
+    // document.getElementById('result').innerText = 'btcrelay verifyTx returned: ' + res.toString(10);
+    // return;
 
     var res = contract.relayTx.sendTransaction(txHex, txHash, txIndex, merkleSibling, txBlockHash, gProcessorAddr, objParam);
     console.log('@@@ relayTx res: ', res)
@@ -53,6 +102,7 @@
       return '0x' + sib;
     });
 
+    // TODO: 1st param should probably be gRawTx
     doRelayTx(transHex, txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash);
   }
 
