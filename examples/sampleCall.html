@@ -19,7 +19,12 @@
       web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
   var btcproof = require('bitcoin-proof');
 
+<<<<<<< HEAD
   var gRelayAddr = web3.eth.namereg.addr('btcrelay');
+=======
+  // var gRelayAddr = web3.eth.namereg.addr('btcrelay');
+  var gRelayAddr = '0xf8702bd4ce8c7617bf8400a11ff153c7a8a018fe';  // ConsenSys testnet
+>>>>>>> update contract addresses and relayTx works
   var gMerkleProof;
   var gBlockHashOfTx;
   var gRawTx;

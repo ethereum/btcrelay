@@ -20,8 +20,8 @@
   var btcproof = require('bitcoin-proof');
 
   // var gRelayAddr = web3.eth.namereg.addr('btcrelay');
-  var gRelayAddr = '0x6c8f956ef9a93c9af25e39b706838dc8b259e3c2';  // ConsenSys testnet
-  var gProcessorAddr = '0xa8ee9964b79f1d88e8ddc5a2821e6be0d31d0eb0'; // ConsenSys testnet
+  var gRelayAddr = '0xf8702bd4ce8c7617bf8400a11ff153c7a8a018fe';  // ConsenSys testnet
+  var gProcessorAddr = '0x4b24e9773778252d53109ea91387b7ea9e9596d6'; // ConsenSys testnet
   var gMerkleProof;
   var gBlockHashOfTx;
   var gRawTx;
@@ -51,28 +51,28 @@
   // });
 
 
-  var relayFilter = web3.eth.filter({'address': gRelayAddr});
-  relayFilter.watch(function(err, res) {
-    try {
-      if (err) {
-        console.log('@@@ ERROR relayFilter: ', err)
-        return;
-      }
-      console.log('@@@ relayFilter res: ', res);
-
-      // var contractReturnData = res.data;
-      //
-      // if (web3.toDecimal(contractReturnData) === 1) {
-      //   document.getElementById('result').innerText = 'ether sent.  Check your address!';
-      // }
-      // else {
-      //   document.getElementById('result').innerText = 'Bitcoin Transaction not accepted.  Make sure you have sent enough Bitcoins.';
-      // }
-    }
-    finally {
-      relayFilter.stopWatching();
-    }
-  });
+  // var relayFilter = web3.eth.filter({'address': gRelayAddr});
+  // relayFilter.watch(function(err, res) {
+  //   try {
+  //     if (err) {
+  //       console.log('@@@ ERROR relayFilter: ', err)
+  //       return;
+  //     }
+  //     console.log('@@@ relayFilter res: ', res);
+  //
+  //     // var contractReturnData = res.data;
+  //     //
+  //     // if (web3.toDecimal(contractReturnData) === 1) {
+  //     //   document.getElementById('result').innerText = 'ether sent.  Check your address!';
+  //     // }
+  //     // else {
+  //     //   document.getElementById('result').innerText = 'Bitcoin Transaction not accepted.  Make sure you have sent enough Bitcoins.';
+  //     // }
+  //   }
+  //   finally {
+  //     relayFilter.stopWatching();
+  //   }
+  // });
 
   // shows how to use web3 to make an eth_call to the relay contract
   // verifyTx returns 1 (success) or 0 (verify failed)
