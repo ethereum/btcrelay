@@ -27,55 +27,6 @@
   var gRawTx;
 
 
-  // var procFilter = web3.eth.filter({'address': gProcessorAddr});
-  // procFilter.watch(function(err, res) {
-  //   try {
-  //     if (err) {
-  //       console.log('@@@ ERROR gProcessorAddr filter: ', err)
-  //       return;
-  //     }
-  //     console.log('@@@ gProcessorAddr filter res: ', res);
-  //
-  //     // var contractReturnData = res.data;
-  //     //
-  //     // if (web3.toDecimal(contractReturnData) === 1) {
-  //     //   document.getElementById('result').innerText = 'ether sent.  Check your address!';
-  //     // }
-  //     // else {
-  //     //   document.getElementById('result').innerText = 'Bitcoin Transaction not accepted.  Make sure you have sent enough Bitcoins.';
-  //     // }
-  //   }
-  //   finally {
-  //     procFilter.stopWatching();
-  //   }
-  // });
-
-
-  // var relayFilter = web3.eth.filter({'address': gRelayAddr});
-  // relayFilter.watch(function(err, res) {
-  //   try {
-  //     if (err) {
-  //       console.log('@@@ ERROR relayFilter: ', err)
-  //       return;
-  //     }
-  //     console.log('@@@ relayFilter res: ', res);
-  //
-  //     // var contractReturnData = res.data;
-  //     //
-  //     // if (web3.toDecimal(contractReturnData) === 1) {
-  //     //   document.getElementById('result').innerText = 'ether sent.  Check your address!';
-  //     // }
-  //     // else {
-  //     //   document.getElementById('result').innerText = 'Bitcoin Transaction not accepted.  Make sure you have sent enough Bitcoins.';
-  //     // }
-  //   }
-  //   finally {
-  //     relayFilter.stopWatching();
-  //   }
-  // });
-
-  // shows how to use web3 to make an eth_call to the relay contract
-  // verifyTx returns 1 (success) or 0 (verify failed)
   function doRelayTx(txHex, txHash, txIndex, merkleSibling, txBlockHash) {
     var RelayContract = web3.eth.contract(btcRelayAbi);  // see ./js/btcRelayAbi.js
     var contract = RelayContract.at(gRelayAddr);
@@ -87,9 +38,10 @@
     // document.getElementById('result').innerText = 'btcrelay verifyTx returned: ' + res.toString(10);
     // return;
 
-    var res = contract.relayTx.sendTransaction(txHex, txHash, txIndex, merkleSibling, txBlockHash, gProcessorAddr, objParam);
-    console.log('@@@ relayTx res: ', res)
-    // document.getElementById('result').innerText = 'btcrelay relayTx returned: ' + res.toString(10);
+    var receipt = contract.relayTx.sendTransaction(txHex, txHash, txIndex, merkleSibling, txBlockHash, gProcessorAddr, objParam);
+    document.getElementById('result').innerText = 'receipt: ' + receipt;
+    // console.log('@@@ relayTx receipt: ', receipt)
+    // when the tx is mined, the storage of gProcessorAddr will have txHash
   }
 
   function callContract() {
@@ -102,8 +54,7 @@
       return '0x' + sib;
     });
 
-    // TODO: 1st param should probably be gRawTx
-    doRelayTx(transHex, txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash);
+    doRelayTx(gRawTx, txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash);
   }
 
   // includes sample of using the bitcoin-proof module
