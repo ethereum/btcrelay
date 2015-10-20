@@ -20,6 +20,9 @@ class TestTxVerify(object):
 
     ETHER = 10 ** 18
 
+    ERR_RELAY_VERIFY = 30010
+
+
     def setup_class(cls):
         tester.gas_limit = int(2.75e6)  # include costs of debug methods
         cls.s = tester.state()
@@ -253,6 +256,12 @@ class TestTxVerify(object):
             "0100000045dc58743362fe8d8898a7506faa816baed7d391c9bc0b13b0da00000000000021728a2f4f975cc801cb3c672747f1ead8a946b2702b7bd52f7b86dd1aa0c975c02a1b4d4c86041b7b47546d"
         ]
         blockHeaderBytes = map(lambda x: x.decode('hex'), headers)
+
+
+        eventArr = []
+        self.s.block.log_listeners.append(lambda x: eventArr.append(self.c._translator.listen(x)))
+
+
         for i in range(7):
             res = self.c.storeBlockHeader(blockHeaderBytes[i])
             assert res == i+100000
@@ -267,6 +276,13 @@ class TestTxVerify(object):
                 assert res == 1  # ether was transferred
             else:
                 assert 0 == res == userEthBalance
+
+                assert eventArr == [{'_event_type': 'EthPayment'},
+                    {'_event_type': 'Failure',
+                    'errCode': self.ERR_RELAY_VERIFY
+                    }]
+                eventArr.pop()
+                eventArr.pop()
 
 
     def test7BlockValidTx(self):

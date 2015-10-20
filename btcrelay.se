@@ -26,7 +26,7 @@ data heaviestBlock
 # highest score among all blocks (so far)
 data highScore
 
-event failure(errCode:indexed)
+event Failure(errCode:indexed)
 
 # def init():
     # TODO anything else to init ?
@@ -109,7 +109,7 @@ def storeBlockHeader(blockHeaderBytes:str):
             # the initial parent, but as these forks will have lower score than
             # the main chain, they will not have impact.
             if bits != prevBits && prevBits != 0:
-                log(type=failure, ERR_DIFFICULTY)
+                log(type=Failure, ERR_DIFFICULTY)
                 return(ERR_DIFFICULTY)
         else:
             prevTarget = targetFromBits(prevBits)
@@ -122,7 +122,7 @@ def storeBlockHeader(blockHeaderBytes:str):
 
             newBits = m_computeNewBits(prevTime, startTime, prevTarget)
             if bits != newBits && newBits != 0:  # newBits != 0 to allow first header
-                log(type=failure, ERR_RETARGET)
+                log(type=Failure, ERR_RETARGET)
                 return(ERR_RETARGET)
 
         difficulty = 0x00000000FFFF0000000000000000000000000000000000000000000000000000 / target # https://en.bitcoin.it/wiki/Difficulty
@@ -198,8 +198,49 @@ def changeFeeRecipient(blockHash, feeWei, feeRecipient):
 # - 'txIndex' is the index of the tx within the block
 # - 'sibling' are the merkle siblings of tx
 def verifyTx(txHash, txIndex, sibling:arr, txBlockHash):
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+    if !self.feePaid(txBlockHash, value=msg.value):
+=======
+    if !self.feePaid():
+>>>>>>> start adding storeBlockWithFee
+=======
+    if !self.feePaid(value=msg.value):
+>>>>>>> for some reason feePaid return(1) is allowing a test with a higher fee to
+=======
+    if !self.feePaid(blockHash):
+    # if !self.feePaid(blockHash, value=msg.value):
+>>>>>>> feePaid was missing blockHash arg: tests rejecting fee increase are working
+=======
+    if !self.feePaid(blockHash, value=msg.value):
+>>>>>>> value needs to be passed; all fee tests pass
+        return(0)
+<<<<<<< HEAD
+=======
+    # if !self.feePaid(blockHash, value=msg.value):
+    #     return(0)
+>>>>>>> adding verifyTx test and need to debug the call to feePaid which is causing verifyTx to not succeed
+=======
+    if !self.feePaid(blockHash, value=msg.value):
+=======
+>>>>>>> log when relay fails due to verify; capitalize events
     if !self.feePaid(txBlockHash, value=msg.value):
         return(0)
+<<<<<<< HEAD
+=======
+>>>>>>> fee info getters are working; verifyTx still doesn't
+=======
+
+    log(type=EthPayment)
+>>>>>>> log when relay fails due to verify; capitalize events
+>>>>>>> log when relay fails due to verify; capitalize events
 
     if self.within6Confirms(txBlockHash) || !self.inMainChain(txBlockHash):
         return(0)
@@ -224,12 +265,12 @@ def verifyTx(txHash, txIndex, sibling:arr, txBlockHash):
 def relayTx(txStr:str, txHash, txIndex, sibling:arr, txBlockHash, contract):
     if self.verifyTx(txHash, txIndex, sibling, txBlockHash, value=msg.value) == 1:
         res = contract.processTransaction(txStr, txHash)
-        log(msg.sender, data=[res])
+        # log(msg.sender, data=[res])  # TODO
         return(res)
 
     # log error code -9999 on both this contract and target contract
-    log(msg.sender, data=[-9999])
-    log(contract, data=[-9999])
+    log(type=Failure, ERR_RELAY_VERIFY)
+    # log(contract, data=[-9999]) TODO how to log under 'contract' address?
     return(0)
 
 
