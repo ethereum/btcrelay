@@ -21,7 +21,7 @@
 
   // var gRelayAddr = web3.eth.namereg.addr('btcrelay');
   var gRelayAddr = '0xf8702bd4ce8c7617bf8400a11ff153c7a8a018fe';  // ConsenSys testnet
-  var gProcessorAddr = '0x4b24e9773778252d53109ea91387b7ea9e9596d6'; // ConsenSys testnet
+  var gProcessorAddr = '0x6782deb2308b7c7444e4ac0de04f2bf677264663'; // ConsenSys testnet
   var gMerkleProof;
   var gBlockHashOfTx;
   var gRawTx;
@@ -38,10 +38,10 @@
     // document.getElementById('result').innerText = 'btcrelay verifyTx returned: ' + res.toString(10);
     // return;
 
-    var receipt = contract.relayTx.sendTransaction(txHex, txHash, txIndex, merkleSibling, txBlockHash, gProcessorAddr, objParam);
-    document.getElementById('result').innerText = 'receipt: ' + receipt;
+    var ethTx = contract.relayTx.sendTransaction(txHex, txHash, txIndex, merkleSibling, txBlockHash, gProcessorAddr, objParam);
+    document.getElementById('result').innerText = 'Ethereum tx hash: ' + ethTx;
     // console.log('@@@ relayTx receipt: ', receipt)
-    // when the tx is mined, the storage of gProcessorAddr will have txHash
+    // when the tx is mined, the storage of gProcessorAddr at key0 will have txHash
   }
 
   function callContract() {
