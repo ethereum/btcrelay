@@ -20,36 +20,21 @@ macro m_gviNum($txBytes, $pos):
 
     $ret
 
+macro BYTES_1: 2**8
+macro BYTES_2: 2**16
+macro BYTES_3: 2**24
+macro BYTES_4: 2**32
 def getBytes(txBytes, pos, bits):
-    size = bits / 4
-    offset = pos * 2
-    endIndex = offset + size
-
-    result = 0
-    j = 0
-    while j < size:
-        # "01 23 45" want it to read "10 32 54"
-        if j % 2 == 0:
-            i = j + 1
-        else:
-            i = j - 1
-
-        char = getch(txStr, i+offset)
-        # log(char)
-        if (char >= 97 && char <= 102):  # only handles lowercase a-f
-            numeric = char - 87
-        else:
-            numeric = char - 48
-
-        # log(numeric)
-
-        result += numeric * 16^j
-        # log(result)
-
-        j += 1
+    index = 31 - pos
+    if bits == 8:
+        return([1, byte(index, txBytes)]:arr)
+    if bits == 16:
+        return([2, byte(index-1, txBytes) + byte(index, txBytes)*BYTES_1]:arr)
+    if bits == 32:
+        return([2, byte(index-3, txBytes) + byte(index-2, txBytes)*BYTES_1 + byte(index-1, txBytes)*BYTES_2 + byte(index, txBytes)*BYTES_3]:arr)
 
     # need to return size/2 since we don't know the next offset with getVarintNum
-    return([size/2, result]:arr)
+    # return([size/2, result]:arr)
 
 
 macro m_getUInt8($txBytes, $pos):
