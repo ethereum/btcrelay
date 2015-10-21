@@ -9,6 +9,77 @@ macro parseVarInt($txStr, $cursor):
     $arr[1]
 
 
+macro m_gviNum($txBytes, $pos):
+    $ret = m_getUInt8($txBytes, $pos)
+    if $ret == 0xfd:
+        $ret = m_getUInt16LE($txBytes, $pos)
+    elif $ret == 0xfe:
+        $ret = m_getUInt32LE($txBytes, $pos)
+    elif $ret == 0xff:
+        $ret = m_getUInt64LE($txBytes, $pos)
+
+    $ret
+
+def getBytes(txBytes, pos, bits):
+    size = bits / 4
+    offset = pos * 2
+    endIndex = offset + size
+
+    result = 0
+    j = 0
+    while j < size:
+        # "01 23 45" want it to read "10 32 54"
+        if j % 2 == 0:
+            i = j + 1
+        else:
+            i = j - 1
+
+        char = getch(txStr, i+offset)
+        # log(char)
+        if (char >= 97 && char <= 102):  # only handles lowercase a-f
+            numeric = char - 87
+        else:
+            numeric = char - 48
+
+        # log(numeric)
+
+        result += numeric * 16^j
+        # log(result)
+
+        j += 1
+
+    # need to return size/2 since we don't know the next offset with getVarintNum
+    return([size/2, result]:arr)
+
+
+macro m_getUInt8($txBytes, $pos):
+    self.getBytes($txBytes, $pos, 8, outitems=2)
+
+
+macro m_getUInt16LE($txBytes, $pos):
+    self.getBytes($txBytes, $pos, 16, outitems=2)
+
+
+macro m_getUInt32LE($txBytes, $pos):
+    self.getBytes($txBytes, $pos, 32, outitems=2)
+
+
+macro m_getUInt64LE($txBytes, $pos):
+    self.getBytes($txBytes, $pos, 64, outitems=2)
+
+
+macro m_pviBytes($txBytes, $cursor):
+    $arr = m_gviNum($txBytes, $cursor)
+    $cursor += $arr[0]
+    $arr[1]
+
+# WIP
+def parseBytes(txBytes):
+    cursor = 4
+    numIns = m_pviBytes(txBytes, cursor)
+    return numIns
+
+
 # return 0 if tx has less than 2 outputs
 # or other error, otherwise return array
 # of [out1stSatoshis, out1stScriptIndex, out2ndScriptIndex]
