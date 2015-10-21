@@ -36,6 +36,9 @@ class TestBtcSpecialTx(object):
         assert self.c.getUnsignedBitsLE('23', 0, 8) == [1, 0x23]
         assert self.c.getUnsignedBitsLE('45', 0, 8) == [1, 0x45]
         assert self.c.getUnsignedBitsLE('2345', 0, 16) == [2, 0x4523]
+        assert self.c.getUnsignedBitsLE('012345', 0, 24) == [3, 0x452301]
+        assert self.c.getUnsignedBitsLE('012345', 1, 16) == [2, 0x4523]
+        assert self.c.getUnsignedBitsLE('01234567', 0, 32) == [4, 0x67452301]
 
 
 
