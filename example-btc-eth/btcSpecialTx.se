@@ -20,16 +20,35 @@ macro m_gviNum($txBytes, $pos):
 
     $ret
 
+
+
 macro BYTES_1: 2**8
 macro BYTES_2: 2**16
 macro BYTES_3: 2**24
 macro BYTES_4: 2**32
 def getBytes(txBytes, pos, bits):
+    # if pos==0:
+    #     return(byte(29, txBytes))
+    # if pos==1:
+    #     return(byte(30, txBytes))
+    #
+    # if pos==0:
+    #     return(byte(30, txBytes))
+    # if pos==1:
+    #     return(byte(31, txBytes))
+
+
     index = 31 - pos
     if bits == 8:
         return([1, byte(index, txBytes)]:arr)
     if bits == 16:
+        if pos==1:
+            txBytes *= BYTES_1
+            pos=0
         return([2, byte(index-1, txBytes) + byte(index, txBytes)*BYTES_1]:arr)
+
+        # return([2, byte(index, txBytes) + byte(index-1, txBytes)*BYTES_1]:arr)
+        # return([2, byte(index, txBytes) + byte(index+1, txBytes)*BYTES_1]:arr)
     if bits == 32:
         return([2, byte(index-3, txBytes) + byte(index-2, txBytes)*BYTES_1 + byte(index-1, txBytes)*BYTES_2 + byte(index, txBytes)*BYTES_3]:arr)
 
