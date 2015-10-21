@@ -41,7 +41,8 @@ class TestBtcSpecialTx(object):
         assert self.c.getUnsignedBitsLE('01234567', 0, 32) == [4, 0x67452301]
         assert self.c.getUnsignedBitsLE('01234567', 2, 8) == [1, 0x45]
         assert self.c.getUnsignedBitsLE('01234567', 2, 16) == [2, 0x6745]
-
+        assert self.c.getUnsignedBitsLE('0123456789abcdef', 0, 64) == [8, 0xefcdab8967452301]
+        assert self.c.getUnsignedBitsLE('0123456789abcdef', 4, 32) == [4, 0xefcdab89]
 
 
     def test_testnetTx(self):
