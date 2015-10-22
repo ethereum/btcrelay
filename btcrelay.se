@@ -27,6 +27,7 @@ data heaviestBlock
 data highScore
 
 event Failure(errCode:indexed)
+event EthPayment()
 
 # def init():
     # TODO anything else to init ?
@@ -198,49 +199,10 @@ def changeFeeRecipient(blockHash, feeWei, feeRecipient):
 # - 'txIndex' is the index of the tx within the block
 # - 'sibling' are the merkle siblings of tx
 def verifyTx(txHash, txIndex, sibling:arr, txBlockHash):
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    if !self.feePaid(txBlockHash, value=msg.value):
-=======
-    if !self.feePaid():
->>>>>>> start adding storeBlockWithFee
-=======
-    if !self.feePaid(value=msg.value):
->>>>>>> for some reason feePaid return(1) is allowing a test with a higher fee to
-=======
-    if !self.feePaid(blockHash):
-    # if !self.feePaid(blockHash, value=msg.value):
->>>>>>> feePaid was missing blockHash arg: tests rejecting fee increase are working
-=======
-    if !self.feePaid(blockHash, value=msg.value):
->>>>>>> value needs to be passed; all fee tests pass
-        return(0)
-<<<<<<< HEAD
-=======
-    # if !self.feePaid(blockHash, value=msg.value):
-    #     return(0)
->>>>>>> adding verifyTx test and need to debug the call to feePaid which is causing verifyTx to not succeed
-=======
-    if !self.feePaid(blockHash, value=msg.value):
-=======
->>>>>>> log when relay fails due to verify; capitalize events
     if !self.feePaid(txBlockHash, value=msg.value):
         return(0)
-<<<<<<< HEAD
-=======
->>>>>>> fee info getters are working; verifyTx still doesn't
-=======
 
     log(type=EthPayment)
->>>>>>> log when relay fails due to verify; capitalize events
->>>>>>> log when relay fails due to verify; capitalize events
 
     if self.within6Confirms(txBlockHash) || !self.inMainChain(txBlockHash):
         return(0)

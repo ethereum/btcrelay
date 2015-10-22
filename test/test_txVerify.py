@@ -24,7 +24,7 @@ class TestTxVerify(object):
 
 
     def setup_class(cls):
-        tester.gas_limit = int(2.75e6)  # include costs of debug methods
+        tester.gas_limit = int(3.1e6)  # include costs of debug methods
         cls.s = tester.state()
         cls.c = cls.s.abi_contract(cls.CONTRACT, endowment=2000*cls.ETHER)
         cls.snapshot = cls.s.snapshot()
