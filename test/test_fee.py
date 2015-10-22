@@ -153,33 +153,33 @@ class TestFee(object):
         assert feeWei == expPayWei
 
         #
-        # test feePaid
+        # test feePaid for feeWei
         #
         balRecipient = self.s.block.get_balance(tester.a1)
-        assert self.c.feePaid(blockHash, value=0) == 0
+        assert self.c.feePaid(blockHash, feeWei, value=0) == 0
         assert self.s.block.get_balance(tester.a1) == balRecipient
 
-        assert self.c.feePaid(blockHash, value=expPayWei-1) == 0
+        assert self.c.feePaid(blockHash, feeWei, value=expPayWei-1) == 0
         assert self.s.block.get_balance(tester.a1) == balRecipient
 
         toPay = expPayWei
-        assert self.c.feePaid(blockHash, value=toPay) == 1
+        assert self.c.feePaid(blockHash, feeWei, value=toPay) == 1
         assert self.s.block.get_balance(tester.a1) == balRecipient + toPay
         balRecipient += toPay
 
         toPay = expPayWei+1
-        assert self.c.feePaid(blockHash, value=toPay) == 0
+        assert self.c.feePaid(blockHash, feeWei, value=toPay) == 0
         assert self.s.block.get_balance(tester.a1) == balRecipient
 
         toPay = expPayWei + int(10e18)  # 10 ETH extra
-        assert self.c.feePaid(blockHash, value=toPay) == 0
+        assert self.c.feePaid(blockHash, feeWei, value=toPay) == 0
         assert self.s.block.get_balance(tester.a1) == balRecipient
 
         with pytest.raises(exceptions.InsufficientBalance):
-            self.c.feePaid(blockHash, value=2**256-1)
+            self.c.feePaid(blockHash, feeWei, value=2**256-1)
 
         with pytest.raises(exceptions.InvalidTransaction):
-            self.c.feePaid(blockHash, value=2**256)
+            self.c.feePaid(blockHash, feeWei, value=2**256)
 
         #
         # change fee recipient
