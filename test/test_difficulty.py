@@ -148,7 +148,7 @@ class TestDifficulty(object):
         res = self.c.storeBlockHeader(bhBytes)
         assert res == self.ERR_DIFFICULTY
 
-        assert eventArr == [{'_event_type': 'failure',
+        assert eventArr == [{'_event_type': 'Failure',
             'errCode': self.ERR_DIFFICULTY
             }]
         eventArr.pop()
@@ -187,7 +187,7 @@ class TestDifficulty(object):
         res = self.c.storeBlockHeader(bhBytes)
         assert res == self.ERR_RETARGET
 
-        assert eventArr == [{'_event_type': 'failure',
+        assert eventArr == [{'_event_type': 'Failure',
             'errCode': self.ERR_RETARGET
             }]
         eventArr.pop()
