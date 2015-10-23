@@ -186,14 +186,13 @@ class TestFee(object):
         #
         # change fee recipient
         #
-        nextRec = int(tester.a2.encode('hex'), 16)
-        prevFee = expPayWei
-        nextFee = prevFee+1  # fee increase should not be allowed
-        print('@@@ expPayWei: ' + str(expPayWei))
-        balNextRec = self.s.block.get_balance(tester.a2)
-
         crFee = self.c.getChangeRecipientFee()
         print('@@@ crFee: ' + str(crFee))
+
+        nextRec = int(tester.a2.encode('hex'), 16)
+        prevFee = crFee
+        nextFee = prevFee+1  # fee increase should not be allowed
+        balNextRec = self.s.block.get_balance(tester.a2)
 
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec) == 0
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=nextFee) == 0

@@ -147,6 +147,9 @@ data gasPriceAndChangeRecipientFee
 macro m_getLastGasPrice():
     div(self.gasPriceAndChangeRecipientFee, BYTES_16)
 
+macro m_getChangeRecipientFee():
+    (0x00000000000000000000000000000000ffffffffffffffffffffffffffffffff & self.gasPriceAndChangeRecipientFee)
+
 macro m_setGasPriceAndChangeRecipientFee($gasPrice, $changeRecipientFee):
     self.gasPriceAndChangeRecipientFee = ($gasPrice * BYTES_16) | $changeRecipientFee
 
@@ -204,9 +207,7 @@ def feePaid(txBlockHash, amountWei):
 # than the block's current fee
 # This does NOT return any funds to incorrect callers
 def changeFeeRecipient(blockHash, feeWei, feeRecipient):
-    # TODO need to use changeRecipientFee
-    todoFee = self.getFee(blockHash)
-    if !self.feePaid(blockHash, todoFee, value=msg.value):
+    if !self.feePaid(blockHash, m_getChangeRecipientFee(), value=msg.value):
         return(0)
 
     # fees are only allowed to decrease and this requires that overpayments
