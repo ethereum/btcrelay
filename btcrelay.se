@@ -143,6 +143,12 @@ def storeBlockHeader(blockHeaderBytes:str):
 # 16 bytes last gas price and 16 bytes of change recipient fee
 data gasPriceAndChangeRecipientFee
 
+macro m_getLastGasPrice():
+    div(self.gasPriceAndChangeRecipientFee, BYTES_16)
+
+macro m_setGasPriceAndChangeRecipientFee($gasPrice, $changeRecipientFee):
+    ($gasPrice * BYTES_16) | $changeRecipientFee
+
 def storeBlockWithFee(blockHeaderBytes:str, feeWei):
     beginGas = msg.gas
     res = self.storeBlockHeader(blockHeaderBytes)
@@ -152,13 +158,13 @@ def storeBlockWithFee(blockHeaderBytes:str, feeWei):
         remainingGas = msg.gas
 
 
-        gLastGasPrice = m_getLastGasPrice(self.gasPriceAndChangeRecipientFee)
+        gLastGasPrice = m_getLastGasPrice()
 
         # TODO can avoid the "else"
-        if tx.gas_price < (1-1/1024)*gLastGasPrice || tx.gas_price > (1+1/1024)*gLastGasPrice
+        if tx.gasprice < (1023*gLastGasPrice/1024) || tx.gasprice > (1025*gLastGasPrice/1024):
             currGP = gLastGasPrice
-        else
-            currGP = tx.gas_price
+        else:
+            currGP = tx.gasprice
         gChangeRecipientFee = 2 * currGP * (beginGas - remainingGas)
         gLastGasPrice = currGP
 
