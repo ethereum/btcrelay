@@ -187,7 +187,6 @@ class TestFee(object):
         # change fee recipient
         #
         crFee = self.c.getChangeRecipientFee()
-        print('@@@ crFee: ' + str(crFee))
 
         nextRec = int(tester.a2.encode('hex'), 16)
         balNextRec = self.s.block.get_balance(tester.a2)
@@ -289,15 +288,25 @@ class TestFee(object):
         balFourthRec = self.s.block.get_balance(tester.a4)
         nextFee = 0
         assert self.c.changeFeeRecipient(blockHash, nextFee, fourthRec) == 0
+        assert self.c.changeFeeRecipient(blockHash, nextFee, fourthRec, value=nextFee) == 0
+        assert self.c.changeFeeRecipient(blockHash, nextFee, fourthRec, value=nextFee+1) == 0
+        assert self.c.changeFeeRecipient(blockHash, nextFee, fourthRec, value=prevFee) == 0
         assert self.c.changeFeeRecipient(blockHash, nextFee, fourthRec, value=prevFee-1) == 0
         assert self.c.changeFeeRecipient(blockHash, nextFee, fourthRec, value=prevFee+1) == 0
-        assert self.c.changeFeeRecipient(blockHash, nextFee, fourthRec, value=prevFee+1000) == 0
 
-        balThirdRec += prevFee
-        assert self.c.changeFeeRecipient(blockHash, nextFee, fourthRec, value=prevFee) == 1
+        # balance change for exact payment; inexact payments do not change any balances
+        assert self.c.changeFeeRecipient(blockHash, nextFee, fourthRec, value=crFee-1) == 0
+        assert self.c.changeFeeRecipient(blockHash, nextFee, fourthRec, value=crFee+1) == 0
+        assert self.c.changeFeeRecipient(blockHash, nextFee, fourthRec, value=crFee+1000) == 0
+        balThirdRec += crFee
+        assert self.c.changeFeeRecipient(blockHash, nextFee, fourthRec, value=crFee) == 1
         assert self.s.block.get_balance(tester.a3) == balThirdRec
 
-        assert self.s.block.get_balance(tester.a4) == balFourthRec
+        assert self.s.block.get_balance(tester.a4) == balFourthRec # should not have received anything yet
+
+        # prior recipients should not have received anything
+        assert self.s.block.get_balance(tester.a2) == balNextRec
+        assert self.s.block.get_balance(tester.a1) == balRecipient
 
 
     # based on https://github.com/ethers/btcrelay/blob/4fca910ca4d5d95c0a6b6d1a8c75b2d5a942e113/test/test_tokens.py#L361
