@@ -29,7 +29,8 @@ data highScore
 event Failure(errCode:indexed)
 event EthPayment()
 
-# def init():
+def init():
+    self.gasPriceAndChangeRecipientFee = 50 * 10**9 * BYTES_16 # 50 shannon and left-align
     # TODO anything else to init ?
     # carefully test if adding anything to init() since
     # issues such as https://github.com/ethereum/serpent/issues/77 78 ...

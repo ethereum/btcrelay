@@ -130,6 +130,8 @@ class TestFee(object):
         block300K = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
         self.c.setInitialParent(block300K, 299999, 1)
 
+        assert self.c.funcGetLastGasPrice() == 50*10**9
+
         expPayWei = 15
         blockHeaderStr = '0200000059c786bb379b65487f373279354f8ccc91ffcea2200c36080000000000000000dd9d7757a736fec629ab0ed0f602ba23c77afe7edec85a7026f641fd90bcf8f658ca8154747b1b1894fc742f'
         bhBytes = blockHeaderStr.decode('hex')
@@ -189,6 +191,10 @@ class TestFee(object):
         nextFee = prevFee+1  # fee increase should not be allowed
         print('@@@ expPayWei: ' + str(expPayWei))
         balNextRec = self.s.block.get_balance(tester.a2)
+
+        crFee = self.c.getChangeRecipientFee()
+        print('@@@ crFee: ' + str(crFee))
+
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec) == 0
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=nextFee) == 0
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=nextFee+1) == 0
