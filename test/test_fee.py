@@ -234,7 +234,7 @@ class TestFee(object):
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=crFee) == 0
         assert self.s.block.get_balance(tester.a1) == balRecipient
 
-        # 
+        #
         # fee decrease allowed but sent value MUST be at least crFee
         #
         nextFee = prevFee-1
@@ -242,22 +242,19 @@ class TestFee(object):
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=nextFee) == 0
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=nextFee-1) == 0
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=nextFee+1) == 0
-        assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=crFee-1) == 0
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=prevFee) == 0
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=prevFee-1) == 0
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=prevFee+1) == 0
 
-        # TODO
-        # assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=crFee+1) == 0
-        # assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=crFee+1000) == 0
-
-        assert self.c.getChangeRecipientFee() == crFee
-
-        assert self.s.block.get_balance(tester.a1) == balRecipient
+        # balance change for exact payment; inexact payments do not change any balances
+        assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=crFee-1) == 0
+        assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=crFee+1) == 0
+        assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=crFee+1000) == 0
         balRecipient += crFee
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=crFee) == 1
         assert self.s.block.get_balance(tester.a1) == balRecipient
-        assert self.s.block.get_balance(tester.a2) == balNextRec
+
+        assert self.s.block.get_balance(tester.a2) == balNextRec  # should not have received anything yet
 
         #
         # decrease fee to 1 wei
