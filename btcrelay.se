@@ -140,12 +140,30 @@ def storeBlockHeader(blockHeaderBytes:str):
 
     return(0)
 
+# 16 bytes last gas price and 16 bytes of change recipient fee
+data gasPriceAndChangeRecipientFee
 
 def storeBlockWithFee(blockHeaderBytes:str, feeWei):
+    beginGas = msg.gas
     res = self.storeBlockHeader(blockHeaderBytes)
     if res:
         blockHash = m_hashBlockHeader(blockHeaderBytes)
         m_setFeeInfo(blockHash, feeWei, tx.origin)  # note: tx.origin
+        remainingGas = msg.gas
+
+
+        gLastGasPrice = m_getLastGasPrice(self.gasPriceAndChangeRecipientFee)
+
+        # TODO can avoid the "else"
+        if tx.gas_price < (1-1/1024)*gLastGasPrice || tx.gas_price > (1+1/1024)*gLastGasPrice
+            currGP = gLastGasPrice
+        else
+            currGP = tx.gas_price
+        gChangeRecipientFee = 2 * currGP * (beginGas - remainingGas)
+        gLastGasPrice = currGP
+
+        m_setGasPriceAndChangeRecipientFee(gLastGasPrice, gChangeRecipientFee)
+
         return(res)
 
 
