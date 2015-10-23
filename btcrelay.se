@@ -186,6 +186,7 @@ macro m_getFeeInfo($blockHash):
     self.block[$blockHash]._feeInfo
 
 def getFee(blockHash):
+    # TODO macro
     return(0x0000000000000000000000000000000000000000ffffffffffffffffffffffff & m_getFeeInfo(blockHash))
 
 def getFeeRecipient(blockHash):
@@ -197,6 +198,7 @@ def getFeeRecipient(blockHash):
 def feePaid(txBlockHash, amountWei):
     feeInfo = m_getFeeInfo(txBlockHash)
     feeRecipient = div(feeInfo, 2**(12*8))
+    # TODO allow overpayment?
     if msg.value == amountWei:  # must not allow overpayment, otherwise fees could be increased via changeFeeRecipient()
         send(feeRecipient, msg.value)
         return(1)
@@ -210,9 +212,8 @@ def changeFeeRecipient(blockHash, feeWei, feeRecipient):
     if !self.feePaid(blockHash, m_getChangeRecipientFee(), value=msg.value):
         return(0)
 
-    # fees are only allowed to decrease and this requires that overpayments
-    # in feePaid() are NOT allowed
-    if feeWei < msg.value:
+    # feeWei is only allowed to decrease
+    if feeWei < self.getFee(blockHash):  # TODO macro
         m_setFeeInfo(blockHash, feeWei, feeRecipient)
         return(1)
 

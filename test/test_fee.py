@@ -190,28 +190,40 @@ class TestFee(object):
         print('@@@ crFee: ' + str(crFee))
 
         nextRec = int(tester.a2.encode('hex'), 16)
-        prevFee = crFee
-        nextFee = prevFee+1  # fee increase should not be allowed
         balNextRec = self.s.block.get_balance(tester.a2)
 
+        prevFee = expPayWei
+        nextFee = prevFee+1  # fee increase should not be allowed
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec) == 0
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=nextFee) == 0
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=nextFee+1) == 0
         assert self.c.changeFeeRecipient(blockHash, nextFee+999, nextRec, value=nextFee+1000) == 0
-
-        balRecipient += prevFee  # disallowed overpayment is NOT refunded
+        assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=crFee) == 0
+        assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=crFee-1) == 0
+        assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=crFee+1) == 0
+        assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=crFee+1000) == 0
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=prevFee) == 0
-        assert self.s.block.get_balance(tester.a1) == balRecipient
+
+        # TODO
+        # balRecipient += prevFee  # disallowed overpayment is NOT refunded
+        # assert self.s.block.get_balance(tester.a1) == balRecipient
 
         nextFee = prevFee  # equal fee should not be allowed since fees should be decreasing
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec) == 0
-
-        balRecipient += prevFee  # disallowed overpayment is NOT refunded
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=nextFee) == 0
-        assert self.s.block.get_balance(tester.a1) == balRecipient
-
+        assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=nextFee) == 0
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=nextFee+1) == 0
-        assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=nextFee+1000) == 0
+        assert self.c.changeFeeRecipient(blockHash, nextFee+999, nextRec, value=nextFee+1000) == 0
+        assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=crFee) == 0
+        assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=crFee-1) == 0
+        assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=crFee+1) == 0
+        assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=crFee+1000) == 0
+        assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=prevFee) == 0
+
+        # TODO
+        # balRecipient += prevFee  # disallowed overpayment is NOT refunded
+        # assert self.s.block.get_balance(tester.a1) == balRecipient
+
 
         nextFee = prevFee-1
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec) == 0
@@ -236,6 +248,11 @@ class TestFee(object):
         nextFee = 1
         assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec) == 0
         assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec, value=prevFee-1) == 0
+
+
+        crFee = self.c.funcGetChangeRecipientFee()
+        print('@@ crFee: ' + str(crFee))
+
         assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec, value=prevFee+1) == 0
         assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec, value=prevFee+1000) == 0
 
