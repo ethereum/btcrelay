@@ -148,7 +148,7 @@ macro m_getLastGasPrice():
     div(self.gasPriceAndChangeRecipientFee, BYTES_16)
 
 macro m_setGasPriceAndChangeRecipientFee($gasPrice, $changeRecipientFee):
-    ($gasPrice * BYTES_16) | $changeRecipientFee
+    self.gasPriceAndChangeRecipientFee = ($gasPrice * BYTES_16) | $changeRecipientFee
 
 def storeBlockWithFee(blockHeaderBytes:str, feeWei):
     beginGas = msg.gas
