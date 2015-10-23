@@ -264,20 +264,22 @@ class TestFee(object):
         balThirdRec = self.s.block.get_balance(tester.a3)
         nextFee = 1
         assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec) == 0
+        assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec, value=nextFee) == 0
+        assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec, value=nextFee-1) == 0
+        assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec, value=nextFee+1) == 0
+        assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec, value=prevFee) == 0
         assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec, value=prevFee-1) == 0
-
-
-        crFee = self.c.funcGetChangeRecipientFee()
-        print('@@ crFee: ' + str(crFee))
-
         assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec, value=prevFee+1) == 0
-        assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec, value=prevFee+1000) == 0
 
-        balNextRec += prevFee
-        assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec, value=prevFee) == 1
+        # balance change for exact payment; inexact payments do not change any balances
+        assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec, value=crFee-1) == 0
+        assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec, value=crFee+1) == 0
+        assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec, value=crFee+1000) == 0
+        balNextRec += crFee
+        assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec, value=crFee) == 1
         assert self.s.block.get_balance(tester.a2) == balNextRec
 
-        assert self.s.block.get_balance(tester.a3) == balThirdRec
+        assert self.s.block.get_balance(tester.a3) == balThirdRec # should not have received anything yet
 
         #
         # decrease fee to 0
