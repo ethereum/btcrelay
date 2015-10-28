@@ -1,5 +1,7 @@
 # btcrelay
 
+[![Join the chat at https://gitter.im/ethereum/btcrelay](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ethereum/btcrelay?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 btcrelay is an Ethereum contract for Bitcoin SPV.  The main functionality it provides are:
 
 1. verification of a Bitcoin transaction
