@@ -19,24 +19,24 @@
       web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
   var btcproof = require('bitcoin-proof');
 
-<<<<<<< HEAD
-  var gRelayAddr = web3.eth.namereg.addr('btcrelay');
-=======
   // var gRelayAddr = web3.eth.namereg.addr('btcrelay');
-  var gRelayAddr = '0xf8702bd4ce8c7617bf8400a11ff153c7a8a018fe';  // ConsenSys testnet
->>>>>>> update contract addresses and relayTx works
+  var gRelayAddr = '0xb1d4c88a30a392aee6859e6f62738230db0c2d93';  // ConsenSys testnet
   var gMerkleProof;
   var gBlockHashOfTx;
   var gRawTx;
+  var gFeeVerifyTx;
+
+  var RelayContractClass = web3.eth.contract(btcRelayAbi);  // see ./js/btcRelayAbi.js
+  var gRelayContract = RelayContractClass.at(gRelayAddr);
+
 
   // shows how to use web3 to make an eth_call to the relay contract
   // verifyTx returns 1 (success) or 0 (verify failed)
   function callVerifyTx(txHash, txIndex, merkleSibling, txBlockHash) {
-    var RelayContract = web3.eth.contract(btcRelayAbi);  // see ./js/btcRelayAbi.js
-    var contract = RelayContract.at(gRelayAddr);
-
-    var objParam = { from: web3.eth.coinbase, gas: 3000000 };
-    var res = contract.verifyTx.call(txHash, txIndex, merkleSibling, txBlockHash, objParam);
+    // gFeeVerifyTx is transferred!  coinbase must have it or verifyTx fails
+    var feeWei = web3.toWei(gFeeVerifyTx, 'ether');
+    var objParam = { from: web3.eth.coinbase, value: feeWei, gas: 3000000 };
+    var res = gRelayContract.verifyTx.call(txHash, txIndex, merkleSibling, txBlockHash, objParam);
 
     document.getElementById('result').innerText = 'btcrelay verifyTx returned: ' + res.toString(10);
   }
@@ -79,13 +79,16 @@
             gMerkleProof = btcproof.getProof(res.data.tx, txIndex);
             console.log('merkle proof: ', gMerkleProof)
             $('#mProof').val(JSON.stringify(gMerkleProof));
+
+            gFeeVerifyTx = web3.fromWei(gRelayContract.getFee.call('0x'+gBlockHashOfTx), 'ether');
+            $('#feeVerifyTx').text(gFeeVerifyTx);
         })
     })
   }
 
   $(function() {
-    // tx[1] of block 360276
-    $('#transHex').val('be44a9201e8016b1772e7331f3c3c8a4820060307df4603033dc5350a01ac279');
+    // tx[1] of block 378680
+    $('#transHex').val('af40671d8d514dac047c3ebb7326dd25326e9e0f70075a6d96100a10bd1496af');
     $('#btn-get-tx').click(getTxInfo);
     $('#relayAddr').text(gRelayAddr);
   });
@@ -130,16 +133,20 @@
 
         <div class="form-group">
           <label class="col-md-1 control-label">Block Hash</label>
-          <div class="col-md-9">
-            <p class="form-control-static" id="txBlockHash">0</p>
-          </div>
+          <p class="form-control-static" id="txBlockHash">0</p>
         </div>
-        <br><br><br>
+
+        <div class="form-group">
+          <label class="col-md-2 control-label">Verification fee ETH</label>
+          <p class="form-control-static" id="feeVerifyTx">?</p>
+        </div>
         <button type="button" class="btn btn-default" onclick="callContract();">Call verifyTx</button>
       </form>
     </div>
 
-    <div id="result"></div>
+    <div class="row">
+      <div id="result"></div>
+    </div>
 
     <!-- <div class="footer-logo">
       <img src="./images/ETH_DEV_LOGO_LARGE.svg"/>
