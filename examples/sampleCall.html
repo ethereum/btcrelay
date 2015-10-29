@@ -24,7 +24,7 @@
   var gMerkleProof;
   var gBlockHashOfTx;
   var gRawTx;
-  var gFeeVerifyETH;
+  var gFeeVerifyFinney;
 
   var RelayContractClass = web3.eth.contract(btcRelayAbi);  // see ./js/btcRelayAbi.js
   var gRelayContract = RelayContractClass.at(gRelayAddr);
@@ -33,8 +33,8 @@
   // shows how to use web3 to make an eth_call to the relay contract
   // verifyTx returns 1 (success) or 0 (verify failed)
   function callVerifyTx(txHash, txIndex, merkleSibling, txBlockHash) {
-    // gFeeVerifyETH is transferred!  coinbase must have it or verifyTx fails
-    var feeWei = web3.toWei(gFeeVerifyETH, 'ether');
+    // gFeeVerifyFinney is transferred!  coinbase must have it or verifyTx fails
+    var feeWei = web3.toWei(gFeeVerifyFinney, 'finney');
     var objParam = { from: web3.eth.coinbase, value: feeWei, gas: 3000000 };
     var res = gRelayContract.verifyTx.call(txHash, txIndex, merkleSibling, txBlockHash, objParam);
 
@@ -80,8 +80,8 @@
             console.log('merkle proof: ', gMerkleProof)
             $('#mProof').val(JSON.stringify(gMerkleProof));
 
-            gFeeVerifyETH = web3.fromWei(gRelayContract.getFee.call('0x'+gBlockHashOfTx), 'ether');
-            $('#feeVerifyTx').text(gFeeVerifyETH);
+            gFeeVerifyFinney = web3.fromWei(gRelayContract.getFee.call('0x'+gBlockHashOfTx), 'finney');
+            $('#feeVerifyTx').text(gFeeVerifyFinney);
         })
     })
   }
@@ -137,7 +137,7 @@
         </div>
 
         <div class="form-group">
-          <label class="col-md-2 control-label">Verification fee ETH</label>
+          <label class="col-md-2 control-label">Verification fee milli-ether</label>
           <p class="form-control-static" id="feeVerifyTx">?</p>
         </div>
         <button type="button" class="btn btn-default" onclick="callContract();">Call verifyTx</button>
