@@ -13,6 +13,8 @@ macro NUM_ANCESTOR_DEPTHS: 8
 data internalBlock[2^50]
 
 # counter for next available slot in internalBlock
+# 0 means no blocks stored yet and is used for the special of storing 1st block
+# which cannot compute Bitcoin difficulty since it doesn't have the 2016th parent
 data ibIndex
 
 

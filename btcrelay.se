@@ -98,13 +98,13 @@ def storeBlockHeader(blockHeaderBytes:str):
     # we only check the target and do not do other validation (eg timestamp)
     # to save gas
     if blockHash > 0 && blockHash < target:
-        m_saveAncestors(blockHash, hashPrevBlock)
+        m_saveAncestors(blockHash, hashPrevBlock)  # increments ibIndex
 
         save(self.block[blockHash]._blockHeader[0], blockHeaderBytes, chars=80)
 
         blockHeight = m_getHeight(blockHash)
         prevBits = m_getBits(hashPrevBlock)
-        if !m_difficultyShouldBeAdjusted(blockHeight-1) || blockHeight == 1:  # since blockHeight is 1 more than blockNumber; OR clause is special case for 1st header
+        if !m_difficultyShouldBeAdjusted(blockHeight-1) || self.ibIndex == 1:  # since blockHeight is 1 more than blockNumber; OR clause is special case for 1st header
             # we need to check prevBits isn't 0 otherwise the 1st header
             # will always be rejected (since prevBits doesn't exist for the initial parent)
             # This allows blocks with arbitrary difficulty from being added to
