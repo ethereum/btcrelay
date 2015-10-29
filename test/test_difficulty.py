@@ -67,7 +67,6 @@ class TestDifficulty(object):
         assert self.c.funcComputeNewBits(prevTime, startTime, prevTarget) == expBits
 
 
-    @slow
     # test storing blocks right from Satoshi's genesis and past the very first
     # difficulty adjustment (the difficulty remained the same)
     # The advantage of this test is it does not fudge 'startBlock', the 2nd
@@ -77,21 +76,25 @@ class TestDifficulty(object):
     # will not access out of bounds.
     # A weakness of this test is that the difficulty did not change (it
     # only "changed" around 30K blocks later in testDifficultyRoundedSame() below)
-    def testSameDifficulty(self):
-        startBlock = 0
-        self.c.setInitialParent(0, startBlock, 1)
-
-        count = 2020
-        with open("test/headers/blockchain_headers") as f:
-            f.seek(80 * startBlock)
-            bhBytes = f.read(80 * count)
-            res = self.c.bulkStoreHeader(bhBytes, count, profiling=True)
-            # print('GAS: '+str(res['gas']))
-            assert res['output'] == startBlock + count
-
-        assert self.c.getLastBlockHeight() == count
-
-        assert self.c.getCumulativeDifficulty() == count*1 + 1  # score starts at 1
+    #
+    # TODO setInitialParent startBlock can't be set to -1 so the earliest
+    # initialParent we can test against is 2015
+    # @slow
+    # def testSameDifficulty(self):
+    #     startBlock = 0
+    #     self.c.setInitialParent(0, startBlock, 1)
+    #
+    #     count = 2020
+    #     with open("test/headers/blockchain_headers") as f:
+    #         f.seek(80 * startBlock)
+    #         bhBytes = f.read(80 * count)
+    #         res = self.c.bulkStoreHeader(bhBytes, count, profiling=True)
+    #         # print('GAS: '+str(res['gas']))
+    #         assert res['output'] == startBlock + count
+    #
+    #     assert self.c.getLastBlockHeight() == count
+    #
+    #     assert self.c.getCumulativeDifficulty() == count*1 + 1  # score starts at 1
 
 
     @slow

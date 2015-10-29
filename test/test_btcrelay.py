@@ -257,6 +257,16 @@ class TestBtcRelay(object):
         assert self.c.verifyTx(tx, txIndex, sibling, txBlockHash) == 1
 
 
+    def testStoreInitialBlock(self):
+        blockDivisibleBy2016 = 379008
+        initParent = 0x0000000000000000086233f4843682eb47bacb58930a5577fbfd5c9ebd57ddf9
+        self.c.setInitialParent(initParent, blockDivisibleBy2016-1, 1)
+
+        blockHeaderStr = ("03000000f9dd57bd9e5cfdfb77550a9358cbba47eb823684f43362080000000000000000d1eaebbc3dbb07d59c0f4b69afb99518e0e4fc6512c1cd3495b3b6ebcbac27a3cf8e1f56140f1218aca005b1")
+        bhBytes = blockHeaderStr.decode('hex')
+        assert self.c.storeBlockHeader(bhBytes) == blockDivisibleBy2016
+
+
     # TODO verify tx in b1
     def testHeadersFrom100K(self):
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
