@@ -104,7 +104,7 @@ def storeBlockHeader(blockHeaderBytes:str):
 
         blockHeight = m_getHeight(blockHash)
         prevBits = m_getBits(hashPrevBlock)
-        if !m_difficultyShouldBeAdjusted(blockHeight-1) || self.ibIndex == 1:  # since blockHeight is 1 more than blockNumber; OR clause is special case for 1st header
+        if !m_difficultyShouldBeAdjusted(blockHeight) || self.ibIndex == 1:  # since blockHeight is 1 more than blockNumber; OR clause is special case for 1st header
             # we need to check prevBits isn't 0 otherwise the 1st header
             # will always be rejected (since prevBits doesn't exist for the initial parent)
             # This allows blocks with arbitrary difficulty from being added to

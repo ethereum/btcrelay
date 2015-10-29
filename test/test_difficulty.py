@@ -102,15 +102,15 @@ class TestDifficulty(object):
         # 46684376316 / 44455415962.0 = 1.050139230637394
         prevBlockHash = 0x000000000000000005d1e9e192a43a19e2fbd933ffb27df2623187ad5ce10adc
         startBlock = 342720
-        self.c.setInitialParent(prevBlockHash, 0, 1)  # start at 0, for difficultyAdjustment tests otherwise getBlockHash out of bounds
+        self.c.setInitialParent(prevBlockHash, startBlock-1, 1)
 
         count = 2020
         with open("test/headers/blockchain_headers") as f:
             f.seek(80 * startBlock)
             bhBytes = f.read(80 * count)
-            assert self.c.bulkStoreHeader(bhBytes, count) == count
+            assert self.c.bulkStoreHeader(bhBytes, count) == startBlock-1+count
 
-        assert self.c.getLastBlockHeight() == count
+        assert self.c.getLastBlockHeight() == startBlock-1+count
 
         assert self.c.getCumulativeDifficulty() == \
             self.DIFF_ADJUST*44455415962 + \
@@ -121,15 +121,15 @@ class TestDifficulty(object):
     def testDifficultyShouldBeSame(self):
         prevBlockHash = 0x000000000000000005d1e9e192a43a19e2fbd933ffb27df2623187ad5ce10adc
         startBlock = 342720
-        self.c.setInitialParent(prevBlockHash, 0, 1)  # start at 0, for difficultyAdjustment tests otherwise getBlockHash out of bounds
+        self.c.setInitialParent(prevBlockHash, startBlock-1, 1)
 
         count = 3
         with open("test/headers/blockchain_headers") as f:
             f.seek(80 * startBlock)
             bhBytes = f.read(80 * count)
-            assert self.c.bulkStoreHeader(bhBytes, count) == count
+            assert self.c.bulkStoreHeader(bhBytes, count) == startBlock-1+count
 
-        assert self.c.getLastBlockHeight() == count
+        assert self.c.getLastBlockHeight() == startBlock-1+count
         assert self.c.getCumulativeDifficulty() == count*44455415962 + 1  # score starts at 1
 
         # adding a low difficulty block should fail since bits!=prevBits
@@ -159,15 +159,15 @@ class TestDifficulty(object):
     def testNewDifficultyMatch(self):
         prevBlockHash = 0x000000000000000005d1e9e192a43a19e2fbd933ffb27df2623187ad5ce10adc
         startBlock = 342720
-        self.c.setInitialParent(prevBlockHash, 0, 1)  # start at 0, for difficultyAdjustment tests otherwise getBlockHash out of bounds
+        self.c.setInitialParent(prevBlockHash, startBlock-1, 1)  # start at 0, for difficultyAdjustment tests otherwise getBlockHash out of bounds
 
         count = 2016
         with open("test/headers/blockchain_headers") as f:
             f.seek(80 * startBlock)
             bhBytes = f.read(80 * count)
-            assert self.c.bulkStoreHeader(bhBytes, count) == count
+            assert self.c.bulkStoreHeader(bhBytes, count) == startBlock-1+count
 
-        assert self.c.getLastBlockHeight() == count
+        assert self.c.getLastBlockHeight() == startBlock-1+count
         assert self.c.getCumulativeDifficulty() == count*44455415962 + 1  # score starts at 1
 
         # adding a low difficulty block should fail since bits!=newBits
@@ -202,7 +202,7 @@ class TestDifficulty(object):
         bhBytes = getHeaderBytes(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
         assert dblSha256Flip(bhBytes) == 0x00000000000000001097f043cca218169e00623c9962b25a0b159eaca2d8ca25
         assert self.c.getBlockchainHead() == hashPrevBlock
-        assert self.c.storeBlockHeader(bhBytes) == count + 1
+        assert self.c.storeBlockHeader(bhBytes) == startBlock-1+count + 1
         assert count + 1 == 2017
 
 
@@ -211,15 +211,15 @@ class TestDifficulty(object):
         # big difficulty decrease March 25 2011 block number 127008
         prevBlockHash = 0x00000000000033e435c4bbddc7eb255146aa7f18e61a832983af3a9ee5dd144d
         startBlock = 124992
-        self.c.setInitialParent(prevBlockHash, 0, 1)  # start at 0, for difficultyAdjustment tests otherwise getBlockHash out of bounds
+        self.c.setInitialParent(prevBlockHash, startBlock-1, 1)  # start at 0, for difficultyAdjustment tests otherwise getBlockHash out of bounds
 
         count = 2020
         with open("test/headers/blockchain_headers") as f:
             f.seek(80 * startBlock)
             bhBytes = f.read(80 * count)
-            assert self.c.bulkStoreHeader(bhBytes, count) == count
+            assert self.c.bulkStoreHeader(bhBytes, count) == startBlock-1+count
 
-        assert self.c.getLastBlockHeight() == count
+        assert self.c.getLastBlockHeight() == startBlock-1+count
 
         assert self.c.getCumulativeDifficulty() == \
             self.DIFF_ADJUST*244112 + \
@@ -232,15 +232,15 @@ class TestDifficulty(object):
     def testDifficultyRoundedSame(self):
         prevBlockHash = 0x000000005107662c86452e7365f32f8ffdc70d8d87aa6f78630a79f7d77fbfe6
         startBlock = 30240
-        self.c.setInitialParent(prevBlockHash, 0, 1)  # start at 0, for difficultyAdjustment tests otherwise getBlockHash out of bounds
+        self.c.setInitialParent(prevBlockHash, startBlock-1, 1)  # start at 0, for difficultyAdjustment tests otherwise getBlockHash out of bounds
 
         count = 2020
         with open("test/headers/blockchain_headers") as f:
             f.seek(80 * startBlock)
             bhBytes = f.read(80 * count)
-            assert self.c.bulkStoreHeader(bhBytes, count) == count
+            assert self.c.bulkStoreHeader(bhBytes, count) == startBlock-1+count
 
-        assert self.c.getLastBlockHeight() == count
+        assert self.c.getLastBlockHeight() == startBlock-1+count
 
         assert self.c.getCumulativeDifficulty() == \
             self.DIFF_ADJUST*1 + \
