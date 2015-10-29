@@ -47,6 +47,15 @@ def init():
 # genesis, then it should be called as setInitialParent(0, 0, 1) and
 # means that getLastBlockHeight() and getCumulativeDifficulty() will be
 # 1 more than the usual: eg Satoshi's genesis has height 1 instead of 0
+# setInitialParent(0, 0, 1) is only for testing purposes and a TransactionFailed
+# error will happen when the first block divisible by 2016 is reached, because
+# difficulty computation requires looking up the 2016th parent, which will
+# NOT exist with setInitialParent(0, 0, 1) (only the 2015th parent exists)
+#
+# To handle difficulty adjustment, in production setInitialParent should only be
+# called with 'height such that height mod 2016 = 2015', so that
+# TransactionFailed will be avoided when a difficulty computation is required.
+# This means the minimum height for setInitialParent is 2015.
 def setInitialParent(blockHash, height, cumulativeDifficulty):
     # reuse highScore as the flag for whether setInitialParent() has already been called
     if self.highScore != 0:

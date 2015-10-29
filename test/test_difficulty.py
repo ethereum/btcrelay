@@ -67,36 +67,6 @@ class TestDifficulty(object):
         assert self.c.funcComputeNewBits(prevTime, startTime, prevTarget) == expBits
 
 
-    # test storing blocks right from Satoshi's genesis and past the very first
-    # difficulty adjustment (the difficulty remained the same)
-    # The advantage of this test is it does not fudge 'startBlock', the 2nd
-    # param to setInitialParent().  Other tests below fudge the 2nd param
-    # to be 0 so that the m_fastGetBlockHash() in
-    # https://github.com/ethereum/btcrelay/blob/master/btcrelay.se#L116
-    # will not access out of bounds.
-    # A weakness of this test is that the difficulty did not change (it
-    # only "changed" around 30K blocks later in testDifficultyRoundedSame() below)
-    #
-    # TODO setInitialParent startBlock can't be set to -1 so the earliest
-    # initialParent we can test against is 2015
-    # @slow
-    # def testSameDifficulty(self):
-    #     startBlock = 0
-    #     self.c.setInitialParent(0, startBlock, 1)
-    #
-    #     count = 2020
-    #     with open("test/headers/blockchain_headers") as f:
-    #         f.seek(80 * startBlock)
-    #         bhBytes = f.read(80 * count)
-    #         res = self.c.bulkStoreHeader(bhBytes, count, profiling=True)
-    #         # print('GAS: '+str(res['gas']))
-    #         assert res['output'] == startBlock + count
-    #
-    #     assert self.c.getLastBlockHeight() == count
-    #
-    #     assert self.c.getCumulativeDifficulty() == count*1 + 1  # score starts at 1
-
-
     @slow
     def testDifficultyAdjust(self):
         # difficulty change at 344736 was chosen since the data is contained in
@@ -248,6 +218,27 @@ class TestDifficulty(object):
         assert self.c.getCumulativeDifficulty() == \
             self.DIFF_ADJUST*1 + \
             (count-self.DIFF_ADJUST)*1 + 1  # score starts at 1
+
+
+    # per note to setInitialParent(), the earliest we can test is
+    # a starting block of 2016 (difficulty did not change)
+    @slow
+    def testEarliestDifficulty(self):
+        parentBlock = 0x00000000693067b0e6b440bc51450b9f3850561b07f6d3c021c54fbd6abb9763
+        startBlock = 2016
+        self.c.setInitialParent(parentBlock, startBlock-1, 1)
+
+        count = 2020
+        with open("test/headers/blockchain_headers") as f:
+            f.seek(80 * startBlock)
+            bhBytes = f.read(80 * count)
+            res = self.c.bulkStoreHeader(bhBytes, count, profiling=True)
+            # print('GAS: '+str(res['gas']))
+            assert res['output'] == startBlock-1+count
+
+        assert self.c.getLastBlockHeight() == startBlock-1+count
+
+        assert self.c.getCumulativeDifficulty() == count*1 + 1  # score starts at 1
 
 
     # based on https://github.com/petertodd/python-bitcoinlib/blob/2a5dda45b557515fb12a0a18e5dd48d2f5cd13c2/bitcoin/tests/test_serialize.py#L131
