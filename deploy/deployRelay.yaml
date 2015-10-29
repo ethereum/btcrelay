@@ -2,7 +2,7 @@
   deploy:
     RelayWithBulkStore:
       contract: ../btcBulkStoreHeaders.se
-      gas: 3000000
+      gas: 3100000
       wait: True
 
 # token contracts are on private testnet

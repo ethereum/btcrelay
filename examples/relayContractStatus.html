@@ -24,18 +24,8 @@
       do NOT forget to update ABI files when needed
      */
 
-<<<<<<< HEAD
-     var tokenContractAddr = '0x0624e55d8cd4b83611ea17b129a68f5ff814fe4c';
-     var relayAddr = '0x2fd4f3ae10608cd6192339e72d4f6a0c182dee22'; // ConsenSys testnet
-=======
-     var tokenContractAddr = '0x39bd54403f518762b9ebb7c43ffbf7bf2305de0a';  // NOT the factory's address
-     var relayAddr = '0xf8702bd4ce8c7617bf8400a11ff153c7a8a018fe'; // ConsenSys testnet
->>>>>>> update contract addresses and relayTx works
+     var relayAddr = '0xb1d4c88a30a392aee6859e6f62738230db0c2d93'; // ConsenSys testnet
 
-
-    // var tokenContractAddr = '0xb095b0b20af8b7c2a83afda756a7146e03c0687c';  // NOT the factory's address
-    // var tokenContractAddr = '0x79c6915b618b0896b1c98d30526fa4aa1fb74bb2';  // NOT the factory's address
-    // var relayAddr = '0xb27c1f181a14bb5c281c91df8d72352cb5e7dc39';  // ConsenSys testnet
     // var relayAddr = web3.eth.namereg.addr('btcrelay');  // Olympic
     $('#relayAddr').text(relayAddr);
 
@@ -53,17 +43,11 @@
     $('#latestBlockHash').text(formatHash(headHash));
 
 
-    var TokenContract = web3.eth.contract(tokenContractAbi);  // see ./js/tokenContractAbi.js
-    var xbrContract = TokenContract.at(tokenContractAddr);
-
     var ethTotal = web3.fromWei(web3.eth.getBalance(relayAddr), 'ether');
     $('#ethTotal').text(ethTotal);
 
     var userAddr = web3.eth.coinbase;  // assumption
     $('#userAddr').text(userAddr);
-
-    var userXBR = xbrContract.coinBalanceOf.call(userAddr);
-    $('#userXBR').text(userXBR);
 
 
     window.btcrelayTester = contract;
@@ -136,24 +120,6 @@
         for the latest blocks.
       </h3>
     </div>
-
-    <div>
-      <h3>btcrelay collected ETH: <strong id="ethTotal"></strong></h3>
-      <h3>Your address: <strong id="userAddr"></strong></h3>
-      <h3>Your XBR balance: <strong id="userXBR"></strong></h3>
-    </div>
-
-    <div>
-      <form class="form-inline">
-        <div class="form-group">
-          <label for="numXBR">XBR amount to cash out:</label>
-          <input type="number" class="form-control" id="numXBR"></input>
-        </div>
-        <button type="button" class="btn btn-default" id="btn-compute-cashout">Compute</button>
-      </form>
-      <h3>ETH to receive: <strong id="ethToReceive"></strong></h3>
-    </div>
-
 
     <!-- <h3>blockchain.info Latest Block Hash: <strong id="bciBlockHash"></strong></h3> -->
 
