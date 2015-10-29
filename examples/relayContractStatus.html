@@ -42,13 +42,8 @@
     var headHash = contract.getBlockchainHead.call();
     $('#latestBlockHash').text(formatHash(headHash));
 
-
-    var ethTotal = web3.fromWei(web3.eth.getBalance(relayAddr), 'ether');
-    $('#ethTotal').text(ethTotal);
-
-    var userAddr = web3.eth.coinbase;  // assumption
-    $('#userAddr').text(userAddr);
-
+    var feeVTX = web3.fromWei(contract.getFee.call(headHash), 'ether');
+    $('#feeVTX').text(feeVTX);
 
     window.btcrelayTester = contract;
     // signature of verifyTx is (txHash, txIndex, merkleSiblingArray, txBlockHash)
@@ -119,6 +114,7 @@
       <h3 id="warnSync" style="display: none">Your Ethereum node may not be fully synced: <span id=nodeBlockNum></span>.  Check <a href="https://stats.ethdev.com" target="_">stats</a>
         for the latest blocks.
       </h3>
+      <h3>ETH fee: <strong id="feeVTX"></strong></h3>
     </div>
 
     <!-- <h3>blockchain.info Latest Block Hash: <strong id="bciBlockHash"></strong></h3> -->
