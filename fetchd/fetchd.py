@@ -45,6 +45,7 @@ def main():
     parser.add_argument('--fetch', action='store_true', help='fetch blockheaders')
     parser.add_argument('-n', '--network', default=BITCOIN_TESTNET, choices=[BITCOIN_TESTNET, BITCOIN_MAINNET], help='Bitcoin network')
     parser.add_argument('-d', '--daemon', default=False, action='store_true', help='run as daemon')
+    parser.add_argument('--feeVTX', default=0, type=int, help='fee to charge for verifications')
 
     args = parser.parse_args()
 
@@ -58,6 +59,10 @@ def main():
     instance.numBlocksToWait = args.waitFor  # for CPP eth as of Apr 28, 3 blocks seems reasonable.  0 seems to be fine for Geth
     # instance.gasPrice = args.gasPrice
 
+    feeVerifyTx = args.feeVTX
+    logger.info('feeVTX: %s' % feeVerifyTx)
+
+
     # logger.info('@@@ rpc: %s' % instance.jsonrpc_url)
 
     # this can't be commented out easily since run() always does instance.heightToStartFetch = getLastBlockHeight() + 1 for retries
@@ -67,13 +72,13 @@ def main():
 
     # this will not handle exceptions or do retries.  need to use -d switch if desired
     if not args.daemon:
-        run(doFetch=args.fetch, network=args.network, startBlock=args.startBlock)
+        run(feeVerifyTx, doFetch=args.fetch, network=args.network, startBlock=args.startBlock)
         return
 
     while True:
         for i in range(4):
             try:
-                run(doFetch=args.fetch, network=args.network, startBlock=args.startBlock)
+                run(feeVerifyTx, doFetch=args.fetch, network=args.network, startBlock=args.startBlock)
                 sleep(SLEEP_TIME)
             except Exception as e:
                 logger.info(e)
@@ -88,7 +93,7 @@ def main():
             break
 
 
-def run(doFetch=False, network=BITCOIN_TESTNET, startBlock=0):
+def run(feeVerifyTx, doFetch=False, network=BITCOIN_TESTNET, startBlock=0):
     chainHead = getBlockchainHead()
     if not chainHead:
         raise ValueError("Empty BlockchainHead returned.")
@@ -110,7 +115,7 @@ def run(doFetch=False, network=BITCOIN_TESTNET, startBlock=0):
         heightToRefetch = contractHeight
         while chainHead != realHead:
             logger.info('@@@ chainHead: {0}  realHead: {1}'.format(chainHead, realHead))
-            fetchHeaders(heightToRefetch, 1, 1, network=network)
+            fetchHeaders(heightToRefetch, 1, 1, feeVerifyTx, network=network)
 
             # wait for some blocks because Geth has a delay (at least in RPC), of
             # returning the correct data.  the non-orphaned header may already
@@ -156,12 +161,12 @@ def run(doFetch=False, network=BITCOIN_TESTNET, startBlock=0):
     logger.info('----------------------------------')
 
     if doFetch:
-        fetchHeaders(instance.heightToStartFetch, chunkSize, numChunk, network=network)
-        fetchHeaders(actualHeight - leftoverToFetch + 1, 1, leftoverToFetch, network=network)
+        fetchHeaders(instance.heightToStartFetch, chunkSize, numChunk, feeVerifyTx, network=network)
+        fetchHeaders(actualHeight - leftoverToFetch + 1, 1, leftoverToFetch, feeVerifyTx, network=network)
         # sys.exit()
 
 
-def fetchHeaders(chunkStartNum, chunkSize, numChunk, network=BITCOIN_TESTNET):
+def fetchHeaders(chunkStartNum, chunkSize, numChunk, feeVerifyTx, network=BITCOIN_TESTNET):
     for j in range(numChunk):
         strings = ""
         for i in range(chunkSize):
@@ -172,7 +177,7 @@ def fetchHeaders(chunkStartNum, chunkSize, numChunk, network=BITCOIN_TESTNET):
             logger.debug("Block header: %s" % repr(bhStr.decode('hex')))
             strings += bhStr
 
-        storeHeaders(strings.decode('hex'), chunkSize)
+        storeHeaders(strings.decode('hex'), chunkSize, feeVerifyTx)
 
         chainHead = getBlockchainHead()
         logger.info('@@@ DONE hexHead: %s' % blockHashHex(chainHead))
@@ -181,7 +186,7 @@ def fetchHeaders(chunkStartNum, chunkSize, numChunk, network=BITCOIN_TESTNET):
         chunkStartNum += chunkSize
 
 
-def storeHeaders(bhBytes, chunkSize):
+def storeHeaders(bhBytes, chunkSize, feeVerifyTx):
 
     txCount = instance.transaction_count(defaultBlock='pending')
     logger.info('----------------------------------')
@@ -208,21 +213,32 @@ def storeHeaders(bhBytes, chunkSize):
     # Store the headers
     #
 
-    # Wait for the transaction and retry if failed
-    txHash = instance.transact(instance.relayContract, sig=sig, data=data, gas=gas, value=value)
-    logger.info("Got txHash: %s" % txHash)
-    txResult = False
-    while txResult is False:
-        txResult = instance.wait_for_transaction(transactionHash=txHash, defaultBlock="pending", retry=30, verbose=True)
-        if txResult is False:
-            txHash = instance.transact(instance.relayContract, sig=sig, data=data, gas=gas, value=value)
+    if feeVerifyTx != 0:
+        sig = 'storeBlockWithFee:[bytes,int256]:int256'
 
-    # Wait for the transaction to be mined and retry if failed
-    txResult = False
-    while txResult is False:
-        txResult = instance.wait_for_transaction(transactionHash=txHash, defaultBlock="latest", retry=60, verbose=True)
-        if txResult is False:
-            txHash = instance.transact(instance.relayContract, sig=sig, data=data, gas=gas, value=value)
+    for i in range(chunkSize):
+        if feeVerifyTx != 0:
+            offset = 80*i
+            data = [ bhBytes[offset:offset+80] , feeVerifyTx]
+
+        # Wait for the transaction and retry if failed
+        txHash = instance.transact(instance.relayContract, sig=sig, data=data, gas=gas, value=value)
+        logger.info("Got txHash: %s" % txHash)
+        txResult = False
+        while txResult is False:
+            txResult = instance.wait_for_transaction(transactionHash=txHash, defaultBlock="pending", retry=30, verbose=True)
+            if txResult is False:
+                txHash = instance.transact(instance.relayContract, sig=sig, data=data, gas=gas, value=value)
+
+        # Wait for the transaction to be mined and retry if failed
+        txResult = False
+        while txResult is False:
+            txResult = instance.wait_for_transaction(transactionHash=txHash, defaultBlock="latest", retry=60, verbose=True)
+            if txResult is False:
+                txHash = instance.transact(instance.relayContract, sig=sig, data=data, gas=gas, value=value)
+
+        if feeVerifyTx == 0:
+            break
 
     chainHead = getBlockchainHead()
     expHead = int(bin_dbl_sha256(bhBytes[-80:])[::-1].encode('hex'), 16)
