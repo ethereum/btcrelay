@@ -1,0 +1,42 @@
+/* ----------------------------------------------------------------
+    Fonts
+
+    Replace your Fonts as necessary
+-----------------------------------------------------------------*/
+
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+#logo,
+#primary-menu ul li a,
+#primary-menu ul li .mega-menu-content.style-2 > ul > li.mega-menu-title > a,
+#top-search form input,
+.entry-link,
+.entry.entry-date-section span,
+.button.button-desc,
+.counter,
+label,
+.nav-tree li a,
+.wedding-head .first-name,
+.wedding-head .last-name { font-family: 'Montserrat', sans-serif; }
+
+.entry-meta li,
+.entry-link span,
+.entry blockquote p,
+.more-link,
+.comment-content .comment-author span,
+.button.button-desc span,
+.testi-content p,
+.team-title span,
+.before-heading,
+.wedding-head .first-name span,
+.wedding-head .last-name span {
+    font-family: 'Merriweather', serif;
+    font-style: normal;
+    font-weight: 400;
+}
+
