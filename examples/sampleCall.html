@@ -20,7 +20,7 @@
   var btcproof = require('bitcoin-proof');
 
   // var gRelayAddr = web3.eth.namereg.addr('btcrelay');
-  var gRelayAddr = '0xb1d4c88a30a392aee6859e6f62738230db0c2d93';  // ConsenSys testnet
+  var gRelayAddr = '0xd34e752661c770ee2eb078326ed7a2a09acff135';  // ConsenSys testnet
   var gMerkleProof;
   var gBlockHashOfTx;
   var gRawTx;
@@ -87,8 +87,8 @@
   }
 
   $(function() {
-    // tx[1] of block 378680
-    $('#transHex').val('af40671d8d514dac047c3ebb7326dd25326e9e0f70075a6d96100a10bd1496af');
+    // tx[1] of block 381100
+    $('#transHex').val('3a3cbb07f5208406fc496df761a31c26bf54d0521bd281ffa68666183cdd64f4');
     $('#btn-get-tx').click(getTxInfo);
     $('#relayAddr').text(gRelayAddr);
   });
