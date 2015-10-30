@@ -1,8 +1,8 @@
 inset('btcChain.se')
 
 # btcrelay can relay a transaction to any contract that has a function
-# name 'processTransaction' with signature si:i
-extern relayDestination: [processTransaction:[bytes,int256]:int256]
+# name 'processTransaction' with signature bytes,uint256:int256
+extern relayDestination: [processTransaction:[bytes,uint256]:int256]
 
 
 # TODO: "_height" is 1 more than the typical Bitcoin term height/blocknumber [see setInitialParent()]
@@ -17,7 +17,7 @@ extern relayDestination: [processTransaction:[bytes,int256]:int256]
 # -   "_ibIndex" is the block's index to internalBlock (see btcChain)
 # -   "_score" is 1 more than the cumulative difficulty [see setInitialParent()]
 # - _ancestor stores 8 32bit ancestor indices for more efficient backtracking (see btcChain)
-data block[2**256](_info, _ancestor, _blockHeader[])
+data block[2**256](_info, _ancestor, _blockHeader[], _feeInfo)
 
 
 # block with the highest score (aka the Head of the blockchain)
@@ -26,9 +26,11 @@ data heaviestBlock
 # highest score among all blocks (so far)
 data highScore
 
-event failure(errCode:indexed)
+event Failure(errCode:indexed)
+event EthPayment()
 
-# def init():
+def init():
+    self.gasPriceAndChangeRecipientFee = 50 * 10**9 * BYTES_16 # 50 shannon and left-align
     # TODO anything else to init ?
     # carefully test if adding anything to init() since
     # issues such as https://github.com/ethereum/serpent/issues/77 78 ...
@@ -45,6 +47,15 @@ event failure(errCode:indexed)
 # genesis, then it should be called as setInitialParent(0, 0, 1) and
 # means that getLastBlockHeight() and getCumulativeDifficulty() will be
 # 1 more than the usual: eg Satoshi's genesis has height 1 instead of 0
+# setInitialParent(0, 0, 1) is only for testing purposes and a TransactionFailed
+# error will happen when the first block divisible by 2016 is reached, because
+# difficulty computation requires looking up the 2016th parent, which will
+# NOT exist with setInitialParent(0, 0, 1) (only the 2015th parent exists)
+#
+# To handle difficulty adjustment, in production setInitialParent should only be
+# called with 'height such that height mod 2016 = 2015', so that
+# TransactionFailed will be avoided when a difficulty computation is required.
+# This means the minimum height for setInitialParent is 2015.
 def setInitialParent(blockHash, height, cumulativeDifficulty):
     # reuse highScore as the flag for whether setInitialParent() has already been called
     if self.highScore != 0:
@@ -96,20 +107,20 @@ def storeBlockHeader(blockHeaderBytes:str):
     # we only check the target and do not do other validation (eg timestamp)
     # to save gas
     if blockHash > 0 && blockHash < target:
-        m_saveAncestors(blockHash, hashPrevBlock)
+        m_saveAncestors(blockHash, hashPrevBlock)  # increments ibIndex
 
         save(self.block[blockHash]._blockHeader[0], blockHeaderBytes, chars=80)
 
         blockHeight = m_getHeight(blockHash)
         prevBits = m_getBits(hashPrevBlock)
-        if !m_difficultyShouldBeAdjusted(blockHeight-1) || blockHeight == 1:  # since blockHeight is 1 more than blockNumber; OR clause is special case for 1st header
+        if !m_difficultyShouldBeAdjusted(blockHeight) || self.ibIndex == 1:  # since blockHeight is 1 more than blockNumber; OR clause is special case for 1st header
             # we need to check prevBits isn't 0 otherwise the 1st header
             # will always be rejected (since prevBits doesn't exist for the initial parent)
             # This allows blocks with arbitrary difficulty from being added to
             # the initial parent, but as these forks will have lower score than
             # the main chain, they will not have impact.
             if bits != prevBits && prevBits != 0:
-                log(type=failure, ERR_DIFFICULTY)
+                log(type=Failure, ERR_DIFFICULTY)
                 return(ERR_DIFFICULTY)
         else:
             prevTarget = targetFromBits(prevBits)
@@ -117,12 +128,12 @@ def storeBlockHeader(blockHeaderBytes:str):
 
             # blockHeight - DIFFICULTY_ADJUSTMENT_INTERVAL is same as
             # getHeight(hashPrevBlock) - (DIFFICULTY_ADJUSTMENT_INTERVAL - 1)
-            startBlock = m_fastGetBlockHash(blockHeight - DIFFICULTY_ADJUSTMENT_INTERVAL)
+            startBlock = self.fastGetBlockHash(blockHeight - DIFFICULTY_ADJUSTMENT_INTERVAL)
             startTime = m_getTimestamp(startBlock)
 
             newBits = m_computeNewBits(prevTime, startTime, prevTarget)
             if bits != newBits && newBits != 0:  # newBits != 0 to allow first header
-                log(type=failure, ERR_RETARGET)
+                log(type=Failure, ERR_RETARGET)
                 return(ERR_RETARGET)
 
         difficulty = 0x00000000FFFF0000000000000000000000000000000000000000000000000000 / target # https://en.bitcoin.it/wiki/Difficulty
@@ -139,6 +150,84 @@ def storeBlockHeader(blockHeaderBytes:str):
 
     return(0)
 
+# 16 bytes last gas price and 16 bytes of change recipient fee
+data gasPriceAndChangeRecipientFee
+
+macro m_getLastGasPrice():
+    div(self.gasPriceAndChangeRecipientFee, BYTES_16)
+
+macro m_getChangeRecipientFee():
+    (0x00000000000000000000000000000000ffffffffffffffffffffffffffffffff & self.gasPriceAndChangeRecipientFee)
+
+macro m_setGasPriceAndChangeRecipientFee($gasPrice, $changeRecipientFee):
+    self.gasPriceAndChangeRecipientFee = ($gasPrice * BYTES_16) | $changeRecipientFee
+
+def storeBlockWithFee(blockHeaderBytes:str, feeWei):
+    beginGas = msg.gas
+    res = self.storeBlockHeader(blockHeaderBytes)
+    if res:
+        blockHash = m_hashBlockHeader(blockHeaderBytes)
+        m_setFeeInfo(blockHash, feeWei, tx.origin)  # note: tx.origin
+        remainingGas = msg.gas
+
+
+        gLastGasPrice = m_getLastGasPrice()
+
+        # TODO can avoid the "else"
+        if tx.gasprice < (1023*gLastGasPrice/1024) || tx.gasprice > (1025*gLastGasPrice/1024):
+            currGP = gLastGasPrice
+        else:
+            currGP = tx.gasprice
+        gChangeRecipientFee = 2 * currGP * (beginGas - remainingGas)
+        gLastGasPrice = currGP
+
+        m_setGasPriceAndChangeRecipientFee(gLastGasPrice, gChangeRecipientFee)
+
+        return(res)
+
+
+macro m_setFeeInfo($blockHash, $feeWei, $feeRecipient):
+    $word = m_shiftLeft($feeRecipient, 12*8) | $feeWei
+    self.block[$blockHash]._feeInfo = $word
+
+
+macro m_getFeeInfo($blockHash):
+    self.block[$blockHash]._feeInfo
+
+def getFee(blockHash):
+    # TODO macro
+    return(0x0000000000000000000000000000000000000000ffffffffffffffffffffffff & m_getFeeInfo(blockHash))
+
+def getFeeRecipient(blockHash):
+    return(div(m_getFeeInfo(blockHash), 2**(12*8)))
+
+# TODO callers must send EXACTLY the block's current fee
+# There are 2 types of amountWei: the "verifyTxFee" and "changeRecipientFee"
+# This does NOT return any funds to incorrect callers
+def feePaid(txBlockHash, amountWei):
+    feeInfo = m_getFeeInfo(txBlockHash)
+    feeRecipient = div(feeInfo, 2**(12*8))
+    # TODO allow overpayment?
+    if msg.value == amountWei:  # must not allow overpayment, otherwise fees could be increased via changeFeeRecipient()
+        send(feeRecipient, msg.value)
+        return(1)
+    return(0)
+
+
+# callers must send EXACTLY the block's current fee, AND feeWei must be LESS
+# than the block's current fee
+# This does NOT return any funds to incorrect callers
+def changeFeeRecipient(blockHash, feeWei, feeRecipient):
+    if !self.feePaid(blockHash, m_getChangeRecipientFee(), value=msg.value):
+        return(0)
+
+    # feeWei is only allowed to decrease
+    if feeWei < self.getFee(blockHash):  # TODO macro
+        m_setFeeInfo(blockHash, feeWei, feeRecipient)
+        return(1)
+
+    return(0)
+
 
 # returns 1 if tx is in the block given by 'txBlockHash' and the block is
 # in Bitcoin's main chain (ie not a fork)
@@ -148,6 +237,12 @@ def storeBlockHeader(blockHeaderBytes:str):
 # - 'txIndex' is the index of the tx within the block
 # - 'sibling' are the merkle siblings of tx
 def verifyTx(txHash, txIndex, sibling:arr, txBlockHash):
+    ethFee = self.getFee(txBlockHash)
+    if !self.feePaid(txBlockHash, ethFee, value=msg.value):
+        return(0)
+
+    log(type=EthPayment)
+
     if self.within6Confirms(txBlockHash) || !self.inMainChain(txBlockHash):
         return(0)
 
@@ -168,15 +263,15 @@ def verifyTx(txHash, txIndex, sibling:arr, txBlockHash):
 #
 # TODO txHash can eventually be computed (dbl sha256 then flip32Bytes) when
 # txStr becomes txBytes
-def relayTx(txStr:str, txHash, txIndex, sibling:arr, txBlockHash, contract):
+def relayTx(txStr:str, txHash:uint256, txIndex, sibling:arr, txBlockHash, contract):
     if self.verifyTx(txHash, txIndex, sibling, txBlockHash, value=msg.value) == 1:
         res = contract.processTransaction(txStr, txHash)
-        log(msg.sender, data=[res])
+        # log(msg.sender, data=[res])  # TODO
         return(res)
 
     # log error code -9999 on both this contract and target contract
-    log(msg.sender, data=[-9999])
-    log(contract, data=[-9999])
+    log(type=Failure, ERR_RELAY_VERIFY)
+    # log(contract, data=[-9999]) TODO how to log under 'contract' address?
     return(0)
 
 
