@@ -16,29 +16,32 @@
 
   <script type="text/javascript">
   var web3 = require('web3');
-      web3.setProvider(new web3.providers.HttpProvider('http://morden.cloudapp.net:8545'));
+      web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
   var btcproof = require('bitcoin-proof');
 
   // var gRelayAddr = web3.eth.namereg.addr('btcrelay');
-  var gRelayAddr = '0xd34e752661c770ee2eb078326ed7a2a09acff135';  // ConsenSys testnet
+  var gRelayAddr = '0xf8702bd4ce8c7617bf8400a11ff153c7a8a018fe';  // ConsenSys testnet
+  var gProcessorAddr = '0x6782deb2308b7c7444e4ac0de04f2bf677264663'; // ConsenSys testnet
   var gMerkleProof;
   var gBlockHashOfTx;
   var gRawTx;
-  var gFeeVerifyFinney;
-
-  var RelayContractClass = web3.eth.contract(btcRelayAbi);  // see ./js/btcRelayAbi.js
-  var gRelayContract = RelayContractClass.at(gRelayAddr);
 
 
-  // shows how to use web3 to make an eth_call to the relay contract
-  // verifyTx returns 1 (success) or 0 (verify failed)
-  function callVerifyTx(txHash, txIndex, merkleSibling, txBlockHash) {
-    // gFeeVerifyFinney is transferred!  coinbase must have it or verifyTx fails
-    var feeWei = web3.toWei(gFeeVerifyFinney, 'finney');
-    var objParam = { from: web3.eth.coinbase, value: feeWei, gas: 3000000 };
-    var res = gRelayContract.verifyTx.call(txHash, txIndex, merkleSibling, txBlockHash, objParam);
+  function doRelayTx(txHex, txHash, txIndex, merkleSibling, txBlockHash) {
+    var RelayContract = web3.eth.contract(btcRelayAbi);  // see ./js/btcRelayAbi.js
+    var contract = RelayContract.at(gRelayAddr);
 
-    document.getElementById('result').innerText = 'btcrelay verifyTx returned: ' + res.toString(10);
+    var ethFeeToPay = web3.toWei('0.2', 'ether');  // open relayContractStatus.html to check current fee
+    var objParam = { from: web3.eth.coinbase, value: ethFeeToPay, gas: 1900000 };
+
+    // var res = contract.verifyTx.call(txHash, txIndex, merkleSibling, txBlockHash, objParam);
+    // document.getElementById('result').innerText = 'btcrelay verifyTx returned: ' + res.toString(10);
+    // return;
+
+    var ethTx = contract.relayTx.sendTransaction(txHex, txHash, txIndex, merkleSibling, txBlockHash, gProcessorAddr, objParam);
+    document.getElementById('result').innerText = 'Ethereum tx hash: ' + ethTx;
+    // console.log('@@@ relayTx receipt: ', receipt)
+    // when the tx is mined, the storage of gProcessorAddr at key0 will have txHash
   }
 
   function callContract() {
@@ -51,7 +54,7 @@
       return '0x' + sib;
     });
 
-    callVerifyTx(txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash);
+    doRelayTx(gRawTx, txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash);
   }
 
   // includes sample of using the bitcoin-proof module
@@ -63,7 +66,7 @@
         $('#txHexText').val(gRawTx);
 
         var blockNum = data.data.tx.blockhash;
-        var blockInfoUrl = "http://btc.blockr.io/api/v1/block/raw/"+blockNum;
+        var blockInfoUrl = "//btc.blockr.io/api/v1/block/raw/"+blockNum;
         $.getJSON(blockInfoUrl, function(res) {
             gBlockHashOfTx = res.data.hash;
             $('#txBlockHash').text(gBlockHashOfTx)
@@ -79,16 +82,15 @@
             gMerkleProof = btcproof.getProof(res.data.tx, txIndex);
             console.log('merkle proof: ', gMerkleProof)
             $('#mProof').val(JSON.stringify(gMerkleProof));
-
-            gFeeVerifyFinney = web3.fromWei(gRelayContract.getFee.call('0x'+gBlockHashOfTx), 'finney');
-            $('#feeVerifyTx').text(gFeeVerifyFinney);
         })
     })
   }
 
   $(function() {
-    // tx[1] of block 381100
-    $('#transHex').val('3a3cbb07f5208406fc496df761a31c26bf54d0521bd281ffa68666183cdd64f4');
+    // tx[1] of block 360276
+    // var sampleTx = 'be44a9201e8016b1772e7331f3c3c8a4820060307df4603033dc5350a01ac279';
+    var sampleTx = 'a0abd241bb5f6c068bbce83c4b96355694556dba9b85dba693cfbf197379fe90';
+    $('#transHex').val(sampleTx);
     $('#btn-get-tx').click(getTxInfo);
     $('#relayAddr').text(gRelayAddr);
   });
@@ -104,7 +106,7 @@
 
     <p class="lead">btcrelay at <span id="relayAddr"></span></p>
 
-    <p>This is a sample of calling the verifyTx method on the btcrelay contract
+    <p>This is a sample of btcrelay relayTx
     </p>
 
     <h2>1.</h2>
@@ -133,20 +135,16 @@
 
         <div class="form-group">
           <label class="col-md-1 control-label">Block Hash</label>
-          <p class="form-control-static" id="txBlockHash">0</p>
+          <div class="col-md-9">
+            <p class="form-control-static" id="txBlockHash">0</p>
+          </div>
         </div>
-
-        <div class="form-group">
-          <label class="col-md-2 control-label">Verification fee milli-ether</label>
-          <p class="form-control-static" id="feeVerifyTx">?</p>
-        </div>
-        <button type="button" class="btn btn-default" onclick="callContract();">Call verifyTx</button>
+        <br><br><br>
+        <button type="button" class="btn btn-default" onclick="callContract();">send transaction relayTx</button>
       </form>
     </div>
 
-    <div class="row">
-      <div id="result"></div>
-    </div>
+    <div id="result"></div>
 
     <!-- <div class="footer-logo">
       <img src="./images/ETH_DEV_LOGO_LARGE.svg"/>

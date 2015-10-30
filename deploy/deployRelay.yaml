@@ -2,7 +2,7 @@
   deploy:
     RelayWithBulkStore:
       contract: ../btcBulkStoreHeaders.se
-      gas: 3000000
+      gas: 3100000
       wait: True
 
 # token contracts are on private testnet
@@ -27,8 +27,8 @@
       to: $RelayWithBulkStore
       sig: setInitialParent:[int256,int256,int256]:int256
       data:
-        - 0x00000000000000000cd20cf178b714cae163a9541340526237a1a161592ebf68
-        - 378679
+        - 0x0000000000000000086233f4843682eb47bacb58930a5577fbfd5c9ebd57ddf9
+        - 379007
         - 1
       retry: 60
       wait: True
