@@ -29838,6 +29838,9 @@ only screen and (                min-resolution: 2dppx) and (max-width: 991px) {
     Version: 1.0
 -----------------------------------------------------------------*/
 
+body {
+	font-size: 16px;
+}
 
 #wrapper {
 	margin: 0;
@@ -29948,7 +29951,7 @@ only screen and (                min-resolution: 2dppx) and (max-width: 991px) {
 	font-weight: 700;
 	text-transform: none;
 	color: #111;
-	letter-spacing: -2px;
+	letter-spacing: -1px;
 	word-spacing: 5px;
 	margin-bottom: 0;
 	max-width: 90%;
@@ -29958,7 +29961,7 @@ only screen and (                min-resolution: 2dppx) and (max-width: 991px) {
 	display: block;
 	font-family: 'Lato', Helvetica, Arial, sans-serif;
 	font-weight: 400;
-	font-size: 15px;
+	font-size: 16px;
 	line-height: 2;
 	color: #666;
 	margin-top: 40px;
@@ -29983,9 +29986,9 @@ only screen and (                min-resolution: 2dppx) and (max-width: 991px) {
 .hero-headline > .graphic-box > .post-graphic {
 	text-align: center;
 	margin: 10px auto;
-	color: #aaa;
+	color: #999;
 	font-style: italic;
-	font-size: 1.1em;
+	font-size: 16px;
 }
 
 .hero-headline > .graphic-box > .graphic {
@@ -30101,8 +30104,8 @@ only screen and (min-device-pixel-ratio: 1.5) {
 -------------------- */
 #howitworks {
 	background-image: url(../images/howitworks.png);
-	background-size: 639px 287px;
-	height: 287px;
+	background-size: 639px 284px;
+	height: 284px;
 	width: 639px;
 	background-repeat: no-repeat;
 	margin-left: 20px;
@@ -30113,7 +30116,7 @@ only screen and (-o-min-device-pixel-ratio: 3/2),
 only screen and (min-device-pixel-ratio: 1.5) {
   #howitworks {
     background-image: url(../images/howitworks@2x.png);
-    background-size: 639px 287px;
+    background-size: 639px 284px;
     background-repeat: no-repeat;
   }
 }
@@ -30125,9 +30128,25 @@ only screen and (min-device-pixel-ratio: 1.5) {
 		margin-left: 0;
 	}
 }
+@media only screen and (max-width: 430px) {
+	#howitworks {
+		margin-left: -30px;
+		width: 390px;
+		height: 176px;
+		background-size: 390px 176px;
+	}
+}
 
 /* Launchdate
 -----------------*/
+#launch {
+	margin-bottom: 40px;
+}
+
+.acctitle {
+	font-size: 16px;
+}
+
 ul.verification-content {
 	margin: 10px auto 10px 20px;
 }
