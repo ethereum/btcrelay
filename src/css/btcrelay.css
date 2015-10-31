@@ -9,6 +9,7 @@
 	width: 75%;
 	-webkit-box-shadow: none;
 	box-shadow: none;
+	opacity: 1 !important;
 }
 
 .device-md #wrapper { width: 80%; }
@@ -60,16 +61,17 @@
 #primary-menu ul li a {
 	font-size: 11px;
 	color: #888;
+	display: none;
 }
 
 .header-social-set {
 	float: right;
-	margin: 34px 0;
+	margin: 24px 0;
 }
 
 @media (max-width: 991px) {
 
-	#primary-menu-trigger { left: 106px !important; }
+	#primary-menu-trigger { left: 106px !important; display: none;}
 
 	.header-social-set {
 		position: absolute;
@@ -78,13 +80,17 @@
 		right: 120px;
 	}
 
+	#logo { float: left; }
+
 }
 
 @media (max-width: 767px) {
 
-	#primary-menu-trigger { left: 26px !important; }
+	#primary-menu-trigger { left: 26px !important; display: none;}
 
-	.header-social-set { right: 40px; }
+	.header-social-set { right: 10px; }
+
+	#logo { float: left; }
 
 }
 
