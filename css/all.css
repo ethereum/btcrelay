@@ -30126,6 +30126,15 @@ only screen and (min-device-pixel-ratio: 1.5) {
 	}
 }
 
+/* Launchdate
+-----------------*/
+ul.verification-content {
+	margin: 10px auto 10px 20px;
+}
+ul.verification-content > li {
+	margin-top: 5px;
+}
+
 
 /* Portfolio Items
 ---------------------------------------------------------------------------- */
@@ -30177,6 +30186,7 @@ textarea.border-form-control {
   -webkit-flex-direction: row;
   -ms-flex-direction: row;
   flex-direction: row;
+  max-width: 80%;
 }
 
 .sponsor-logos .ethereum {
@@ -30192,12 +30202,13 @@ textarea.border-form-control {
 	height: 118px;
 	width: 145px;
 	margin-top: 4px;
-	margin-left: 20%;
+	margin-left: 80%;
 }
 
 @media only screen and (max-width: 450px) {
-	.sponsor-logos .consensys {
-		margin-left: 5%;
+	.sponsor-logos > a > .consensys {
+		margin-left: 20%;
+		max-width: 100%;
 	}
 }
 
