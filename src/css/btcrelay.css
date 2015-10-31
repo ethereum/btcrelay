@@ -10,6 +10,7 @@
 	-webkit-box-shadow: none;
 	box-shadow: none;
 	opacity: 1 !important;
+	background-color: transparent;
 }
 
 .device-md #wrapper { width: 80%; }
@@ -45,7 +46,7 @@
 }
 
 .device-sm .container-fluid {
-	padding-left: 20px;
+	padding-left: 40px;
 	padding-right: 40px;
 }
 
@@ -62,6 +63,10 @@
 
 /* Header
 ---------------------------------------------------------------------------- */
+
+#header, #content {
+	background-color: transparent;
+}
 
 #primary-menu ul li a {
 	font-size: 11px;
