@@ -1084,7 +1084,7 @@ var SEMICOLON = SEMICOLON || {};
 		init: function(){
 
 			SEMICOLON.initialize.responsiveClasses();
-			SEMICOLON.initialize.imagePreload( '.portfolio-item:not(:has(.fslider)) img' );
+		/*	SEMICOLON.initialize.imagePreload( '.portfolio-item:not(:has(.fslider)) img' );
 			SEMICOLON.initialize.stickyElements();
 			SEMICOLON.initialize.goToTop();
 			SEMICOLON.initialize.fullScreen();
@@ -1092,11 +1092,11 @@ var SEMICOLON = SEMICOLON || {};
 			SEMICOLON.initialize.lightbox();
 			SEMICOLON.initialize.resizeVideos();
 			SEMICOLON.initialize.imageFade();
-			SEMICOLON.initialize.pageTransition();
+			SEMICOLON.initialize.pageTransition();*/
 			SEMICOLON.initialize.dataResponsiveClasses();
 			SEMICOLON.initialize.dataResponsiveHeights();
 
-			$('.fslider').addClass('preloader2');
+		//	$('.fslider').addClass('preloader2');
 
 		},
 
@@ -2596,12 +2596,13 @@ var SEMICOLON = SEMICOLON || {};
 
 		init: function(){
 
-			SEMICOLON.widget.animations();
+		/*	SEMICOLON.widget.animations();
 			SEMICOLON.widget.youtubeBgVideo();
 			SEMICOLON.widget.tabs();
 			SEMICOLON.widget.tabsJustify();
-			SEMICOLON.widget.toggles();
+			SEMICOLON.widget.toggles();*/
 			SEMICOLON.widget.accordions();
+			/*
 			SEMICOLON.widget.counter();
 			SEMICOLON.widget.roundedSkill();
 			SEMICOLON.widget.progress();
@@ -2612,7 +2613,7 @@ var SEMICOLON = SEMICOLON || {};
 			SEMICOLON.widget.navTree();
 			SEMICOLON.widget.textRotater();
 			SEMICOLON.widget.linkScroll();
-			SEMICOLON.widget.extras();
+			SEMICOLON.widget.extras();*/
 
 		},
 
@@ -3390,14 +3391,14 @@ var SEMICOLON = SEMICOLON || {};
 				SEMICOLON.initialize.fullScreen();
 				SEMICOLON.initialize.verticalMiddle();
 				SEMICOLON.initialize.maxHeight();
-				SEMICOLON.initialize.testimonialsGrid();
-				SEMICOLON.initialize.stickyFooter();
-				SEMICOLON.slider.captionPosition();
-				SEMICOLON.portfolio.arrange();
-				SEMICOLON.portfolio.portfolioDescMargin();
-				SEMICOLON.widget.tabsJustify();
-				SEMICOLON.widget.html5Video();
-				SEMICOLON.widget.masonryThumbs();
+			//	SEMICOLON.initialize.testimonialsGrid();
+			//	SEMICOLON.initialize.stickyFooter();
+			//	SEMICOLON.slider.captionPosition();
+			//	SEMICOLON.portfolio.arrange();
+			//	SEMICOLON.portfolio.portfolioDescMargin();
+			//	SEMICOLON.widget.tabsJustify();
+			//	SEMICOLON.widget.html5Video();
+			//	SEMICOLON.widget.masonryThumbs();
 				SEMICOLON.initialize.dataResponsiveClasses();
 				SEMICOLON.initialize.dataResponsiveHeights();
 			}, 500 );
@@ -3411,8 +3412,8 @@ var SEMICOLON = SEMICOLON || {};
 		init: function(){
 			SEMICOLON.initialize.init();
 			SEMICOLON.header.init();
-			if( $slider.length > 0 ) { SEMICOLON.slider.init(); }
-			if( $portfolio.length > 0 ) { SEMICOLON.portfolio.init(); }
+	//		if( $slider.length > 0 ) { SEMICOLON.slider.init(); }
+	//		if( $portfolio.length > 0 ) { SEMICOLON.portfolio.init(); }
 			SEMICOLON.widget.init();
 			SEMICOLON.documentOnReady.windowscroll();
 		},
@@ -3459,6 +3460,7 @@ var SEMICOLON = SEMICOLON || {};
 	SEMICOLON.documentOnLoad = {
 
 		init: function(){
+			/*
 			SEMICOLON.slider.captionPosition();
 			SEMICOLON.slider.swiperSliderMenu();
 			SEMICOLON.slider.revolutionSliderMenu();
@@ -3473,10 +3475,11 @@ var SEMICOLON = SEMICOLON || {};
 			SEMICOLON.widget.loadFlexSlider();
 			SEMICOLON.widget.html5Video();
 			SEMICOLON.widget.masonryThumbs();
-			SEMICOLON.slider.owlCaptionInit();
+			SEMICOLON.slider.owlCaptionInit(); */
 			SEMICOLON.header.topsocial();
 			SEMICOLON.header.responsiveMenuClass();
-			SEMICOLON.initialize.modal();
+			/*
+			SEMICOLON.initialize.modal();*/
 		}
 
 	};
@@ -3506,34 +3509,14 @@ var SEMICOLON = SEMICOLON || {};
 		$pagemenu = $('#page-menu'),
 		$onePageMenuEl = $('.one-page-menu'),
 		onePageGlobalOffset = 0,
-		$portfolio = $('#portfolio'),
-		$slider = $('#slider'),
-		$sliderParallaxEl = $('.slider-parallax'),
-		$pageTitle = $('#page-title'),
-		$portfolioItems = $('.portfolio-ajax').find('.portfolio-item'),
-		$portfolioDetails = $('#portfolio-ajax-wrap'),
-		$portfolioDetailsContainer = $('#portfolio-ajax-container'),
-		$portfolioAjaxLoader = $('#portfolio-ajax-loader'),
-		prevPostPortId = '',
-		$topSearch = $('#top-search'),
-		$topCart = $('#top-cart'),
-		$verticalMiddleEl = $('.vertical-middle'),
 		$topSocialEl = $('#top-social').find('li'),
-		$siStickyEl = $('.si-sticky'),
-		$dotsMenuEl = $('.dots-menu'),
-		$goToTopEl = $('#gotoTop'),
-		$fullScreenEl = $('.full-screen'),
-		$commonHeightEl = $('.common-height'),
-		$testimonialsGridEl = $('.testimonials-grid'),
 		$pageSectionEl = $('.page-section'),
-		$owlCarouselEl = $('.owl-carousel'),
-		$parallaxEl = $('.parallax'),
-		$parallaxPageTitleEl = $('.page-title-parallax'),
-		$parallaxPortfolioEl = $('.portfolio-parallax').find('.portfolio-image'),
-		$youtubeBgPlayerEl = $('.yt-bg-player'),
-		$textRotaterEl = $('.text-rotater');
+		$fullScreenEl = $('.full-screen'),
+		$verticalMiddleEl = $('.vertical-middle'),
+		$commonHeightEl = $('.common-height');
 
-	$(document).ready( SEMICOLON.documentOnReady.init );
+
+  $(document).ready( SEMICOLON.documentOnReady.init );
 	$window.load( SEMICOLON.documentOnLoad.init );
 	$window.on( 'resize', SEMICOLON.documentOnResize.init );
 
