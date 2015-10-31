@@ -29847,7 +29847,7 @@ only screen and (                min-resolution: 2dppx) and (max-width: 991px) {
 }
 
 .device-md #wrapper { width: 80%; }
-
+.device-sm #wrapper { width: 90%; }
 .device-xs #wrapper,
 .device-xxs #wrapper { width: 100%; }
 
@@ -29864,7 +29864,7 @@ only screen and (                min-resolution: 2dppx) and (max-width: 991px) {
 }
 
 .device-md .side-cover-wrapper { width: 20%; }
-
+.device-sm .side-cover-wrapper { width: 10%; }
 .device-xs .side-cover-wrapper,
 .device-xxs .side-cover-wrapper { width: 0; }
 
@@ -29876,6 +29876,11 @@ only screen and (                min-resolution: 2dppx) and (max-width: 991px) {
 .device-md .container-fluid {
 	padding-left: 80px;
 	padding-right: 80px;
+}
+
+.device-sm .container-fluid {
+	padding-left: 20px;
+	padding-right: 40px;
 }
 
 .device-xs .container-fluid,
@@ -30107,7 +30112,7 @@ only screen and (min-device-pixel-ratio: 1.5) {
     background-repeat: no-repeat;
   }
 }
-@media only screen and (max-width: 639px) {
+@media only screen and (max-width: 700px) {
 	#howitworks {
 		width: 400px;
 		height: 180px;

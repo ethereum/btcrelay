@@ -1907,18 +1907,18 @@ var SEMICOLON = SEMICOLON || {};
 
 		init: function(){
 
-			SEMICOLON.header.superfish();
-			SEMICOLON.header.menufunctions();
-			SEMICOLON.header.fullWidthMenu();
-			SEMICOLON.header.overlayMenu();
-			SEMICOLON.header.stickyMenu();
+		//	SEMICOLON.header.superfish();
+		//	SEMICOLON.header.menufunctions();
+		//	SEMICOLON.header.fullWidthMenu();
+		//	SEMICOLON.header.overlayMenu();
+		//	SEMICOLON.header.stickyMenu();
 			SEMICOLON.header.sideHeader();
 			SEMICOLON.header.sidePanel();
 			SEMICOLON.header.onePageScroll();
 			SEMICOLON.header.onepageScroller();
 			SEMICOLON.header.logo();
-			SEMICOLON.header.topsearch();
-			SEMICOLON.header.topcart();
+		//	SEMICOLON.header.topsearch();
+		//	SEMICOLON.header.topcart();
 
 		},
 
@@ -3415,7 +3415,7 @@ var SEMICOLON = SEMICOLON || {};
 	//		if( $slider.length > 0 ) { SEMICOLON.slider.init(); }
 	//		if( $portfolio.length > 0 ) { SEMICOLON.portfolio.init(); }
 			SEMICOLON.widget.init();
-			SEMICOLON.documentOnReady.windowscroll();
+		//	SEMICOLON.documentOnReady.windowscroll();
 		},
 
 		windowscroll: function(){
