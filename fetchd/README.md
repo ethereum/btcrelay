@@ -2,7 +2,11 @@
 
 1. `pip install -r requirements.txt`
 
-1. `python fetchd.py -s <YourUnlockedEthereumAccount> -r 0xb1d4c88a30a392aee6859e6f62738230db0c2d93 -n btc --rpcPort 8545 --fetch -d --gasPrice 500000000000`  use YourUnlockedEthereumAccount
+1. Run Geth connected to the public testnet: https://github.com/ConsenSys/ConsenSys.github.io/wiki/ConsenSys-public-testnet  Use its faucet to get testnet ether, unlock an account, and enable RPC.
+
+1. Get BTCRelayAddress from: http://cdn.rawgit.com/ethereum/btcrelay/master/examples/relayContractStatus.html
+
+1. `python fetchd.py -s <YourUnlockedAccount> -r <BTCRelayAddress> -n btc --rpcPort 8545 --fetch -d --gasPrice 500000000000`  use YourUnlockedAccount
 
 If you want to set a fee, which is specified in units of wei, add `--fee <weiAmount>`
 
