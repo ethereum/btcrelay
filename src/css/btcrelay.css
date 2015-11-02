@@ -59,9 +59,21 @@ body {
 	padding-right: 40px;
 }
 
-
 .max80 {
 	max-width: 80%;
+}
+
+.fa-rotate-135 { /* icon rotate */
+  -webkit-transform: rotate(135deg);
+  -moz-transform: rotate(135deg);
+  -ms-transform: rotate(135deg);
+  -o-transform: rotate(135deg);
+  transform: rotate(135deg);
+}
+
+.make-space {
+	margin-left: 10px;
+	margin-right: 10px;
 }
 
 /* Header
@@ -132,6 +144,12 @@ body {
 	color: #666;
 	margin-top: 40px;
 	max-width: 90%;
+}
+
+.hero-headline .link-center {
+	text-align: center;
+	max-width: 80%;
+	margin-top: 30px;
 }
 
 .hero-headline > .graphic-box {
@@ -211,7 +229,6 @@ only screen and (min-device-pixel-ratio: 1.5) {
 	.hero-headline > .graphic-box > .graphic .button {
 		padding-left: 10px;
 		padding-right: 10px;
-		font-size: 11px;
 	}
 	.hero-headline > .graphic-box > .graphic .button:nth-child(2) {
 		margin-left: 5%;
@@ -222,7 +239,28 @@ only screen and (min-device-pixel-ratio: 1.5) {
 	.hero-headline > .graphic-box {
 		max-width: 100%;
 	}
+	.hero-headline > .graphic-box > .graphic {
+		margin-left: -20px;
+	}
+	.hero-headline > .graphic-box > .graphic .button {
+		font-size: 11px;
+	}
+	.hero-headline .link-center {
+		max-width: 100%;
+	}
+	.header-social-set {
+		display: none;
+	}
 }
+
+@media only screen and (-Webkit-min-device-pixel-ratio: 1.5) and (max-width: 320px),
+	only screen and (-moz-min-device-pixel-ratio: 1.5),
+	only screen and (-o-min-device-pixel-ratio: 3/2),
+	only screen and (min-device-pixel-ratio: 1.5) {
+	  .hero-headline > .graphic-box > .graphic .button {
+	  	font-size: 9px;
+	  }
+	}
 
 .device-sm .hero-headline h1 { font-size: 48px; }
 
@@ -264,8 +302,8 @@ only screen and (min-device-pixel-ratio: 1.5) {
 -------------------- */
 #howitworks {
 	background-image: url(../images/howitworks.png);
-	background-size: 639px 284px;
-	height: 284px;
+	background-size: 639px 288px;
+	height: 288px;
 	width: 639px;
 	background-repeat: no-repeat;
 	margin-left: 20px;
@@ -276,7 +314,7 @@ only screen and (-o-min-device-pixel-ratio: 3/2),
 only screen and (min-device-pixel-ratio: 1.5) {
   #howitworks {
     background-image: url(../images/howitworks@2x.png);
-    background-size: 639px 284px;
+    background-size: 639px 288px;
     background-repeat: no-repeat;
   }
 }
