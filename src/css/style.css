@@ -171,7 +171,7 @@ small { font-family: 'Lato', sans-serif; }
 	position: relative;
 	width: 100%;
 	margin: 60px 0;
-	border-top: 1px solid #EEE;
+	border-top: 2px solid #EEE;
 }
 
 .line.line-sm { margin: 30px 0; }
@@ -6612,8 +6612,18 @@ body:not(.device-touch) .button {
 
 .button.button-dark:hover { background-color: #ff0066; }
 
-.button.button-dark.hover-magenta:hover  { background-color: #cc0066; }
-.button.button-dark.hover-blue:hover { background-color: #006699; }
+.button.button-dark.magenta  { 
+	background-color: #cc0066; 
+}
+.button.button-dark.magenta:hover  { 
+	background-color: #990033;  
+}
+.button.button-dark.blue { 
+	background-color: #006699;
+}
+.button.button-dark.blue:hover { 
+	background-color: #003366;
+}
 
 
 .button.button-mini {

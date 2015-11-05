@@ -35,7 +35,7 @@ h2 {
 	right: 0;
 	width: 25%;
 	height: 100%;
-	background-image: url(../images/pattern_relay.jpg); 
+	background-image: url(../images/small_steps.png); 
 }
 
 /* retina */
@@ -96,11 +96,11 @@ only screen and (min-device-pixel-ratio: 1.5) {
 /* Logo
 -------------- */
 #logo {
-	margin-top: 20px;
+	margin-top: 50px;
 	margin-left: -50px;
 	background: transparent url(../images/logo@2x.png) no-repeat center center;
-	height: 117px;
-	width: 400px;
+	height: 88px;
+	width: 300px;
 }
 
 /* retina */
@@ -110,7 +110,7 @@ only screen and (-o-min-device-pixel-ratio: 3/2),
 only screen and (min-device-pixel-ratio: 1.5) {
 	#logo {
 		background: transparent url(../images/logo@4x.png) no-repeat center center;
-		background-size: 400px 117px;
+		background-size: 300px 88px;
 	}
 }
 
@@ -138,6 +138,12 @@ only screen and (min-device-pixel-ratio: 1.5) {
 
 #header, #content {
 	background-color: transparent;
+}
+
+@media only screen and (min-width: 992px) {
+	#content {
+		margin-top: 50px;
+	}
 }
 
 #primary-menu ul li a {
@@ -188,9 +194,9 @@ only screen and (min-device-pixel-ratio: 1.5) {
 	color: #444;
 	letter-spacing: -1px;
 	word-spacing: 5px;
-	margin-top: 40px;
 	margin-bottom: 0;
 	max-width: 90%;
+	font-family: 'Lato', Helvetica, Arial, sans-serif;
 }
 
 .hero-headline > span {
@@ -409,9 +415,6 @@ only screen and (min-device-pixel-ratio: 1.5) {
 /* Features
 -----------------*/
 
-#section-features h2 {
-	color: #006699;
-}
 
 /* Launchdate
 -----------------*/
@@ -471,10 +474,6 @@ textarea.border-form-control {
 
 /* Brought to you by
 ------------------*/
-
-#section-broughtoyouby h2 {
-	color: #006699;
-}
 
 #section-broughtoyouby .sponsor-logos {
 	display: flex;
