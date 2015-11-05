@@ -29882,6 +29882,7 @@ only screen and (min-device-pixel-ratio: 1.5) {
 -------------- */
 #logo {
 	margin-top: 20px;
+	margin-left: -50px;
 	background: transparent url(../images/logo@2x.png) no-repeat center center;
 	height: 117px;
 	width: 400px;
