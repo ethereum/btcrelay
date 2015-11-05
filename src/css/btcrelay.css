@@ -1,10 +1,17 @@
 /* ----------------------------------------------------------------
-    Canvas: Media Agency Demo
-    Version: 1.0
+
+	Colors:
+
+	pink #cc0066;
+	blue #0099cc;
 -----------------------------------------------------------------*/
 
 body {
 	font-size: 16px;
+}
+
+h2 {
+	color: #cc0066;
 }
 
 #wrapper {
@@ -13,7 +20,7 @@ body {
 	-webkit-box-shadow: none;
 	box-shadow: none;
 	opacity: 1 !important;
-	background-color: transparent;
+	background-color: #f9f9f9;
 }
 
 .device-md #wrapper { width: 80%; }
@@ -28,10 +35,20 @@ body {
 	right: 0;
 	width: 25%;
 	height: 100%;
-	background-image: url(../images/small_steps.png);
-	background-size: initial;
-	background-repeat: repeat;
+	background-image: url(../images/pattern_relay.jpg); 
 }
+
+/* retina */
+/*
+@media only screen and (-Webkit-min-device-pixel-ratio: 1.5),
+only screen and (-moz-min-device-pixel-ratio: 1.5),
+only screen and (-o-min-device-pixel-ratio: 3/2),
+only screen and (min-device-pixel-ratio: 1.5) {
+	.side-cover-wrapper {
+		background-image: url(../images/pattern_relay@2x.png); 
+		background-size: 100px 100px;
+	}
+}*/
 
 .device-md .side-cover-wrapper { width: 20%; }
 .device-sm .side-cover-wrapper { width: 10%; }
@@ -76,6 +93,45 @@ body {
 	margin-right: 10px;
 }
 
+/* Logo
+-------------- */
+#logo {
+	margin-top: 20px;
+	background: transparent url(../images/logo@2x.png) no-repeat center center;
+	height: 117px;
+	width: 400px;
+}
+
+/* retina */
+@media only screen and (-Webkit-min-device-pixel-ratio: 1.5),
+only screen and (-moz-min-device-pixel-ratio: 1.5),
+only screen and (-o-min-device-pixel-ratio: 3/2),
+only screen and (min-device-pixel-ratio: 1.5) {
+	#logo {
+		background: transparent url(../images/logo@4x.png) no-repeat center center;
+		background-size: 400px 117px;
+	}
+}
+
+@media (max-width: 530px) {
+	#logo {
+		background: transparent url(../images/logo.png) no-repeat center center;
+		height: 59px;
+		width: 200px;
+	}
+}
+
+/* retina */
+@media only screen and (-Webkit-min-device-pixel-ratio: 1.5) and (max-width: 530px),
+only screen and (-moz-min-device-pixel-ratio: 1.5),
+only screen and (-o-min-device-pixel-ratio: 3/2),
+only screen and (min-device-pixel-ratio: 1.5) {
+	#logo {
+		background: transparent url(../images/logo@2x.png) no-repeat center center;
+		background-size: 200px 59px;
+	}
+}
+
 /* Header
 ---------------------------------------------------------------------------- */
 
@@ -90,8 +146,10 @@ body {
 }
 
 .header-social-set {
-	float: right;
-	margin: 24px 0;
+	position: absolute;
+	top: 20px;
+	left: auto;
+	right: 120px;
 }
 
 @media (max-width: 991px) {
@@ -104,8 +162,6 @@ body {
 		left: auto;
 		right: 120px;
 	}
-
-	#logo { float: left; }
 
 }
 
@@ -128,9 +184,10 @@ body {
 	line-height: 1.6;
 	font-weight: 700;
 	text-transform: none;
-	color: #111;
+	color: #444;
 	letter-spacing: -1px;
 	word-spacing: 5px;
+	margin-top: 40px;
 	margin-bottom: 0;
 	max-width: 90%;
 }
@@ -141,15 +198,24 @@ body {
 	font-weight: 400;
 	font-size: 16px;
 	line-height: 2;
-	color: #666;
-	margin-top: 40px;
+	color: #444;
 	max-width: 90%;
+	margin-top: 20px;
 }
 
 .hero-headline .link-center {
 	text-align: center;
 	max-width: 80%;
-	margin-top: 30px;
+	margin-top: 20px;
+	margin-bottom: 15px;
+}
+
+.hero-headline .link-center .magenta {
+	color: #cc0066;
+}
+
+.hero-headline .link-center .blue {
+	color: #006699;
 }
 
 .hero-headline > .graphic-box {
@@ -157,16 +223,20 @@ body {
   justify-content: center;
   flex-direction: column;
   max-width: 80%;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 .hero-headline > .graphic-box > .pre-graphic,
 .hero-headline > .graphic-box > .post-graphic {
 	text-align: center;
 	margin: 10px auto;
-	color: #999;
+	color: #cc0066;
 	font-style: italic;
 	font-size: 16px;
+}
+
+.hero-headline > .graphic-box > .post-graphic {
+	color: #006699;
 }
 
 .hero-headline > .graphic-box > .graphic {
@@ -187,6 +257,7 @@ body {
 	background-image: url(../images/relayer_arrow_down.png);
 }
 
+/* retina */
 @media only screen and (-Webkit-min-device-pixel-ratio: 1.5),
 only screen and (-moz-min-device-pixel-ratio: 1.5),
 only screen and (-o-min-device-pixel-ratio: 3/2),
@@ -207,7 +278,9 @@ only screen and (min-device-pixel-ratio: 1.5) {
 .hero-headline > .graphic-box > .graphic .button {
 	padding-left: 20px;
 	padding-right: 20px;
+	border-radius: 3px;
 }
+
 .hero-headline > .graphic-box > .graphic .button:nth-child(2) {
 	margin-left: 15%;
 }
@@ -247,9 +320,6 @@ only screen and (min-device-pixel-ratio: 1.5) {
 	}
 	.hero-headline .link-center {
 		max-width: 100%;
-	}
-	.header-social-set {
-		display: none;
 	}
 }
 
@@ -302,9 +372,9 @@ only screen and (min-device-pixel-ratio: 1.5) {
 -------------------- */
 #howitworks {
 	background-image: url(../images/howitworks.png);
-	background-size: 639px 288px;
-	height: 288px;
-	width: 639px;
+	background-size: 643px 288px;
+	height: 287px;
+	width: 643px;
 	background-repeat: no-repeat;
 	margin-left: 20px;
 }
@@ -314,7 +384,7 @@ only screen and (-o-min-device-pixel-ratio: 3/2),
 only screen and (min-device-pixel-ratio: 1.5) {
   #howitworks {
     background-image: url(../images/howitworks@2x.png);
-    background-size: 639px 288px;
+    background-size: 643px 288px;
     background-repeat: no-repeat;
   }
 }
@@ -333,6 +403,13 @@ only screen and (min-device-pixel-ratio: 1.5) {
 		height: 176px;
 		background-size: 390px 176px;
 	}
+}
+
+/* Features
+-----------------*/
+
+#section-features h2 {
+	color: #006699;
 }
 
 /* Launchdate
@@ -393,6 +470,11 @@ textarea.border-form-control {
 
 /* Brought to you by
 ------------------*/
+
+#section-broughtoyouby h2 {
+	color: #006699;
+}
+
 #section-broughtoyouby .sponsor-logos {
 	display: flex;
   justify-content: center;

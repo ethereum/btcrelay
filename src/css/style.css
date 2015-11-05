@@ -60,10 +60,10 @@ body {
 
 a {
 	text-decoration: none !important;
-	color: #1ABC9C;
+	color: #006699;
 }
 
-a:hover { color: #222; }
+a:hover { color: #ff0066; }
 
 a img { border: none; }
 
@@ -87,7 +87,7 @@ h6 {
 	font-weight: 600;
 	line-height: 1.5;
 	margin: 0 0 30px 0;
-	font-family: 'Raleway', sans-serif;
+	font-family: 'Montserrat', sans-serif;
 }
 
 h5,
@@ -115,7 +115,7 @@ h2 > span:not(.nocolor),
 h3 > span:not(.nocolor),
 h4 > span:not(.nocolor),
 h5 > span:not(.nocolor),
-h6 > span:not(.nocolor) { color: #1ABC9C; }
+h6 > span:not(.nocolor) { color: #0099cc; }
 
 p,
 pre,
@@ -952,43 +952,6 @@ body.stretched #header.full-header .container {
 	border-top: 1px solid rgba(0,0,0,0.1);
 	border-bottom: none;
 }
-
-
-/* ----------------------------------------------------------------
-	Logo
------------------------------------------------------------------*/
-
-
-#logo {
-	position: relative;
-	float: left;
-	font-family: 'Raleway', sans-serif;
-	font-size: 36px;
-	line-height: 100%;
-	margin-right: 40px;
-}
-
-#header.full-header #logo {
-	padding-right: 30px;
-	margin-right: 30px;
-	border-right: 1px solid #EEE;
-}
-
-#header.transparent-header.full-header #logo { border-right-color: rgba(0,0,0,0.1); }
-
-#logo a {
-	display: block;
-	color: #000;
-}
-
-#logo img {
-	display: block;
-	max-width: 100%;
-}
-
-#logo a.standard-logo { display: block; }
-
-#logo a.retina-logo { display: none; }
 
 
 /* ----------------------------------------------------------------
@@ -6618,7 +6581,7 @@ body:not(.device-xs):not(.device-xxs) .countdown.countdown-large.coming-soon .co
 	font-size: 14px;
 	height: 40px;
 	line-height: 40px;
-	background-color: #1ABC9C;
+	background-color: #0099cc;
 	color: #FFF;
 	font-weight: 600;
 	text-transform: uppercase;
@@ -6647,7 +6610,11 @@ body:not(.device-touch) .button {
 	text-shadow: 1px 1px 1px rgba(0,0,0,0.2);
 }
 
-.button.button-dark:hover { background-color: #1ABC9C; }
+.button.button-dark:hover { background-color: #ff0066; }
+
+.button.button-dark.hover-magenta:hover  { background-color: #cc0066; }
+.button.button-dark.hover-blue:hover { background-color: #006699; }
+
 
 .button.button-mini {
 	padding: 0 14px;
@@ -7022,9 +6989,9 @@ body:not(.device-touch) .button.button-full strong {
 .button-3d.button-amber:hover,
 .button-reveal.button-amber:hover { background-color: #EB9C4D !important; }
 
-.button-black { background-color: #111; }
+.button-black { background-color: #333; }
 .button-3d.button-black:hover,
-.button-reveal.button-black:hover { background-color: #111 !important; }
+.button-reveal.button-black:hover { background-color: #333 !important; }
 
 .button-white { background-color: #F9F9F9; }
 .button-3d.button-white:hover,
