@@ -5958,10 +5958,10 @@ body {
 
 a {
 	text-decoration: none !important;
-	color: #1ABC9C;
+	color: #006699;
 }
 
-a:hover { color: #222; }
+a:hover { color: #ff0066; }
 
 a img { border: none; }
 
@@ -5985,7 +5985,7 @@ h6 {
 	font-weight: 600;
 	line-height: 1.5;
 	margin: 0 0 30px 0;
-	font-family: 'Raleway', sans-serif;
+	font-family: 'Montserrat', sans-serif;
 }
 
 h5,
@@ -6013,7 +6013,7 @@ h2 > span:not(.nocolor),
 h3 > span:not(.nocolor),
 h4 > span:not(.nocolor),
 h5 > span:not(.nocolor),
-h6 > span:not(.nocolor) { color: #1ABC9C; }
+h6 > span:not(.nocolor) { color: #0099cc; }
 
 p,
 pre,
@@ -6823,43 +6823,6 @@ body.stretched #header.full-header .container {
 	border-top: 1px solid rgba(0,0,0,0.1);
 	border-bottom: none;
 }
-
-
-/* ----------------------------------------------------------------
-	Logo
------------------------------------------------------------------*/
-
-
-#logo {
-	position: relative;
-	float: left;
-	font-family: 'Raleway', sans-serif;
-	font-size: 36px;
-	line-height: 100%;
-	margin-right: 40px;
-}
-
-#header.full-header #logo {
-	padding-right: 30px;
-	margin-right: 30px;
-	border-right: 1px solid #EEE;
-}
-
-#header.transparent-header.full-header #logo { border-right-color: rgba(0,0,0,0.1); }
-
-#logo a {
-	display: block;
-	color: #000;
-}
-
-#logo img {
-	display: block;
-	max-width: 100%;
-}
-
-#logo a.standard-logo { display: block; }
-
-#logo a.retina-logo { display: none; }
 
 
 /* ----------------------------------------------------------------
@@ -12354,7 +12317,7 @@ body:not(.device-xs):not(.device-xxs) .countdown.countdown-large.coming-soon .co
 	font-size: 14px;
 	height: 40px;
 	line-height: 40px;
-	background-color: #1ABC9C;
+	background-color: #0099cc;
 	color: #FFF;
 	font-weight: 600;
 	text-transform: uppercase;
@@ -12381,7 +12344,11 @@ body:not(.device-touch) .button {
 	text-shadow: 1px 1px 1px rgba(0,0,0,0.2);
 }
 
-.button.button-dark:hover { background-color: #1ABC9C; }
+.button.button-dark:hover { background-color: #ff0066; }
+
+.button.button-dark.hover-magenta:hover  { background-color: #cc0066; }
+.button.button-dark.hover-blue:hover { background-color: #006699; }
+
 
 .button.button-mini {
 	padding: 0 14px;
@@ -12750,9 +12717,9 @@ body:not(.device-touch) .button.button-full strong {
 .button-3d.button-amber:hover,
 .button-reveal.button-amber:hover { background-color: #EB9C4D !important; }
 
-.button-black { background-color: #111; }
+.button-black { background-color: #333; }
 .button-3d.button-black:hover,
-.button-reveal.button-black:hover { background-color: #111 !important; }
+.button-reveal.button-black:hover { background-color: #333 !important; }
 
 .button-white { background-color: #F9F9F9; }
 .button-3d.button-white:hover,
@@ -28263,19 +28230,6 @@ label,
 	.top-advert,
 	.header-extras { display: none; }
 
-	#logo {
-		display: block;
-		height: 100px;
-		float: none;
-		margin: 0 auto 0 !important;
-		max-width: none;
-		text-align: center;
-		border: 0 !important;
-		padding: 0 !important;
-	}
-
-	#logo a.standard-logo { display: inline-block; }
-
 	#primary-menu {
 		display: block;
 		float: none;
@@ -29834,12 +29788,19 @@ only screen and (                min-resolution: 2dppx) and (max-width: 991px) {
 	#logo a.retina-logo { display: inline-block; }
 }
 /* ----------------------------------------------------------------
-    Canvas: Media Agency Demo
-    Version: 1.0
+
+	Colors:
+
+	pink #cc0066;
+	blue #0099cc;
 -----------------------------------------------------------------*/
 
 body {
 	font-size: 16px;
+}
+
+h2 {
+	color: #cc0066;
 }
 
 #wrapper {
@@ -29847,7 +29808,7 @@ body {
 	width: 75%;
 	box-shadow: none;
 	opacity: 1 !important;
-	background-color: transparent;
+	background-color: #f9f9f9;
 }
 
 .device-md #wrapper { width: 80%; }
@@ -29862,10 +29823,20 @@ body {
 	right: 0;
 	width: 25%;
 	height: 100%;
-	background-image: url(../images/small_steps.png);
-	background-size: initial;
-	background-repeat: repeat;
+	background-image: url(../images/pattern_relay.jpg); 
 }
+
+/* retina */
+/*
+@media only screen and (-Webkit-min-device-pixel-ratio: 1.5),
+only screen and (-moz-min-device-pixel-ratio: 1.5),
+only screen and (-o-min-device-pixel-ratio: 3/2),
+only screen and (min-device-pixel-ratio: 1.5) {
+	.side-cover-wrapper {
+		background-image: url(../images/pattern_relay@2x.png); 
+		background-size: 100px 100px;
+	}
+}*/
 
 .device-md .side-cover-wrapper { width: 20%; }
 .device-sm .side-cover-wrapper { width: 10%; }
@@ -29907,6 +29878,45 @@ body {
 	margin-right: 10px;
 }
 
+/* Logo
+-------------- */
+#logo {
+	margin-top: 20px;
+	background: transparent url(../images/logo@2x.png) no-repeat center center;
+	height: 117px;
+	width: 400px;
+}
+
+/* retina */
+@media only screen and (-Webkit-min-device-pixel-ratio: 1.5),
+only screen and (-moz-min-device-pixel-ratio: 1.5),
+only screen and (-o-min-device-pixel-ratio: 3/2),
+only screen and (min-device-pixel-ratio: 1.5) {
+	#logo {
+		background: transparent url(../images/logo@4x.png) no-repeat center center;
+		background-size: 400px 117px;
+	}
+}
+
+@media (max-width: 530px) {
+	#logo {
+		background: transparent url(../images/logo.png) no-repeat center center;
+		height: 59px;
+		width: 200px;
+	}
+}
+
+/* retina */
+@media only screen and (-Webkit-min-device-pixel-ratio: 1.5) and (max-width: 530px),
+only screen and (-moz-min-device-pixel-ratio: 1.5),
+only screen and (-o-min-device-pixel-ratio: 3/2),
+only screen and (min-device-pixel-ratio: 1.5) {
+	#logo {
+		background: transparent url(../images/logo@2x.png) no-repeat center center;
+		background-size: 200px 59px;
+	}
+}
+
 /* Header
 ---------------------------------------------------------------------------- */
 
@@ -29921,8 +29931,10 @@ body {
 }
 
 .header-social-set {
-	float: right;
-	margin: 24px 0;
+	position: absolute;
+	top: 20px;
+	left: auto;
+	right: 120px;
 }
 
 @media (max-width: 991px) {
@@ -29935,8 +29947,6 @@ body {
 		left: auto;
 		right: 120px;
 	}
-
-	#logo { float: left; }
 
 }
 
@@ -29959,9 +29969,10 @@ body {
 	line-height: 1.6;
 	font-weight: 700;
 	text-transform: none;
-	color: #111;
+	color: #444;
 	letter-spacing: -1px;
 	word-spacing: 5px;
+	margin-top: 40px;
 	margin-bottom: 0;
 	max-width: 90%;
 }
@@ -29972,15 +29983,24 @@ body {
 	font-weight: 400;
 	font-size: 16px;
 	line-height: 2;
-	color: #666;
-	margin-top: 40px;
+	color: #444;
 	max-width: 90%;
+	margin-top: 20px;
 }
 
 .hero-headline .link-center {
 	text-align: center;
 	max-width: 80%;
-	margin-top: 30px;
+	margin-top: 20px;
+	margin-bottom: 15px;
+}
+
+.hero-headline .link-center .magenta {
+	color: #cc0066;
+}
+
+.hero-headline .link-center .blue {
+	color: #006699;
 }
 
 .hero-headline > .graphic-box {
@@ -29994,16 +30014,20 @@ body {
   -ms-flex-direction: column;
   flex-direction: column;
   max-width: 80%;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 .hero-headline > .graphic-box > .pre-graphic,
 .hero-headline > .graphic-box > .post-graphic {
 	text-align: center;
 	margin: 10px auto;
-	color: #999;
+	color: #cc0066;
 	font-style: italic;
 	font-size: 16px;
+}
+
+.hero-headline > .graphic-box > .post-graphic {
+	color: #006699;
 }
 
 .hero-headline > .graphic-box > .graphic {
@@ -30024,6 +30048,7 @@ body {
 	background-image: url(../images/relayer_arrow_down.png);
 }
 
+/* retina */
 @media only screen and (-Webkit-min-device-pixel-ratio: 1.5),
 only screen and (-moz-min-device-pixel-ratio: 1.5),
 only screen and (-o-min-device-pixel-ratio: 3/2),
@@ -30044,7 +30069,9 @@ only screen and (min-device-pixel-ratio: 1.5) {
 .hero-headline > .graphic-box > .graphic .button {
 	padding-left: 20px;
 	padding-right: 20px;
+	border-radius: 3px;
 }
+
 .hero-headline > .graphic-box > .graphic .button:nth-child(2) {
 	margin-left: 15%;
 }
@@ -30084,9 +30111,6 @@ only screen and (min-device-pixel-ratio: 1.5) {
 	}
 	.hero-headline .link-center {
 		max-width: 100%;
-	}
-	.header-social-set {
-		display: none;
 	}
 }
 
@@ -30139,9 +30163,9 @@ only screen and (min-device-pixel-ratio: 1.5) {
 -------------------- */
 #howitworks {
 	background-image: url(../images/howitworks.png);
-	background-size: 639px 288px;
-	height: 288px;
-	width: 639px;
+	background-size: 643px 288px;
+	height: 287px;
+	width: 643px;
 	background-repeat: no-repeat;
 	margin-left: 20px;
 }
@@ -30151,7 +30175,7 @@ only screen and (-o-min-device-pixel-ratio: 3/2),
 only screen and (min-device-pixel-ratio: 1.5) {
   #howitworks {
     background-image: url(../images/howitworks@2x.png);
-    background-size: 639px 288px;
+    background-size: 643px 288px;
     background-repeat: no-repeat;
   }
 }
@@ -30170,6 +30194,13 @@ only screen and (min-device-pixel-ratio: 1.5) {
 		height: 176px;
 		background-size: 390px 176px;
 	}
+}
+
+/* Features
+-----------------*/
+
+#section-features h2 {
+	color: #006699;
 }
 
 /* Launchdate
@@ -30230,6 +30261,11 @@ textarea.border-form-control {
 
 /* Brought to you by
 ------------------*/
+
+#section-broughtoyouby h2 {
+	color: #006699;
+}
+
 #section-broughtoyouby .sponsor-logos {
 	display: -webkit-flex;
 	display: -ms-flexbox;
