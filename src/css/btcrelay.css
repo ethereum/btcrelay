@@ -485,6 +485,7 @@ textarea.border-form-control {
 .sponsor-logos .ethereum {
 	background-image: url(../images/ethereum-logo.png);
 	background-size: 150px 150px;
+	background-repeat: no-repeat;
 	height: 150px;
 	width: 150px;
 }
@@ -492,16 +493,25 @@ textarea.border-form-control {
 .sponsor-logos .consensys {
 	background-image: url(../images/consensys-logo.png);
 	background-size: 145px 118px;
+	background-repeat: no-repeat;
 	height: 118px;
 	width: 145px;
 	margin-top: 4px;
 	margin-left: 80%;
 }
 
-@media only screen and (max-width: 450px) {
+@media (max-width: 450px) {
+	.sponsor-logos .ethereum {
+		background-size: 75px 75px;
+		height: 75px;
+		width: 75px;
+	}
 	.sponsor-logos > a > .consensys {
-		margin-left: 20%;
+		margin-left: 30%;
 		max-width: 100%;
+		background-size: 72px 59px;
+		height: 59px;
+		width: 72px;
 	}
 }
 
