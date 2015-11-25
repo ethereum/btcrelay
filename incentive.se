@@ -35,11 +35,9 @@ def storeBlockWithFee(blockHeaderBytes:str, feeWei):
 # There are 2 types of amountWei: the "verifyTxFee" and "changeRecipientFee"
 # This does NOT return any funds to incorrect callers
 def feePaid(txBlockHash, amountWei):
-    feeInfo = m_getFeeInfo(txBlockHash)
-    feeRecipient = div(feeInfo, 2**(12*8))
     # TODO allow overpayment?
     if msg.value == amountWei:  # must not allow overpayment, otherwise fees could be increased via changeFeeRecipient()
-        send(feeRecipient, msg.value)
+        send(m_getFeeRecipient(txBlockHash), msg.value)
         log(type=EthPayment)
         return(1)
     return(0)
@@ -61,7 +59,7 @@ def changeFeeRecipient(blockHash, feeWei, feeRecipient):
 
 
 def getFeeRecipient(blockHash):
-    return(div(m_getFeeInfo(blockHash), BYTES_12))
+    return(m_getFeeRecipient(blockHash))
 
 def getFeeAmount(blockHash):
     return(m_getFeeAmount(blockHash))
@@ -78,6 +76,9 @@ macro m_getFeeInfo($blockHash):
 macro m_setFeeInfo($blockHash, $feeWei, $feeRecipient):
     $word = ($feeRecipient * BYTES_12) | $feeWei
     self.block[$blockHash]._feeInfo = $word
+
+macro m_getFeeRecipient($blockHash):
+    div(m_getFeeInfo($blockHash), BYTES_12)
 
 macro m_getFeeAmount($blockHash):
     0x0000000000000000000000000000000000000000ffffffffffffffffffffffff & m_getFeeInfo($blockHash)
