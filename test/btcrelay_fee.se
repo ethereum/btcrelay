@@ -6,11 +6,6 @@ def funcGetFeeInfo(blockHash):
 def funcGetLastGasPrice():
     return(m_getLastGasPrice())
 
-def funcGetChangeRecipientFee():
-    return(m_getChangeRecipientFee())
-
-def getChangeRecipientFee():
-    return(m_getChangeRecipientFee())
 
 # TODO move this to btcBulkStoreHeaders.se and remove bulkStoreHeader()
 def bulkStoreHeaderWithFee(headersBytes:str, count, feeWei):
