@@ -277,11 +277,10 @@ class TestTxVerify(object):
             else:
                 assert 0 == res == userEthBalance
 
-                assert eventArr == [{'_event_type': 'EthPayment'},
+                assert eventArr == [
                     {'_event_type': 'Failure',
                     'errCode': self.ERR_RELAY_VERIFY
                     }]
-                eventArr.pop()
                 eventArr.pop()
 
 
