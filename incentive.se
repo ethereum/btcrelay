@@ -31,10 +31,6 @@ def storeBlockWithFee(blockHeaderBytes:str, feeWei):
         return(res)
 
 
-def getFeeRecipient(blockHash):
-    return(div(m_getFeeInfo(blockHash), 2**(12*8)))
-
-
 # TODO callers must send EXACTLY the block's current fee
 # There are 2 types of amountWei: the "verifyTxFee" and "changeRecipientFee"
 # This does NOT return any funds to incorrect callers
@@ -62,6 +58,16 @@ def changeFeeRecipient(blockHash, feeWei, feeRecipient):
         return(1)
 
     return(0)
+
+
+def getFeeRecipient(blockHash):
+    return(div(m_getFeeInfo(blockHash), 2**(12*8)))
+
+def getFeeAmount(blockHash):
+    return(m_getFeeAmount(blockHash))
+
+def getChangeRecipientFee():
+    return(m_getChangeRecipientFee())
 
 
 macro m_getFeeInfo($blockHash):
