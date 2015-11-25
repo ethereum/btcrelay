@@ -18,6 +18,7 @@ extern relayDestination: [processTransaction:[bytes,uint256]:int256]
 # -   "_ibIndex" is the block's index to internalBlock (see btcChain)
 # -   "_score" is 1 more than the cumulative difficulty [see setInitialParent()]
 # - _ancestor stores 8 32bit ancestor indices for more efficient backtracking (see btcChain)
+# - _feeInfo is used for incentive.se (see m_getFeeInfo)
 data block[2**256](_info, _ancestor, _blockHeader[], _feeInfo)
 
 
@@ -161,8 +162,7 @@ def storeBlockHeader(blockHeaderBytes:str):
 # - 'txIndex' is the index of the tx within the block
 # - 'sibling' are the merkle siblings of tx
 def verifyTx(txHash, txIndex, sibling:arr, txBlockHash):
-    ethFee = m_getFeeAmount(txBlockHash)
-    if !self.feePaid(txBlockHash, ethFee, value=msg.value):
+    if !self.feePaid(txBlockHash, m_getFeeAmount(txBlockHash), value=msg.value):  # in incentive.se
         return(0)
 
     if self.within6Confirms(txBlockHash) || !self.inMainChain(txBlockHash):

@@ -3,6 +3,9 @@
 def funcGetFeeInfo(blockHash):
     return(m_getFeeInfo(blockHash))
 
+def funcGetFeeAmount(blockHash):
+    return(m_getFeeAmount(blockHash))
+
 def funcGetLastGasPrice():
     return(m_getLastGasPrice())
 

@@ -1,14 +1,11 @@
-# 16 bytes last gas price and 16 bytes of change recipient fee
+# Incentive for block header relayers is they can set a fee for use of
+# the header they store: they are the initial feeRecipient.
+# By paying a changeRecipientFee to feeRecipient, anyone can lower the fee and
+# become the feeRecipient: this is a mechanism to prevent excessive fees.
+
+# first 16 bytes are the last gas price; last 16 bytes is the changeRecipientFee
 data gasPriceAndChangeRecipientFee
 
-macro m_getLastGasPrice():
-    div(self.gasPriceAndChangeRecipientFee, BYTES_16)
-
-macro m_getChangeRecipientFee():
-    (0x00000000000000000000000000000000ffffffffffffffffffffffffffffffff & self.gasPriceAndChangeRecipientFee)
-
-macro m_setGasPriceAndChangeRecipientFee($gasPrice, $changeRecipientFee):
-    self.gasPriceAndChangeRecipientFee = ($gasPrice * BYTES_16) | $changeRecipientFee
 
 def storeBlockWithFee(blockHeaderBytes:str, feeWei):
     beginGas = msg.gas
@@ -34,19 +31,9 @@ def storeBlockWithFee(blockHeaderBytes:str, feeWei):
         return(res)
 
 
-macro m_setFeeInfo($blockHash, $feeWei, $feeRecipient):
-    $word = m_shiftLeft($feeRecipient, 12*8) | $feeWei
-    self.block[$blockHash]._feeInfo = $word
-
-
-macro m_getFeeInfo($blockHash):
-    self.block[$blockHash]._feeInfo
-
-macro m_getFeeAmount($blockHash):
-    0x0000000000000000000000000000000000000000ffffffffffffffffffffffff & m_getFeeInfo($blockHash)
-
 def getFeeRecipient(blockHash):
     return(div(m_getFeeInfo(blockHash), 2**(12*8)))
+
 
 # TODO callers must send EXACTLY the block's current fee
 # There are 2 types of amountWei: the "verifyTxFee" and "changeRecipientFee"
@@ -75,3 +62,23 @@ def changeFeeRecipient(blockHash, feeWei, feeRecipient):
         return(1)
 
     return(0)
+
+
+macro m_getFeeInfo($blockHash):
+    self.block[$blockHash]._feeInfo
+
+macro m_setFeeInfo($blockHash, $feeWei, $feeRecipient):
+    $word = m_shiftLeft($feeRecipient, 12*8) | $feeWei
+    self.block[$blockHash]._feeInfo = $word
+
+macro m_getFeeAmount($blockHash):
+    0x0000000000000000000000000000000000000000ffffffffffffffffffffffff & m_getFeeInfo($blockHash)
+
+macro m_getLastGasPrice():
+    div(self.gasPriceAndChangeRecipientFee, BYTES_16)
+
+macro m_getChangeRecipientFee():
+    (0x00000000000000000000000000000000ffffffffffffffffffffffffffffffff & self.gasPriceAndChangeRecipientFee)
+
+macro m_setGasPriceAndChangeRecipientFee($gasPrice, $changeRecipientFee):
+    self.gasPriceAndChangeRecipientFee = ($gasPrice * BYTES_16) | $changeRecipientFee
