@@ -31,6 +31,7 @@ event Failure(errCode:indexed)
 event EthPayment()
 
 def init():
+    # gasPriceAndChangeRecipientFee in incentive.se
     self.gasPriceAndChangeRecipientFee = 50 * 10**9 * BYTES_16 # 50 shannon and left-align
     # TODO anything else to init ?
     # carefully test if adding anything to init() since
@@ -163,8 +164,6 @@ def verifyTx(txHash, txIndex, sibling:arr, txBlockHash):
     ethFee = self.getFee(txBlockHash)
     if !self.feePaid(txBlockHash, ethFee, value=msg.value):
         return(0)
-
-    log(type=EthPayment)
 
     if self.within6Confirms(txBlockHash) || !self.inMainChain(txBlockHash):
         return(0)
