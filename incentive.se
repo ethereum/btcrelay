@@ -61,7 +61,7 @@ def changeFeeRecipient(blockHash, feeWei, feeRecipient):
 
 
 def getFeeRecipient(blockHash):
-    return(div(m_getFeeInfo(blockHash), 2**(12*8)))
+    return(div(m_getFeeInfo(blockHash), BYTES_12))
 
 def getFeeAmount(blockHash):
     return(m_getFeeAmount(blockHash))
@@ -70,15 +70,18 @@ def getChangeRecipientFee():
     return(m_getChangeRecipientFee())
 
 
+# block's _feeInfo has first 12 bytes as the feeRecipient and
+# the last 20 bytes is the feeAmount
 macro m_getFeeInfo($blockHash):
     self.block[$blockHash]._feeInfo
 
 macro m_setFeeInfo($blockHash, $feeWei, $feeRecipient):
-    $word = m_shiftLeft($feeRecipient, 12*8) | $feeWei
+    $word = ($feeRecipient * BYTES_12) | $feeWei
     self.block[$blockHash]._feeInfo = $word
 
 macro m_getFeeAmount($blockHash):
     0x0000000000000000000000000000000000000000ffffffffffffffffffffffff & m_getFeeInfo($blockHash)
+
 
 macro m_getLastGasPrice():
     div(self.gasPriceAndChangeRecipientFee, BYTES_16)
