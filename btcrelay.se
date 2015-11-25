@@ -161,7 +161,7 @@ def storeBlockHeader(blockHeaderBytes:str):
 # - 'txIndex' is the index of the tx within the block
 # - 'sibling' are the merkle siblings of tx
 def verifyTx(txHash, txIndex, sibling:arr, txBlockHash):
-    ethFee = self.getFee(txBlockHash)
+    ethFee = m_getFeeAmount(txBlockHash)
     if !self.feePaid(txBlockHash, ethFee, value=msg.value):
         return(0)
 

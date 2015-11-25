@@ -42,9 +42,8 @@ macro m_setFeeInfo($blockHash, $feeWei, $feeRecipient):
 macro m_getFeeInfo($blockHash):
     self.block[$blockHash]._feeInfo
 
-def getFee(blockHash):
-    # TODO macro
-    return(0x0000000000000000000000000000000000000000ffffffffffffffffffffffff & m_getFeeInfo(blockHash))
+macro m_getFeeAmount($blockHash):
+    0x0000000000000000000000000000000000000000ffffffffffffffffffffffff & m_getFeeInfo($blockHash)
 
 def getFeeRecipient(blockHash):
     return(div(m_getFeeInfo(blockHash), 2**(12*8)))
@@ -71,7 +70,7 @@ def changeFeeRecipient(blockHash, feeWei, feeRecipient):
         return(0)
 
     # feeWei is only allowed to decrease
-    if feeWei < self.getFee(blockHash):  # TODO macro
+    if feeWei < m_getFeeAmount(blockHash):
         m_setFeeInfo(blockHash, feeWei, feeRecipient)
         return(1)
 
