@@ -1,15 +1,15 @@
-# btcrelay
+# [BTC Relay](http://btcrelay.org)
 
-[![Join the chat at https://gitter.im/ethereum/btcrelay](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ethereum/btcrelay?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat at https://gitter.im/ethereum/btcrelay](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ethereum/btcrelay)
 
-btcrelay is an Ethereum contract for Bitcoin SPV.  The main functionality it provides are:
+[BTC Relay](http://btcrelay.org) is an Ethereum contract for Bitcoin SPV.  The main functionality it provides are:
 
 1. verification of a Bitcoin transaction
 1. optionally relay the Bitcoin transaction to any Ethereum contract
 1. storage of Bitcoin block headers
 1. inspection of the latest Bitcoin block header that is stored
 
-btcrelay is on the Olympic testnet.  Use `web3.eth.namereg.addr('btcrelay')` or run Ethereum JSON-RPC (default port 8545) and click [here](http://cdn.rawgit.com/ethereum/btcrelay/master/examples/relayContractStatus.html)
+BTC Relay is [live](http://rawgit.com/ethereum/btcrelay/master/examples/relayContractStatus.html) on the testnet.
 
 
 ## API

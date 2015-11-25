@@ -1,4 +1,5 @@
 inset('btcChain.se')
+inset('incentive.se')
 
 # btcrelay can relay a transaction to any contract that has a function
 # name 'processTransaction' with signature bytes,uint256:int256
@@ -17,6 +18,7 @@ extern relayDestination: [processTransaction:[bytes,uint256]:int256]
 # -   "_ibIndex" is the block's index to internalBlock (see btcChain)
 # -   "_score" is 1 more than the cumulative difficulty [see setInitialParent()]
 # - _ancestor stores 8 32bit ancestor indices for more efficient backtracking (see btcChain)
+# - _feeInfo is used for incentive.se (see m_getFeeInfo)
 data block[2**256](_info, _ancestor, _blockHeader[], _feeInfo)
 
 
@@ -27,9 +29,9 @@ data heaviestBlock
 data highScore
 
 event Failure(errCode:indexed)
-event EthPayment()
 
 def init():
+    # gasPriceAndChangeRecipientFee in incentive.se
     self.gasPriceAndChangeRecipientFee = 50 * 10**9 * BYTES_16 # 50 shannon and left-align
     # TODO anything else to init ?
     # carefully test if adding anything to init() since
@@ -150,84 +152,6 @@ def storeBlockHeader(blockHeaderBytes:str):
 
     return(0)
 
-# 16 bytes last gas price and 16 bytes of change recipient fee
-data gasPriceAndChangeRecipientFee
-
-macro m_getLastGasPrice():
-    div(self.gasPriceAndChangeRecipientFee, BYTES_16)
-
-macro m_getChangeRecipientFee():
-    (0x00000000000000000000000000000000ffffffffffffffffffffffffffffffff & self.gasPriceAndChangeRecipientFee)
-
-macro m_setGasPriceAndChangeRecipientFee($gasPrice, $changeRecipientFee):
-    self.gasPriceAndChangeRecipientFee = ($gasPrice * BYTES_16) | $changeRecipientFee
-
-def storeBlockWithFee(blockHeaderBytes:str, feeWei):
-    beginGas = msg.gas
-    res = self.storeBlockHeader(blockHeaderBytes)
-    if res:
-        blockHash = m_hashBlockHeader(blockHeaderBytes)
-        m_setFeeInfo(blockHash, feeWei, tx.origin)  # note: tx.origin
-        remainingGas = msg.gas
-
-
-        gLastGasPrice = m_getLastGasPrice()
-
-        # TODO can avoid the "else"
-        if tx.gasprice < (1023*gLastGasPrice/1024) || tx.gasprice > (1025*gLastGasPrice/1024):
-            currGP = gLastGasPrice
-        else:
-            currGP = tx.gasprice
-        gChangeRecipientFee = 2 * currGP * (beginGas - remainingGas)
-        gLastGasPrice = currGP
-
-        m_setGasPriceAndChangeRecipientFee(gLastGasPrice, gChangeRecipientFee)
-
-        return(res)
-
-
-macro m_setFeeInfo($blockHash, $feeWei, $feeRecipient):
-    $word = m_shiftLeft($feeRecipient, 12*8) | $feeWei
-    self.block[$blockHash]._feeInfo = $word
-
-
-macro m_getFeeInfo($blockHash):
-    self.block[$blockHash]._feeInfo
-
-def getFee(blockHash):
-    # TODO macro
-    return(0x0000000000000000000000000000000000000000ffffffffffffffffffffffff & m_getFeeInfo(blockHash))
-
-def getFeeRecipient(blockHash):
-    return(div(m_getFeeInfo(blockHash), 2**(12*8)))
-
-# TODO callers must send EXACTLY the block's current fee
-# There are 2 types of amountWei: the "verifyTxFee" and "changeRecipientFee"
-# This does NOT return any funds to incorrect callers
-def feePaid(txBlockHash, amountWei):
-    feeInfo = m_getFeeInfo(txBlockHash)
-    feeRecipient = div(feeInfo, 2**(12*8))
-    # TODO allow overpayment?
-    if msg.value == amountWei:  # must not allow overpayment, otherwise fees could be increased via changeFeeRecipient()
-        send(feeRecipient, msg.value)
-        return(1)
-    return(0)
-
-
-# callers must send EXACTLY the block's current fee, AND feeWei must be LESS
-# than the block's current fee
-# This does NOT return any funds to incorrect callers
-def changeFeeRecipient(blockHash, feeWei, feeRecipient):
-    if !self.feePaid(blockHash, m_getChangeRecipientFee(), value=msg.value):
-        return(0)
-
-    # feeWei is only allowed to decrease
-    if feeWei < self.getFee(blockHash):  # TODO macro
-        m_setFeeInfo(blockHash, feeWei, feeRecipient)
-        return(1)
-
-    return(0)
-
 
 # returns 1 if tx is in the block given by 'txBlockHash' and the block is
 # in Bitcoin's main chain (ie not a fork)
@@ -237,11 +161,8 @@ def changeFeeRecipient(blockHash, feeWei, feeRecipient):
 # - 'txIndex' is the index of the tx within the block
 # - 'sibling' are the merkle siblings of tx
 def verifyTx(txHash, txIndex, sibling:arr, txBlockHash):
-    ethFee = self.getFee(txBlockHash)
-    if !self.feePaid(txBlockHash, ethFee, value=msg.value):
+    if !self.feePaid(txBlockHash, m_getFeeAmount(txBlockHash), value=msg.value):  # in incentive.se
         return(0)
-
-    log(type=EthPayment)
 
     if self.within6Confirms(txBlockHash) || !self.inMainChain(txBlockHash):
         return(0)
