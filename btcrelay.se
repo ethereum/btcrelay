@@ -29,7 +29,6 @@ data heaviestBlock
 data highScore
 
 event Failure(errCode:indexed)
-event EthPayment()
 
 def init():
     # gasPriceAndChangeRecipientFee in incentive.se
