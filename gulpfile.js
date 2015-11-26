@@ -1,5 +1,5 @@
 // Include gulp
-var gulp = require('gulp'); 
+var gulp = require('gulp');
 
 // Include Our Plugins
 var concat = require('gulp-concat');
@@ -57,7 +57,7 @@ gulp.task('css', function() {
             cascade: false
         }))
         .pipe(concat('all.css'))
-        .pipe(gulp.dest('dist/css'))
+        .pipe(gulp.dest('tmp'))
         .pipe(rename('all.min.css'))
         .pipe(sourcemaps.init())
         .pipe(minifyCSS())
@@ -75,7 +75,7 @@ gulp.task('scripts', function() {
             'src/js/functions.js'
         ])
         .pipe(concat('all.js'))
-        .pipe(gulp.dest('dist/js'))
+        .pipe(gulp.dest('tmp'))
         .pipe(rename('all.min.js'))
         .pipe(uglify())
         .pipe(gulp.dest('dist/js'));
@@ -101,5 +101,3 @@ gulp.task('connect', function() {
 // Default Task
 gulp.task('default', ['clean', 'copy', 'minifyHTML', 'css', 'scripts',
     'connect', 'watch']);
-
-
