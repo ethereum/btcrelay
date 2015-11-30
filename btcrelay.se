@@ -195,7 +195,6 @@ def relayTx(txStr:str, txHash:uint256, txIndex, sibling:arr, txBlockHash, contra
 
 # return the hash of the heaviest block aka the Head
 def getBlockchainHead():
-    # log(self.heaviestBlock)
     return(self.heaviestBlock)
 
 
@@ -206,8 +205,7 @@ def getLastBlockHeight():
 
 # return the (total) cumulative difficulty of the Head
 def getCumulativeDifficulty():
-    cumulDifficulty = m_getScore(self.heaviestBlock)
-    return(cumulDifficulty)
+    return(m_getScore(self.heaviestBlock))
 
 
 # return the difference between the cumulative difficulty at
@@ -263,7 +261,7 @@ def computeMerkle(txHash, txIndex, sibling:arr):
 
 # returns 1 if the 'txBlockHash' is within 6 blocks of self.heaviestBlock
 # otherwise returns 0.
-# note: return value of 0 does not mean 'txBlockHash' has more than 6
+# note: return value of 0 does NOT mean 'txBlockHash' has more than 6
 # confirmations; a non-existent 'txBlockHash' will lead to a return value of 0
 def within6Confirms(txBlockHash):
     blockHash = self.heaviestBlock
@@ -281,7 +279,6 @@ def within6Confirms(txBlockHash):
 
 
 # TODO: should this charge fee?  what about other APIs?
-# getBlockHeaders costs around 23K gas
 def getBlockHeader(blockHash):
     return(load(self.block[blockHash]._blockHeader[0], chars=80):str)
 
@@ -358,8 +355,7 @@ macro m_getTimestamp($blockHash):
     with $addr = ref(self.block[$blockHash]._blockHeader[0]):
         # get the 3rd chunk
         $tmp = sload($addr+2)
-    # the timestamp are the 4th to 7th bytes of the 3rd chunk
-    # but we also have to flip them
+    # the timestamp are the 4th to 7th bytes of the 3rd chunk, but we also have to flip them
     BYTES_3*byte(7, $tmp) + BYTES_2*byte(6, $tmp) + BYTES_1*byte(5, $tmp) + byte(4, $tmp)
 
 
@@ -368,8 +364,7 @@ macro m_getBits($blockHash):
     with $addr = ref(self.block[$blockHash]._blockHeader[0]):
         # get the 3rd chunk
         $tmp = sload($addr+2)
-    # the 'bits' are the 8th to 11th bytes of the 3rd chunk
-    # but we also have to flip them
+    # the 'bits' are the 8th to 11th bytes of the 3rd chunk, but we also have to flip them
     BYTES_3*byte(11, $tmp) + BYTES_2*byte(10, $tmp) + BYTES_1*byte(9, $tmp) + byte(8, $tmp)
 
 
@@ -511,7 +506,7 @@ macro m_getHeight($blockHash):
     div(sload(ref(self.block[$blockHash]._info)), BYTES_24)
 
 
-# index to self.internalBlock is the second 8 bytes of _info
+# ibIndex is the index to self.internalBlock: it's the second 8 bytes of _info
 macro m_setIbIndex($blockHash, $internalIndex):
     $word = sload(ref(self.block[$blockHash]._info))
     m_mwrite64(ref($word) + 8, $internalIndex)

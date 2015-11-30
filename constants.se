@@ -13,6 +13,7 @@ macro ERR_RETARGET: 10020  # difficulty didn't match retarget
 
 macro ERR_RELAY_VERIFY: 30010
 
+
 macro BYTES_1: 2**8
 macro BYTES_2: 2**16
 macro BYTES_3: 2**24
