@@ -301,36 +301,36 @@ macro m_difficultyShouldBeAdjusted($blockHeight):
 
 macro m_computeNewBits($prevTime, $startTime, $prevTarget):
     # TODO use `with` ?
-    $actualTimespan = $prevTime - $startTime
-    if $actualTimespan < TARGET_TIMESPAN_DIV_4:
-        $actualTimespan = TARGET_TIMESPAN_DIV_4
-    if $actualTimespan > TARGET_TIMESPAN_MUL_4:
-        $actualTimespan = TARGET_TIMESPAN_MUL_4
+    with $actualTimespan = $prevTime - $startTime:
+        if $actualTimespan < TARGET_TIMESPAN_DIV_4:
+            $actualTimespan = TARGET_TIMESPAN_DIV_4
+        if $actualTimespan > TARGET_TIMESPAN_MUL_4:
+            $actualTimespan = TARGET_TIMESPAN_MUL_4
 
-    $newTarget = div($actualTimespan * $prevTarget, TARGET_TIMESPAN)
-    if $newTarget > UNROUNDED_MAX_TARGET:
-        $newTarget = UNROUNDED_MAX_TARGET
-    m_toCompactBits($newTarget)
+        with $newTarget = div($actualTimespan * $prevTarget, TARGET_TIMESPAN):
+            if $newTarget > UNROUNDED_MAX_TARGET:
+                $newTarget = UNROUNDED_MAX_TARGET
+            m_toCompactBits($newTarget)
 
 
 # Convert uint256 to compact encoding
 # based on https://github.com/petertodd/python-bitcoinlib/blob/2a5dda45b557515fb12a0a18e5dd48d2f5cd13c2/bitcoin/core/serialize.py
 macro m_toCompactBits($val):
-    $nbytes = m_shiftRight((m_bitLen($val) + 7), 3)
-    $compact = 0
-    if $nbytes <= 3:
-        $compact = m_shiftLeft(($val & 0xFFFFFF), 8 * (3 - $nbytes))
-    else:
-        $compact = m_shiftRight($val, 8 * ($nbytes - 3))
-        $compact = $compact & 0xFFFFFF
+    with $nbytes = m_shiftRight((m_bitLen($val) + 7), 3):
+        with $compact = 0:
+            if $nbytes <= 3:
+                $compact = m_shiftLeft(($val & 0xFFFFFF), 8 * (3 - $nbytes))
+            else:
+                $compact = m_shiftRight($val, 8 * ($nbytes - 3))
+                $compact = $compact & 0xFFFFFF
 
-    # If the sign bit (0x00800000) is set, divide the mantissa by 256 and
-    # increase the exponent to get an encoding without it set.
-    if $compact & 0x00800000:
-        $compact = m_shiftRight($compact, 8)
-        $nbytes += 1
+            # If the sign bit (0x00800000) is set, divide the mantissa by 256 and
+            # increase the exponent to get an encoding without it set.
+            if $compact & 0x00800000:
+                $compact = m_shiftRight($compact, 8)
+                $nbytes += 1
 
-    $compact | m_shiftLeft($nbytes, 24)
+            $compact | m_shiftLeft($nbytes, 24)
 
 
 # get the parent of '$blockHash'
@@ -406,13 +406,14 @@ macro m_shiftRight($val, $shift):
 macro m_shiftLeft($val, $shift):
     $val * 2**$shift
 
+# bit length of '$val'
 macro m_bitLen($val):
-    $length = 0
-    with $int_type = $val:
-        while ($int_type):
-            $int_type = m_shiftRight($int_type, 1)
-            $length += 1
-    $length
+    with $length = 0:
+        with $int_type = $val:
+            while ($int_type):
+                $int_type = m_shiftRight($int_type, 1)
+                $length += 1
+        $length
 
 
 # reverse 32 bytes given by '$b32'

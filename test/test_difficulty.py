@@ -39,7 +39,9 @@ class TestDifficulty(object):
         prevBits = 403867578
         prevTarget = self.c.funcTargetFromBits(prevBits)
         expBits = 403838066
-        assert self.c.funcComputeNewBits(prevTime, startTime, prevTarget) == expBits
+        res = self.c.funcComputeNewBits(prevTime, startTime, prevTarget, profiling=True)
+        assert res['output'] == expBits
+        print('GAS: '+str(res['gas']))
 
         # http://bitcoin.stackexchange.com/questions/22581/how-was-the-new-target-for-block-32256-calculated
         prevTime = 1262152739  # 32255
