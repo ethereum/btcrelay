@@ -21,22 +21,23 @@ def storeBlockWithFee(blockHeaderBytes:str, feeWei):
         remainingGas = msg.gas
 
 
+        # currGP is tx.gasprice if within 1/1024 of gLastGasPrice
+        # otherwise currGP is gLastGasPrice
+        # (1/1024 is the same factor used for adjusting Ethereum's block gas limit)
         gLastGasPrice = m_getLastGasPrice()
-
-        # TODO can avoid the "else"
         if tx.gasprice < (1023*gLastGasPrice/1024) || tx.gasprice > (1025*gLastGasPrice/1024):
             currGP = gLastGasPrice
         else:
             currGP = tx.gasprice
-        gChangeRecipientFee = 2 * currGP * (beginGas - remainingGas)
-        gLastGasPrice = currGP
 
-        m_setGasPriceAndChangeRecipientFee(gLastGasPrice, gChangeRecipientFee)
+        gChangeRecipientFee = 2 * currGP * (beginGas - remainingGas)  # 2X the cost of storing the header
+
+        m_setGasPriceAndChangeRecipientFee(currGP, gChangeRecipientFee)
 
         return(res)
 
 
-# if the EXACT fee for given txBlockHash is provided, pay the feeRecipient
+# if the EXACT fee for 'txBlockHash' is provided, pay the feeRecipient
 # and return 1.  otherwise return 0.
 # This does NOT return any funds to incorrect callers
 def feePaid(txBlockHash, amountWei):
@@ -84,8 +85,7 @@ macro m_getFeeInfo($blockHash):
     self.block[$blockHash]._feeInfo
 
 macro m_setFeeInfo($blockHash, $feeWei, $feeRecipient):
-    $word = ($feeRecipient * BYTES_12) | $feeWei
-    self.block[$blockHash]._feeInfo = $word
+    self.block[$blockHash]._feeInfo = ($feeRecipient * BYTES_12) | $feeWei
 
 macro m_getFeeRecipient($blockHash):
     div(m_getFeeInfo($blockHash), BYTES_12)

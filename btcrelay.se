@@ -9,8 +9,6 @@ extern relayDestination: [processTransaction:[bytes,uint256]:int256]
 # TODO: "_height" is 1 more than the typical Bitcoin term height/blocknumber [see setInitialParent()]
 #        or should an additional terminology `blockNumber` be added that equals height-1 ?
 #
-# note: _ancestor[9]
-#
 # a Bitcoin block (header) is stored as:
 # - _blockHeader 80 bytes
 # - _info who's 32 bytes are comprised of "_height" 8bytes, "_ibIndex" 8bytes, "_score" 16bytes
@@ -70,20 +68,20 @@ def setInitialParent(blockHash, height, cumulativeDifficulty):
     # _height cannot be set to -1 because inMainChain() assumes that
     # a block with height0 does NOT exist (thus we cannot allow the
     # real genesis block to be at height0)
-    # self.block[blockHash]._height = height
     m_setHeight(blockHash, height)
 
     # do NOT pass cumulativeDifficulty of 0, since score0 means
     # block does NOT exist. see check in storeBlockHeader()
     m_setScore(blockHash, cumulativeDifficulty)
 
-    # _ancestor can remain zeros because
-    # self.internalBlock[0] already points to blockHash
+    # other fields do not need to be set, for example:
+    # _ancestor can remain zeros because self.internalBlock[0] already points to blockHash
 
     return(1)
 
 
 # TODO what to log?
+#
 # store a Bitcoin block header that must be provided in
 # bytes format 'blockHeaderBytes'
 # Callers must keep same signature since CALLDATALOAD is used to save gas.
@@ -128,8 +126,7 @@ def storeBlockHeader(blockHeaderBytes:str):
             prevTarget = targetFromBits(prevBits)
             prevTime = m_getTimestamp(hashPrevBlock)
 
-            # blockHeight - DIFFICULTY_ADJUSTMENT_INTERVAL is same as
-            # getHeight(hashPrevBlock) - (DIFFICULTY_ADJUSTMENT_INTERVAL - 1)
+            # (blockHeight - DIFFICULTY_ADJUSTMENT_INTERVAL) is same as [getHeight(hashPrevBlock) - (DIFFICULTY_ADJUSTMENT_INTERVAL - 1)]
             startBlock = self.fastGetBlockHash(blockHeight - DIFFICULTY_ADJUSTMENT_INTERVAL)
             startTime = m_getTimestamp(startBlock)
 
@@ -142,8 +139,8 @@ def storeBlockHeader(blockHeaderBytes:str):
         scoreBlock = scorePrevBlock + difficulty
         m_setScore(blockHash, scoreBlock)
 
-        # equality allows block with same score to become the Head, so that
-        # when a Head is orphaned, the chain can still continue
+        # equality allows block with same score to become an (alternate) Head, so that
+        # when an (existing) Head becomes stale, the chain can continue with the alternate Head
         if scoreBlock >= self.highScore:
             self.heaviestBlock = blockHash
             self.highScore = scoreBlock
@@ -198,7 +195,6 @@ def relayTx(txStr:str, txHash:uint256, txIndex, sibling:arr, txBlockHash, contra
 
 # return the hash of the heaviest block aka the Head
 def getBlockchainHead():
-    # log(self.heaviestBlock)
     return(self.heaviestBlock)
 
 
@@ -209,8 +205,7 @@ def getLastBlockHeight():
 
 # return the (total) cumulative difficulty of the Head
 def getCumulativeDifficulty():
-    cumulDifficulty = m_getScore(self.heaviestBlock)
-    return(cumulDifficulty)
+    return(m_getScore(self.heaviestBlock))
 
 
 # return the difference between the cumulative difficulty at
@@ -266,7 +261,7 @@ def computeMerkle(txHash, txIndex, sibling:arr):
 
 # returns 1 if the 'txBlockHash' is within 6 blocks of self.heaviestBlock
 # otherwise returns 0.
-# note: return value of 0 does not mean 'txBlockHash' has more than 6
+# note: return value of 0 does NOT mean 'txBlockHash' has more than 6
 # confirmations; a non-existent 'txBlockHash' will lead to a return value of 0
 def within6Confirms(txBlockHash):
     blockHash = self.heaviestBlock
@@ -284,7 +279,6 @@ def within6Confirms(txBlockHash):
 
 
 # TODO: should this charge fee?  what about other APIs?
-# getBlockHeaders costs around 23K gas
 def getBlockHeader(blockHash):
     return(load(self.block[blockHash]._blockHeader[0], chars=80):str)
 
@@ -307,36 +301,36 @@ macro m_difficultyShouldBeAdjusted($blockHeight):
 
 macro m_computeNewBits($prevTime, $startTime, $prevTarget):
     # TODO use `with` ?
-    $actualTimespan = $prevTime - $startTime
-    if $actualTimespan < TARGET_TIMESPAN_DIV_4:
-        $actualTimespan = TARGET_TIMESPAN_DIV_4
-    if $actualTimespan > TARGET_TIMESPAN_MUL_4:
-        $actualTimespan = TARGET_TIMESPAN_MUL_4
+    with $actualTimespan = $prevTime - $startTime:
+        if $actualTimespan < TARGET_TIMESPAN_DIV_4:
+            $actualTimespan = TARGET_TIMESPAN_DIV_4
+        if $actualTimespan > TARGET_TIMESPAN_MUL_4:
+            $actualTimespan = TARGET_TIMESPAN_MUL_4
 
-    $newTarget = div($actualTimespan * $prevTarget, TARGET_TIMESPAN)
-    if $newTarget > UNROUNDED_MAX_TARGET:
-        $newTarget = UNROUNDED_MAX_TARGET
-    m_toCompactBits($newTarget)
+        with $newTarget = div($actualTimespan * $prevTarget, TARGET_TIMESPAN):
+            if $newTarget > UNROUNDED_MAX_TARGET:
+                $newTarget = UNROUNDED_MAX_TARGET
+            m_toCompactBits($newTarget)
 
 
 # Convert uint256 to compact encoding
 # based on https://github.com/petertodd/python-bitcoinlib/blob/2a5dda45b557515fb12a0a18e5dd48d2f5cd13c2/bitcoin/core/serialize.py
 macro m_toCompactBits($val):
-    $nbytes = m_shiftRight((m_bitLen($val) + 7), 3)
-    $compact = 0
-    if $nbytes <= 3:
-        $compact = m_shiftLeft(($val & 0xFFFFFF), 8 * (3 - $nbytes))
-    else:
-        $compact = m_shiftRight($val, 8 * ($nbytes - 3))
-        $compact = $compact & 0xFFFFFF
+    with $nbytes = m_shiftRight((m_bitLen($val) + 7), 3):
+        with $compact = 0:
+            if $nbytes <= 3:
+                $compact = m_shiftLeft(($val & 0xFFFFFF), 8 * (3 - $nbytes))
+            else:
+                $compact = m_shiftRight($val, 8 * ($nbytes - 3))
+                $compact = $compact & 0xFFFFFF
 
-    # If the sign bit (0x00800000) is set, divide the mantissa by 256 and
-    # increase the exponent to get an encoding without it set.
-    if $compact & 0x00800000:
-        $compact = m_shiftRight($compact, 8)
-        $nbytes += 1
+            # If the sign bit (0x00800000) is set, divide the mantissa by 256 and
+            # increase the exponent to get an encoding without it set.
+            if $compact & 0x00800000:
+                $compact = m_shiftRight($compact, 8)
+                $nbytes += 1
 
-    $compact | m_shiftLeft($nbytes, 24)
+            $compact | m_shiftLeft($nbytes, 24)
 
 
 # get the parent of '$blockHash'
@@ -352,8 +346,7 @@ macro getPrevBlock($blockHash):
         # get the last 28bytes of the 1st chunk and combine (add) it to the
         # first 4bytes of the 2nd chunk,
         # where chunks are read in sizes of 32bytes via sload
-        $tmp = sload($addr) * BYTES_4 + div(sload($addr+1), BYTES_28)  # must use div()
-    flip32Bytes($tmp)
+        flip32Bytes(sload($addr) * BYTES_4 + div(sload($addr+1), BYTES_28))  # must use div()
 
 
 # get the timestamp from a Bitcoin blockheader
@@ -361,8 +354,7 @@ macro m_getTimestamp($blockHash):
     with $addr = ref(self.block[$blockHash]._blockHeader[0]):
         # get the 3rd chunk
         $tmp = sload($addr+2)
-    # the timestamp are the 4th to 7th bytes of the 3rd chunk
-    # but we also have to flip them
+    # the timestamp are the 4th to 7th bytes of the 3rd chunk, but we also have to flip them
     BYTES_3*byte(7, $tmp) + BYTES_2*byte(6, $tmp) + BYTES_1*byte(5, $tmp) + byte(4, $tmp)
 
 
@@ -371,16 +363,14 @@ macro m_getBits($blockHash):
     with $addr = ref(self.block[$blockHash]._blockHeader[0]):
         # get the 3rd chunk
         $tmp = sload($addr+2)
-    # the 'bits' are the 8th to 11th bytes of the 3rd chunk
-    # but we also have to flip them
+    # the 'bits' are the 8th to 11th bytes of the 3rd chunk, but we also have to flip them
     BYTES_3*byte(11, $tmp) + BYTES_2*byte(10, $tmp) + BYTES_1*byte(9, $tmp) + byte(8, $tmp)
 
 
 # get the merkle root of '$blockHash'
 macro getMerkleRoot($blockHash):
     with $addr = ref(self.block[$blockHash]._blockHeader[0]):
-        $tmp = sload($addr+1) * BYTES_4 + div(sload($addr+2), BYTES_28)  # must use div()
-    flip32Bytes($tmp)
+        flip32Bytes(sload($addr+1) * BYTES_4 + div(sload($addr+2), BYTES_28))  # must use div()
 
 
 macro m_lastBlockHeight():
@@ -414,13 +404,14 @@ macro m_shiftRight($val, $shift):
 macro m_shiftLeft($val, $shift):
     $val * 2**$shift
 
+# bit length of '$val'
 macro m_bitLen($val):
-    $length = 0
-    with $int_type = $val:
-        while ($int_type):
-            $int_type = m_shiftRight($int_type, 1)
-            $length += 1
-    $length
+    with $length = 0:
+        with $int_type = $val:
+            while ($int_type):
+                $int_type = m_shiftRight($int_type, 1)
+                $length += 1
+        $length
 
 
 # reverse 32 bytes given by '$b32'
@@ -514,7 +505,7 @@ macro m_getHeight($blockHash):
     div(sload(ref(self.block[$blockHash]._info)), BYTES_24)
 
 
-# index to self.internalBlock is the second 8 bytes of _info
+# ibIndex is the index to self.internalBlock: it's the second 8 bytes of _info
 macro m_setIbIndex($blockHash, $internalIndex):
     $word = sload(ref(self.block[$blockHash]._info))
     m_mwrite64(ref($word) + 8, $internalIndex)
