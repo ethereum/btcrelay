@@ -346,8 +346,7 @@ macro getPrevBlock($blockHash):
         # get the last 28bytes of the 1st chunk and combine (add) it to the
         # first 4bytes of the 2nd chunk,
         # where chunks are read in sizes of 32bytes via sload
-        $tmp = sload($addr) * BYTES_4 + div(sload($addr+1), BYTES_28)  # must use div()
-    flip32Bytes($tmp)
+        flip32Bytes(sload($addr) * BYTES_4 + div(sload($addr+1), BYTES_28))  # must use div()
 
 
 # get the timestamp from a Bitcoin blockheader
@@ -371,8 +370,7 @@ macro m_getBits($blockHash):
 # get the merkle root of '$blockHash'
 macro getMerkleRoot($blockHash):
     with $addr = ref(self.block[$blockHash]._blockHeader[0]):
-        $tmp = sload($addr+1) * BYTES_4 + div(sload($addr+2), BYTES_28)  # must use div()
-    flip32Bytes($tmp)
+        flip32Bytes(sload($addr+1) * BYTES_4 + div(sload($addr+2), BYTES_28))  # must use div()
 
 
 macro m_lastBlockHeight():
