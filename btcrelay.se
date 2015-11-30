@@ -9,8 +9,6 @@ extern relayDestination: [processTransaction:[bytes,uint256]:int256]
 # TODO: "_height" is 1 more than the typical Bitcoin term height/blocknumber [see setInitialParent()]
 #        or should an additional terminology `blockNumber` be added that equals height-1 ?
 #
-# note: _ancestor[9]
-#
 # a Bitcoin block (header) is stored as:
 # - _blockHeader 80 bytes
 # - _info who's 32 bytes are comprised of "_height" 8bytes, "_ibIndex" 8bytes, "_score" 16bytes
@@ -70,20 +68,20 @@ def setInitialParent(blockHash, height, cumulativeDifficulty):
     # _height cannot be set to -1 because inMainChain() assumes that
     # a block with height0 does NOT exist (thus we cannot allow the
     # real genesis block to be at height0)
-    # self.block[blockHash]._height = height
     m_setHeight(blockHash, height)
 
     # do NOT pass cumulativeDifficulty of 0, since score0 means
     # block does NOT exist. see check in storeBlockHeader()
     m_setScore(blockHash, cumulativeDifficulty)
 
-    # _ancestor can remain zeros because
-    # self.internalBlock[0] already points to blockHash
+    # other fields do not need to be set, for example:
+    # _ancestor can remain zeros because self.internalBlock[0] already points to blockHash
 
     return(1)
 
 
 # TODO what to log?
+#
 # store a Bitcoin block header that must be provided in
 # bytes format 'blockHeaderBytes'
 # Callers must keep same signature since CALLDATALOAD is used to save gas.
@@ -128,8 +126,7 @@ def storeBlockHeader(blockHeaderBytes:str):
             prevTarget = targetFromBits(prevBits)
             prevTime = m_getTimestamp(hashPrevBlock)
 
-            # blockHeight - DIFFICULTY_ADJUSTMENT_INTERVAL is same as
-            # getHeight(hashPrevBlock) - (DIFFICULTY_ADJUSTMENT_INTERVAL - 1)
+            # (blockHeight - DIFFICULTY_ADJUSTMENT_INTERVAL) is same as [getHeight(hashPrevBlock) - (DIFFICULTY_ADJUSTMENT_INTERVAL - 1)]
             startBlock = self.fastGetBlockHash(blockHeight - DIFFICULTY_ADJUSTMENT_INTERVAL)
             startTime = m_getTimestamp(startBlock)
 
@@ -142,8 +139,8 @@ def storeBlockHeader(blockHeaderBytes:str):
         scoreBlock = scorePrevBlock + difficulty
         m_setScore(blockHash, scoreBlock)
 
-        # equality allows block with same score to become the Head, so that
-        # when a Head is orphaned, the chain can still continue
+        # equality allows block with same score to become an (alternate) Head, so that
+        # when an (existing) Head becomes stale, the chain can continue with the alternate Head
         if scoreBlock >= self.highScore:
             self.heaviestBlock = blockHash
             self.highScore = scoreBlock
