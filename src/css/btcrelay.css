@@ -182,6 +182,27 @@ only screen and (min-device-pixel-ratio: 1.5) {
 
 }
 
+#content .notice {
+	background-color: #444;
+	color: #efefef;
+	border-radius: 3px;
+	padding: 20px;
+	margin-bottom: 20px;
+}
+
+#content .notice > h4 {
+	margin-bottom: 10px;
+	color: #efefef;
+}
+
+#content .notice a {
+	margin: 10px auto;
+}
+
+#content .notice p {
+	margin-bottom: 0;
+}
+
 
 /* Headings
 ---------------------------------------------------------------------------- */
