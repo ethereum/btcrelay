@@ -119,6 +119,14 @@ See [BitcoinRelayAbi.js](examples/BitcoinRelayABI.js) for other APIs and [relayC
 
 ----
 
+##### Incentives
+
+The following APIs are described in `Incentives for Relayers` below.
+
+`storeBlockWithFee()`, `changeFeeRecipient()`, `getFeeRecipient()`, `getFeeAmount()`, `getChangeRecipientFee()`
+
+----
+
 ## Examples
 
 * [sampleCall.html](examples/sampleCall.html) for calling `verifyTx` including use of [bitcoin-proof](https://www.npmjs.com/package/bitcoin-proof) for constructing `merkleSibling`.
@@ -127,6 +135,84 @@ See [BitcoinRelayAbi.js](examples/BitcoinRelayABI.js) for other APIs and [relayC
 
 * [relayContractStatus.html](examples/relayContractStatus.html) for calling other basic functions.
 
+----
+
+## Incentives for Relayers
+
+Relayers are those who submit block headers to BTC Relay.  To incentivize the community
+to be relayers, and thus allow BTC Relay to be autonomous and up-to-date with the
+Bitcoin blockchain, Relayers can call `storeBlockWithFee`.  The Relayer will be the
+`getFeeRecipient()` for the block they submit, and when any transactions are verified
+in the block, the Relayer will be rewarded with `getFeeAmount()`.
+
+To avoid a relayer R1 from setting excessing fees, it is possible for a relayer R2
+to `changeFeeRecipient()`.  R2 must specify a fee lower than what R1 specified, and
+pay `getFeeAmount()` to R1, but now R2 will be the `getFeeRecipient()` for the block
+and will earn all future `getFeeAmount()`.
+
+With this background, here are API details for incentives.
+
+##### storeBlockWithFee(blockHeader, fee)
+
+Store a single block header (like `storeBlockHeader`) and
+set a fee that will be charged for verifications that use `blockHeader`.
+
+* `blockHeader` - raw `bytes` of the block header (not the hex string, but the actual bytes).
+* `fee` - `int256` amount in wei.
+
+Returns `int256`
+* block height of the header if it was successfully stored
+* `0` otherwise
+
+----
+
+##### changeFeeRecipient(blockHash, fee, recipient)
+
+Set the `fee` and `recipient` for a given `blockHash`.  The caller must send
+exactly `getChangeRecipientFee()` to BTC Relay, and must also specify a `fee` lower than
+the current `getFeeAmount(blockHash)`.
+
+* `blockHash` - hash of the block as `int256`.
+* `fee` - `int256` amount in wei.
+* `recipient` - `int256` address of the recipient of fees.
+
+Returns `int256`
+* `1` if the fee and recipient were successfully set
+* `0` otherwise
+
+----
+
+##### getFeeRecipient(blockHash)
+
+Get the address that receives the fees for a given `blockHash`.
+
+* `blockHash` - hash of the block as `int256`.
+
+Returns `int256`
+* address of the recipient
+
+----
+
+##### getFeeAmount(blockHash)
+
+Get the fee amount in wei for verifications using a given `blockHash`.
+
+* `blockHash` - hash of the block as `int256`.
+
+Returns `int256`
+* amount of the fee in wei.
+
+----
+
+##### getChangeRecipientFee()
+
+Get the amount of wei required that must be sent to BTC Relay when calling
+`changeFeeRecipient`.
+
+Returns `int256`
+* amount of wei
+
+----
 
 ## Development
 
