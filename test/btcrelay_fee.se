@@ -17,7 +17,7 @@ def bulkStoreHeaderWithFee(headersBytes:str, count, feeWei):
     i = 0
     while i < count:
         currHeader = slice(headersBytes, chars=offset, chars=endIndex)
-        res = self.storeBlockWithFee(currHeader, feeWei)
+        res = self.storeBlockWithFeeAndRecipient(currHeader, feeWei, msg.sender)
 
         offset += HEADER_SIZE
         endIndex += HEADER_SIZE

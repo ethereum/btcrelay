@@ -18,7 +18,7 @@ class TestBtcRelay(object):
     ETHER = 10 ** 18
 
     def setup_class(cls):
-        tester.gas_limit = int(3.0e6)  # include costs of debug methods
+        tester.gas_limit = int(3.1e6)  # include costs of debug methods
         cls.s = tester.state()
         cls.c = cls.s.abi_contract(cls.CONTRACT_DEBUG, endowment=2000*cls.ETHER)
         cls.snapshot = cls.s.snapshot()

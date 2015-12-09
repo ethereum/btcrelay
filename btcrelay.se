@@ -6,9 +6,6 @@ inset('incentive.se')
 extern relayDestination: [processTransaction:[bytes,uint256]:int256]
 
 
-# TODO: "_height" is 1 more than the typical Bitcoin term height/blocknumber [see setInitialParent()]
-#        or should an additional terminology `blockNumber` be added that equals height-1 ?
-#
 # a Bitcoin block (header) is stored as:
 # - _blockHeader 80 bytes
 # - _info who's 32 bytes are comprised of "_height" 8bytes, "_ibIndex" 8bytes, "_score" 16bytes
@@ -31,7 +28,6 @@ event Failure(errCode:indexed)
 def init():
     # gasPriceAndChangeRecipientFee in incentive.se
     self.gasPriceAndChangeRecipientFee = 50 * 10**9 * BYTES_16 # 50 shannon and left-align
-    # TODO anything else to init ?
     # carefully test if adding anything to init() since
     # issues such as https://github.com/ethereum/serpent/issues/77 78 ...
 
@@ -300,7 +296,6 @@ macro m_difficultyShouldBeAdjusted($blockHeight):
 
 
 macro m_computeNewBits($prevTime, $startTime, $prevTarget):
-    # TODO use `with` ?
     with $actualTimespan = $prevTime - $startTime:
         if $actualTimespan < TARGET_TIMESPAN_DIV_4:
             $actualTimespan = TARGET_TIMESPAN_DIV_4

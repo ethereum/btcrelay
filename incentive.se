@@ -13,11 +13,15 @@ event EthPayment(recipient:indexed, amount)
 
 # sets _feeInfo for the block and updates gasPriceAndChangeRecipientFee
 def storeBlockWithFee(blockHeaderBytes:str, feeWei):
+    return(self.storeBlockWithFeeAndRecipient(blockHeaderBytes, feeWei, msg.sender))
+
+# this indirection is needed by test_fee.py, but a configurable recipient may turn out useful
+def storeBlockWithFeeAndRecipient(blockHeaderBytes:str, feeWei, feeRecipient):
     beginGas = msg.gas
     res = self.storeBlockHeader(blockHeaderBytes)
     if res:
         blockHash = m_hashBlockHeader(blockHeaderBytes)
-        m_setFeeInfo(blockHash, feeWei, tx.origin)  # note: tx.origin
+        m_setFeeInfo(blockHash, feeWei, feeRecipient)
         remainingGas = msg.gas
 
 
