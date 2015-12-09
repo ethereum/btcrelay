@@ -19,7 +19,7 @@ data ibIndex
 
 
 # save the ancestors for a block, as well as updating the height
-# ntoe: this is internal/private so make it into a macro
+# note: this is internal/private so make it into a macro
 macro m_saveAncestors($blockHashArg, $hashPrevBlockArg):
     with $blockHash = $blockHashArg:
         with $hashPrevBlock = $blockHashArg:
