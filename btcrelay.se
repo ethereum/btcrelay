@@ -76,8 +76,6 @@ def setInitialParent(blockHash, height, cumulativeDifficulty):
     return(1)
 
 
-# TODO what to log?
-#
 # store a Bitcoin block header that must be provided in
 # bytes format 'blockHeaderBytes'
 # Callers must keep same signature since CALLDATALOAD is used to save gas.
@@ -88,20 +86,21 @@ def storeBlockHeader(blockHeaderBytes:str):
 
     scorePrevBlock = m_getScore(hashPrevBlock)
     if !scorePrevBlock:
+        log(type=Failure, ERR_NO_PREV_BLOCK)
         return(0)
 
     blockHash = m_hashBlockHeader(blockHeaderBytes)
 
     scoreBlock = m_getScore(blockHash)
     if scoreBlock != 0:  # block already stored/exists
+        log(type=Failure, ERR_BLOCK_ALREADY_EXISTS)
         return(0)
 
     wordWithBits = ~calldataload(OFFSET_ABI+72)  # 72 is offset for 'bits'
     bits = byte(0, wordWithBits) + byte(1, wordWithBits)*BYTES_1 + byte(2, wordWithBits)*BYTES_2 + byte(3, wordWithBits)*BYTES_3
     target = targetFromBits(bits)
 
-    # we only check the target and do not do other validation (eg timestamp)
-    # to save gas
+    # we only check the target and do not do other validation (eg timestamp) to save gas
     if blockHash > 0 && blockHash < target:
         blockHeight = 1 + m_getHeight(hashPrevBlock)
         prevBits = m_getBits(hashPrevBlock)
@@ -143,6 +142,7 @@ def storeBlockHeader(blockHeaderBytes:str):
 
         return(blockHeight)
 
+    log(type=Failure, ERR_PROOF_OF_WORK)
     return(0)
 
 

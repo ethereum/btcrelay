@@ -15,12 +15,14 @@ disablePyethLogging()
 class TestBtcRelay(object):
     CONTRACT_DEBUG = 'test/btcrelay_debug.se'
 
-    ETHER = 10 ** 18
+    ERR_NO_PREV_BLOCK = 10030
+    ERR_BLOCK_ALREADY_EXISTS = 10040
+    ERR_PROOF_OF_WORK = 10090
 
     def setup_class(cls):
         tester.gas_limit = int(3.1e6)  # include costs of debug methods
         cls.s = tester.state()
-        cls.c = cls.s.abi_contract(cls.CONTRACT_DEBUG, endowment=2000*cls.ETHER)
+        cls.c = cls.s.abi_contract(cls.CONTRACT_DEBUG)
         cls.snapshot = cls.s.snapshot()
         cls.seed = tester.seed
 
@@ -507,11 +509,26 @@ class TestBtcRelay(object):
         print('GAS: '+str(res['gas']))
         assert res['output'] == 2  # genesis block is at height 1
 
+    def storeBlock2(self):
+        # block 2 (from test/headers/firstEleven.txt)
+        blockHeaderStr = ("010000004860eb18bf1b1620e37e9490fc8a427514416fd75159ab86688e9a8300000000d5fdcc541e25de1c7a5addedf24858b8bb665c9f36ef744ee42c316022c90f9bb0bc6649ffff001d08d2bd61")
+        bhBytes = blockHeaderStr.decode('hex')
+        return self.c.storeBlockHeader(bhBytes)
 
     def testStoringHeaders(self):
         res = self.storeGenesisBlock()
         print('GAS: '+str(res['gas']))
         assert res['output'] == 1
+
+        eventArr = []
+        self.s.block.log_listeners.append(lambda x: eventArr.append(self.c._translator.listen(x)))
+
+        assert self.storeBlock2() == 0
+        assert eventArr == [{'_event_type': 'Failure',
+            'errCode': self.ERR_NO_PREV_BLOCK
+            }]
+        eventArr.pop()
+
 
         self.storeBlock1()
 
@@ -520,6 +537,25 @@ class TestBtcRelay(object):
         assert self.c.getLastBlockHeight() == 1 + 1  # +1 since setInitialParent was called with imaginary block
 
         assert self.c.getCumulativeDifficulty() == 2 + 1  # +1 since setInitialParent was called with imaginary block
+
+        assert self.storeBlock2() == 2 + 1  # +1 since setInitialParent was called with imaginary block
+
+
+    def testStoreInvalidPoW(self):
+        res = self.storeGenesisBlock()
+        assert res['output'] == 1
+
+        eventArr = []
+        self.s.block.log_listeners.append(lambda x: eventArr.append(self.c._translator.listen(x)))
+
+        # nonce is 0, leads to a blockHash that is greater than target, thus invalid PoW
+        invalidPoWHeaderStr = "010000006fe28c0ab6f1b372c1a6a246ae63f74f931e8365e15a089c68d61900000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d00000000"
+        bhBytes = invalidPoWHeaderStr.decode('hex')
+        assert self.c.storeBlockHeader(bhBytes) == 0
+        assert eventArr == [{'_event_type': 'Failure',
+            'errCode': self.ERR_PROOF_OF_WORK
+            }]
+        eventArr.pop()
 
 
     def testStoreNewHead(self):
@@ -558,10 +594,18 @@ class TestBtcRelay(object):
         print('GAS: %s' % g1)
         assert res['output'] == 1
 
+        eventArr = []
+        self.s.block.log_listeners.append(lambda x: eventArr.append(self.c._translator.listen(x)))
+
         res = self.storeGenesisBlock()
         g2 = res['gas']
         print('GAS: %s' % g2)
         assert res['output'] == 0 # no block stored
+        assert eventArr == [{'_event_type': 'Failure',
+            'errCode': self.ERR_BLOCK_ALREADY_EXISTS
+            }]
+        eventArr.pop()
+
         assert g2 < 0.36 * g1  # 0.36 is as of aae201c
 
 

@@ -10,6 +10,10 @@ macro UNROUNDED_MAX_TARGET: 2**224 - 1  # different from (2**16-1)*2**208 http:/
 # Error / failure codes
 macro ERR_DIFFICULTY:  10010  # difficulty didn't match current difficulty
 macro ERR_RETARGET: 10020  # difficulty didn't match retarget
+macro ERR_NO_PREV_BLOCK: 10030
+macro ERR_BLOCK_ALREADY_EXISTS: 10040
+macro ERR_PROOF_OF_WORK: 10090
+
 
 macro ERR_RELAY_VERIFY: 30010
 
