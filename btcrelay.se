@@ -103,11 +103,7 @@ def storeBlockHeader(blockHeaderBytes:str):
     # we only check the target and do not do other validation (eg timestamp)
     # to save gas
     if blockHash > 0 && blockHash < target:
-        m_saveAncestors(blockHash, hashPrevBlock)  # increments ibIndex
-
-        save(self.block[blockHash]._blockHeader[0], blockHeaderBytes, chars=80)
-
-        blockHeight = m_getHeight(blockHash)
+        blockHeight = 1 + m_getHeight(hashPrevBlock)
         prevBits = m_getBits(hashPrevBlock)
         if !m_difficultyShouldBeAdjusted(blockHeight) || self.ibIndex == 1:  # since blockHeight is 1 more than blockNumber; OR clause is special case for 1st header
             # we need to check prevBits isn't 0 otherwise the 1st header
@@ -130,6 +126,10 @@ def storeBlockHeader(blockHeaderBytes:str):
             if bits != newBits && newBits != 0:  # newBits != 0 to allow first header
                 log(type=Failure, ERR_RETARGET)
                 return(ERR_RETARGET)
+
+        m_saveAncestors(blockHash, hashPrevBlock)  # increments ibIndex
+
+        save(self.block[blockHash]._blockHeader[0], blockHeaderBytes, chars=80)
 
         difficulty = 0x00000000FFFF0000000000000000000000000000000000000000000000000000 / target # https://en.bitcoin.it/wiki/Difficulty
         scoreBlock = scorePrevBlock + difficulty
