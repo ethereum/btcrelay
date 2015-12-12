@@ -137,16 +137,3 @@ macro m_mwrite16($addrLoc, $int16):
         with $twoBytes = $int16:
             mstore8($addr, byte(30, $twoBytes))
             mstore8($addr + 1, byte(31, $twoBytes))
-
-
-# log ancestors
-# def logAnc(blockHash):
-#     log(11111)
-#     log(blockHash)
-#     i = 0
-#     while i < NUM_ANCESTOR_DEPTHS:
-#         anc = m_getAncestor(blockHash, i)
-#         # anc = self.block[blockHash]._ancestor[i]
-#         log(anc)
-#         i += 1
-#     log(22222)

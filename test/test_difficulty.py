@@ -120,9 +120,7 @@ class TestDifficulty(object):
         eventArr = []
         self.s.block.log_listeners.append(lambda x: eventArr.append(self.c._translator.listen(x)))
 
-        res = self.c.storeBlockHeader(bhBytes)
-        assert res == self.ERR_DIFFICULTY
-
+        assert self.c.storeBlockHeader(bhBytes) == 0
         assert eventArr == [{'_event_type': 'Failure',
             'errCode': self.ERR_DIFFICULTY
             }]
@@ -159,9 +157,7 @@ class TestDifficulty(object):
         eventArr = []
         self.s.block.log_listeners.append(lambda x: eventArr.append(self.c._translator.listen(x)))
 
-        res = self.c.storeBlockHeader(bhBytes)
-        assert res == self.ERR_RETARGET
-
+        assert self.c.storeBlockHeader(bhBytes) == 0
         assert eventArr == [{'_event_type': 'Failure',
             'errCode': self.ERR_RETARGET
             }]
