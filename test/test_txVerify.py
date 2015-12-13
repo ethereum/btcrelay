@@ -20,11 +20,13 @@ class TestTxVerify(object):
 
     ETHER = 10 ** 18
 
+    ERR_CONFIRMATIONS = 20020
+    ERR_MERKLE_ROOT = 20040
     ERR_RELAY_VERIFY = 30010
 
 
     def setup_class(cls):
-        tester.gas_limit = int(3.1e6)  # include costs of debug methods
+        tester.gas_limit = int(3.2e6)  # include costs of debug methods
         cls.s = tester.state()
         cls.c = cls.s.abi_contract(cls.CONTRACT, endowment=2000*cls.ETHER)
         cls.snapshot = cls.s.snapshot()
@@ -276,11 +278,14 @@ class TestTxVerify(object):
                 assert res == 1  # ether was transferred
             else:
                 assert 0 == res == userEthBalance
-
                 assert eventArr == [
+                    {'_event_type': 'Failure',
+                    'errCode': self.ERR_CONFIRMATIONS
+                    },
                     {'_event_type': 'Failure',
                     'errCode': self.ERR_RELAY_VERIFY
                     }]
+                eventArr.pop()
                 eventArr.pop()
 
 
@@ -309,6 +314,15 @@ class TestTxVerify(object):
 
         res = self.c.verifyTx(txHash, txIndex, siblings, txBlockHash)
         assert res == 1  # adjust according to numBlock and the block that the tx belongs to
+
+        eventArr = []
+        self.s.block.log_listeners.append(lambda x: eventArr.append(self.c._translator.listen(x)))
+
+        assert self.c.verifyTx(txHash, txIndex+1, siblings, txBlockHash) == 0
+        assert eventArr == [
+            {'_event_type': 'Failure',
+            'errCode': self.ERR_MERKLE_ROOT
+            }]
 
 
     def test30BlockValidTx(self):

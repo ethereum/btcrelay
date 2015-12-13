@@ -19,7 +19,7 @@ BTC Relay is [live](http://rawgit.com/ethereum/btcrelay/master/examples/relayCon
 
 Verifies the presence of a transaction on the Bitcoin blockchain, primarily that the transaction is on Bitcoin's main chain and has at least 6 confirmations.
 
-* `transactionHash` - hash of the transaction, as `int256`
+* `transactionHash` - hash of the transaction, as `uint256`
 * `transactionIndex` - transaction's index within the block, as `int256`
 * `merkleSibling` - array of the hashes of sibling transactions comprising the Merkle proof, as `int256[]`
 * `blockHash` - hash of the block that contains the transaction, as `int256`
@@ -37,7 +37,7 @@ Returns `int256`
 Verifies a Bitcoin transaction per `verifyTx()` and relays the verified transaction to the specified Ethereum contract.
 
 * `rawTransaction` - hex string of the raw transaction, as `bytes`
-* `transactionHash` - hash of the transaction, as `int256`
+* `transactionHash` - hash of the transaction, as `uint256`
 * `transactionIndex` - transaction's index within the block, as `int256`
 * `merkleSibling` - array of the hashes of sibling transactions comprising the Merkle proof, as `int256[]`
 * `blockHash` - hash of the block that contains the transaction, as `int256`
