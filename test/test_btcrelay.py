@@ -18,9 +18,11 @@ class TestBtcRelay(object):
     ERR_NO_PREV_BLOCK = 10030
     ERR_BLOCK_ALREADY_EXISTS = 10040
     ERR_PROOF_OF_WORK = 10090
+    ERR_CONFIRMATIONS = 20020
+    ERR_CHAIN = 20030
 
     def setup_class(cls):
-        tester.gas_limit = int(3.1e6)  # include costs of debug methods
+        tester.gas_limit = int(3.14e6)  # include costs of debug methods
         cls.s = tester.state()
         cls.c = cls.s.abi_contract(cls.CONTRACT_DEBUG)
         cls.snapshot = cls.s.snapshot()
@@ -73,7 +75,15 @@ class TestBtcRelay(object):
         assert int(merkleProof['hash'], 16) == fakeTxB1
         assert int(merkleProof['header']['hash'], 16) == fakeB1
 
+
+        eventArr = []
+        self.s.block.log_listeners.append(lambda x: eventArr.append(self.c._translator.listen(x)))
+
         res = self.c.verifyTx(*argsForVerifyTx(merkleProof, txIndex))
+        assert eventArr == [{'_event_type': 'Failure',
+            'errCode': self.ERR_CHAIN
+            }]
+        eventArr.pop()
         assert res == 0
 
         # verifyTx should only return 1 for b0
@@ -106,6 +116,11 @@ class TestBtcRelay(object):
 
         txInBlockOne = argsForVerifyTx(*self.tx1ofBlock363731())
         assert self.c.verifyTx(*txInBlockOne) == 0
+        assert eventArr == [{'_event_type': 'Failure',
+            'errCode': self.ERR_CONFIRMATIONS
+            }]
+        eventArr.pop()
+
 
         # b0 should still verify
         assert self.c.verifyTx(*txInBlockZero) == 1

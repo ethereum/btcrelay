@@ -153,11 +153,17 @@ def storeBlockHeader(blockHeaderBytes:str):
 # - 'txHash' is the hash of the tx
 # - 'txIndex' is the index of the tx within the block
 # - 'sibling' are the merkle siblings of tx
-def verifyTx(txHash, txIndex, sibling:arr, txBlockHash):
+def verifyTx(txHash:uint256, txIndex, sibling:arr, txBlockHash):
     if !self.feePaid(txBlockHash, m_getFeeAmount(txBlockHash), value=msg.value):  # in incentive.se
+        log(type=Failure, ERR_BAD_FEE)
         return(0)
 
-    if self.within6Confirms(txBlockHash) || !self.inMainChain(txBlockHash):
+    if self.within6Confirms(txBlockHash):
+        log(type=Failure, ERR_CONFIRMATIONS)
+        return(0)
+
+    if !self.inMainChain(txBlockHash):
+        log(type=Failure, ERR_CHAIN)
         return(0)
 
     merkle = self.computeMerkle(txHash, txIndex, sibling)
@@ -165,8 +171,9 @@ def verifyTx(txHash, txIndex, sibling:arr, txBlockHash):
 
     if merkle == realMerkleRoot:
         return(1)
-    else:
-        return(0)
+
+    log(type=Failure, ERR_MERKLE_ROOT)
+    return(0)
 
 
 # relays transaction to target 'contract' processTransaction() method.
@@ -174,18 +181,12 @@ def verifyTx(txHash, txIndex, sibling:arr, txBlockHash):
 #
 # if the transaction does not meet verification, error code -9999
 # is logged on both this contract and target contract
-#
-# TODO txHash can eventually be computed (dbl sha256 then flip32Bytes) when
-# txStr becomes txBytes
 def relayTx(txStr:str, txHash:uint256, txIndex, sibling:arr, txBlockHash, contract):
     if self.verifyTx(txHash, txIndex, sibling, txBlockHash, value=msg.value) == 1:
         res = contract.processTransaction(txStr, txHash)
-        # log(msg.sender, data=[res])  # TODO
         return(res)
 
-    # log error code -9999 on both this contract and target contract
     log(type=Failure, ERR_RELAY_VERIFY)
-    # log(contract, data=[-9999]) TODO how to log under 'contract' address?
     return(0)
 
 

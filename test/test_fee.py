@@ -19,8 +19,10 @@ class TestFee(object):
 
     FEE_VERIFY_TX = 255
 
+    ERR_BAD_FEE = 20010
+
     def setup_class(cls):
-        tester.gas_limit = int(3.2e6)  # include costs of debug methods
+        tester.gas_limit = int(3.3e6)  # include costs of debug methods
         cls.s = tester.state()
         cls.c = cls.s.abi_contract(cls.CONTRACT_DEBUG)
         cls.snapshot = cls.s.snapshot()
@@ -87,6 +89,10 @@ class TestFee(object):
         # zero payment
         #
         assert 0 == self.c.verifyTx(txHash, txIndex, siblings, txBlockHash, sender=tester.k0, value=0)
+        assert eventArr == [{'_event_type': 'Failure',
+            'errCode': self.ERR_BAD_FEE
+            }]
+        eventArr.pop()
         assert self.s.block.get_balance(addrSender) == senderBal
         assert self.s.block.get_balance(tester.a0) == balCaller
 
@@ -95,6 +101,10 @@ class TestFee(object):
         #
         balCaller -= self.FEE_VERIFY_TX - 1
         assert 0 == self.c.verifyTx(txHash, txIndex, siblings, txBlockHash, sender=tester.k0, value=self.FEE_VERIFY_TX-1)
+        assert eventArr == [{'_event_type': 'Failure',
+            'errCode': self.ERR_BAD_FEE
+            }]
+        eventArr.pop()
         assert self.s.block.get_balance(addrSender) == senderBal
         assert self.s.block.get_balance(tester.a0) == balCaller
         assert self.s.block.get_balance(self.c.address) == self.FEE_VERIFY_TX - 1
@@ -104,6 +114,10 @@ class TestFee(object):
         #
         balCaller -= self.FEE_VERIFY_TX + 1
         assert 0 == self.c.verifyTx(txHash, txIndex, siblings, txBlockHash, sender=tester.k0, value=self.FEE_VERIFY_TX+1)
+        assert eventArr == [{'_event_type': 'Failure',
+            'errCode': self.ERR_BAD_FEE
+            }]
+        eventArr.pop()
         assert self.s.block.get_balance(addrSender) == senderBal
         assert self.s.block.get_balance(tester.a0) == balCaller
         assert self.s.block.get_balance(self.c.address) == self.FEE_VERIFY_TX * 2
