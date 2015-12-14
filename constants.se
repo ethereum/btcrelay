@@ -7,18 +7,24 @@ macro TARGET_TIMESPAN_DIV_4: TARGET_TIMESPAN / 4
 macro TARGET_TIMESPAN_MUL_4: TARGET_TIMESPAN * 4
 macro UNROUNDED_MAX_TARGET: 2**224 - 1  # different from (2**16-1)*2**208 http://bitcoin.stackexchange.com/questions/13803/how-exactly-was-the-original-coefficient-for-difficulty-determined
 
+#
 # Error / failure codes
+#
+
+# error codes for storeBlockHeader
 macro ERR_DIFFICULTY:  10010  # difficulty didn't match current difficulty
 macro ERR_RETARGET: 10020  # difficulty didn't match retarget
 macro ERR_NO_PREV_BLOCK: 10030
 macro ERR_BLOCK_ALREADY_EXISTS: 10040
 macro ERR_PROOF_OF_WORK: 10090
 
+# error codes for verifyTx
 macro ERR_BAD_FEE: 20010
 macro ERR_CONFIRMATIONS: 20020
 macro ERR_CHAIN: 20030
 macro ERR_MERKLE_ROOT: 20040
 
+# error codes for relayTx
 macro ERR_RELAY_VERIFY: 30010
 
 

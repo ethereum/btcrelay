@@ -26,7 +26,7 @@ Verifies the presence of a transaction on the Bitcoin blockchain, primarily that
 
 Returns `int256`
 * `1` if transaction is verified to be on the Bitcoin blockchain
-* `0` otherwise
+* or an error code, see [constants.se](constants.se)
 
 *Note:* See [examples/sampleCall.html](examples/sampleCall.html) including use of [bitcoin-proof](https://www.npmjs.com/package/bitcoin-proof) for constructing `merkleSibling`.
 
@@ -47,7 +47,7 @@ The Ethereum contract should have a function of signature `processTransaction(ra
 
 Returns `int256`
 * value returned by the Ethereum contract's `processTransaction` function
-* `0` otherwise
+* or an error code, see [constants.se](constants.se)
 
 ----
 

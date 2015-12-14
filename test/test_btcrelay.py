@@ -84,7 +84,7 @@ class TestBtcRelay(object):
             'errCode': self.ERR_CHAIN
             }]
         eventArr.pop()
-        assert res == 0
+        assert res == self.ERR_CHAIN
 
         # verifyTx should only return 1 for b0
         txInBlockZero = argsForVerifyTx(*self.tx1ofBlock363730())
@@ -115,7 +115,7 @@ class TestBtcRelay(object):
         assert self.c.getBlockchainHead() == dblSha256Flip(blockHeaderBytes[-2])
 
         txInBlockOne = argsForVerifyTx(*self.tx1ofBlock363731())
-        assert self.c.verifyTx(*txInBlockOne) == 0
+        assert self.c.verifyTx(*txInBlockOne) == self.ERR_CONFIRMATIONS
         assert eventArr == [{'_event_type': 'Failure',
             'errCode': self.ERR_CONFIRMATIONS
             }]
@@ -181,7 +181,7 @@ class TestBtcRelay(object):
         assert self.c.getCumulativeDifficulty() == cumulDiff
 
         txInBlockZero = argsForVerifyTx(*self.tx1ofBlock363730())
-        assert self.c.verifyTx(*txInBlockZero) == 0
+        assert self.c.verifyTx(*txInBlockZero) == self.ERR_CONFIRMATIONS
 
         #
         # add 6th (fake) block and txInBlockZero should succeed verification
@@ -203,7 +203,7 @@ class TestBtcRelay(object):
         assert self.c.verifyTx(*txInBlockZero) == 1
 
         txInBlockOne = argsForVerifyTx(*self.tx1ofBlock363731())
-        assert self.c.verifyTx(*txInBlockOne) == 0
+        assert self.c.verifyTx(*txInBlockOne) == self.ERR_CONFIRMATIONS
 
         #
         # add block7 and txInBlockOne should now succeed verification
@@ -254,19 +254,19 @@ class TestBtcRelay(object):
 
         txBlockHash = 0xdead
         res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
-        assert res == 0
+        assert res == self.ERR_CHAIN
 
         # b1 is within6confirms so should NOT verify
         # TODO use proper tx, txIndex, sibling.  Should also test that
         # when another header is added, the tx does verify
         txBlockHash = b1
         res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
-        assert res == 0
+        assert res == self.ERR_CONFIRMATIONS
 
 
         # verifyTx should only return 1 for b0
         txBlockHash = b0
-        assert self.c.verifyTx(tx, txIndex, sibling, txBlockHash) == 0
+        assert self.c.verifyTx(tx, txIndex, sibling, txBlockHash) == self.ERR_CONFIRMATIONS
 
         self.c.storeBlockHeader(blockHeaderBytes[-1])
         assert b6 == self.c.getBlockchainHead()
@@ -325,14 +325,14 @@ class TestBtcRelay(object):
 
         txBlockHash = 0xdead
         res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
-        assert res == 0
+        assert res == self.ERR_CHAIN
 
         # b1 is within6confirms so should NOT verify
         # TODO use proper tx, txIndex, sibling.  Should also test that
         # when another header is added, the tx does verify
         txBlockHash = b1
         res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
-        assert res == 0
+        assert res == self.ERR_CONFIRMATIONS
 
 
         # verifyTx should only return 1 for b0
@@ -382,7 +382,7 @@ class TestBtcRelay(object):
         # forked block should NOT verify
         txBlockHash = 0x11bb7c5555b8eab7801b1c4384efcab0d869230fcf4a8f043abad255c99105f8
         res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
-        assert res == 0
+        assert res == self.ERR_CHAIN
 
         # b0 should still verify
         txBlockHash = b0
@@ -463,11 +463,11 @@ class TestBtcRelay(object):
 
             # firstEasyBlock should no longer verify since it is no longer on the main chain
             res = self.c.verifyTx(tx, txIndex, sibling, firstEasyBlock)
-            assert res == 0
+            assert res == self.ERR_CHAIN
 
             # block100k should only verify when it has enough confirmations
             res = self.c.verifyTx(tx, txIndex, sibling, block100k)
-            exp = 1 if i==6 else 0
+            exp = 1 if i==6 else self.ERR_CONFIRMATIONS
             assert res == exp
 
 

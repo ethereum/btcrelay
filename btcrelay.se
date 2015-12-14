@@ -156,15 +156,15 @@ def storeBlockHeader(blockHeaderBytes:str):
 def verifyTx(txHash:uint256, txIndex, sibling:arr, txBlockHash):
     if !self.feePaid(txBlockHash, m_getFeeAmount(txBlockHash), value=msg.value):  # in incentive.se
         log(type=Failure, ERR_BAD_FEE)
-        return(0)
+        return(ERR_BAD_FEE)
 
     if self.within6Confirms(txBlockHash):
         log(type=Failure, ERR_CONFIRMATIONS)
-        return(0)
+        return(ERR_CONFIRMATIONS)
 
     if !self.inMainChain(txBlockHash):
         log(type=Failure, ERR_CHAIN)
-        return(0)
+        return(ERR_CHAIN)
 
     merkle = self.computeMerkle(txHash, txIndex, sibling)
     realMerkleRoot = getMerkleRoot(txBlockHash)
@@ -173,21 +173,21 @@ def verifyTx(txHash:uint256, txIndex, sibling:arr, txBlockHash):
         return(1)
 
     log(type=Failure, ERR_MERKLE_ROOT)
-    return(0)
+    return(ERR_MERKLE_ROOT)
 
 
 # relays transaction to target 'contract' processTransaction() method.
 # returns and logs the value of processTransaction().
 #
-# if the transaction does not meet verification, error code -9999
-# is logged on both this contract and target contract
+# if the transaction does not meet verification, error code ERR_RELAY_VERIFY
+# is logged and returned
 def relayTx(txStr:str, txHash:uint256, txIndex, sibling:arr, txBlockHash, contract):
     if self.verifyTx(txHash, txIndex, sibling, txBlockHash, value=msg.value) == 1:
         res = contract.processTransaction(txStr, txHash)
         return(res)
 
     log(type=Failure, ERR_RELAY_VERIFY)
-    return(0)
+    return(ERR_RELAY_VERIFY)
 
 
 # return the hash of the heaviest block aka the Head

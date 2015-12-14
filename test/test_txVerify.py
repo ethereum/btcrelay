@@ -277,7 +277,8 @@ class TestTxVerify(object):
                 assert userEthBalance == expEtherBalance
                 assert res == 1  # ether was transferred
             else:
-                assert 0 == res == userEthBalance
+                assert userEthBalance == 0
+                assert res == self.ERR_RELAY_VERIFY
                 assert eventArr == [
                     {'_event_type': 'Failure',
                     'errCode': self.ERR_CONFIRMATIONS
@@ -318,7 +319,7 @@ class TestTxVerify(object):
         eventArr = []
         self.s.block.log_listeners.append(lambda x: eventArr.append(self.c._translator.listen(x)))
 
-        assert self.c.verifyTx(txHash, txIndex+1, siblings, txBlockHash) == 0
+        assert self.c.verifyTx(txHash, txIndex+1, siblings, txBlockHash) == self.ERR_MERKLE_ROOT
         assert eventArr == [
             {'_event_type': 'Failure',
             'errCode': self.ERR_MERKLE_ROOT
@@ -385,7 +386,7 @@ class TestTxVerify(object):
             if i < startBlockNum+numBlock-6:
                 assert res == 1
             else:
-                assert res == 0
+                assert res == self.ERR_CONFIRMATIONS
 
 
     def randomTxMerkleCheck(self, blocknum):
