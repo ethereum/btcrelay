@@ -19,7 +19,7 @@ def funcTargetFromBits(bits):
     return(targetFromBits(bits))
 
 def funcConcatHash(tx1, tx2):
-    return(concatHash(tx1, tx2))
+    return(concatHash(tx1, tx2):uint256)
 
 #
 # end of macro wrappers

@@ -663,8 +663,7 @@ class TestBtcRelay(object):
         res = self.c.computeMerkle(txHash, txIndex, sibling, profiling=True)
         print('GAS: '+str(res['gas']))
         expMerkle = 0xf3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766
-        wrappedMerkle = res['output'] % 2**256
-        assert wrappedMerkle == expMerkle
+        assert res['output'] == expMerkle
 
     def testsetInitialParentOnlyOnce(self):
         assert self.c.setInitialParent(0, 0, 1) == 1
