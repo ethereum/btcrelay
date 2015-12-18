@@ -280,8 +280,9 @@ class TestTxVerify(object):
                 assert userEthBalance == 0
                 assert res == self.ERR_RELAY_VERIFY
                 assert eventArr == [
-                    {'_event_type': 'Failure',
-                    'errCode': self.ERR_CONFIRMATIONS
+                    {'_event_type': 'VerifyTransaction',
+                        'txHash': txHash,
+                        'errCode': self.ERR_CONFIRMATIONS
                     },
                     {'_event_type': 'Failure',
                     'errCode': self.ERR_RELAY_VERIFY
@@ -321,8 +322,9 @@ class TestTxVerify(object):
 
         assert self.c.verifyTx(txHash, txIndex+1, siblings, txBlockHash) == self.ERR_MERKLE_ROOT
         assert eventArr == [
-            {'_event_type': 'Failure',
-            'errCode': self.ERR_MERKLE_ROOT
+            {'_event_type': 'VerifyTransaction',
+                'txHash': txHash,
+                'errCode': self.ERR_MERKLE_ROOT
             }]
 
 
