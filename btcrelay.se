@@ -226,7 +226,7 @@ def getAverageBlockDifficulty():
     return(cumulDifficultyHead - cumulDifficulty10Ancestors)
 
 
-# return -1 if there's an error (eg called with incorrect params)
+# return 0 if there's an error (eg called with incorrect params)
 # [see documentation for verifyTx() for the merkle proof
 # format of 'txHash', 'txIndex', 'sibling' ]
 def computeMerkle(txHash, txIndex, sibling:arr):
@@ -250,10 +250,7 @@ def computeMerkle(txHash, txIndex, sibling:arr):
         txIndex /= 2
         i += 1
 
-    if !resultHash:
-        return(-1)
-
-    return(resultHash)
+    return(resultHash:uint256)
 
 
 # returns 1 if the 'txBlockHash' is within 6 blocks of self.heaviestBlock
