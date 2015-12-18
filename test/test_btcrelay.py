@@ -79,8 +79,10 @@ class TestBtcRelay(object):
         eventArr = []
         self.s.block.log_listeners.append(lambda x: eventArr.append(self.c._translator.listen(x)))
 
-        res = self.c.verifyTx(*argsForVerifyTx(merkleProof, txIndex))
-        assert eventArr == [{'_event_type': 'Failure',
+        argsArr = argsForVerifyTx(merkleProof, txIndex)
+        res = self.c.verifyTx(*argsArr)
+        assert eventArr == [{'_event_type': 'VerifyTransaction',
+            'txHash': argsArr[0],
             'errCode': self.ERR_CHAIN
             }]
         eventArr.pop()
@@ -116,7 +118,8 @@ class TestBtcRelay(object):
 
         txInBlockOne = argsForVerifyTx(*self.tx1ofBlock363731())
         assert self.c.verifyTx(*txInBlockOne) == self.ERR_CONFIRMATIONS
-        assert eventArr == [{'_event_type': 'Failure',
+        assert eventArr == [{'_event_type': 'VerifyTransaction',
+            'txHash': txInBlockOne[0],
             'errCode': self.ERR_CONFIRMATIONS
             }]
         eventArr.pop()

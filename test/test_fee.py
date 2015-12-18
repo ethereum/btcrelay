@@ -89,7 +89,8 @@ class TestFee(object):
         # zero payment
         #
         assert self.ERR_BAD_FEE == self.c.verifyTx(txHash, txIndex, siblings, txBlockHash, sender=tester.k0, value=0)
-        assert eventArr == [{'_event_type': 'Failure',
+        assert eventArr == [{'_event_type': 'VerifyTransaction',
+            'txHash': txHash,
             'errCode': self.ERR_BAD_FEE
             }]
         eventArr.pop()
@@ -101,7 +102,8 @@ class TestFee(object):
         #
         balCaller -= self.FEE_VERIFY_TX - 1
         assert self.ERR_BAD_FEE == self.c.verifyTx(txHash, txIndex, siblings, txBlockHash, sender=tester.k0, value=self.FEE_VERIFY_TX-1)
-        assert eventArr == [{'_event_type': 'Failure',
+        assert eventArr == [{'_event_type': 'VerifyTransaction',
+            'txHash': txHash,
             'errCode': self.ERR_BAD_FEE
             }]
         eventArr.pop()
@@ -114,7 +116,8 @@ class TestFee(object):
         #
         balCaller -= self.FEE_VERIFY_TX + 1
         assert self.ERR_BAD_FEE == self.c.verifyTx(txHash, txIndex, siblings, txBlockHash, sender=tester.k0, value=self.FEE_VERIFY_TX+1)
-        assert eventArr == [{'_event_type': 'Failure',
+        assert eventArr == [{'_event_type': 'VerifyTransaction',
+            'txHash': txHash,
             'errCode': self.ERR_BAD_FEE
             }]
         eventArr.pop()

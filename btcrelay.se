@@ -24,6 +24,8 @@ data heaviestBlock
 data highScore
 
 event Failure(errCode:indexed)
+event VerifyTransaction(txHash:uint256:indexed, errCode:indexed)
+
 
 def init():
     # gasPriceAndChangeRecipientFee in incentive.se
@@ -155,15 +157,15 @@ def storeBlockHeader(blockHeaderBytes:str):
 # - 'sibling' are the merkle siblings of tx
 def verifyTx(txHash:uint256, txIndex, sibling:arr, txBlockHash):
     if !self.feePaid(txBlockHash, m_getFeeAmount(txBlockHash), value=msg.value):  # in incentive.se
-        log(type=Failure, ERR_BAD_FEE)
+        log(type=VerifyTransaction, txHash, ERR_BAD_FEE)
         return(ERR_BAD_FEE)
 
     if self.within6Confirms(txBlockHash):
-        log(type=Failure, ERR_CONFIRMATIONS)
+        log(type=VerifyTransaction, txHash, ERR_CONFIRMATIONS)
         return(ERR_CONFIRMATIONS)
 
     if !self.inMainChain(txBlockHash):
-        log(type=Failure, ERR_CHAIN)
+        log(type=VerifyTransaction, txHash, ERR_CHAIN)
         return(ERR_CHAIN)
 
     merkle = self.computeMerkle(txHash, txIndex, sibling)
@@ -172,7 +174,7 @@ def verifyTx(txHash:uint256, txIndex, sibling:arr, txBlockHash):
     if merkle == realMerkleRoot:
         return(1)
 
-    log(type=Failure, ERR_MERKLE_ROOT)
+    log(type=VerifyTransaction, txHash, ERR_MERKLE_ROOT)
     return(ERR_MERKLE_ROOT)
 
 
