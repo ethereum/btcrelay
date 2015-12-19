@@ -24,6 +24,7 @@ data heaviestBlock
 data highScore
 
 event Failure(errCode:indexed)
+event StoreHeader(blockHash:uint256:indexed, errCode:indexed)
 event VerifyTransaction(txHash:uint256:indexed, errCode:indexed)
 
 
@@ -85,17 +86,16 @@ def setInitialParent(blockHash, height, cumulativeDifficulty):
 macro OFFSET_ABI: 68  # 4 bytes function ID then 2 32bytes before the header begins
 def storeBlockHeader(blockHeaderBytes:str):
     hashPrevBlock = flip32Bytes(~calldataload(OFFSET_ABI+4))  # 4 is offset for hashPrevBlock
+    blockHash = m_hashBlockHeader(blockHeaderBytes)
 
     scorePrevBlock = m_getScore(hashPrevBlock)
     if !scorePrevBlock:
-        log(type=Failure, ERR_NO_PREV_BLOCK)
+        log(type=StoreHeader, blockHash, ERR_NO_PREV_BLOCK)
         return(0)
-
-    blockHash = m_hashBlockHeader(blockHeaderBytes)
 
     scoreBlock = m_getScore(blockHash)
     if scoreBlock != 0:  # block already stored/exists
-        log(type=Failure, ERR_BLOCK_ALREADY_EXISTS)
+        log(type=StoreHeader, blockHash, ERR_BLOCK_ALREADY_EXISTS)
         return(0)
 
     wordWithBits = ~calldataload(OFFSET_ABI+72)  # 72 is offset for 'bits'
@@ -113,7 +113,7 @@ def storeBlockHeader(blockHeaderBytes:str):
             # the initial parent, but as these forks will have lower score than
             # the main chain, they will not have impact.
             if bits != prevBits && prevBits != 0:
-                log(type=Failure, ERR_DIFFICULTY)
+                log(type=StoreHeader, blockHash, ERR_DIFFICULTY)
                 return(0)
         else:
             prevTarget = targetFromBits(prevBits)
@@ -125,7 +125,7 @@ def storeBlockHeader(blockHeaderBytes:str):
 
             newBits = m_computeNewBits(prevTime, startTime, prevTarget)
             if bits != newBits && newBits != 0:  # newBits != 0 to allow first header
-                log(type=Failure, ERR_RETARGET)
+                log(type=StoreHeader, blockHash, ERR_RETARGET)
                 return(0)
 
         m_saveAncestors(blockHash, hashPrevBlock)  # increments ibIndex
@@ -144,7 +144,7 @@ def storeBlockHeader(blockHeaderBytes:str):
 
         return(blockHeight)
 
-    log(type=Failure, ERR_PROOF_OF_WORK)
+    log(type=StoreHeader, blockHash, ERR_PROOF_OF_WORK)
     return(0)
 
 

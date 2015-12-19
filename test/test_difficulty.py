@@ -115,13 +115,15 @@ class TestDifficulty(object):
         nonce = 0
         hashPrevBlock = 0x000000000000000004db26747ccd2feb6341c18282a33e2c5d8eb84a1b12d951  # block 342722
         bhBytes = getHeaderBytes(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
-        assert dblSha256Flip(bhBytes) == 0x2afa6cec2435698406ff2138ae6162469857524c7849970e5bb82039e90a099b
+        blockHash = dblSha256Flip(bhBytes)
+        assert blockHash == 0x2afa6cec2435698406ff2138ae6162469857524c7849970e5bb82039e90a099b
 
         eventArr = []
         self.s.block.log_listeners.append(lambda x: eventArr.append(self.c._translator.listen(x)))
 
         assert self.c.storeBlockHeader(bhBytes) == 0
-        assert eventArr == [{'_event_type': 'Failure',
+        assert eventArr == [{'_event_type': 'StoreHeader',
+            'blockHash': blockHash,
             'errCode': self.ERR_DIFFICULTY
             }]
         eventArr.pop()
@@ -151,14 +153,16 @@ class TestDifficulty(object):
         nonce = 0
         hashPrevBlock = 0x00000000000000000f9e30784bd647e91f6923263a674c9c5c18084fe79a41f8  # block 344735
         bhBytes = getHeaderBytes(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce)
-        assert dblSha256Flip(bhBytes) == 0x0016127022e6debe87071eb0091918d2fccbcef0d46a046bcaf71309b0528044
+        blockHash = dblSha256Flip(bhBytes)
+        assert blockHash == 0x0016127022e6debe87071eb0091918d2fccbcef0d46a046bcaf71309b0528044
         assert self.c.getBlockchainHead() == hashPrevBlock
 
         eventArr = []
         self.s.block.log_listeners.append(lambda x: eventArr.append(self.c._translator.listen(x)))
 
         assert self.c.storeBlockHeader(bhBytes) == 0
-        assert eventArr == [{'_event_type': 'Failure',
+        assert eventArr == [{'_event_type': 'StoreHeader',
+            'blockHash': blockHash,
             'errCode': self.ERR_RETARGET
             }]
         eventArr.pop()

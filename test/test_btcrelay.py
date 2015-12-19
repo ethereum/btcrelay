@@ -517,6 +517,7 @@ class TestBtcRelay(object):
         blockHeaderStr = ("0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c")
         bhBytes = blockHeaderStr.decode('hex')
         res = self.c.storeBlockHeader(bhBytes, profiling=True)
+        res['blockHash'] = dblSha256Flip(bhBytes)
         return res
 
     def storeBlock1(self):
@@ -531,7 +532,7 @@ class TestBtcRelay(object):
         # block 2 (from test/headers/firstEleven.txt)
         blockHeaderStr = ("010000004860eb18bf1b1620e37e9490fc8a427514416fd75159ab86688e9a8300000000d5fdcc541e25de1c7a5addedf24858b8bb665c9f36ef744ee42c316022c90f9bb0bc6649ffff001d08d2bd61")
         bhBytes = blockHeaderStr.decode('hex')
-        return self.c.storeBlockHeader(bhBytes)
+        return self.c.storeBlockHeader(bhBytes), dblSha256Flip(bhBytes)
 
     def testStoringHeaders(self):
         res = self.storeGenesisBlock()
@@ -541,8 +542,10 @@ class TestBtcRelay(object):
         eventArr = []
         self.s.block.log_listeners.append(lambda x: eventArr.append(self.c._translator.listen(x)))
 
-        assert self.storeBlock2() == 0
-        assert eventArr == [{'_event_type': 'Failure',
+        res = self.storeBlock2()
+        assert res[0] == 0
+        assert eventArr == [{'_event_type': 'StoreHeader',
+            'blockHash': res[1],
             'errCode': self.ERR_NO_PREV_BLOCK
             }]
         eventArr.pop()
@@ -556,7 +559,7 @@ class TestBtcRelay(object):
 
         assert self.c.getCumulativeDifficulty() == 2 + 1  # +1 since setInitialParent was called with imaginary block
 
-        assert self.storeBlock2() == 2 + 1  # +1 since setInitialParent was called with imaginary block
+        assert self.storeBlock2()[0] == 2 + 1  # +1 since setInitialParent was called with imaginary block
 
 
     def testStoreInvalidPoW(self):
@@ -570,7 +573,8 @@ class TestBtcRelay(object):
         invalidPoWHeaderStr = "010000006fe28c0ab6f1b372c1a6a246ae63f74f931e8365e15a089c68d61900000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d00000000"
         bhBytes = invalidPoWHeaderStr.decode('hex')
         assert self.c.storeBlockHeader(bhBytes) == 0
-        assert eventArr == [{'_event_type': 'Failure',
+        assert eventArr == [{'_event_type': 'StoreHeader',
+            'blockHash': dblSha256Flip(bhBytes),
             'errCode': self.ERR_PROOF_OF_WORK
             }]
         eventArr.pop()
@@ -619,7 +623,8 @@ class TestBtcRelay(object):
         g2 = res['gas']
         print('GAS: %s' % g2)
         assert res['output'] == 0 # no block stored
-        assert eventArr == [{'_event_type': 'Failure',
+        assert eventArr == [{'_event_type': 'StoreHeader',
+            'blockHash': res['blockHash'],
             'errCode': self.ERR_BLOCK_ALREADY_EXISTS
             }]
         eventArr.pop()
