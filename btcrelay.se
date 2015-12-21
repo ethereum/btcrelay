@@ -26,6 +26,7 @@ data highScore
 event Failure(errCode:indexed)
 event StoreHeader(blockHash:uint256:indexed, errCode:indexed)
 event VerifyTransaction(txHash:uint256:indexed, errCode:indexed)
+event RelayTransaction(txHash:uint256:indexed, errCode:indexed)
 
 
 def init():
@@ -187,10 +188,11 @@ def verifyTx(txHash:uint256, txIndex, sibling:arr, txBlockHash):
 # is logged and returned
 def relayTx(txStr:str, txHash:uint256, txIndex, sibling:arr, txBlockHash, contract):
     if self.verifyTx(txHash, txIndex, sibling, txBlockHash, value=msg.value) == 1:
-        res = contract.processTransaction(txStr, txHash)
-        return(res)
+        returnCode = contract.processTransaction(txStr, txHash)
+        log(type=RelayTransaction, txHash, returnCode)
+        return(returnCode)
 
-    log(type=Failure, ERR_RELAY_VERIFY)
+    log(type=RelayTransaction, txHash, ERR_RELAY_VERIFY)
     return(ERR_RELAY_VERIFY)
 
 
