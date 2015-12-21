@@ -283,11 +283,11 @@ class TestTxVerify(object):
                 assert eventArr == [
                     {'_event_type': 'VerifyTransaction',
                         'txHash': txHash,
-                        'errCode': self.ERR_CONFIRMATIONS
+                        'returnCode': self.ERR_CONFIRMATIONS
                     },
                     {'_event_type': 'RelayTransaction',
                     'txHash': txHash,
-                    'errCode': self.ERR_RELAY_VERIFY
+                    'returnCode': self.ERR_RELAY_VERIFY
                     }]
                 eventArr.pop()
                 eventArr.pop()
@@ -324,7 +324,7 @@ class TestTxVerify(object):
         assert eventArr == [
             {'_event_type': 'VerifyTransaction',
                 'txHash': txHash,
-                'errCode': 1
+                'returnCode': 1
             }]
         eventArr.pop()
 
@@ -332,7 +332,7 @@ class TestTxVerify(object):
         assert eventArr == [
             {'_event_type': 'VerifyTransaction',
                 'txHash': txHash,
-                'errCode': self.ERR_MERKLE_ROOT
+                'returnCode': self.ERR_MERKLE_ROOT
             }]
 
 
