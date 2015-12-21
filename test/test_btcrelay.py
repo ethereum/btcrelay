@@ -91,6 +91,7 @@ class TestBtcRelay(object):
         # verifyTx should only return 1 for b0
         txInBlockZero = argsForVerifyTx(*self.tx1ofBlock363730())
         assert self.c.verifyTx(*txInBlockZero) == 1
+        eventArr.pop()  # pop the VerifyTransaction success event
 
         assert fakeb6 == self.c.getBlockchainHead()
 
@@ -112,6 +113,7 @@ class TestBtcRelay(object):
             res = self.c.storeBlockHeader(blockHeaderBytes[i])
             # print('@@@@ real chain score: ' + str(self.c.getCumulativeDifficulty()))
             assert res == i+1+forkPrevNum
+            eventArr.pop()  # pop the StoreHeader success event
 
         assert self.c.getCumulativeDifficulty() == cumulDiff  # cumulDiff should not change
         assert self.c.getBlockchainHead() == dblSha256Flip(blockHeaderBytes[-2])
@@ -534,6 +536,7 @@ class TestBtcRelay(object):
         bhBytes = blockHeaderStr.decode('hex')
         return self.c.storeBlockHeader(bhBytes), dblSha256Flip(bhBytes)
 
+    # store genesis, then block2 which fails, then block1, then block2 which succeeds
     def testStoringHeaders(self):
         res = self.storeGenesisBlock()
         print('GAS: '+str(res['gas']))
@@ -552,6 +555,7 @@ class TestBtcRelay(object):
 
 
         self.storeBlock1()
+        eventArr.pop()
 
         block1Hash = 0x00000000839a8e6886ab5951d76f411475428afc90947ee320161bbf18eb6048
         assert self.c.getBlockchainHead() == block1Hash
@@ -559,7 +563,13 @@ class TestBtcRelay(object):
 
         assert self.c.getCumulativeDifficulty() == 2 + 1  # +1 since setInitialParent was called with imaginary block
 
-        assert self.storeBlock2()[0] == 2 + 1  # +1 since setInitialParent was called with imaginary block
+        res = self.storeBlock2()
+        assert res[0] == 2 + 1  # +1 since setInitialParent was called with imaginary block
+        assert eventArr == [{'_event_type': 'StoreHeader',
+            'blockHash': res[1],
+            'errCode': res[0]
+            }]
+        eventArr.pop()
 
 
     def testStoreInvalidPoW(self):
