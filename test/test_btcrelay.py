@@ -22,7 +22,7 @@ class TestBtcRelay(object):
     ERR_CHAIN = 20030
 
     def setup_class(cls):
-        tester.gas_limit = int(2.4e6)  # include costs of debug methods
+        tester.gas_limit = int(2.5e6)  # include costs of debug methods
         cls.s = tester.state()
         cls.c = cls.s.abi_contract(cls.CONTRACT_DEBUG)
         cls.snapshot = cls.s.snapshot()

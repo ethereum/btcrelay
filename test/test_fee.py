@@ -349,11 +349,17 @@ class TestFee(object):
         balCaller = self.s.block.get_balance(addrVerifier)
         res = self.c.relayTx(txStr, txHash, txIndex, siblings, txBlockHash, BTC_ETH.address, sender=keyVerifier, value=self.FEE_VERIFY_TX, profiling=True)
 
-
-        eventArr.pop()  # pop the VerifyTransaction success event
-        eventArr.pop()  # TODO there was a None and not sure where it comes from
-        assert eventArr == [{'_event_type': 'EthPayment',
-            'recipient': int(addrFeeRecipient.encode('hex'), 16), 'amount': self.FEE_VERIFY_TX}]
+        assert eventArr == [
+            {'_event_type': 'EthPayment',
+                'recipient': int(addrFeeRecipient.encode('hex'), 16),
+                'amount': self.FEE_VERIFY_TX},
+            {'_event_type': 'VerifyTransaction',
+                'txHash': txHash,
+                'errCode': 1},
+            None,  # there is a None event since btc-eth.se logging hasn't been updated
+            {'_event_type': 'RelayTransaction',
+                'txHash': txHash,
+                'errCode': 1}]
         eventArr.pop()
 
 

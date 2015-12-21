@@ -285,7 +285,8 @@ class TestTxVerify(object):
                         'txHash': txHash,
                         'errCode': self.ERR_CONFIRMATIONS
                     },
-                    {'_event_type': 'Failure',
+                    {'_event_type': 'RelayTransaction',
+                    'txHash': txHash,
                     'errCode': self.ERR_RELAY_VERIFY
                     }]
                 eventArr.pop()
