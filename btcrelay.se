@@ -23,9 +23,10 @@ data heaviestBlock
 # highest score among all blocks (so far)
 data highScore
 
-event StoreHeader(blockHash:uint256:indexed, returnCode:indexed)
-event VerifyTransaction(txHash:uint256:indexed, returnCode:indexed)
-event RelayTransaction(txHash:uint256:indexed, returnCode:indexed)
+event StoreHeader(blockHash:uint256:indexed, returnCode:int256:indexed)
+event GetHeader(blockHash:uint256:indexed, returnCode:int256:indexed)
+event VerifyTransaction(txHash:uint256:indexed, returnCode:int256:indexed)
+event RelayTransaction(txHash:uint256:indexed, returnCode:int256:indexed)
 
 
 def init():
@@ -277,8 +278,14 @@ def within6Confirms(txBlockHash):
     return(0)
 
 
-# TODO: should this charge fee?  what about other APIs?
+# returns 80-bytes of zeros for a header that does not exist
+# returns the header as bytes if the fee is paid, otherwise returns 1-byte of zero
 def getBlockHeader(blockHash):
+    if !self.feePaid(blockHash, m_getFeeAmount(blockHash), value=msg.value):  # in incentive.se
+        log(type=GetHeader, blockHash, 0)
+        return(text("\x00"):str)
+
+    log(type=GetHeader, blockHash, 1)
     return(load(self.block[blockHash]._blockHeader[0], chars=80):str)
 
 
