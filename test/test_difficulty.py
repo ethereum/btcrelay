@@ -124,7 +124,7 @@ class TestDifficulty(object):
         assert self.c.storeBlockHeader(bhBytes) == 0
         assert eventArr == [{'_event_type': 'StoreHeader',
             'blockHash': blockHash,
-            'errCode': self.ERR_DIFFICULTY
+            'returnCode': self.ERR_DIFFICULTY
             }]
         eventArr.pop()
 
@@ -163,7 +163,7 @@ class TestDifficulty(object):
         assert self.c.storeBlockHeader(bhBytes) == 0
         assert eventArr == [{'_event_type': 'StoreHeader',
             'blockHash': blockHash,
-            'errCode': self.ERR_RETARGET
+            'returnCode': self.ERR_RETARGET
             }]
         eventArr.pop()
 

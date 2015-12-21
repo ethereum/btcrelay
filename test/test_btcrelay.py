@@ -83,7 +83,7 @@ class TestBtcRelay(object):
         res = self.c.verifyTx(*argsArr)
         assert eventArr == [{'_event_type': 'VerifyTransaction',
             'txHash': argsArr[0],
-            'errCode': self.ERR_CHAIN
+            'returnCode': self.ERR_CHAIN
             }]
         eventArr.pop()
         assert res == self.ERR_CHAIN
@@ -122,7 +122,7 @@ class TestBtcRelay(object):
         assert self.c.verifyTx(*txInBlockOne) == self.ERR_CONFIRMATIONS
         assert eventArr == [{'_event_type': 'VerifyTransaction',
             'txHash': txInBlockOne[0],
-            'errCode': self.ERR_CONFIRMATIONS
+            'returnCode': self.ERR_CONFIRMATIONS
             }]
         eventArr.pop()
 
@@ -549,7 +549,7 @@ class TestBtcRelay(object):
         assert res[0] == 0
         assert eventArr == [{'_event_type': 'StoreHeader',
             'blockHash': res[1],
-            'errCode': self.ERR_NO_PREV_BLOCK
+            'returnCode': self.ERR_NO_PREV_BLOCK
             }]
         eventArr.pop()
 
@@ -567,7 +567,7 @@ class TestBtcRelay(object):
         assert res[0] == 2 + 1  # +1 since setInitialParent was called with imaginary block
         assert eventArr == [{'_event_type': 'StoreHeader',
             'blockHash': res[1],
-            'errCode': res[0]
+            'returnCode': res[0]
             }]
         eventArr.pop()
 
@@ -585,7 +585,7 @@ class TestBtcRelay(object):
         assert self.c.storeBlockHeader(bhBytes) == 0
         assert eventArr == [{'_event_type': 'StoreHeader',
             'blockHash': dblSha256Flip(bhBytes),
-            'errCode': self.ERR_PROOF_OF_WORK
+            'returnCode': self.ERR_PROOF_OF_WORK
             }]
         eventArr.pop()
 
@@ -635,7 +635,7 @@ class TestBtcRelay(object):
         assert res['output'] == 0 # no block stored
         assert eventArr == [{'_event_type': 'StoreHeader',
             'blockHash': res['blockHash'],
-            'errCode': self.ERR_BLOCK_ALREADY_EXISTS
+            'returnCode': self.ERR_BLOCK_ALREADY_EXISTS
             }]
         eventArr.pop()
 

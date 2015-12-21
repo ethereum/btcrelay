@@ -23,10 +23,9 @@ data heaviestBlock
 # highest score among all blocks (so far)
 data highScore
 
-event Failure(errCode:indexed)
-event StoreHeader(blockHash:uint256:indexed, errCode:indexed)
-event VerifyTransaction(txHash:uint256:indexed, errCode:indexed)
-event RelayTransaction(txHash:uint256:indexed, errCode:indexed)
+event StoreHeader(blockHash:uint256:indexed, returnCode:indexed)
+event VerifyTransaction(txHash:uint256:indexed, returnCode:indexed)
+event RelayTransaction(txHash:uint256:indexed, returnCode:indexed)
 
 
 def init():

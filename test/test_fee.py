@@ -92,7 +92,7 @@ class TestFee(object):
         assert self.ERR_BAD_FEE == self.c.verifyTx(txHash, txIndex, siblings, txBlockHash, sender=tester.k0, value=0)
         assert eventArr == [{'_event_type': 'VerifyTransaction',
             'txHash': txHash,
-            'errCode': self.ERR_BAD_FEE
+            'returnCode': self.ERR_BAD_FEE
             }]
         eventArr.pop()
         assert self.s.block.get_balance(addrSender) == senderBal
@@ -105,7 +105,7 @@ class TestFee(object):
         assert self.ERR_BAD_FEE == self.c.verifyTx(txHash, txIndex, siblings, txBlockHash, sender=tester.k0, value=self.FEE_VERIFY_TX-1)
         assert eventArr == [{'_event_type': 'VerifyTransaction',
             'txHash': txHash,
-            'errCode': self.ERR_BAD_FEE
+            'returnCode': self.ERR_BAD_FEE
             }]
         eventArr.pop()
         assert self.s.block.get_balance(addrSender) == senderBal
@@ -119,7 +119,7 @@ class TestFee(object):
         assert self.ERR_BAD_FEE == self.c.verifyTx(txHash, txIndex, siblings, txBlockHash, sender=tester.k0, value=self.FEE_VERIFY_TX+1)
         assert eventArr == [{'_event_type': 'VerifyTransaction',
             'txHash': txHash,
-            'errCode': self.ERR_BAD_FEE
+            'returnCode': self.ERR_BAD_FEE
             }]
         eventArr.pop()
         assert self.s.block.get_balance(addrSender) == senderBal
@@ -355,11 +355,11 @@ class TestFee(object):
                 'amount': self.FEE_VERIFY_TX},
             {'_event_type': 'VerifyTransaction',
                 'txHash': txHash,
-                'errCode': 1},
+                'returnCode': 1},
             None,  # there is a None event since btc-eth.se logging hasn't been updated
             {'_event_type': 'RelayTransaction',
                 'txHash': txHash,
-                'errCode': 1}]
+                'returnCode': 1}]
         eventArr.pop()
 
 
