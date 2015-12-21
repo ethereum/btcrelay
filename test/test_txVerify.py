@@ -267,6 +267,7 @@ class TestTxVerify(object):
         for i in range(7):
             res = self.c.storeBlockHeader(blockHeaderBytes[i])
             assert res == i+100000
+            eventArr.pop()  # pop the StoreHeader success event
 
             res = self.c.relayTx(txStr, txHash, txIndex, siblings, txBlockHash, BTC_ETH.address)
 
@@ -314,11 +315,17 @@ class TestTxVerify(object):
         hashes = [u'8c14f0db3df150123e6f3dbbf30f8b955a8249b62ac1d1ff16284aefa3d06d87', u'fff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4', u'6359f0868171b1d194cbee1af2f16ea598ae8fad666d9b012c8ed2b79a236ec4', u'e9a66845e05d5abc0ad04ec80f774a7e585c6e8db975962d069a522137b80c1d']
         [txHash, txIndex, siblings, txBlockHash] = makeMerkleProof(header, hashes, 3)
 
-        res = self.c.verifyTx(txHash, txIndex, siblings, txBlockHash)
-        assert res == 1  # adjust according to numBlock and the block that the tx belongs to
-
         eventArr = []
         self.s.block.log_listeners.append(lambda x: eventArr.append(self.c._translator.listen(x)))
+
+        res = self.c.verifyTx(txHash, txIndex, siblings, txBlockHash)
+        assert res == 1  # adjust according to numBlock and the block that the tx belongs to
+        assert eventArr == [
+            {'_event_type': 'VerifyTransaction',
+                'txHash': txHash,
+                'errCode': 1
+            }]
+        eventArr.pop()
 
         assert self.c.verifyTx(txHash, txIndex+1, siblings, txBlockHash) == self.ERR_MERKLE_ROOT
         assert eventArr == [
@@ -394,7 +401,6 @@ class TestTxVerify(object):
     def randomTxMerkleCheck(self, blocknum):
         [txHash, txIndex, siblings, txBlockHash, pybtctoolMerkle] = randomMerkleProof(blocknum, -1, True)
         merkle = self.c.computeMerkle(txHash, txIndex, siblings)
-        merkle %= 2 ** 256
         assert merkle == pybtctoolMerkle
 
     @slow
@@ -414,7 +420,6 @@ class TestTxVerify(object):
         tx = int(hashes[index], 16)
         siblings = map(partial(int,base=16), proof['siblings'])
         merkle = self.c.computeMerkle(tx, index, siblings)
-        merkle %= 2 ** 256
         assert merkle == int(proof['header']['merkle_root'], 16)
 
 

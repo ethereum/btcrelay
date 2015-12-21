@@ -72,6 +72,7 @@ class TestFee(object):
         senderBal = self.s.block.get_balance(addrSender)
         balCaller = self.s.block.get_balance(tester.a0)
         res = self.c.verifyTx(txHash, txIndex, siblings, txBlockHash, sender=tester.k0, value=self.FEE_VERIFY_TX, profiling=True)
+        eventArr.pop()  # pop the VerifyTransaction success event
         print('GAS: '+str(res['gas']))
         assert res['output'] == 1  # adjust according to numHeader and the block that the tx belongs to
 
@@ -349,6 +350,7 @@ class TestFee(object):
         res = self.c.relayTx(txStr, txHash, txIndex, siblings, txBlockHash, BTC_ETH.address, sender=keyVerifier, value=self.FEE_VERIFY_TX, profiling=True)
 
 
+        eventArr.pop()  # pop the VerifyTransaction success event
         eventArr.pop()  # TODO there was a None and not sure where it comes from
         assert eventArr == [{'_event_type': 'EthPayment',
             'recipient': int(addrFeeRecipient.encode('hex'), 16), 'amount': self.FEE_VERIFY_TX}]

@@ -142,6 +142,7 @@ def storeBlockHeader(blockHeaderBytes:str):
             self.heaviestBlock = blockHash
             self.highScore = scoreBlock
 
+        log(type=StoreHeader, blockHash, blockHeight)
         return(blockHeight)
 
     log(type=StoreHeader, blockHash, ERR_PROOF_OF_WORK)
@@ -172,6 +173,7 @@ def verifyTx(txHash:uint256, txIndex, sibling:arr, txBlockHash):
     realMerkleRoot = getMerkleRoot(txBlockHash)
 
     if merkle == realMerkleRoot:
+        log(type=VerifyTransaction, txHash, 1)
         return(1)
 
     log(type=VerifyTransaction, txHash, ERR_MERKLE_ROOT)
