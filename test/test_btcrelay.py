@@ -665,9 +665,20 @@ class TestBtcRelay(object):
         assert res['output'] == 300000
 
         blockHash = self.c.getBlockchainHead()
+
+
+        eventArr = []
+        self.s.block.log_listeners.append(lambda x: eventArr.append(self.c._translator.listen(x)))
+
         res = self.c.getBlockHeader(blockHash, profiling=True)
         print('GAS: %s' % res['gas'])
         assert res['output'] == bhBytes
+
+        assert eventArr == [{'_event_type': 'GetHeader',
+            'blockHash': blockHash,
+            'returnCode': 1
+            }]
+        eventArr.pop()
 
 
     def testComputeMerkle(self):

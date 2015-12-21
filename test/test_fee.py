@@ -146,6 +146,57 @@ class TestFee(object):
                 i += 1
 
 
+    def testGetHeaderWithFee(self):
+        block300K = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
+        self.c.setInitialParent(block300K, 299999, 1)
+
+        weiFee = 15
+
+        blockHeaderStr = '0200000059c786bb379b65487f373279354f8ccc91ffcea2200c36080000000000000000dd9d7757a736fec629ab0ed0f602ba23c77afe7edec85a7026f641fd90bcf8f658ca8154747b1b1894fc742f'
+        bhBytes = blockHeaderStr.decode('hex')
+        res = self.c.storeBlockWithFee(bhBytes, weiFee, profiling=True, sender=tester.k1)
+
+        blockHash = self.c.getBlockchainHead()
+
+
+        eventArr = []
+        self.s.block.log_listeners.append(lambda x: eventArr.append(self.c._translator.listen(x)))
+
+        zeroByte = '00'.decode('hex')
+        assert self.c.getBlockHeader(blockHash) == zeroByte
+        assert eventArr == [{'_event_type': 'GetHeader',
+            'blockHash': blockHash,
+            'returnCode': 0
+            }]
+        eventArr.pop()
+
+        assert self.c.getBlockHeader(blockHash, value=weiFee-1) == zeroByte
+        assert eventArr == [{'_event_type': 'GetHeader',
+            'blockHash': blockHash,
+            'returnCode': 0
+            }]
+        eventArr.pop()
+
+        assert self.c.getBlockHeader(blockHash, value=weiFee+1) == zeroByte
+        assert eventArr == [{'_event_type': 'GetHeader',
+            'blockHash': blockHash,
+            'returnCode': 0
+            }]
+        eventArr.pop()
+
+        assert self.c.getBlockHeader(blockHash, value=weiFee) == bhBytes
+        assert eventArr == [
+            {'_event_type': 'EthPayment',
+                'recipient': int(tester.a1.encode('hex'), 16),
+                'amount': weiFee
+            },
+            {'_event_type': 'GetHeader',
+                'blockHash': blockHash,
+                'returnCode': 1
+            }]
+        eventArr.pop()
+
+
     def testBlockWithFee(self):
         block300K = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
         self.c.setInitialParent(block300K, 299999, 1)
@@ -160,7 +211,7 @@ class TestFee(object):
         assert res['output'] == 300000
 
         blockHash = self.c.getBlockchainHead()
-        res = self.c.getBlockHeader(blockHash, profiling=True)
+        res = self.c.getBlockHeader(blockHash, value=expPayWei, profiling=True)
         print('GAS: %s' % res['gas'])
         assert res['output'] == bhBytes
 
