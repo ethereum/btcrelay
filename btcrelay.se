@@ -279,8 +279,8 @@ def within6Confirms(txBlockHash):
     return(0)
 
 
-# returns 80-bytes of zeros for a header that does not exist
-# returns the header as bytes if the fee is paid, otherwise returns 1-byte of zero
+# returns the 80-byte header (zeros for a header that does not exist) when
+# sufficient payment is provided.  If payment is insufficient, returns 1-byte of zero.
 def getBlockHeader(blockHash):
     if !self.feePaid(blockHash, m_getFeeAmount(blockHash), value=msg.value):  # in incentive.se
         log(type=GetHeader, blockHash, 0)
