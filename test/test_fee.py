@@ -113,18 +113,23 @@ class TestFee(object):
         assert self.s.block.get_balance(self.c.address) == self.FEE_VERIFY_TX - 1
 
         #
-        # overpayment is burned to contract
+        # overpayment is sent to who stored the header (ie addrSender)
         #
         balCaller -= self.FEE_VERIFY_TX + 1
-        assert self.ERR_BAD_FEE == self.c.verifyTx(txHash, txIndex, siblings, txBlockHash, sender=tester.k0, value=self.FEE_VERIFY_TX+1)
-        assert eventArr == [{'_event_type': 'VerifyTransaction',
-            'txHash': txHash,
-            'returnCode': self.ERR_BAD_FEE
+        assert self.c.verifyTx(txHash, txIndex, siblings, txBlockHash, sender=tester.k0, value=self.FEE_VERIFY_TX+1) == 1
+        assert eventArr == [
+            {'_event_type': 'EthPayment',
+                'recipient': int(tester.a1.encode('hex'), 16),
+                'amount': self.FEE_VERIFY_TX+1
+            },
+            {'_event_type': 'VerifyTransaction',
+                'txHash': txHash,
+                'returnCode': 1
             }]
         eventArr.pop()
-        assert self.s.block.get_balance(addrSender) == senderBal
+        assert self.s.block.get_balance(addrSender) == senderBal + self.FEE_VERIFY_TX + 1
         assert self.s.block.get_balance(tester.a0) == balCaller
-        assert self.s.block.get_balance(self.c.address) == self.FEE_VERIFY_TX * 2
+        assert self.s.block.get_balance(self.c.address) == self.FEE_VERIFY_TX - 1  # no change
 
 
 
@@ -177,11 +182,17 @@ class TestFee(object):
             }]
         eventArr.pop()
 
-        assert self.c.getBlockHeader(blockHash, value=weiFee+1) == zeroByte
-        assert eventArr == [{'_event_type': 'GetHeader',
-            'blockHash': blockHash,
-            'returnCode': 0
+        assert self.c.getBlockHeader(blockHash, value=weiFee+1) == bhBytes
+        assert eventArr == [
+            {'_event_type': 'EthPayment',
+                'recipient': int(tester.a1.encode('hex'), 16),
+                'amount': weiFee+1
+            },
+            {'_event_type': 'GetHeader',
+                'blockHash': blockHash,
+                'returnCode': 1
             }]
+        eventArr.pop()
         eventArr.pop()
 
         assert self.c.getBlockHeader(blockHash, value=weiFee) == bhBytes
@@ -194,6 +205,7 @@ class TestFee(object):
                 'blockHash': blockHash,
                 'returnCode': 1
             }]
+        eventArr.pop()
         eventArr.pop()
 
 
@@ -241,12 +253,14 @@ class TestFee(object):
         balRecipient += toPay
 
         toPay = expPayWei+1
-        assert self.c.feePaid(blockHash, feeWei, value=toPay) == 0
-        assert self.s.block.get_balance(tester.a1) == balRecipient
+        assert self.c.feePaid(blockHash, feeWei, value=toPay) == 1
+        assert self.s.block.get_balance(tester.a1) == balRecipient + toPay
+        balRecipient += toPay
 
         toPay = expPayWei + int(10e18)  # 10 ETH extra
-        assert self.c.feePaid(blockHash, feeWei, value=toPay) == 0
-        assert self.s.block.get_balance(tester.a1) == balRecipient
+        assert self.c.feePaid(blockHash, feeWei, value=toPay) == 1
+        assert self.s.block.get_balance(tester.a1) == balRecipient + toPay
+        balRecipient += toPay
 
         with pytest.raises(exceptions.InsufficientBalance):
             self.c.feePaid(blockHash, feeWei, value=2**256-1)
@@ -276,12 +290,14 @@ class TestFee(object):
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=prevFee-1) == 0
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=prevFee+1) == 0
 
-        # balance change for exact payment; inexact payments do not change any balances
+        # balance changes for exact and over payment
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=crFee-1) == 0
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=crFee+1) == 0
+        balRecipient += crFee + 1  # overpayment is still sent to next recipient
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=crFee+1000) == 0
-        balRecipient += crFee
+        balRecipient += crFee + 1000  # overpayment is still sent to next recipient
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=crFee) == 0
+        balRecipient += crFee
         assert self.s.block.get_balance(tester.a1) == balRecipient
 
         #
@@ -296,12 +312,14 @@ class TestFee(object):
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=prevFee-1) == 0
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=prevFee+1) == 0
 
-        # balance change for exact payment; inexact payments do not change any balances
+        # balance changes for exact and over payment
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=crFee-1) == 0
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=crFee+1) == 0
+        balRecipient += crFee + 1  # overpayment is still sent to next recipient
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=crFee+1000) == 0
-        balRecipient += crFee
+        balRecipient += crFee + 1000  # overpayment is still sent to next recipient
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=crFee) == 0
+        balRecipient += crFee
         assert self.s.block.get_balance(tester.a1) == balRecipient
 
         #
@@ -316,15 +334,15 @@ class TestFee(object):
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=prevFee-1) == 0
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=prevFee+1) == 0
 
-        # balance change for exact payment; inexact payments do not change any balances
+        # balance changes for exact and over payment
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=crFee-1) == 0
-        assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=crFee+1) == 0
-        assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=crFee+1000) == 0
-        balRecipient += crFee
         assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=crFee) == 1
+        balRecipient += crFee
+        assert self.c.changeFeeRecipient(blockHash, nextFee, nextRec, value=crFee+1000) == 0 # since nextFee not decreased
+        balNextRec += crFee + 1000  # overpayment is still sent to next recipient
         assert self.s.block.get_balance(tester.a1) == balRecipient
 
-        assert self.s.block.get_balance(tester.a2) == balNextRec  # should not have received anything yet
+        assert self.s.block.get_balance(tester.a2) == balNextRec
 
         #
         # decrease fee to 1 wei
@@ -341,21 +359,22 @@ class TestFee(object):
         assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec, value=prevFee-1) == 0
         assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec, value=prevFee+1) == 0
 
-        # balance change for exact payment; inexact payments do not change any balances
+        # balance changes for exact and over payment
         assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec, value=crFee-1) == 0
-        assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec, value=crFee+1) == 0
-        assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec, value=crFee+1000) == 0
-        balNextRec += crFee
         assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec, value=crFee) == 1
+        balNextRec += crFee
+        assert self.c.changeFeeRecipient(blockHash, nextFee, thirdRec, value=crFee+1000) == 0 # since nextFee not decreased
+        balThirdRec += crFee + 1000  # overpayment is still sent to next recipient
+
         assert self.s.block.get_balance(tester.a2) == balNextRec
 
-        assert self.s.block.get_balance(tester.a3) == balThirdRec # should not have received anything yet
+        assert self.s.block.get_balance(tester.a3) == balThirdRec
 
         #
         # decrease fee to 0
         #
         prevFee = nextFee
-        fourthRec = int(tester.a3.encode('hex'), 16)
+        fourthRec = int(tester.a4.encode('hex'), 16)
         balFourthRec = self.s.block.get_balance(tester.a4)
         nextFee = 0
         assert self.c.changeFeeRecipient(blockHash, nextFee, fourthRec) == 0
@@ -365,15 +384,16 @@ class TestFee(object):
         assert self.c.changeFeeRecipient(blockHash, nextFee, fourthRec, value=prevFee-1) == 0
         assert self.c.changeFeeRecipient(blockHash, nextFee, fourthRec, value=prevFee+1) == 0
 
-        # balance change for exact payment; inexact payments do not change any balances
+        # balance changes for exact and over payment
         assert self.c.changeFeeRecipient(blockHash, nextFee, fourthRec, value=crFee-1) == 0
-        assert self.c.changeFeeRecipient(blockHash, nextFee, fourthRec, value=crFee+1) == 0
-        assert self.c.changeFeeRecipient(blockHash, nextFee, fourthRec, value=crFee+1000) == 0
-        balThirdRec += crFee
         assert self.c.changeFeeRecipient(blockHash, nextFee, fourthRec, value=crFee) == 1
+        balThirdRec += crFee
+        assert self.c.changeFeeRecipient(blockHash, nextFee, fourthRec, value=crFee+1000) == 0 # since nextFee not decreased
+        balFourthRec += crFee + 1000  # overpayment is still sent to next recipient
+
         assert self.s.block.get_balance(tester.a3) == balThirdRec
 
-        assert self.s.block.get_balance(tester.a4) == balFourthRec # should not have received anything yet
+        assert self.s.block.get_balance(tester.a4) == balFourthRec
 
         # prior recipients should not have received anything
         assert self.s.block.get_balance(tester.a2) == balNextRec
