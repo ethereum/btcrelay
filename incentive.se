@@ -45,7 +45,7 @@ def storeBlockWithFeeAndRecipient(blockHeaderBytes:str, feeWei, feeRecipient):
 # and return 1.  otherwise return 0.
 # This does NOT return any funds to incorrect callers
 def feePaid(txBlockHash, amountWei):
-    if msg.value == amountWei:  # does not allow overpayment
+    if msg.value >= amountWei:
         if msg.value > 0:
             feeRecipient = m_getFeeRecipient(txBlockHash)
             send(feeRecipient, msg.value)
