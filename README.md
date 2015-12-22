@@ -80,12 +80,14 @@ Returns `int256`
 
 ##### getBlockHeader(blockHash)
 
-Get the 80 byte block header for a given `blockHash`.
+Get the 80 byte block header for a given `blockHash`.  A payment value of
+`getFeeAmount(blockHash)` must be provided in the transaction.
 
 * `blockHash` - hash of the block as `int256`
 
 Returns `bytes`
 * block header, always as 80 bytes (all zeros if header does not exist)
+* or `0` (as a single byte) if insufficient payment is provided
 
 ----
 
@@ -143,7 +145,8 @@ Relayers are those who submit block headers to BTC Relay.  To incentivize the co
 to be relayers, and thus allow BTC Relay to be autonomous and up-to-date with the
 Bitcoin blockchain, Relayers can call `storeBlockWithFee`.  The Relayer will be the
 `getFeeRecipient()` for the block they submit, and when any transactions are verified
-in the block, the Relayer will be rewarded with `getFeeAmount()`.
+in the block, or the header is retrieved via `getBlockHeader`, the Relayer will be
+ rewarded with `getFeeAmount()`.
 
 To avoid a relayer R1 from setting excessing fees, it is possible for a relayer R2
 to `changeFeeRecipient()`.  R2 must specify a fee lower than what R1 specified, and
