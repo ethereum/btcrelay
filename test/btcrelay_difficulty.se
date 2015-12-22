@@ -1,0 +1,19 @@
+#
+# macro wrappers (since only functions are testable)
+#
+
+def funcTargetFromBits(bits):
+    return(targetFromBits(bits))
+
+def funcToCompactBits(val):
+    return(m_toCompactBits(val))
+
+def funcComputeNewBits(prevTime, startTime, prevTarget):
+    return(m_computeNewBits(prevTime, startTime, prevTarget))
+
+#
+# end of macro wrappers
+#
+
+# testing overrides should be before the contract being tested
+inset('../btcBulkStoreHeaders.se')

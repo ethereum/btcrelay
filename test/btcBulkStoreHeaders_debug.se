@@ -1,0 +1,2 @@
+# testing overrides should be before the contract being tested
+inset('../btcBulkStoreHeaders.se')
