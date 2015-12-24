@@ -50,7 +50,7 @@ def getBytes(txBytes, pos, bits):
         # return([2, byte(index, txBytes) + byte(index-1, txBytes)*BYTES_1]:arr)
         # return([2, byte(index, txBytes) + byte(index+1, txBytes)*BYTES_1]:arr)
     if bits == 32:
-        return([2, byte(index-3, txBytes) + byte(index-2, txBytes)*BYTES_1 + byte(index-1, txBytes)*BYTES_2 + byte(index, txBytes)*BYTES_3]:arr)
+        return([4, byte(index-3, txBytes) + byte(index-2, txBytes)*BYTES_1 + byte(index-1, txBytes)*BYTES_2 + byte(index, txBytes)*BYTES_3]:arr)
 
     # need to return size/2 since we don't know the next offset with getVarintNum
     # return([size/2, result]:arr)
