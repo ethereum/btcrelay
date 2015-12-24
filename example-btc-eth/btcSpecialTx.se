@@ -47,10 +47,7 @@ def getBytes(txBytes:str, pos, bits):
     if bits == 8:
         return([1, getch(txBytes, pos)]:arr)
     if bits == 16:
-        if pos==1:
-            txBytes *= BYTES_1
-            pos=0
-        return([2, byte(index-1, txBytes) + byte(index, txBytes)*BYTES_1]:arr)
+        return([2, getch(txBytes, pos) + getch(txBytes, pos+1)*BYTES_1]:arr)
 
         # return([2, byte(index, txBytes) + byte(index-1, txBytes)*BYTES_1]:arr)
         # return([2, byte(index, txBytes) + byte(index+1, txBytes)*BYTES_1]:arr)
