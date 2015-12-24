@@ -9,6 +9,7 @@ macro parseVarInt($txStr, $cursor):
     $arr[1]
 
 
+event log_m_gviNum(someInt)
 macro m_gviNum($txBytes, $pos):
     $ret = m_getUInt8($txBytes, $pos)
     if $ret == 0xfd:
@@ -17,6 +18,9 @@ macro m_gviNum($txBytes, $pos):
         $ret = m_getUInt32LE($txBytes, $pos)
     elif $ret == 0xff:
         $ret = m_getUInt64LE($txBytes, $pos)
+
+    log(type=log_m_gviNum, $ret[0])
+    log(type=log_m_gviNum, $ret[1])
 
     $ret
 
@@ -61,17 +65,12 @@ macro m_getUInt64LE($txBytes, $pos):
     self.getBytes($txBytes, $pos, 64, outitems=2)
 
 
+# read the VarInt and advance the cursor
 macro m_pviBytes($txBytes, $cursor):
     $arr = m_gviNum($txBytes, $cursor)
     $cursor += $arr[0]
     $arr[1]
 
-
-# read the VarInt and advance the cursor
-macro m_newParseVarInt($txStr, $cursor):
-    $arr = m_pviBytes($txStr, $cursor)
-    $cursor += $arr[0]
-    $arr[1]
 
 # WIP
 def parseBytes(txBytes:str):
@@ -80,6 +79,8 @@ def parseBytes(txBytes:str):
     return numIns
 
 
+event log_dbg(dbgData)
+
 # return 0 if tx has less than 2 outputs
 # or other error, otherwise return array
 # of [out1stSatoshis, out1stScriptIndex, out2ndScriptIndex]
@@ -87,20 +88,20 @@ def parseBytes(txBytes:str):
 def newFirst2Outputs(txStr:str):
     cursor = 4  # skip version
 
-    numIns = m_newParseVarInt(txStr, cursor)
-    # log(numIns)
-    # log(cursor)
+    numIns = m_pviBytes(txStr, cursor)
+    log(type=log_dbg, numIns)
+    # log(type=log_dbg, cursor)
 
     i = 0
     while i < numIns:
         cursor += 36  # skip prevTxId (32) and outputIndex (4)
 
-        scriptSize = m_newParseVarInt(txStr, cursor)
+        scriptSize = m_pviBytes(txStr, cursor)
         cursor += scriptSize + 4  # skip input script and seqNum (4)
 
         i += 1
 
-    numOuts = m_newParseVarInt(txStr, cursor)
+    numOuts = m_pviBytes(txStr, cursor)
     if numOuts < 2:
         return
 
@@ -113,7 +114,7 @@ def newFirst2Outputs(txStr:str):
 
     # log(satoshis)
 
-    scriptSize = m_newParseVarInt(txStr, cursor)
+    scriptSize = m_pviBytes(txStr, cursor)
     # log(scriptSize)
 
     if scriptSize == 0:
@@ -128,7 +129,7 @@ def newFirst2Outputs(txStr:str):
     ###########################################################
     # 2nd output (satoshis were already skipped in previous line)
 
-    scriptSize = m_newParseVarInt(txStr, cursor)
+    scriptSize = m_pviBytes(txStr, cursor)
     # log(scriptSize)
 
     if scriptSize == 0:
