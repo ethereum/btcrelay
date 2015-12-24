@@ -67,7 +67,7 @@ macro m_pviBytes($txBytes, $cursor):
     $arr[1]
 
 # WIP
-def parseBytes(txBytes):
+def parseBytes(txBytes:str):
     cursor = 4
     numIns = m_pviBytes(txBytes, cursor)
     return numIns
