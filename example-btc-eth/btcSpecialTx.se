@@ -9,7 +9,6 @@ macro parseVarInt($txStr, $cursor):
     $arr[1]
 
 
-event log_m_gviNum(someInt)
 macro m_gviNum($txBytes, $pos):
     $ret = m_getUInt8($txBytes, $pos)
     if $ret == 0xfd:
@@ -18,9 +17,6 @@ macro m_gviNum($txBytes, $pos):
         $ret = m_getUInt32LE($txBytes, $pos)
     elif $ret == 0xff:
         $ret = m_getUInt64LE($txBytes, $pos)
-
-    log(type=log_m_gviNum, $ret[0])
-    log(type=log_m_gviNum, $ret[1])
 
     $ret
 
@@ -34,7 +30,8 @@ macro BYTES_5: 2**40
 macro BYTES_6: 2**48
 macro BYTES_7: 2**56
 
-def getBytes(txBytes:str, pos, bits):
+
+def getBytesLE(txBytes:str, pos, bits):
     if bits == 8:
         return([1, getch(txBytes, pos)]:arr)
     if bits == 16:
@@ -44,25 +41,21 @@ def getBytes(txBytes:str, pos, bits):
     if bits == 64:
         return([8, getch(txBytes, pos) + getch(txBytes, pos+1)*BYTES_1 + getch(txBytes, pos+2)*BYTES_2 + getch(txBytes, pos+3)*BYTES_3 + getch(txBytes, pos+4)*BYTES_4 + getch(txBytes, pos+5)*BYTES_5 + getch(txBytes, pos+6)*BYTES_6 + getch(txBytes, pos+7)*BYTES_7]:arr)
 
-    # need to return size/2 since we don't know the next offset with getVarintNum
-    # return([size/2, result]:arr)
-
-
 
 macro m_getUInt8($txBytes, $pos):
-    self.getBytes($txBytes, $pos, 8, outitems=2)
+    self.getBytesLE($txBytes, $pos, 8, outitems=2)
 
 
 macro m_getUInt16LE($txBytes, $pos):
-    self.getBytes($txBytes, $pos, 16, outitems=2)
+    self.getBytesLE($txBytes, $pos, 16, outitems=2)
 
 
 macro m_getUInt32LE($txBytes, $pos):
-    self.getBytes($txBytes, $pos, 32, outitems=2)
+    self.getBytesLE($txBytes, $pos, 32, outitems=2)
 
 
 macro m_getUInt64LE($txBytes, $pos):
-    self.getBytes($txBytes, $pos, 64, outitems=2)
+    self.getBytesLE($txBytes, $pos, 64, outitems=2)
 
 
 # read the VarInt and advance the cursor
@@ -79,7 +72,7 @@ def parseBytes(txBytes:str):
     return numIns
 
 
-event log_dbg(dbgData)
+# event log_dbg(dbgData)
 
 # return 0 if tx has less than 2 outputs
 # or other error, otherwise return array
@@ -89,7 +82,7 @@ def newFirst2Outputs(txStr:str):
     cursor = 4  # skip version
 
     numIns = m_pviBytes(txStr, cursor)
-    log(type=log_dbg, numIns)
+    # log(type=log_dbg, numIns)
     # log(type=log_dbg, cursor)
 
     i = 0
