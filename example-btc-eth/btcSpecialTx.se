@@ -26,33 +26,19 @@ macro BYTES_1: 2**8
 macro BYTES_2: 2**16
 macro BYTES_3: 2**24
 macro BYTES_4: 2**32
+macro BYTES_5: 2**40
+macro BYTES_6: 2**48
+macro BYTES_7: 2**56
+
 def getBytes(txBytes:str, pos, bits):
-    # if pos==0:
-    #     return(byte(29, txBytes))
-    # if pos==1:
-    #     return(byte(30, txBytes))
-    #
-    # if pos==0:
-    #     return(byte(30, txBytes))
-    # if pos==1:
-    #     return(byte(31, txBytes))
-
-    # return([77, m_bitLen(txBytes)]:arr)
-    #
-    # if pos==2 && bits==16:
-    #     return([99, byte(0, txBytes) ]:arr)
-
-
-    # index = 31 - pos
     if bits == 8:
         return([1, getch(txBytes, pos)]:arr)
     if bits == 16:
         return([2, getch(txBytes, pos) + getch(txBytes, pos+1)*BYTES_1]:arr)
-
-        # return([2, byte(index, txBytes) + byte(index-1, txBytes)*BYTES_1]:arr)
-        # return([2, byte(index, txBytes) + byte(index+1, txBytes)*BYTES_1]:arr)
     if bits == 32:
         return([4, getch(txBytes, pos) + getch(txBytes, pos+1)*BYTES_1 + getch(txBytes, pos+2)*BYTES_2 + getch(txBytes, pos+3)*BYTES_3]:arr)
+    if bits == 64:
+        return([8, getch(txBytes, pos) + getch(txBytes, pos+1)*BYTES_1 + getch(txBytes, pos+2)*BYTES_2 + getch(txBytes, pos+3)*BYTES_3 + getch(txBytes, pos+4)*BYTES_4 + getch(txBytes, pos+5)*BYTES_5 + getch(txBytes, pos+6)*BYTES_6 + getch(txBytes, pos+7)*BYTES_7]:arr)
 
     # need to return size/2 since we don't know the next offset with getVarintNum
     # return([size/2, result]:arr)
