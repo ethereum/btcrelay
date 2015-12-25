@@ -51,9 +51,11 @@ class TestBtcSpecialTx(object):
         assert res[0] == 170000
 
         out1stScriptIndex = res[1]
+        assert out1stScriptIndex == 194
         btcAddrIndex = out1stScriptIndex*2 + 6
         assert txStr[btcAddrIndex:btcAddrIndex+40] == 'a0dc485fc3ade71be5e1b68397abded386c0adb7'
 
         out2ndScriptIndex = res[2]
+        assert out2ndScriptIndex == 228
         ethAddrIndex = out2ndScriptIndex*2 + 6
         assert txStr[ethAddrIndex:ethAddrIndex+40] == 'd3193ccb3564d5425e4875fe763e26e2fce1fd3b'
