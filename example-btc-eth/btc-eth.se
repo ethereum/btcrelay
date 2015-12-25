@@ -38,7 +38,7 @@ def setTrustedBtcRelay(trustedRelayContract):
 # returns the value of send() if they are met (typically send() returns 1 on success)
 # callers should probably explicitly check for a return value of 1 for success,
 # to protect against the possibility of send() returning non-zero error codes
-def processTransaction(txStr:str, txHash:uint256):
+def processTransaction(txBytes:str, txHash:uint256):
     # apart from trustedBtcRelay, only the owner may claim ether
     if msg.sender != self.trustedBtcRelay:
         if tx.origin != self.owner:  # tx.origin is superset of msg.sender, so no need for checking msg.sender==self.owner
@@ -51,7 +51,7 @@ def processTransaction(txStr:str, txHash:uint256):
             log(msg.sender, data=[-20])
             return(0)
 
-    outputData = self.getFirst2Outputs(txStr, outitems=3)
+    outputData = self.getFirst2Outputs(txBytes, outitems=3)
 
     if outputData == 0:
         log(msg.sender, data=[-30])
@@ -62,14 +62,14 @@ def processTransaction(txStr:str, txHash:uint256):
 
     #TODO strictly compare the script because an attacker may have a script that mentions
     #our BTC address, but the BTC is not spendable by our private key (only spendable by attacker's key)
-    # btcWasSentToMe = compareScriptWithAddr(indexScriptOne, txStr, self.btcAcceptAddr)
-    addrBtcWasSentTo = getEthAddr(indexScriptOne, txStr, 20, 6)
+    # btcWasSentToMe = compareScriptWithAddr(indexScriptOne, TODO, self.btcAcceptAddr)
+    addrBtcWasSentTo = getEthAddr(indexScriptOne, txBytes, 20, 3)
 
     btcWasSentToMe = addrBtcWasSentTo == self.btcAcceptAddr
 
 
     indexScriptTwo = outputData[2]
-    ethAddr = getEthAddr(indexScriptTwo, txStr, 20, 6)
+    ethAddr = getEthAddr(indexScriptTwo, txBytes, 20, 3)
     # log(ethAddr)  # exp 848063048424552597789830156546485564325215747452L
 
     # expEthAddr = text("948c765a6914d43f2a7ac177da2c2f6b52de3d7c")
@@ -91,23 +91,18 @@ def setOwner(newOwner):
     return(0)
 
 
+# get $size bytes from $inStr, at the position given by $indexStart with $offset
 macro getEthAddr($indexStart, $inStr, $size, $offset):
-    $endIndex = ($indexStart*2) + $offset + ($size * 2)
+    $endIndex = $indexStart + $offset + $size
 
     $result = 0
     $exponent = 0
-    $j = ($indexStart*2) + $offset
+    $j = $indexStart + $offset
     while $j < $endIndex:
-        $char = getch($inStr, $endIndex-1-$exponent)
-        # log($char)
-
-        if ($char >= 97 && $char <= 102):  # only handles lowercase a-f
-            $numeric = $char - 87
-        else:
-            $numeric = $char - 48
+        $numeric = getch($inStr, $endIndex-1-$exponent)
         # log($numeric)
 
-        $result += $numeric * 16^$exponent
+        $result += $numeric * 256**$exponent
         # log(result)
 
         $j += 1
@@ -116,18 +111,14 @@ macro getEthAddr($indexStart, $inStr, $size, $offset):
     $result
 
 
-macro getBEBytes($inStr, $size, $offset):
-    div(mload($inStr + $offset), 256**(32 - $size))
-
-
-
-macro compareScriptWithStringAddr($indexStart, $txStr, $addrStr):
-    $i = 0
-    $j = 6 + ($indexStart * 2)
-    while $i < 26:
-        if getch($txStr, $j) != getch($addrStr, $i):
-            $i = 9999 #TODO better way ?
-        else:
-            $i += 1
-            $j += 1
-    $i == 26
+# this would need to be converted to use txStr bytes since it currently assumes txStr is a hex string
+# macro compareScriptWithStringAddr($indexStart, $txStr, $addrStr):
+#     $i = 0
+#     $j = 6 + ($indexStart * 2)
+#     while $i < 26:
+#         if getch($txStr, $j) != getch($addrStr, $i):
+#             $i = 9999 #TODO better way ?
+#         else:
+#             $i += 1
+#             $j += 1
+#     $i == 26

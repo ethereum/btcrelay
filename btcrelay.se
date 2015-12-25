@@ -186,9 +186,9 @@ def verifyTx(txHash:uint256, txIndex, sibling:arr, txBlockHash):
 #
 # if the transaction does not meet verification, error code ERR_RELAY_VERIFY
 # is logged and returned
-def relayTx(txStr:str, txHash:uint256, txIndex, sibling:arr, txBlockHash, contract):
+def relayTx(txBytes:str, txHash:uint256, txIndex, sibling:arr, txBlockHash, contract):
     if self.verifyTx(txHash, txIndex, sibling, txBlockHash, value=msg.value) == 1:
-        returnCode = contract.processTransaction(txStr, txHash)
+        returnCode = contract.processTransaction(txBytes, txHash)
         log(type=RelayTransaction, txHash, returnCode)
         return(returnCode)
 

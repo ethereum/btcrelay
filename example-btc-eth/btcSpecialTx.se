@@ -1,47 +1,47 @@
-# This file is an optimized version of btcTx.py for retrieving
-# the first 2 outputs of a Bitcoin transaction.
-# It is tested via test_btc-eth.py
+# This file retrieves the first 2 outputs of a Bitcoin transaction's raw bytes
 
 # read the VarInt and advance the cursor
-macro parseVarInt($txStr, $cursor):
-    $arr = getVarintNum($txStr, $cursor)
+macro m_parseVarInt($txBytes, $cursor):
+    $arr = m_getVarintNum($txBytes, $cursor)
     $cursor += $arr[0]
     $arr[1]
 
 
+# event log_dbg(dbgData)
+
 # return 0 if tx has less than 2 outputs
 # or other error, otherwise return array
 # of [out1stSatoshis, out1stScriptIndex, out2ndScriptIndex]
-def getFirst2Outputs(txStr:str):
+def getFirst2Outputs(txBytes:str):
     cursor = 4  # skip version
 
-    numIns = parseVarInt(txStr, cursor)
-    # log(numIns)
-    # log(cursor)
+    numIns = m_parseVarInt(txBytes, cursor)
+    # log(type=log_dbg, numIns)
+    # log(type=log_dbg, cursor)
 
     i = 0
     while i < numIns:
         cursor += 36  # skip prevTxId (32) and outputIndex (4)
 
-        scriptSize = parseVarInt(txStr, cursor)
+        scriptSize = m_parseVarInt(txBytes, cursor)
         cursor += scriptSize + 4  # skip input script and seqNum (4)
 
         i += 1
 
-    numOuts = parseVarInt(txStr, cursor)
+    numOuts = m_parseVarInt(txBytes, cursor)
     if numOuts < 2:
         return
 
 
     ###########################################################
     # 1st output
-    tmpArr = getUInt64LE(txStr, cursor)
+    tmpArr = m_getUInt64LE(txBytes, cursor)  # new m_getUInt64LE
     cursor += 8
     out1stSatoshis = tmpArr[1]
 
     # log(satoshis)
 
-    scriptSize = parseVarInt(txStr, cursor)
+    scriptSize = m_parseVarInt(txBytes, cursor)
     # log(scriptSize)
 
     if scriptSize == 0:
@@ -56,7 +56,7 @@ def getFirst2Outputs(txStr:str):
     ###########################################################
     # 2nd output (satoshis were already skipped in previous line)
 
-    scriptSize = parseVarInt(txStr, cursor)
+    scriptSize = m_parseVarInt(txBytes, cursor)
     # log(scriptSize)
 
     if scriptSize == 0:
@@ -68,62 +68,48 @@ def getFirst2Outputs(txStr:str):
     return([out1stSatoshis, out1stScriptIndex, out2ndScriptIndex]:arr)
 
 
-
-macro getVarintNum($txStr, $pos):
-    $ret = getUInt8($txStr, $pos)
+macro m_getVarintNum($txBytes, $pos):
+    $ret = m_getUInt8($txBytes, $pos)
     if $ret == 0xfd:
-        $ret = getUInt16LE($txStr, $pos)
+        $ret = m_getUInt16LE($txBytes, $pos)
     elif $ret == 0xfe:
-        $ret = getUInt32LE($txStr, $pos)
+        $ret = m_getUInt32LE($txBytes, $pos)
     elif $ret == 0xff:
-        $ret = getUInt64LE($txStr, $pos)
+        $ret = m_getUInt64LE($txBytes, $pos)
 
     $ret
 
-macro getUInt8($txStr, $pos):
-    self.getUnsignedBitsLE($txStr, $pos, 8, outitems=2)
+
+macro m_getUInt8($txBytes, $pos):
+    self.getBytesLE($txBytes, $pos, 8, outitems=2)
 
 
-macro getUInt16LE($txStr, $pos):
-    self.getUnsignedBitsLE($txStr, $pos, 16, outitems=2)
+macro m_getUInt16LE($txBytes, $pos):
+    self.getBytesLE($txBytes, $pos, 16, outitems=2)
 
 
-macro getUInt32LE($txStr, $pos):
-    self.getUnsignedBitsLE($txStr, $pos, 32, outitems=2)
+macro m_getUInt32LE($txBytes, $pos):
+    self.getBytesLE($txBytes, $pos, 32, outitems=2)
 
 
-macro getUInt64LE($txStr, $pos):
-    self.getUnsignedBitsLE($txStr, $pos, 64, outitems=2)
+macro m_getUInt64LE($txBytes, $pos):
+    self.getBytesLE($txBytes, $pos, 64, outitems=2)
 
 
-# only handles lowercase a-f
-def getUnsignedBitsLE(txStr:str, pos, bits):
-    size = bits / 4
-    offset = pos * 2
-    endIndex = offset + size
+macro BYTES_1: 2**8
+macro BYTES_2: 2**16
+macro BYTES_3: 2**24
+macro BYTES_4: 2**32
+macro BYTES_5: 2**40
+macro BYTES_6: 2**48
+macro BYTES_7: 2**56
 
-    result = 0
-    j = 0
-    while j < size:
-        # "01 23 45" want it to read "10 32 54"
-        if j % 2 == 0:
-            i = j + 1
-        else:
-            i = j - 1
-
-        char = getch(txStr, i+offset)
-        # log(char)
-        if (char >= 97 && char <= 102):  # only handles lowercase a-f
-            numeric = char - 87
-        else:
-            numeric = char - 48
-
-        # log(numeric)
-
-        result += numeric * 16^j
-        # log(result)
-
-        j += 1
-
-    # need to return size/2 since we don't know the next offset with getVarintNum
-    return([size/2, result]:arr)
+def getBytesLE(txBytes:str, pos, bits):
+    if bits == 8:
+        return([1, getch(txBytes, pos)]:arr)
+    if bits == 16:
+        return([2, getch(txBytes, pos) + getch(txBytes, pos+1)*BYTES_1]:arr)
+    if bits == 32:
+        return([4, getch(txBytes, pos) + getch(txBytes, pos+1)*BYTES_1 + getch(txBytes, pos+2)*BYTES_2 + getch(txBytes, pos+3)*BYTES_3]:arr)
+    if bits == 64:
+        return([8, getch(txBytes, pos) + getch(txBytes, pos+1)*BYTES_1 + getch(txBytes, pos+2)*BYTES_2 + getch(txBytes, pos+3)*BYTES_3 + getch(txBytes, pos+4)*BYTES_4 + getch(txBytes, pos+5)*BYTES_5 + getch(txBytes, pos+6)*BYTES_6 + getch(txBytes, pos+7)*BYTES_7]:arr)

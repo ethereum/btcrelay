@@ -1,4 +1,5 @@
-# This file is designed to parse general Bitcoin transactions
+# This file is designed to parse general Bitcoin transactions, which are
+# represented as hex strings (not bytes)
 
 # TODO items= syntax may need to be replaced per updated Serpent
 

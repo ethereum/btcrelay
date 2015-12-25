@@ -36,14 +36,18 @@ Returns `int256`
 
 Verifies a Bitcoin transaction per `verifyTx()` and relays the verified transaction to the specified Ethereum contract.
 
-* `rawTransaction` - hex string of the raw transaction, as `bytes`
+* `rawTransaction` - raw `bytes` of the transaction
 * `transactionHash` - hash of the transaction, as `uint256`
 * `transactionIndex` - transaction's index within the block, as `int256`
 * `merkleSibling` - array of the hashes of sibling transactions comprising the Merkle proof, as `int256[]`
 * `blockHash` - hash of the block that contains the transaction, as `int256`
 * `contractAddress` - address of the Ethereum contract that will receive the verified Bitcoin transaction, as `int256`
 
-The Ethereum contract should have a function of signature `processTransaction(rawTransaction, transactionHash)` and is what will be invoked by `relayTx` if the transaction passes verification.  For an example, see [example-btc-eth](example-btc-eth)
+The Ethereum contract should have a function of signature
+`processTransaction(bytes rawTransaction, uint256 transactionHash)` and is what
+will be invoked by `relayTx` if the transaction passes verification.  For examples,
+see [BitcoinProcessor.sol](examples/BitcoinProcessor.sol)
+and [example-btc-eth](example-btc-eth).
 
 Returns `int256`
 * value returned by the Ethereum contract's `processTransaction` function
