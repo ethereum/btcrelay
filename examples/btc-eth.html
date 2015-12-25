@@ -16,6 +16,13 @@
   <script src="./js/bitcoin-proof.js"></script>
 
 <script type="text/javascript">
+
+//
+// THIS SAMPLE NEEDS UPDATING
+// in addition to the ABI files, contract addresses, etc
+// the tx passed to relayTx must be converted to bytes
+//
+
 var web3 = require('web3');
     web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
 
@@ -147,6 +154,7 @@ function callContract() {
   var startTime = Date.now();
   var objParam = {from:gFromAccount, gas: 3000000-10, gasPrice: 0};
 
+  // TODO: txHex needs to be converted to bytes
   contract.relayTx.sendTransaction(txHex, txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash, exchangeContractAddr, objParam);
   document.getElementById('result').innerText = 'Ethereum transaction is in progress...'
 }
