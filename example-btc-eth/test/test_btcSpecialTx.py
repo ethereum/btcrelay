@@ -46,24 +46,17 @@ class TestBtcSpecialTx(object):
         assert self.c.getUnsignedBitsLE('0123456789abcdef', 4, 32) == [4, 0xefcdab89]
 
     def testGetBytesLE(self):
-        # assert self.c.getBytesLE('2345'.decode('hex'), 0, 16) == 0x23
-        # assert self.c.getBytesLE('2345'.decode('hex'), 1, 16) == 0x45
-        # assert self.c.getBytesLE('012345'.decode('hex'), 0, 16) == 0x01
-        # assert self.c.getBytesLE('012345'.decode('hex'), 1, 16) == 0x23
-        # assert self.c.getBytesLE('012345'.decode('hex'), 2, 16) == 0x45
-        # assert 0
-
         assert self.c.getBytesLE('23'.decode('hex'), 0, 8) == [1, 0x23]
         assert self.c.getBytesLE('45'.decode('hex'), 0, 8) == [1, 0x45]
         assert self.c.getBytesLE('2345'.decode('hex'), 0, 16) == [2, 0x4523]
+        # assert self.c.getBytesLE('012345'.decode('hex'), 0, 24) == [3, 0x452301]  bits 24 is not supported
         assert self.c.getBytesLE('012345'.decode('hex'), 1, 16) == [2, 0x4523]
         assert self.c.getBytesLE('01234567'.decode('hex'), 1, 16) == [2, 0x4523]
         assert self.c.getBytesLE('01234567'.decode('hex'), 0, 32) == [4, 0x67452301]
-        # assert self.c.getBytesLE('01234567'.decode('hex'), 2, 8) == [1, 0x45]
+        assert self.c.getBytesLE('01234567'.decode('hex'), 2, 8) == [1, 0x45]
         assert self.c.getBytesLE('01234567'.decode('hex'), 2, 16) == [2, 0x6745]
         assert self.c.getBytesLE('0123456789abcdef'.decode('hex'), 0, 64) == [8, 0xefcdab8967452301]
         assert self.c.getBytesLE('0123456789abcdef'.decode('hex'), 4, 32) == [4, 0xefcdab89]
-        # assert self.c.getBytesLE('012345'.decode('hex'), 0, 24) == [3, 0x452301]  bits 24 is not used
 
 
     def testNewFirst2Outputs(self):
