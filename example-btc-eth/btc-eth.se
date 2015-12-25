@@ -38,7 +38,7 @@ def setTrustedBtcRelay(trustedRelayContract):
 # returns the value of send() if they are met (typically send() returns 1 on success)
 # callers should probably explicitly check for a return value of 1 for success,
 # to protect against the possibility of send() returning non-zero error codes
-def processTransaction(txStr:str, txHash:uint256):
+def processTransaction(txBytes:str, txHash:uint256):
     # apart from trustedBtcRelay, only the owner may claim ether
     if msg.sender != self.trustedBtcRelay:
         if tx.origin != self.owner:  # tx.origin is superset of msg.sender, so no need for checking msg.sender==self.owner
@@ -51,7 +51,7 @@ def processTransaction(txStr:str, txHash:uint256):
             log(msg.sender, data=[-20])
             return(0)
 
-    outputData = self.getFirst2Outputs(txStr, outitems=3)
+    outputData = self.getFirst2Outputs(txBytes, outitems=3)
 
     if outputData == 0:
         log(msg.sender, data=[-30])
@@ -62,14 +62,14 @@ def processTransaction(txStr:str, txHash:uint256):
 
     #TODO strictly compare the script because an attacker may have a script that mentions
     #our BTC address, but the BTC is not spendable by our private key (only spendable by attacker's key)
-    # btcWasSentToMe = compareScriptWithAddr(indexScriptOne, txStr, self.btcAcceptAddr)
-    addrBtcWasSentTo = getEthAddr(indexScriptOne, txStr, 20, 3)
+    # btcWasSentToMe = compareScriptWithAddr(indexScriptOne, TODO, self.btcAcceptAddr)
+    addrBtcWasSentTo = getEthAddr(indexScriptOne, txBytes, 20, 3)
 
     btcWasSentToMe = addrBtcWasSentTo == self.btcAcceptAddr
 
 
     indexScriptTwo = outputData[2]
-    ethAddr = getEthAddr(indexScriptTwo, txStr, 20, 3)
+    ethAddr = getEthAddr(indexScriptTwo, txBytes, 20, 3)
     # log(ethAddr)  # exp 848063048424552597789830156546485564325215747452L
 
     # expEthAddr = text("948c765a6914d43f2a7ac177da2c2f6b52de3d7c")

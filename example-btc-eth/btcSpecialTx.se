@@ -12,11 +12,10 @@ macro m_parseVarInt($txBytes, $cursor):
 # return 0 if tx has less than 2 outputs
 # or other error, otherwise return array
 # of [out1stSatoshis, out1stScriptIndex, out2ndScriptIndex]
-# txStr is bytes
-def getFirst2Outputs(txStr:str):
+def getFirst2Outputs(txBytes:str):
     cursor = 4  # skip version
 
-    numIns = m_parseVarInt(txStr, cursor)
+    numIns = m_parseVarInt(txBytes, cursor)
     # log(type=log_dbg, numIns)
     # log(type=log_dbg, cursor)
 
@@ -24,25 +23,25 @@ def getFirst2Outputs(txStr:str):
     while i < numIns:
         cursor += 36  # skip prevTxId (32) and outputIndex (4)
 
-        scriptSize = m_parseVarInt(txStr, cursor)
+        scriptSize = m_parseVarInt(txBytes, cursor)
         cursor += scriptSize + 4  # skip input script and seqNum (4)
 
         i += 1
 
-    numOuts = m_parseVarInt(txStr, cursor)
+    numOuts = m_parseVarInt(txBytes, cursor)
     if numOuts < 2:
         return
 
 
     ###########################################################
     # 1st output
-    tmpArr = m_getUInt64LE(txStr, cursor)  # new m_getUInt64LE
+    tmpArr = m_getUInt64LE(txBytes, cursor)  # new m_getUInt64LE
     cursor += 8
     out1stSatoshis = tmpArr[1]
 
     # log(satoshis)
 
-    scriptSize = m_parseVarInt(txStr, cursor)
+    scriptSize = m_parseVarInt(txBytes, cursor)
     # log(scriptSize)
 
     if scriptSize == 0:
@@ -57,7 +56,7 @@ def getFirst2Outputs(txStr:str):
     ###########################################################
     # 2nd output (satoshis were already skipped in previous line)
 
-    scriptSize = m_parseVarInt(txStr, cursor)
+    scriptSize = m_parseVarInt(txBytes, cursor)
     # log(scriptSize)
 
     if scriptSize == 0:
