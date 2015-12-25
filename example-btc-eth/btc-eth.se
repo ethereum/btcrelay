@@ -102,7 +102,7 @@ macro getEthAddr($indexStart, $inStr, $size, $offset):
         $numeric = getch($inStr, $endIndex-1-$exponent)
         # log($numeric)
 
-        $result += $numeric * 2**(8*$exponent)
+        $result += $numeric * 256**$exponent
         # log(result)
 
         $j += 1
@@ -111,15 +111,14 @@ macro getEthAddr($indexStart, $inStr, $size, $offset):
     $result
 
 
-
-
-macro compareScriptWithStringAddr($indexStart, $txStr, $addrStr):
-    $i = 0
-    $j = 6 + ($indexStart * 2)
-    while $i < 26:
-        if getch($txStr, $j) != getch($addrStr, $i):
-            $i = 9999 #TODO better way ?
-        else:
-            $i += 1
-            $j += 1
-    $i == 26
+# this would need to be converted to use txStr bytes since it currently assumes txStr is a hex string
+# macro compareScriptWithStringAddr($indexStart, $txStr, $addrStr):
+#     $i = 0
+#     $j = 6 + ($indexStart * 2)
+#     while $i < 26:
+#         if getch($txStr, $j) != getch($addrStr, $i):
+#             $i = 9999 #TODO better way ?
+#         else:
+#             $i += 1
+#             $j += 1
+#     $i == 26
