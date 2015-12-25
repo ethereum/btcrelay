@@ -18,7 +18,7 @@ class TestBtcSpecialTx(object):
     ETHER = 10 ** 18
 
     def setup_class(cls):
-        tester.gas_limit = int(5e6)
+        tester.gas_limit = int(2e6)
         cls.s = tester.state()
         cls.c = cls.s.abi_contract(cls.CONTRACT, endowment=2000*cls.ETHER)
         cls.snapshot = cls.s.snapshot()

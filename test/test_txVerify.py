@@ -158,7 +158,7 @@ class TestTxVerify(object):
 
         # verify the proof and then hand the proof to the btc-eth contract, which will check
         # the tx outputs and send ether as appropriate
-        res = self.c.relayTx(txStr, txHash, txIndex, siblings, txBlockHash, BTC_ETH.address, sender=tester.k2, profiling=True)
+        res = self.c.relayTx(txStr.decode('hex'), txHash, txIndex, siblings, txBlockHash, BTC_ETH.address, sender=tester.k2, profiling=True)
         print('GAS: '+str(res['gas']))
 
         indexOfBtcAddr = txStr.find(format(btcAddr, 'x'))
@@ -170,17 +170,17 @@ class TestTxVerify(object):
         assert res['output'] == 1  # ether was transferred
 
         # re-claim disallowed when sender is not owner
-        assert 0 == self.c.relayTx(txStr, txHash, txIndex, siblings, txBlockHash, BTC_ETH.address, sender=tester.k2)
+        assert 0 == self.c.relayTx(txStr.decode('hex'), txHash, txIndex, siblings, txBlockHash, BTC_ETH.address, sender=tester.k2)
 
         # re-claim disallowed for owner of relay contract
-        assert 0 == self.c.relayTx(txStr, txHash, txIndex, siblings, txBlockHash, BTC_ETH.address, sender=tester.k0)
+        assert 0 == self.c.relayTx(txStr.decode('hex'), txHash, txIndex, siblings, txBlockHash, BTC_ETH.address, sender=tester.k0)
 
         # owner of exchange contract should be able to reclaim
-        assert 1 == self.c.relayTx(txStr, txHash, txIndex, siblings, txBlockHash, BTC_ETH.address, sender=tester.k1)
+        assert 1 == self.c.relayTx(txStr.decode('hex'), txHash, txIndex, siblings, txBlockHash, BTC_ETH.address, sender=tester.k1)
         assert expEtherBalance*2 == self.s.block.get_balance(ethAddrBin)
 
         # owner of exchange contract should be able to reclaim
-        assert 1 == self.c.relayTx(txStr, txHash, txIndex, siblings, txBlockHash, BTC_ETH.address, sender=tester.k1)
+        assert 1 == self.c.relayTx(txStr.decode('hex'), txHash, txIndex, siblings, txBlockHash, BTC_ETH.address, sender=tester.k1)
         assert expEtherBalance*3 == self.s.block.get_balance(ethAddrBin)
 
 
@@ -217,7 +217,7 @@ class TestTxVerify(object):
         hashes = [u'8c14f0db3df150123e6f3dbbf30f8b955a8249b62ac1d1ff16284aefa3d06d87', u'fff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4', u'6359f0868171b1d194cbee1af2f16ea598ae8fad666d9b012c8ed2b79a236ec4', u'e9a66845e05d5abc0ad04ec80f774a7e585c6e8db975962d069a522137b80c1d']
         [txHash, txIndex, siblings, txBlockHash] = makeMerkleProof(header, hashes, txIndex)
 
-        res = self.c.relayTx(txStr, txHash, txIndex, siblings, txBlockHash, BTC_ETH.address)
+        res = self.c.relayTx(txStr.decode('hex'), txHash, txIndex, siblings, txBlockHash, BTC_ETH.address)
 
         ethAddrBin = txStr[-52:-12].decode('hex')
         userEthBalance = self.s.block.get_balance(ethAddrBin)
@@ -269,7 +269,7 @@ class TestTxVerify(object):
             assert res == i+100000
             eventArr.pop()  # pop the StoreHeader success event
 
-            res = self.c.relayTx(txStr, txHash, txIndex, siblings, txBlockHash, BTC_ETH.address)
+            res = self.c.relayTx(txStr.decode('hex'), txHash, txIndex, siblings, txBlockHash, BTC_ETH.address)
 
             userEthBalance = self.s.block.get_balance(ethAddrBin)
             print('USER ETH BALANCE: '+str(userEthBalance))
