@@ -418,7 +418,7 @@ class TestFee(object):
 
         feeRecipientBal = self.s.block.get_balance(addrFeeRecipient)
         balCaller = self.s.block.get_balance(addrVerifier)
-        res = self.c.relayTx(txStr.decode('hex'), txHash, txIndex, siblings, txBlockHash, BTC_ETH.address, sender=keyVerifier, value=self.FEE_VERIFY_TX, profiling=True)
+        res = self.c.relayTx(txStr.decode('hex'), txIndex, siblings, txBlockHash, BTC_ETH.address, sender=keyVerifier, value=self.FEE_VERIFY_TX, profiling=True)
 
         assert eventArr == [
             {'_event_type': 'EthPayment',

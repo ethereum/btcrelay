@@ -21,7 +21,7 @@ Verifies the presence of a transaction on the Bitcoin blockchain, primarily that
 
 * `transactionHash` - hash of the transaction, as `uint256`
 * `transactionIndex` - transaction's index within the block, as `int256`
-* `merkleSibling` - array of the hashes of sibling transactions comprising the Merkle proof, as `int256[]`
+* `merkleSibling` - array of the sibling hashes comprising the Merkle proof, as `int256[]`
 * `blockHash` - hash of the block that contains the transaction, as `int256`
 
 Returns `int256`
@@ -32,14 +32,13 @@ Returns `int256`
 
 ---
 
-##### relayTx(rawTransaction, transactionHash, transactionIndex, merkleSibling, blockHash, contractAddress)
+##### relayTx(rawTransaction, transactionIndex, merkleSibling, blockHash, contractAddress)
 
 Verifies a Bitcoin transaction per `verifyTx()` and relays the verified transaction to the specified Ethereum contract.
 
 * `rawTransaction` - raw `bytes` of the transaction
-* `transactionHash` - hash of the transaction, as `uint256`
 * `transactionIndex` - transaction's index within the block, as `int256`
-* `merkleSibling` - array of the hashes of sibling transactions comprising the Merkle proof, as `int256[]`
+* `merkleSibling` - array of the sibling hashes comprising the Merkle proof, as `int256[]`
 * `blockHash` - hash of the block that contains the transaction, as `int256`
 * `contractAddress` - address of the Ethereum contract that will receive the verified Bitcoin transaction, as `int256`
 

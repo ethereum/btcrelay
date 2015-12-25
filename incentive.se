@@ -20,7 +20,7 @@ def storeBlockWithFeeAndRecipient(blockHeaderBytes:str, feeWei, feeRecipient):
     beginGas = msg.gas
     res = self.storeBlockHeader(blockHeaderBytes)
     if res:
-        blockHash = m_hashBlockHeader(blockHeaderBytes)
+        blockHash = m_dblShaFlip(blockHeaderBytes)
         m_setFeeInfo(blockHash, feeWei, feeRecipient)
         remainingGas = msg.gas
 

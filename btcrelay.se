@@ -87,7 +87,7 @@ def setInitialParent(blockHash, height, cumulativeDifficulty):
 macro OFFSET_ABI: 68  # 4 bytes function ID then 2 32bytes before the header begins
 def storeBlockHeader(blockHeaderBytes:str):
     hashPrevBlock = flip32Bytes(~calldataload(OFFSET_ABI+4))  # 4 is offset for hashPrevBlock
-    blockHash = m_hashBlockHeader(blockHeaderBytes)
+    blockHash = m_dblShaFlip(blockHeaderBytes)
 
     scorePrevBlock = m_getScore(hashPrevBlock)
     if !scorePrevBlock:
@@ -184,9 +184,10 @@ def verifyTx(txHash:uint256, txIndex, sibling:arr, txBlockHash):
 # relays transaction to target 'contract' processTransaction() method.
 # returns and logs the value of processTransaction().
 #
-# if the transaction does not meet verification, error code ERR_RELAY_VERIFY
+# if the transaction does not pass verification, error code ERR_RELAY_VERIFY
 # is logged and returned
-def relayTx(txBytes:str, txHash:uint256, txIndex, sibling:arr, txBlockHash, contract):
+def relayTx(txBytes:str, txIndex, sibling:arr, txBlockHash, contract):
+    txHash = m_dblShaFlip(txBytes)
     if self.verifyTx(txHash, txIndex, sibling, txBlockHash, value=msg.value) == 1:
         returnCode = contract.processTransaction(txBytes, txHash)
         log(type=RelayTransaction, txHash, returnCode)
@@ -382,9 +383,9 @@ macro m_lastBlockHeight():
     m_getHeight(self.heaviestBlock)
 
 
-# Bitcoin-way of hashing a block header
-macro m_hashBlockHeader($blockHeaderBytes):
-    flip32Bytes(sha256(sha256($blockHeaderBytes:str)))
+# Bitcoin-way of hashing
+macro m_dblShaFlip($dataBytes):
+    flip32Bytes(sha256(sha256($dataBytes:str)))
 
 
 # Bitcoin-way of computing the target from the 'bits' field of a blockheader

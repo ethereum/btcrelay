@@ -171,7 +171,7 @@ class TestBtcBulkStoreHeaders(object):
         BTC_ETH = self.s.abi_contract(self.BTC_ETH_CONTRACT, endowment=2000*self.ETHER, sender=tester.k1)
         assert BTC_ETH.setTrustedBtcRelay(self.c.address, sender=tester.k1) == 1
         assert BTC_ETH.testingonlySetBtcAddr(btcAddr, sender=tester.k1) == 1
-        res = self.c.relayTx(txStr.decode('hex'), txHash, txIndex, siblings, txBlockHash, BTC_ETH.address, profiling=True)
+        res = self.c.relayTx(txStr.decode('hex'), txIndex, siblings, txBlockHash, BTC_ETH.address, profiling=True)
 
         indexOfBtcAddr = txStr.find(format(btcAddr, 'x'))
         ethAddrBin = txStr[indexOfBtcAddr+68:indexOfBtcAddr+108].decode('hex') # assumes ether addr is after btcAddr
@@ -185,7 +185,7 @@ class TestBtcBulkStoreHeaders(object):
         # exchange contract is owned by tester.k1, while
         # relay contract is owned by tester.k0
         # Thus k0 is NOT allowed to reclaim ether using the same tx
-        assert 0 == self.c.relayTx(txStr.decode('hex'), txHash, txIndex, siblings, txBlockHash, BTC_ETH.address)
+        assert 0 == self.c.relayTx(txStr.decode('hex'), txIndex, siblings, txBlockHash, BTC_ETH.address)
 
 
 
