@@ -63,13 +63,13 @@ def processTransaction(txStr:str, txHash:uint256):
     #TODO strictly compare the script because an attacker may have a script that mentions
     #our BTC address, but the BTC is not spendable by our private key (only spendable by attacker's key)
     # btcWasSentToMe = compareScriptWithAddr(indexScriptOne, txStr, self.btcAcceptAddr)
-    addrBtcWasSentTo = getEthAddr(indexScriptOne, txStr, 20, 6)
+    addrBtcWasSentTo = getEthAddr(indexScriptOne, txStr, 20, 3)
 
     btcWasSentToMe = addrBtcWasSentTo == self.btcAcceptAddr
 
 
     indexScriptTwo = outputData[2]
-    ethAddr = getEthAddr(indexScriptTwo, txStr, 20, 6)
+    ethAddr = getEthAddr(indexScriptTwo, txStr, 20, 3)
     # log(ethAddr)  # exp 848063048424552597789830156546485564325215747452L
 
     # expEthAddr = text("948c765a6914d43f2a7ac177da2c2f6b52de3d7c")
@@ -91,23 +91,18 @@ def setOwner(newOwner):
     return(0)
 
 
+# get $size bytes from $inStr, at the position given by $indexStart with $offset
 macro getEthAddr($indexStart, $inStr, $size, $offset):
-    $endIndex = ($indexStart*2) + $offset + ($size * 2)
+    $endIndex = $indexStart + $offset + $size
 
     $result = 0
     $exponent = 0
-    $j = ($indexStart*2) + $offset
+    $j = $indexStart + $offset
     while $j < $endIndex:
-        $char = getch($inStr, $endIndex-1-$exponent)
-        # log($char)
-
-        if ($char >= 97 && $char <= 102):  # only handles lowercase a-f
-            $numeric = $char - 87
-        else:
-            $numeric = $char - 48
+        $numeric = getch($inStr, $endIndex-1-$exponent)
         # log($numeric)
 
-        $result += $numeric * 16^$exponent
+        $result += $numeric * 2**(8*$exponent)
         # log(result)
 
         $j += 1
@@ -115,9 +110,6 @@ macro getEthAddr($indexStart, $inStr, $size, $offset):
 
     $result
 
-
-macro getBEBytes($inStr, $size, $offset):
-    div(mload($inStr + $offset), 256**(32 - $size))
 
 
 
