@@ -1,8 +1,8 @@
 # This file retrieves the first 2 outputs of a Bitcoin transaction's raw bytes
 
 # read the VarInt and advance the cursor
-macro m_pviBytes($txBytes, $cursor):
-    $arr = m_gviNum($txBytes, $cursor)
+macro m_parseVarInt($txBytes, $cursor):
+    $arr = m_getVarintNum($txBytes, $cursor)
     $cursor += $arr[0]
     $arr[1]
 
@@ -16,7 +16,7 @@ macro m_pviBytes($txBytes, $cursor):
 def getFirst2Outputs(txStr:str):
     cursor = 4  # skip version
 
-    numIns = m_pviBytes(txStr, cursor)
+    numIns = m_parseVarInt(txStr, cursor)
     # log(type=log_dbg, numIns)
     # log(type=log_dbg, cursor)
 
@@ -24,12 +24,12 @@ def getFirst2Outputs(txStr:str):
     while i < numIns:
         cursor += 36  # skip prevTxId (32) and outputIndex (4)
 
-        scriptSize = m_pviBytes(txStr, cursor)
+        scriptSize = m_parseVarInt(txStr, cursor)
         cursor += scriptSize + 4  # skip input script and seqNum (4)
 
         i += 1
 
-    numOuts = m_pviBytes(txStr, cursor)
+    numOuts = m_parseVarInt(txStr, cursor)
     if numOuts < 2:
         return
 
@@ -42,7 +42,7 @@ def getFirst2Outputs(txStr:str):
 
     # log(satoshis)
 
-    scriptSize = m_pviBytes(txStr, cursor)
+    scriptSize = m_parseVarInt(txStr, cursor)
     # log(scriptSize)
 
     if scriptSize == 0:
@@ -57,7 +57,7 @@ def getFirst2Outputs(txStr:str):
     ###########################################################
     # 2nd output (satoshis were already skipped in previous line)
 
-    scriptSize = m_pviBytes(txStr, cursor)
+    scriptSize = m_parseVarInt(txStr, cursor)
     # log(scriptSize)
 
     if scriptSize == 0:
@@ -69,7 +69,7 @@ def getFirst2Outputs(txStr:str):
     return([out1stSatoshis, out1stScriptIndex, out2ndScriptIndex]:arr)
 
 
-macro m_gviNum($txBytes, $pos):
+macro m_getVarintNum($txBytes, $pos):
     $ret = m_getUInt8($txBytes, $pos)
     if $ret == 0xfd:
         $ret = m_getUInt16LE($txBytes, $pos)
