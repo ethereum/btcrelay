@@ -29,6 +29,6 @@
       data:
         - 0x0000000000000000086233f4843682eb47bacb58930a5577fbfd5c9ebd57ddf9
         - 379007
-        - 1
+        - 1  # need to compute cumulative difficulty
       retry: 60
       wait: True
