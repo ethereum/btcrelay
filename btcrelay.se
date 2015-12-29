@@ -291,7 +291,7 @@ def getBlockHeader(blockHash):
 
 
 # TODO is an API like getInitialParent() needed? it could be obtained using
-# web3.eth.getStorageAt using index 0x4000000000001
+# web3.eth.getStorageAt using index 0
 
 
 #
