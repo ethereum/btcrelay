@@ -24,7 +24,7 @@
       do NOT forget to update ABI files when needed
      */
 
-     var relayAddr = '0xd34e752661c770ee2eb078326ed7a2a09acff135'; // ConsenSys testnet
+     var relayAddr = '0x1fd22a2006c133ca1d006bb4c14b721acfd6be14'; // ConsenSys testnet
 
     // var relayAddr = web3.eth.namereg.addr('btcrelay');  // Olympic
     $('#relayAddr').text(relayAddr);
@@ -42,7 +42,7 @@
     var headHash = contract.getBlockchainHead.call();
     $('#latestBlockHash').text(formatHash(headHash));
 
-    var feeVTX = web3.fromWei(contract.getFee.call(headHash), 'ether');
+    var feeVTX = web3.fromWei(contract.getFeeAmount.call(headHash), 'ether');
     $('#feeVTX').text(feeVTX);
 
     window.btcrelayTester = contract;
@@ -54,7 +54,7 @@
     // console.log('txHash for verifyTx: ', res)
 
 
-    setTimeout(checkHeights, 1000);
+    //setTimeout(checkHeights, 1000);
   });
 
   function updateBCI() {

@@ -16,8 +16,8 @@
       to: $RelayWithBulkStore
       sig: setInitialParent:[int256,int256,int256]:int256
       data:
-        - 0x0000000000009fdf7fa2e76149ea5ec712860eb252b0720bbd67e2ae48fb9311
-        - 628385
+        - 0x0000000000006672235c1606fbacd7861b16b267d203b4d687708eeb1fc25e6d
+        - 626975  # make sure this follows rules of SetInitialParent()
         - 1  # need to compute cumulative difficulty
       retry: 60
       wait: True

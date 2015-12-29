@@ -9,9 +9,7 @@
 1. storage of Bitcoin block headers
 1. inspection of the latest Bitcoin block header that is stored
 
-BTC Testnet Relay is [live](http://rawgit.com/ethereum/btcrelay/develop/examples/btcTestnetRelayStatus.html).
-
-Mainnet BTC Relay has [11,699 blocks](http://rawgit.com/ethereum/btcrelay/develop/examples/relayContractStatus.html) from 379008 to 390707.
+BTC Relay is [live](http://rawgit.com/ethereum/btcrelay/master/examples/relayContractStatus.html) on the testnet.
 
 
 ## API
