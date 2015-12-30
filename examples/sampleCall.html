@@ -20,7 +20,7 @@
   var btcproof = require('bitcoin-proof');
 
   // var gRelayAddr = web3.eth.namereg.addr('btcrelay');
-  var gRelayAddr = '0xd34e752661c770ee2eb078326ed7a2a09acff135';  // Morden
+  var gRelayAddr = '0x1fd22a2006c133ca1d006bb4c14b721acfd6be14';  // Morden
   var gMerkleProof;
   var gBlockHashOfTx;
   var gRawTx;
@@ -80,15 +80,15 @@
             console.log('merkle proof: ', gMerkleProof)
             $('#mProof').val(JSON.stringify(gMerkleProof));
 
-            gFeeVerifyFinney = web3.fromWei(gRelayContract.getFee.call('0x'+gBlockHashOfTx), 'finney');
+            gFeeVerifyFinney = web3.fromWei(gRelayContract.getFeeAmount.call('0x'+gBlockHashOfTx), 'finney');
             $('#feeVerifyTx').text(gFeeVerifyFinney);
         })
     })
   }
 
   $(function() {
-    // tx[1] of block 381100
-    $('#transHex').val('3a3cbb07f5208406fc496df761a31c26bf54d0521bd281ffa68666183cdd64f4');
+    // tx[1] of block 389100
+    $('#transHex').val('e19a1d5283fbd68c299169946dfd7a921b06bdde21b19ddf9f2de6972824c577');
     $('#btn-get-tx').click(getTxInfo);
     $('#relayAddr').text(gRelayAddr);
   });
