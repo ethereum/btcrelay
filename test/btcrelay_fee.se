@@ -26,5 +26,13 @@ def bulkStoreHeaderWithFee(headersBytes:str, count, feeWei):
     return(res)
 
 
+def attackFeePaid(depth, maxDepth, blockHash, amountWei):
+    if depth == maxDepth:
+        self.feePaid(blockHash, amountWei, value=msg.value)
+    else:
+        depth += 1
+        self.attackFeePaid(depth, maxDepth, blockHash, amountWei, value=msg.value)
+
+
 # testing overrides should be before the contract being tested
 inset('../btcrelay.se')

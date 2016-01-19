@@ -400,6 +400,35 @@ class TestFee(object):
         assert self.s.block.get_balance(tester.a1) == balRecipient
 
 
+    # test for the 1024 call stack depth limit attack, more accurately
+    # 1024 nesting/recursion limit of CALL, CALLCODE, CREATE opcodes
+    # Fortunately, send() is only used once ever by BTC Relay.
+    # References:
+    # https://github.com/LeastAuthority/ethereum-analyses/blob/master/GasEcon.md#callstack-depth-limit-errors
+    # https://github.com/ethereum/wiki/wiki/Subtleties#exceptional-conditions
+    def testSendRecursionLimit(self):
+        tester.gas_limit = 200000000  # can't be too high since pytester will error with BlockGasLimitReached target:1000000000
+        feePaid = 1027
+
+        eventArr = []
+        self.s.block.log_listeners.append(lambda x: eventArr.append(self.c._translator.listen(x)))
+
+        with pytest.raises(tester.TransactionFailed):
+            self.c.attackFeePaid(1, 1024, 0, feePaid, value=feePaid)
+
+        assert eventArr == []
+
+
+        res = self.c.attackFeePaid(1, 1023, 0, feePaid, value=feePaid, profiling=True)
+        print('GAS: '+str(res['gas']))
+
+        assert eventArr == [
+            { '_event_type': 'EthPayment',
+                'amount': feePaid,
+                'recipient': 0 }
+        ]
+
+
     # based on https://github.com/ethers/btcrelay/blob/4fca910ca4d5d95c0a6b6d1a8c75b2d5a942e113/test/test_tokens.py#L361
     def checkRelay(self, txStr, txIndex, btcAddr, hh, keyVerifier, addrVerifier, addrFeeRecipient):
         [header, hashes] = hh

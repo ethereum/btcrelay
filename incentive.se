@@ -48,7 +48,8 @@ def feePaid(txBlockHash, amountWei):
     if msg.value >= amountWei:
         if msg.value > 0:
             feeRecipient = m_getFeeRecipient(txBlockHash)
-            send(feeRecipient, msg.value)
+            if !send(feeRecipient, msg.value):
+                invalid()
             log(type=EthPayment, feeRecipient, msg.value)
         return(1)
     return(0)
