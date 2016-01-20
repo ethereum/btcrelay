@@ -233,7 +233,8 @@ def getAverageBlockDifficulty():
     return(cumulDifficultyHead - cumulDifficulty10Ancestors)
 
 
-# return 0 if there's an error (eg called with incorrect params)
+# For a valid proof, returns the root of the Merkle tree.
+# Otherwise the return value is meaningless if the proof is invalid.
 # [see documentation for verifyTx() for the merkle proof
 # format of 'txHash', 'txIndex', 'sibling' ]
 def computeMerkle(txHash, txIndex, sibling:arr):
