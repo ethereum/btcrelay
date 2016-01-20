@@ -41,7 +41,7 @@ def storeBlockWithFeeAndRecipient(blockHeaderBytes:str, feeWei, feeRecipient):
         return(res)
 
 
-# if the EXACT fee for 'txBlockHash' is provided, pay the feeRecipient
+# if sufficient fee for 'txBlockHash' is provided, pay the feeRecipient
 # and return 1.  otherwise return 0.
 # This does NOT return any funds to incorrect callers
 def feePaid(txBlockHash, amountWei):
@@ -55,7 +55,7 @@ def feePaid(txBlockHash, amountWei):
     return(0)
 
 
-# callers must send EXACTLY the block's current fee, AND feeWei must be LESS
+# callers must sufficiently send the block's current fee, AND feeWei must be LESS
 # than the block's current fee
 # This does NOT return any funds to incorrect callers
 def changeFeeRecipient(blockHash, feeWei, feeRecipient):

@@ -174,8 +174,8 @@ Returns `int256`
 
 ##### changeFeeRecipient(blockHash, fee, recipient)
 
-Set the `fee` and `recipient` for a given `blockHash`.  The caller must send
-exactly `getChangeRecipientFee()` to BTC Relay, and must also specify a `fee` lower than
+Set the `fee` and `recipient` for a given `blockHash`.  The call must have `msg.value`
+of at least `getChangeRecipientFee()`, and must also specify a `fee` lower than
 the current `getFeeAmount(blockHash)`.
 
 * `blockHash` - hash of the block as `int256`.
