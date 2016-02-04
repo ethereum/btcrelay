@@ -156,6 +156,11 @@ class TestTxVerify(object):
         hashes = [u'8c14f0db3df150123e6f3dbbf30f8b955a8249b62ac1d1ff16284aefa3d06d87', u'fff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4', u'6359f0868171b1d194cbee1af2f16ea598ae8fad666d9b012c8ed2b79a236ec4', u'e9a66845e05d5abc0ad04ec80f774a7e585c6e8db975962d069a522137b80c1d']
         [txHash, txIndex, siblings, txBlockHash] = makeMerkleProof(header, hashes, 1)
 
+
+        eventArr = []
+        self.s.block.log_listeners.append(lambda x: eventArr.append(self.c._translator.listen(x)))
+
+
         # verify the proof and then hand the proof to the btc-eth contract, which will check
         # the tx outputs and send ether as appropriate
         res = self.c.relayTx(txStr.decode('hex'), txIndex, siblings, txBlockHash, BTC_ETH.address, sender=tester.k2, profiling=True)
@@ -168,6 +173,17 @@ class TestTxVerify(object):
         expEtherBalance = 13
         assert userEthBalance == expEtherBalance
         assert res['output'] == 1  # ether was transferred
+
+        assert eventArr == [
+            {'_event_type': 'VerifyTransaction',
+                'txHash': txHash,
+                'returnCode': 1
+            },
+            None,  # there is a None event since btc-eth.se logging hasn't been updated
+            {'_event_type': 'RelayTransaction',
+            'txHash': txHash,
+            'returnCode': 1
+            }]
 
         # re-claim disallowed when sender is not owner
         assert 0 == self.c.relayTx(txStr.decode('hex'), txIndex, siblings, txBlockHash, BTC_ETH.address, sender=tester.k2)
