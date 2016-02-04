@@ -730,7 +730,7 @@ class TestBtcRelay(object):
 
 
     def testComputeMerkle(self):
-        # values are from block 100K
+        # values are from block 100K (4 txs)
         txHash = 0x8c14f0db3df150123e6f3dbbf30f8b955a8249b62ac1d1ff16284aefa3d06d87
         txIndex = 0
         sibling = [None] * 2
@@ -741,6 +741,18 @@ class TestBtcRelay(object):
         print('GAS: '+str(res['gas']))
         expMerkle = 0xf3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766
         assert res['output'] == expMerkle
+
+
+        # values are from block 99997 (2 txs)
+        txHash = 0xb86f5ef1da8ddbdb29ec269b535810ee61289eeac7bf2b2523b494551f03897c
+        txIndex = 0
+        sibling = [0x80c6f121c3e9fe0a59177e49874d8c703cbadee0700a782e4002e87d862373c6]
+
+        res = self.c.computeMerkle(txHash, txIndex, sibling, profiling=True)
+        print('GAS: '+str(res['gas']))
+        expMerkle = 0x5140e5972f672bf8e81bc189894c55a410723b095716eaeec845490aed785f0e
+        assert res['output'] == expMerkle
+
 
     def testsetInitialParentOnlyOnce(self):
         assert self.c.setInitialParent(0, 0, 1) == 1
