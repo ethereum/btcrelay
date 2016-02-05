@@ -151,7 +151,9 @@ def storeBlockHeader(blockHeaderBytes:str):
 
 
 def verifyRawTx(txBytes:str, txIndex, sibling:arr, txBlockHash):
-    # todo: check if txBytes is 64 (is check 32 also needed?)
+    if len(txBytes) == 64:  # todo: is check 32 also needed?
+        # log ?
+        return(-1)
     txHash = m_dblShaFlip(txBytes)
     res = self.verifyTx(txHash, txIndex, sibling, txBlockHash, value=msg.value)
     return(res)
