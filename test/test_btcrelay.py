@@ -742,6 +742,16 @@ class TestBtcRelay(object):
         expMerkle = 0xf3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766
         assert res['output'] == expMerkle
 
+        # internalHash is merkle hashing the first 2 txs in block 100K
+        # This proves that computeMerkle is helpless against internal hashes
+        internalHash = 0xccdafb73d8dcd0173d5d5c3c9a0770d0b3953db889dab99ef05b1907518cb815
+        txIndex = 0
+        sibling = [0x8e30899078ca1813be036a073bbf80b86cdddde1c96e9e9c99e9e3782df4ae49]
+
+        res = self.c.computeMerkle(internalHash, txIndex, sibling, profiling=True)
+        expMerkle = 0xf3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766
+        assert res['output'] == expMerkle
+
 
         # values are from block 99997 (2 txs)
         txHash = 0xb86f5ef1da8ddbdb29ec269b535810ee61289eeac7bf2b2523b494551f03897c
@@ -751,17 +761,6 @@ class TestBtcRelay(object):
         res = self.c.computeMerkle(txHash, txIndex, sibling, profiling=True)
         print('GAS: '+str(res['gas']))
         expMerkle = 0x5140e5972f672bf8e81bc189894c55a410723b095716eaeec845490aed785f0e
-        assert res['output'] == expMerkle
-
-
-        # internalHash is merkle hashing the first 2 txs in block 100K
-        # This proves that computeMerkle is helpless against internal hashes
-        internalHash = 0xccdafb73d8dcd0173d5d5c3c9a0770d0b3953db889dab99ef05b1907518cb815
-        txIndex = 0
-        sibling = [0x8e30899078ca1813be036a073bbf80b86cdddde1c96e9e9c99e9e3782df4ae49]
-
-        res = self.c.computeMerkle(internalHash, txIndex, sibling, profiling=True)
-        expMerkle = 0xf3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766
         assert res['output'] == expMerkle
 
 
