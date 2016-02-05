@@ -335,6 +335,10 @@ class TestBtcRelay(object):
         res = self.c.verifyRawTx(rawTx, txIndex, sibling, txBlockHash)
         assert res == 1
 
+        fakeRawTx = hex(txHash)[2:-1].decode('hex')[::-1] + hex(sibling[0])[2:-1].decode('hex')[::-1]
+        sibling = [sibling[1]]
+        res = self.c.verifyRawTx(fakeRawTx, txIndex, sibling, txBlockHash)
+        assert res == 1  # todo: this should be 0
 
 
     # TODO verify tx in b1
