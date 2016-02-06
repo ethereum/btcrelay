@@ -23,6 +23,7 @@ macro ERR_BAD_FEE: 20010
 macro ERR_CONFIRMATIONS: 20020
 macro ERR_CHAIN: 20030
 macro ERR_MERKLE_ROOT: 20040
+macro ERR_TX_64BYTE: 20050
 
 # error codes for relayTx
 macro ERR_RELAY_VERIFY: 30010

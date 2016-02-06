@@ -20,6 +20,7 @@ class TestBtcRelay(object):
     ERR_PROOF_OF_WORK = 10090
     ERR_CONFIRMATIONS = 20020
     ERR_CHAIN = 20030
+    ERR_TX_64BYTE = 20050
     ERR_RELAY_VERIFY = 30010
 
 
@@ -349,9 +350,9 @@ class TestBtcRelay(object):
         res = self.c.relayTx(fakeRawTx, txIndex, sibling, txBlockHash, 0)  # contract address is irrelevant
         assert res == self.ERR_RELAY_VERIFY
 
-        assert eventArr == [{'_event_type': 'RelayTransaction',
-            'txHash': fakeRawTx,
-            'returnCode': self.ERR_RELAY_VERIFY
+        assert eventArr == [{'_event_type': 'VerifyTransaction',
+            'txHash': dblSha256Flip(fakeRawTx),
+            'returnCode': self.ERR_TX_64BYTE
             }]
         eventArr.pop()
 

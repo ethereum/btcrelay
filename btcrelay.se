@@ -151,10 +151,10 @@ def storeBlockHeader(blockHeaderBytes:str):
 
 
 def verifyRawTx(txBytes:str, txIndex, sibling:arr, txBlockHash):
-    if len(txBytes) == 64:  # todo: is check 32 also needed?
-        # log ?
-        return(0:uint256)
     txHash = m_dblShaFlip(txBytes)
+    if len(txBytes) == 64:  # todo: is check 32 also needed?
+        log(type=VerifyTransaction, txHash, ERR_TX_64BYTE)
+        return(0:uint256)
     res = self.verifyTx(txHash, txIndex, sibling, txBlockHash, value=msg.value)
     if res == 1:
         return(txHash:uint256)
@@ -205,7 +205,6 @@ def relayTx(txBytes:str, txIndex, sibling:arr, txBlockHash, contract):
         log(type=RelayTransaction, txHash, returnCode)
         return(returnCode)
 
-    log(type=RelayTransaction, txBytes, ERR_RELAY_VERIFY)
     return(ERR_RELAY_VERIFY)
 
 
