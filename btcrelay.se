@@ -150,12 +150,20 @@ def storeBlockHeader(blockHeaderBytes:str):
     return(0)
 
 
-def verifyRawTx(txBytes:str, txIndex, sibling:arr, txBlockHash):
+# Returns the hash of tx (raw bytes) if the tx is in the block given by 'txBlockHash'
+# and the block is in Bitcoin's main chain (ie not a fork).
+# Returns 0 if the tx is exactly 64 bytes long (to guard against a Merkle tree
+# collision) or fails verification.
+#
+# the merkle proof is represented by 'txIndex', 'sibling', where:
+# - 'txIndex' is the index of the tx within the block
+# - 'sibling' are the merkle siblings of tx
+def verifyTx(txBytes:str, txIndex, sibling:arr, txBlockHash):
     txHash = m_dblShaFlip(txBytes)
     if len(txBytes) == 64:  # todo: is check 32 also needed?
         log(type=VerifyTransaction, txHash, ERR_TX_64BYTE)
         return(0:uint256)
-    res = self.verifyTx(txHash, txIndex, sibling, txBlockHash, value=msg.value)
+    res = self.helperVerifyHash__(txHash, txIndex, sibling, txBlockHash, value=msg.value)
     if res == 1:
         return(txHash:uint256)
     else:
@@ -163,14 +171,17 @@ def verifyRawTx(txBytes:str, txIndex, sibling:arr, txBlockHash):
         return(0:uint256)
 
 
-# returns 1 if tx is in the block given by 'txBlockHash' and the block is
+# Returns 1 if txHash is in the block given by 'txBlockHash' and the block is
 # in Bitcoin's main chain (ie not a fork)
+# Note: no verification is performed to prevent txHash from just being an
+# internal hash in the Merkle tree. Thus this helper method should NOT be used
+# directly and is intended to be private.
 #
 # the merkle proof is represented by 'txHash', 'txIndex', 'sibling', where:
 # - 'txHash' is the hash of the tx
 # - 'txIndex' is the index of the tx within the block
 # - 'sibling' are the merkle siblings of tx
-def verifyTx(txHash:uint256, txIndex, sibling:arr, txBlockHash):
+def helperVerifyHash__(txHash:uint256, txIndex, sibling:arr, txBlockHash):
     if !self.feePaid(txBlockHash, m_getFeeAmount(txBlockHash), value=msg.value):  # in incentive.se
         log(type=VerifyTransaction, txHash, ERR_BAD_FEE)
         return(ERR_BAD_FEE)
@@ -200,7 +211,7 @@ def verifyTx(txHash:uint256, txIndex, sibling:arr, txBlockHash):
 # if the transaction does not pass verification, error code ERR_RELAY_VERIFY
 # is logged and returned
 def relayTx(txBytes:str, txIndex, sibling:arr, txBlockHash, contract):
-    txHash = self.verifyRawTx(txBytes, txIndex, sibling, txBlockHash, value=msg.value)
+    txHash = self.verifyTx(txBytes, txIndex, sibling, txBlockHash, value=msg.value)
     if txHash != 0:
         returnCode = contract.processTransaction(txBytes, txHash)
         log(type=RelayTransaction, txHash, returnCode)

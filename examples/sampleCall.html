@@ -32,7 +32,7 @@
 
   // shows how to use web3 to make an eth_call to the relay contract
   // verifyTx returns 1 (success) or 0 (verify failed)
-  function callVerifyTx(txHash, txIndex, merkleSibling, txBlockHash) {
+  function callhelperVerifyHash__(txHash, txIndex, merkleSibling, txBlockHash) {
     // gFeeVerifyFinney is transferred!  coinbase must have it or verifyTx fails
     var feeWei = web3.toWei(gFeeVerifyFinney, 'finney');
     var objParam = { from: web3.eth.coinbase, value: feeWei, gas: 3000000 };
@@ -51,7 +51,7 @@
       return '0x' + sib;
     });
 
-    callVerifyTx(txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash);
+    callhelperVerifyHash__(txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash);
   }
 
   // includes sample of using the bitcoin-proof module
