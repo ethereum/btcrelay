@@ -335,15 +335,26 @@ class TestBtcRelay(object):
         # verifyTx should only return 1 for b0
         txBlockHash = b0
         res = self.c.verifyRawTx(rawTx, txIndex, sibling, txBlockHash)
-        assert res == 1
+        assert res == txHash
 
         fakeRawTx = hex(txHash)[2:-1].decode('hex')[::-1] + hex(sibling[0])[2:-1].decode('hex')[::-1]
         sibling = [sibling[1]]
         res = self.c.verifyRawTx(fakeRawTx, txIndex, sibling, txBlockHash)
-        assert res == -1
+        assert res == 0
+
+
+        eventArr = []
+        self.s.block.log_listeners.append(lambda x: eventArr.append(self.c._translator.listen(x)))
 
         res = self.c.relayTx(fakeRawTx, txIndex, sibling, txBlockHash, 0)  # contract address is irrelevant
         assert res == self.ERR_RELAY_VERIFY
+
+        assert eventArr == [{'_event_type': 'RelayTransaction',
+            'txHash': fakeRawTx,
+            'returnCode': self.ERR_RELAY_VERIFY
+            }]
+        eventArr.pop()
+
 
 
     # TODO verify tx in b1
