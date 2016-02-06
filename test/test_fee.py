@@ -71,7 +71,7 @@ class TestFee(object):
 
         senderBal = self.s.block.get_balance(addrSender)
         balCaller = self.s.block.get_balance(tester.a0)
-        res = self.c.verifyTx(txHash, txIndex, siblings, txBlockHash, sender=tester.k0, value=self.FEE_VERIFY_TX, profiling=True)
+        res = self.c.helperVerifyHash__(txHash, txIndex, siblings, txBlockHash, sender=tester.k0, value=self.FEE_VERIFY_TX, profiling=True)
         eventArr.pop()  # pop the VerifyTransaction success event
         print('GAS: '+str(res['gas']))
         assert res['output'] == 1  # adjust according to numHeader and the block that the tx belongs to
@@ -89,7 +89,7 @@ class TestFee(object):
         #
         # zero payment
         #
-        assert self.ERR_BAD_FEE == self.c.verifyTx(txHash, txIndex, siblings, txBlockHash, sender=tester.k0, value=0)
+        assert self.ERR_BAD_FEE == self.c.helperVerifyHash__(txHash, txIndex, siblings, txBlockHash, sender=tester.k0, value=0)
         assert eventArr == [{'_event_type': 'VerifyTransaction',
             'txHash': txHash,
             'returnCode': self.ERR_BAD_FEE
@@ -102,7 +102,7 @@ class TestFee(object):
         # insufficient payment is burned to contract
         #
         balCaller -= self.FEE_VERIFY_TX - 1
-        assert self.ERR_BAD_FEE == self.c.verifyTx(txHash, txIndex, siblings, txBlockHash, sender=tester.k0, value=self.FEE_VERIFY_TX-1)
+        assert self.ERR_BAD_FEE == self.c.helperVerifyHash__(txHash, txIndex, siblings, txBlockHash, sender=tester.k0, value=self.FEE_VERIFY_TX-1)
         assert eventArr == [{'_event_type': 'VerifyTransaction',
             'txHash': txHash,
             'returnCode': self.ERR_BAD_FEE
@@ -116,7 +116,7 @@ class TestFee(object):
         # overpayment is sent to who stored the header (ie addrSender)
         #
         balCaller -= self.FEE_VERIFY_TX + 1
-        assert self.c.verifyTx(txHash, txIndex, siblings, txBlockHash, sender=tester.k0, value=self.FEE_VERIFY_TX+1) == 1
+        assert self.c.helperVerifyHash__(txHash, txIndex, siblings, txBlockHash, sender=tester.k0, value=self.FEE_VERIFY_TX+1) == 1
         assert eventArr == [
             {'_event_type': 'EthPayment',
                 'recipient': int(tester.a1.encode('hex'), 16),
