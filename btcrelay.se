@@ -150,6 +150,19 @@ def storeBlockHeader(blockHeaderBytes:str):
     return(0)
 
 
+def verifyRawTx(txBytes:str, txIndex, sibling:arr, txBlockHash):
+    txHash = m_dblShaFlip(txBytes)
+    if len(txBytes) == 64:  # todo: is check 32 also needed?
+        log(type=VerifyTransaction, txHash, ERR_TX_64BYTE)
+        return(0:uint256)
+    res = self.verifyTx(txHash, txIndex, sibling, txBlockHash, value=msg.value)
+    if res == 1:
+        return(txHash:uint256)
+    else:
+        # log is done via verifyTx
+        return(0:uint256)
+
+
 # returns 1 if tx is in the block given by 'txBlockHash' and the block is
 # in Bitcoin's main chain (ie not a fork)
 #
@@ -187,13 +200,13 @@ def verifyTx(txHash:uint256, txIndex, sibling:arr, txBlockHash):
 # if the transaction does not pass verification, error code ERR_RELAY_VERIFY
 # is logged and returned
 def relayTx(txBytes:str, txIndex, sibling:arr, txBlockHash, contract):
-    txHash = m_dblShaFlip(txBytes)
-    if self.verifyTx(txHash, txIndex, sibling, txBlockHash, value=msg.value) == 1:
+    txHash = self.verifyRawTx(txBytes, txIndex, sibling, txBlockHash, value=msg.value)
+    if txHash != 0:
         returnCode = contract.processTransaction(txBytes, txHash)
         log(type=RelayTransaction, txHash, returnCode)
         return(returnCode)
 
-    log(type=RelayTransaction, txHash, ERR_RELAY_VERIFY)
+    log(type=RelayTransaction, 0, ERR_RELAY_VERIFY)
     return(ERR_RELAY_VERIFY)
 
 
