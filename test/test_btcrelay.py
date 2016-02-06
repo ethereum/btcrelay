@@ -353,9 +353,13 @@ class TestBtcRelay(object):
         assert eventArr == [{'_event_type': 'VerifyTransaction',
             'txHash': dblSha256Flip(fakeRawTx),
             'returnCode': self.ERR_TX_64BYTE
+            },
+            {'_event_type': 'RelayTransaction',
+            'txHash': 0,
+            'returnCode': self.ERR_RELAY_VERIFY
             }]
         eventArr.pop()
-
+        eventArr.pop()
 
 
     # TODO verify tx in b1
