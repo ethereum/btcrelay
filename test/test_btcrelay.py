@@ -20,6 +20,8 @@ class TestBtcRelay(object):
     ERR_PROOF_OF_WORK = 10090
     ERR_CONFIRMATIONS = 20020
     ERR_CHAIN = 20030
+    ERR_RELAY_VERIFY = 30010
+
 
     def setup_class(cls):
         tester.gas_limit = int(2.7e6)  # include costs of debug methods
@@ -339,6 +341,9 @@ class TestBtcRelay(object):
         sibling = [sibling[1]]
         res = self.c.verifyRawTx(fakeRawTx, txIndex, sibling, txBlockHash)
         assert res == -1
+
+        res = self.c.relayTx(fakeRawTx, txIndex, sibling, txBlockHash, 0)  # contract address is irrelevant
+        assert res == self.ERR_RELAY_VERIFY
 
 
     # TODO verify tx in b1
