@@ -302,7 +302,7 @@ class TestTxVerify(object):
                         'returnCode': self.ERR_CONFIRMATIONS
                     },
                     {'_event_type': 'RelayTransaction',
-                    'txHash': txHash,
+                    'txHash': 0,
                     'returnCode': self.ERR_RELAY_VERIFY
                     }]
                 eventArr.pop()
