@@ -132,6 +132,31 @@ class TestFee(object):
         assert self.s.block.get_balance(self.c.address) == self.FEE_VERIFY_TX - 1  # no change
 
 
+    def testClampGasPrice(self):
+        numHeader = 2
+        startBlockNum = 300000
+
+        block300kPrev = 0x000000000000000067ecc744b5ae34eebbde14d21ca4db51652e4d67e155f07e
+        self.c.setInitialParent(block300kPrev, startBlockNum-1, 1)
+
+        currGP = int(50e9) # 50 shannon
+        maxAdjust = 1/1024.0
+        i = 1
+        feeWei = self.FEE_VERIFY_TX
+        with open("test/headers/100from300k.txt") as f:
+            for header in f:
+                nextGP = int(currGP * (1 + maxAdjust))
+                tester.gas_price = nextGP
+                res = self.c.storeBlockWithFee(header[:-1].decode('hex'), feeWei)  # [:-1] to remove \n
+                assert res == i-1+startBlockNum
+
+                if i==numHeader:
+                    break
+                i += 1
+
+                assert self.c.funcGetLastGasPrice() == nextGP
+                currGP = nextGP
+
 
     def storeHeadersFrom300K(self, numHeader, keySender, addrSender):
         startBlockNum = 300000
