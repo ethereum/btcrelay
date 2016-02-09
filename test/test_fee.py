@@ -167,6 +167,46 @@ class TestFee(object):
         assert res == i+startBlockNum
         assert self.c.funcGetLastGasPrice() == nextGP
 
+        i += 1
+        currGP = nextGP
+        nextGP = int(currGP * (1 + maxAdjust))
+        tester.gas_price = nextGP
+        res = self.c.storeBlockWithFee(blockHeaderBytes[i], feeWei)
+        assert res == i+startBlockNum
+        assert self.c.funcGetLastGasPrice() == nextGP
+
+        i += 1
+        currGP = nextGP
+        nextGP = currGP
+        tester.gas_price = nextGP
+        res = self.c.storeBlockWithFee(blockHeaderBytes[i], feeWei)
+        assert res == i+startBlockNum
+        assert self.c.funcGetLastGasPrice() == nextGP
+
+        i += 1
+        currGP = nextGP
+        nextGP = int(currGP * (1 - maxAdjust))
+        tester.gas_price = nextGP
+        res = self.c.storeBlockWithFee(blockHeaderBytes[i], feeWei)
+        assert res == i+startBlockNum
+        assert self.c.funcGetLastGasPrice() == nextGP
+
+        i += 1
+        currGP = nextGP
+        nextGP = int(currGP * (1 - maxAdjust))
+        tester.gas_price = nextGP
+        res = self.c.storeBlockWithFee(blockHeaderBytes[i], feeWei)
+        assert res == i+startBlockNum
+        assert self.c.funcGetLastGasPrice() == nextGP
+
+        i += 1
+        currGP = nextGP
+        nextGP = int(currGP * (1 - maxAdjust))
+        tester.gas_price = nextGP
+        res = self.c.storeBlockWithFee(blockHeaderBytes[i], feeWei)
+        assert res == i+startBlockNum
+        assert self.c.funcGetLastGasPrice() == nextGP
+
 
     def storeHeadersFrom300K(self, numHeader, keySender, addrSender):
         startBlockNum = 300000
