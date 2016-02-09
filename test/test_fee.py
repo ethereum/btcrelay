@@ -132,11 +132,15 @@ class TestFee(object):
         assert self.s.block.get_balance(self.c.address) == self.FEE_VERIFY_TX - 1  # no change
 
 
+    # gas price should be clamped within 1/1024 of last gas price
+    # (so that people who only give the default gas price will still affect it)
     def testClampGasPrice(self):
         block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
         startBlockNum = 100000
         self.c.setInitialParent(block100kPrev, startBlockNum-1, 1)
+
         feeWei = self.FEE_VERIFY_TX
+        maxAdjust = 1/1024.0
 
         headers = [
             "0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710",
@@ -149,26 +153,24 @@ class TestFee(object):
         ]
         blockHeaderBytes = map(lambda x: x.decode('hex'), headers)
 
-        maxAdjust = 1/1024.0
-
         i = 0
         currGP = int(50e9) # 50 shannon
-        nextGP = int(currGP * (1 + maxAdjust))
+        nextGP = int(currGP * 2)
+        tester.gas_price = nextGP  # this is how gas_price is specified for a tx (unlike how value or sender for a tx is specified)
+        res = self.c.storeBlockWithFee(blockHeaderBytes[i], feeWei)
+        assert res == i+startBlockNum
+        assert self.c.funcGetLastGasPrice() == int(currGP * (1 + maxAdjust))
+
+        i += 1
+        currGP = self.c.funcGetLastGasPrice()
+        nextGP = int(currGP * (1 + maxAdjust)) + 1
         tester.gas_price = nextGP
         res = self.c.storeBlockWithFee(blockHeaderBytes[i], feeWei)
         assert res == i+startBlockNum
-        assert self.c.funcGetLastGasPrice() == nextGP
+        assert self.c.funcGetLastGasPrice() == int(currGP * (1 + maxAdjust))
 
         i += 1
-        currGP = nextGP
-        nextGP = int(currGP * (1 + maxAdjust))
-        tester.gas_price = nextGP
-        res = self.c.storeBlockWithFee(blockHeaderBytes[i], feeWei)
-        assert res == i+startBlockNum
-        assert self.c.funcGetLastGasPrice() == nextGP
-
-        i += 1
-        currGP = nextGP
+        currGP = self.c.funcGetLastGasPrice()
         nextGP = int(currGP * (1 + maxAdjust))
         tester.gas_price = nextGP
         res = self.c.storeBlockWithFee(blockHeaderBytes[i], feeWei)
@@ -185,22 +187,22 @@ class TestFee(object):
 
         i += 1
         currGP = nextGP
-        nextGP = int(currGP * (1 - maxAdjust))
+        nextGP = int(currGP / 3.0)
         tester.gas_price = nextGP
         res = self.c.storeBlockWithFee(blockHeaderBytes[i], feeWei)
         assert res == i+startBlockNum
-        assert self.c.funcGetLastGasPrice() == nextGP
+        assert self.c.funcGetLastGasPrice() == int(currGP * (1 - maxAdjust))
 
         i += 1
-        currGP = nextGP
-        nextGP = int(currGP * (1 - maxAdjust))
+        currGP = self.c.funcGetLastGasPrice()
+        nextGP = int(currGP * (1 - maxAdjust)) - 1
         tester.gas_price = nextGP
         res = self.c.storeBlockWithFee(blockHeaderBytes[i], feeWei)
         assert res == i+startBlockNum
-        assert self.c.funcGetLastGasPrice() == nextGP
+        assert self.c.funcGetLastGasPrice() == int(currGP * (1 - maxAdjust))
 
         i += 1
-        currGP = nextGP
+        currGP = self.c.funcGetLastGasPrice()
         nextGP = int(currGP * (1 - maxAdjust))
         tester.gas_price = nextGP
         res = self.c.storeBlockWithFee(blockHeaderBytes[i], feeWei)

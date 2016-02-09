@@ -25,12 +25,15 @@ def storeBlockWithFeeAndRecipient(blockHeaderBytes:str, feeWei, feeRecipient):
         remainingGas = msg.gas
 
 
-        # currGP is tx.gasprice if within 1/1024 of gLastGasPrice
-        # otherwise currGP is gLastGasPrice
+        # currGP is tx.gasprice clamped within 1/1024 of gLastGasPrice
         # (1/1024 is the same factor used for adjusting Ethereum's block gas limit)
         gLastGasPrice = m_getLastGasPrice()
-        if tx.gasprice < (1023*gLastGasPrice/1024) || tx.gasprice > (1025*gLastGasPrice/1024):
-            currGP = gLastGasPrice
+        minGP = 1023*gLastGasPrice/1024
+        maxGP = 1025*gLastGasPrice/1024
+        if tx.gasprice < minGP:
+            currGP = minGP
+        elif tx.gasprice > maxGP:
+            currGP = maxGP
         else:
             currGP = tx.gasprice
 
