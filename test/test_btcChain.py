@@ -15,7 +15,7 @@ class TestBtcChain(object):
 
     ETHER = 10 ** 18
 
-    ANC_DEPTHS = [1, 4, 16, 64, 256, 1024, 4096, 16384]
+    ANC_DEPTHS = [1, 5, 25, 125, 625, 3125, 15625, 78125]
 
 
     def setup_class(cls):
@@ -47,7 +47,7 @@ class TestBtcChain(object):
             parentOfFork = forkStartBlock
 
 
-        finalAncIndex = int(math.ceil(math.log(heaviest) / math.log(4))) # log base 4 of heaviest
+        finalAncIndex = int(math.ceil(math.log(heaviest) / math.log(5))) # log base 5 of heaviest
         # start at 1, instead of 0
         for i in range(1, finalAncIndex):
             depth = self.ANC_DEPTHS[i]
@@ -77,7 +77,7 @@ class TestBtcChain(object):
             parentOfFork = forkStartBlock
 
 
-        finalAncIndex = int(math.ceil(math.log(heaviest) / math.log(4))) # log base 4 of heaviest
+        finalAncIndex = int(math.ceil(math.log(heaviest) / math.log(5))) # log base 5 of heaviest
         # start at 1, instead of 0
         for i in range(1, finalAncIndex):
             depth = self.ANC_DEPTHS[i]
