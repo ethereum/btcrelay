@@ -20,9 +20,12 @@ class TestBtcRelay(object):
     ERR_PROOF_OF_WORK = 10090
     ERR_CONFIRMATIONS = 20020
     ERR_CHAIN = 20030
+    ERR_TX_64BYTE = 20050
+    ERR_RELAY_VERIFY = 30010
+
 
     def setup_class(cls):
-        tester.gas_limit = int(2.6e6)  # include costs of debug methods
+        tester.gas_limit = int(2.7e6)  # include costs of debug methods
         cls.s = tester.state()
         cls.c = cls.s.abi_contract(cls.CONTRACT_DEBUG)
         cls.snapshot = cls.s.snapshot()
@@ -80,7 +83,7 @@ class TestBtcRelay(object):
         self.s.block.log_listeners.append(lambda x: eventArr.append(self.c._translator.listen(x)))
 
         argsArr = argsForVerifyTx(merkleProof, txIndex)
-        res = self.c.verifyTx(*argsArr)
+        res = self.c.helperVerifyHash__(*argsArr)
         assert eventArr == [{'_event_type': 'VerifyTransaction',
             'txHash': argsArr[0],
             'returnCode': self.ERR_CHAIN
@@ -90,7 +93,7 @@ class TestBtcRelay(object):
 
         # verifyTx should only return 1 for b0
         txInBlockZero = argsForVerifyTx(*self.tx1ofBlock363730())
-        assert self.c.verifyTx(*txInBlockZero) == 1
+        assert self.c.helperVerifyHash__(*txInBlockZero) == 1
         eventArr.pop()  # pop the VerifyTransaction success event
 
         assert fakeb6 == self.c.getBlockchainHead()
@@ -119,7 +122,7 @@ class TestBtcRelay(object):
         assert self.c.getBlockchainHead() == dblSha256Flip(blockHeaderBytes[-2])
 
         txInBlockOne = argsForVerifyTx(*self.tx1ofBlock363731())
-        assert self.c.verifyTx(*txInBlockOne) == self.ERR_CONFIRMATIONS
+        assert self.c.helperVerifyHash__(*txInBlockOne) == self.ERR_CONFIRMATIONS
         assert eventArr == [{'_event_type': 'VerifyTransaction',
             'txHash': txInBlockOne[0],
             'returnCode': self.ERR_CONFIRMATIONS
@@ -128,14 +131,14 @@ class TestBtcRelay(object):
 
 
         # b0 should still verify
-        assert self.c.verifyTx(*txInBlockZero) == 1
+        assert self.c.helperVerifyHash__(*txInBlockZero) == 1
 
         # add another header and b1 should now verify
         assert self.c.storeBlockHeader(blockHeaderBytes[-1]) == 363737
-        assert self.c.verifyTx(*txInBlockOne) == 1
+        assert self.c.helperVerifyHash__(*txInBlockOne) == 1
 
         # b0 should still verify
-        assert self.c.verifyTx(*txInBlockZero) == 1
+        assert self.c.helperVerifyHash__(*txInBlockZero) == 1
 
 
     # add 5 main blocks, then 5 fake blocks leading to reorg, then 6th main
@@ -186,7 +189,7 @@ class TestBtcRelay(object):
         assert self.c.getCumulativeDifficulty() == cumulDiff
 
         txInBlockZero = argsForVerifyTx(*self.tx1ofBlock363730())
-        assert self.c.verifyTx(*txInBlockZero) == self.ERR_CONFIRMATIONS
+        assert self.c.helperVerifyHash__(*txInBlockZero) == self.ERR_CONFIRMATIONS
 
         #
         # add 6th (fake) block and txInBlockZero should succeed verification
@@ -197,7 +200,7 @@ class TestBtcRelay(object):
             assert res == forkPrevNum + 6
 
         assert self.c.getCumulativeDifficulty() == 49402014931*7 + 1
-        assert self.c.verifyTx(*txInBlockZero) == 1
+        assert self.c.helperVerifyHash__(*txInBlockZero) == 1
 
         #
         # add newBlock6 with same difficulty as current block6
@@ -205,17 +208,17 @@ class TestBtcRelay(object):
         #
         assert self.c.storeBlockHeader(blockHeaderBytes[-2]) == 363736
         assert self.c.getBlockchainHead() == dblSha256Flip(blockHeaderBytes[-2])
-        assert self.c.verifyTx(*txInBlockZero) == 1
+        assert self.c.helperVerifyHash__(*txInBlockZero) == 1
 
         txInBlockOne = argsForVerifyTx(*self.tx1ofBlock363731())
-        assert self.c.verifyTx(*txInBlockOne) == self.ERR_CONFIRMATIONS
+        assert self.c.helperVerifyHash__(*txInBlockOne) == self.ERR_CONFIRMATIONS
 
         #
         # add block7 and txInBlockOne should now succeed verification
         #
         assert self.c.storeBlockHeader(blockHeaderBytes[-1]) == 363737
         assert self.c.getBlockchainHead() == dblSha256Flip(blockHeaderBytes[-1])
-        assert self.c.verifyTx(*txInBlockOne) == 1
+        assert self.c.helperVerifyHash__(*txInBlockOne) == 1
 
 
     # verify a tx before and after the 6th header is added
@@ -258,25 +261,25 @@ class TestBtcRelay(object):
 
 
         txBlockHash = 0xdead
-        res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
+        res = self.c.helperVerifyHash__(tx, txIndex, sibling, txBlockHash)
         assert res == self.ERR_CHAIN
 
         # b1 is within6confirms so should NOT verify
         # TODO use proper tx, txIndex, sibling.  Should also test that
         # when another header is added, the tx does verify
         txBlockHash = b1
-        res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
+        res = self.c.helperVerifyHash__(tx, txIndex, sibling, txBlockHash)
         assert res == self.ERR_CONFIRMATIONS
 
 
         # verifyTx should only return 1 for b0
         txBlockHash = b0
-        assert self.c.verifyTx(tx, txIndex, sibling, txBlockHash) == self.ERR_CONFIRMATIONS
+        assert self.c.helperVerifyHash__(tx, txIndex, sibling, txBlockHash) == self.ERR_CONFIRMATIONS
 
         self.c.storeBlockHeader(blockHeaderBytes[-1])
         assert b6 == self.c.getBlockchainHead()
 
-        assert self.c.verifyTx(tx, txIndex, sibling, txBlockHash) == 1
+        assert self.c.helperVerifyHash__(tx, txIndex, sibling, txBlockHash) == 1
 
 
     def testStoreInitialBlock(self):
@@ -287,6 +290,76 @@ class TestBtcRelay(object):
         blockHeaderStr = ("03000000f9dd57bd9e5cfdfb77550a9358cbba47eb823684f43362080000000000000000d1eaebbc3dbb07d59c0f4b69afb99518e0e4fc6512c1cd3495b3b6ebcbac27a3cf8e1f56140f1218aca005b1")
         bhBytes = blockHeaderStr.decode('hex')
         assert self.c.storeBlockHeader(bhBytes) == blockDivisibleBy2016
+
+
+    # based on testHeadersFrom100K
+    def testVerifyRawTx(self):
+        block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
+        self.c.setInitialParent(block100kPrev, 99999, 1)
+
+        headers = [
+            "0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710",
+            "0100000006e533fd1ada86391f3f6c343204b0d278d4aaec1c0b20aa27ba0300000000006abbb3eb3d733a9fe18967fd7d4c117e4ccbbac5bec4d910d900b3ae0793e77f54241b4d4c86041b4089cc9b",
+            "0100000090f0a9f110702f808219ebea1173056042a714bad51b916cb6800000000000005275289558f51c9966699404ae2294730c3c9f9bda53523ce50e9b95e558da2fdb261b4d4c86041b1ab1bf93",
+            "01000000aff7e0c7dc29d227480c2aa79521419640a161023b51cdb28a3b0100000000003779fc09d638c4c6da0840c41fa625a90b72b125015fd0273f706d61f3be175faa271b4d4c86041b142dca82",
+            "01000000e1c5ba3a6817d53738409f5e7229ffd098d481147b002941a7a002000000000077ed2af87aa4f9f450f8dbd15284720c3fd96f565a13c9de42a3c1440b7fc6a50e281b4d4c86041b08aecda2",
+            "0100000079cda856b143d9db2c1caff01d1aecc8630d30625d10e8b4b8b0000000000000b50cc069d6a3e33e3ff84a5c41d9d3febe7c770fdcc96b2c3ff60abe184f196367291b4d4c86041b8fa45d63",
+            "0100000045dc58743362fe8d8898a7506faa816baed7d391c9bc0b13b0da00000000000021728a2f4f975cc801cb3c672747f1ead8a946b2702b7bd52f7b86dd1aa0c975c02a1b4d4c86041b7b47546d"
+        ]
+        blockHeaderBytes = map(lambda x: x.decode('hex'), headers)
+        for i in range(7):
+            res = self.c.storeBlockHeader(blockHeaderBytes[i])
+            # print('@@@@ real chain score: ' + str(self.c.getCumulativeDifficulty()))
+            assert res == i+100000
+
+        cumulDiff = self.c.getCumulativeDifficulty()
+
+        # block hashes
+        b0 = 0x000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506
+        b1 = 0x00000000000080b66c911bd5ba14a74260057311eaeb1982802f7010f1a9f090 # block #100001
+        b2 = 0x0000000000013b8ab2cd513b0261a14096412195a72a0c4827d229dcc7e0f7af
+        b3 = 0x000000000002a0a74129007b1481d498d0ff29725e9f403837d517683abac5e1
+        b4 = 0x000000000000b0b8b4e8105d62300d63c8ec1a1df0af1c2cdbd943b156a8cd79
+        b5 = 0x000000000000dab0130bbcc991d3d7ae6b81aa6f50a798888dfe62337458dc45
+        b6 = 0x0000000000009b958a82c10804bd667722799cc3b457bc061cd4b7779110cd60
+
+        # values are from block 100K
+        rawTx = '01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff08044c86041b020602ffffffff0100f2052a010000004341041b0e8c2567c12536aa13357b79a073dc4444acb83c4ec7a0e2f99dd7457516c5817242da796924ca4e99947d087fedf9ce467cb9f7c6287078f801df276fdf84ac00000000'.decode('hex')
+        txHash = 0x8c14f0db3df150123e6f3dbbf30f8b955a8249b62ac1d1ff16284aefa3d06d87
+        assert dblSha256Flip(rawTx) == txHash
+        txIndex = 0
+        sibling = [None] * 2
+        sibling[0] = 0xfff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4
+        sibling[1] = 0x8e30899078ca1813be036a073bbf80b86cdddde1c96e9e9c99e9e3782df4ae49
+
+
+        # verifyTx should only return 1 for b0
+        txBlockHash = b0
+        res = self.c.verifyTx(rawTx, txIndex, sibling, txBlockHash)
+        assert res == txHash
+
+        fakeRawTx = hex(txHash)[2:-1].decode('hex')[::-1] + hex(sibling[0])[2:-1].decode('hex')[::-1]
+        sibling = [sibling[1]]
+        res = self.c.verifyTx(fakeRawTx, txIndex, sibling, txBlockHash)
+        assert res == 0
+
+
+        eventArr = []
+        self.s.block.log_listeners.append(lambda x: eventArr.append(self.c._translator.listen(x)))
+
+        res = self.c.relayTx(fakeRawTx, txIndex, sibling, txBlockHash, 0)  # contract address is irrelevant
+        assert res == self.ERR_RELAY_VERIFY
+
+        assert eventArr == [{'_event_type': 'VerifyTransaction',
+            'txHash': dblSha256Flip(fakeRawTx),
+            'returnCode': self.ERR_TX_64BYTE
+            },
+            {'_event_type': 'RelayTransaction',
+            'txHash': 0,
+            'returnCode': self.ERR_RELAY_VERIFY
+            }]
+        eventArr.pop()
+        eventArr.pop()
 
 
     # TODO verify tx in b1
@@ -329,20 +402,20 @@ class TestBtcRelay(object):
 
 
         txBlockHash = 0xdead
-        res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
+        res = self.c.helperVerifyHash__(tx, txIndex, sibling, txBlockHash)
         assert res == self.ERR_CHAIN
 
         # b1 is within6confirms so should NOT verify
         # TODO use proper tx, txIndex, sibling.  Should also test that
         # when another header is added, the tx does verify
         txBlockHash = b1
-        res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
+        res = self.c.helperVerifyHash__(tx, txIndex, sibling, txBlockHash)
         assert res == self.ERR_CONFIRMATIONS
 
 
         # verifyTx should only return 1 for b0
         txBlockHash = b0
-        res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
+        res = self.c.helperVerifyHash__(tx, txIndex, sibling, txBlockHash)
         assert res == 1
 
         assert b6 == self.c.getBlockchainHead()
@@ -386,12 +459,12 @@ class TestBtcRelay(object):
 
         # forked block should NOT verify
         txBlockHash = 0x11bb7c5555b8eab7801b1c4384efcab0d869230fcf4a8f043abad255c99105f8
-        res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
+        res = self.c.helperVerifyHash__(tx, txIndex, sibling, txBlockHash)
         assert res == self.ERR_CHAIN
 
         # b0 should still verify
         txBlockHash = b0
-        res = self.c.verifyTx(tx, txIndex, sibling, txBlockHash)
+        res = self.c.helperVerifyHash__(tx, txIndex, sibling, txBlockHash)
         assert res == 1
 
 
@@ -444,7 +517,7 @@ class TestBtcRelay(object):
         self.c.testingonlySetHeaviest(0x2b80a2f4b68e9ebfd4975f5f14a340501d24c3adf041ad9be4cd2576e827328c)
 
         firstEasyBlock = 0x11bb7c5555b8eab7801b1c4384efcab0d869230fcf4a8f043abad255c99105f8
-        res = self.c.verifyTx(tx, txIndex, sibling, firstEasyBlock)
+        res = self.c.helperVerifyHash__(tx, txIndex, sibling, firstEasyBlock)
         assert res == 1
 
 
@@ -467,11 +540,11 @@ class TestBtcRelay(object):
             assert res == i+100000
 
             # firstEasyBlock should no longer verify since it is no longer on the main chain
-            res = self.c.verifyTx(tx, txIndex, sibling, firstEasyBlock)
+            res = self.c.helperVerifyHash__(tx, txIndex, sibling, firstEasyBlock)
             assert res == self.ERR_CHAIN
 
             # block100k should only verify when it has enough confirmations
-            res = self.c.verifyTx(tx, txIndex, sibling, block100k)
+            res = self.c.helperVerifyHash__(tx, txIndex, sibling, block100k)
             exp = 1 if i==6 else self.ERR_CONFIRMATIONS
             assert res == exp
 
@@ -682,7 +755,7 @@ class TestBtcRelay(object):
 
 
     def testComputeMerkle(self):
-        # values are from block 100K
+        # values are from block 100K (4 txs)
         txHash = 0x8c14f0db3df150123e6f3dbbf30f8b955a8249b62ac1d1ff16284aefa3d06d87
         txIndex = 0
         sibling = [None] * 2
@@ -693,6 +766,25 @@ class TestBtcRelay(object):
         print('GAS: '+str(res['gas']))
         expMerkle = 0xf3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766
         assert res['output'] == expMerkle
+
+        # internalHash is merkle hashing the first 2 txs in block 100K
+        # This proves that computeMerkle is helpless against internal hashes
+        internalHash = 0xccdafb73d8dcd0173d5d5c3c9a0770d0b3953db889dab99ef05b1907518cb815
+        sibling = [ sibling[1] ]
+        res = self.c.computeMerkle(internalHash, txIndex, sibling)
+        assert res == expMerkle
+
+
+        # values are from block 99997 (2 txs)
+        txHash = 0xb86f5ef1da8ddbdb29ec269b535810ee61289eeac7bf2b2523b494551f03897c
+        txIndex = 0
+        sibling = [0x80c6f121c3e9fe0a59177e49874d8c703cbadee0700a782e4002e87d862373c6]
+
+        res = self.c.computeMerkle(txHash, txIndex, sibling, profiling=True)
+        print('GAS: '+str(res['gas']))
+        expMerkle = 0x5140e5972f672bf8e81bc189894c55a410723b095716eaeec845490aed785f0e
+        assert res['output'] == expMerkle
+
 
     def testsetInitialParentOnlyOnce(self):
         assert self.c.setInitialParent(0, 0, 1) == 1
@@ -716,7 +808,7 @@ class TestBtcRelay(object):
 
         txInBlockZero = argsForVerifyTx(*self.tx1ofBlock363730())
         with pytest.raises(tester.TransactionFailed):
-            self.c.verifyTx(*txInBlockZero)
+            self.c.helperVerifyHash__(*txInBlockZero)
 
 
     def tx1ofBlock363730(self):

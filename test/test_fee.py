@@ -71,7 +71,7 @@ class TestFee(object):
 
         senderBal = self.s.block.get_balance(addrSender)
         balCaller = self.s.block.get_balance(tester.a0)
-        res = self.c.verifyTx(txHash, txIndex, siblings, txBlockHash, sender=tester.k0, value=self.FEE_VERIFY_TX, profiling=True)
+        res = self.c.helperVerifyHash__(txHash, txIndex, siblings, txBlockHash, sender=tester.k0, value=self.FEE_VERIFY_TX, profiling=True)
         eventArr.pop()  # pop the VerifyTransaction success event
         print('GAS: '+str(res['gas']))
         assert res['output'] == 1  # adjust according to numHeader and the block that the tx belongs to
@@ -89,7 +89,7 @@ class TestFee(object):
         #
         # zero payment
         #
-        assert self.ERR_BAD_FEE == self.c.verifyTx(txHash, txIndex, siblings, txBlockHash, sender=tester.k0, value=0)
+        assert self.ERR_BAD_FEE == self.c.helperVerifyHash__(txHash, txIndex, siblings, txBlockHash, sender=tester.k0, value=0)
         assert eventArr == [{'_event_type': 'VerifyTransaction',
             'txHash': txHash,
             'returnCode': self.ERR_BAD_FEE
@@ -102,7 +102,7 @@ class TestFee(object):
         # insufficient payment is burned to contract
         #
         balCaller -= self.FEE_VERIFY_TX - 1
-        assert self.ERR_BAD_FEE == self.c.verifyTx(txHash, txIndex, siblings, txBlockHash, sender=tester.k0, value=self.FEE_VERIFY_TX-1)
+        assert self.ERR_BAD_FEE == self.c.helperVerifyHash__(txHash, txIndex, siblings, txBlockHash, sender=tester.k0, value=self.FEE_VERIFY_TX-1)
         assert eventArr == [{'_event_type': 'VerifyTransaction',
             'txHash': txHash,
             'returnCode': self.ERR_BAD_FEE
@@ -116,7 +116,7 @@ class TestFee(object):
         # overpayment is sent to who stored the header (ie addrSender)
         #
         balCaller -= self.FEE_VERIFY_TX + 1
-        assert self.c.verifyTx(txHash, txIndex, siblings, txBlockHash, sender=tester.k0, value=self.FEE_VERIFY_TX+1) == 1
+        assert self.c.helperVerifyHash__(txHash, txIndex, siblings, txBlockHash, sender=tester.k0, value=self.FEE_VERIFY_TX+1) == 1
         assert eventArr == [
             {'_event_type': 'EthPayment',
                 'recipient': int(tester.a1.encode('hex'), 16),
@@ -131,6 +131,83 @@ class TestFee(object):
         assert self.s.block.get_balance(tester.a0) == balCaller
         assert self.s.block.get_balance(self.c.address) == self.FEE_VERIFY_TX - 1  # no change
 
+
+    # gas price should be clamped within 1/1024 of last gas price
+    # (so that people who only give the default gas price will still affect it)
+    def testClampGasPrice(self):
+        block100kPrev = 0x000000000002d01c1fccc21636b607dfd930d31d01c3a62104612a1719011250
+        startBlockNum = 100000
+        self.c.setInitialParent(block100kPrev, startBlockNum-1, 1)
+
+        feeWei = self.FEE_VERIFY_TX
+        maxAdjust = 1/1024.0
+
+        headers = [
+            "0100000050120119172a610421a6c3011dd330d9df07b63616c2cc1f1cd00200000000006657a9252aacd5c0b2940996ecff952228c3067cc38d4885efb5a4ac4247e9f337221b4d4c86041b0f2b5710",
+            "0100000006e533fd1ada86391f3f6c343204b0d278d4aaec1c0b20aa27ba0300000000006abbb3eb3d733a9fe18967fd7d4c117e4ccbbac5bec4d910d900b3ae0793e77f54241b4d4c86041b4089cc9b",
+            "0100000090f0a9f110702f808219ebea1173056042a714bad51b916cb6800000000000005275289558f51c9966699404ae2294730c3c9f9bda53523ce50e9b95e558da2fdb261b4d4c86041b1ab1bf93",
+            "01000000aff7e0c7dc29d227480c2aa79521419640a161023b51cdb28a3b0100000000003779fc09d638c4c6da0840c41fa625a90b72b125015fd0273f706d61f3be175faa271b4d4c86041b142dca82",
+            "01000000e1c5ba3a6817d53738409f5e7229ffd098d481147b002941a7a002000000000077ed2af87aa4f9f450f8dbd15284720c3fd96f565a13c9de42a3c1440b7fc6a50e281b4d4c86041b08aecda2",
+            "0100000079cda856b143d9db2c1caff01d1aecc8630d30625d10e8b4b8b0000000000000b50cc069d6a3e33e3ff84a5c41d9d3febe7c770fdcc96b2c3ff60abe184f196367291b4d4c86041b8fa45d63",
+            "0100000045dc58743362fe8d8898a7506faa816baed7d391c9bc0b13b0da00000000000021728a2f4f975cc801cb3c672747f1ead8a946b2702b7bd52f7b86dd1aa0c975c02a1b4d4c86041b7b47546d"
+        ]
+        blockHeaderBytes = map(lambda x: x.decode('hex'), headers)
+
+        i = 0
+        currGP = int(50e9) # 50 shannon
+        nextGP = int(currGP * 2)
+        tester.gas_price = nextGP  # this is how gas_price is specified for a tx (unlike how value or sender for a tx is specified)
+        res = self.c.storeBlockWithFee(blockHeaderBytes[i], feeWei)
+        assert res == i+startBlockNum
+        assert self.c.funcGetLastGasPrice() == int(currGP * (1 + maxAdjust))
+
+        i += 1
+        currGP = self.c.funcGetLastGasPrice()
+        nextGP = int(currGP * (1 + maxAdjust)) + 1
+        tester.gas_price = nextGP
+        res = self.c.storeBlockWithFee(blockHeaderBytes[i], feeWei)
+        assert res == i+startBlockNum
+        assert self.c.funcGetLastGasPrice() == int(currGP * (1 + maxAdjust))
+
+        i += 1
+        currGP = self.c.funcGetLastGasPrice()
+        nextGP = int(currGP * (1 + maxAdjust))
+        tester.gas_price = nextGP
+        res = self.c.storeBlockWithFee(blockHeaderBytes[i], feeWei)
+        assert res == i+startBlockNum
+        assert self.c.funcGetLastGasPrice() == nextGP
+
+        i += 1
+        currGP = nextGP
+        nextGP = currGP
+        tester.gas_price = nextGP
+        res = self.c.storeBlockWithFee(blockHeaderBytes[i], feeWei)
+        assert res == i+startBlockNum
+        assert self.c.funcGetLastGasPrice() == nextGP
+
+        i += 1
+        currGP = nextGP
+        nextGP = int(currGP / 3.0)
+        tester.gas_price = nextGP
+        res = self.c.storeBlockWithFee(blockHeaderBytes[i], feeWei)
+        assert res == i+startBlockNum
+        assert self.c.funcGetLastGasPrice() == int(currGP * (1 - maxAdjust))
+
+        i += 1
+        currGP = self.c.funcGetLastGasPrice()
+        nextGP = int(currGP * (1 - maxAdjust)) - 1
+        tester.gas_price = nextGP
+        res = self.c.storeBlockWithFee(blockHeaderBytes[i], feeWei)
+        assert res == i+startBlockNum
+        assert self.c.funcGetLastGasPrice() == int(currGP * (1 - maxAdjust))
+
+        i += 1
+        currGP = self.c.funcGetLastGasPrice()
+        nextGP = int(currGP * (1 - maxAdjust))
+        tester.gas_price = nextGP
+        res = self.c.storeBlockWithFee(blockHeaderBytes[i], feeWei)
+        assert res == i+startBlockNum
+        assert self.c.funcGetLastGasPrice() == nextGP
 
 
     def storeHeadersFrom300K(self, numHeader, keySender, addrSender):
@@ -398,6 +475,35 @@ class TestFee(object):
         # prior recipients should not have received anything
         assert self.s.block.get_balance(tester.a2) == balNextRec
         assert self.s.block.get_balance(tester.a1) == balRecipient
+
+
+    # test for the 1024 call stack depth limit attack, more accurately
+    # 1024 nesting/recursion limit of CALL, CALLCODE, CREATE opcodes
+    # Fortunately, send() is only used once ever by BTC Relay.
+    # References:
+    # https://github.com/LeastAuthority/ethereum-analyses/blob/master/GasEcon.md#callstack-depth-limit-errors
+    # https://github.com/ethereum/wiki/wiki/Subtleties#exceptional-conditions
+    def testSendRecursionLimit(self):
+        tester.gas_limit = 200000000  # can't be too high since pytester will error with BlockGasLimitReached target:1000000000
+        feePaid = 1027
+
+        eventArr = []
+        self.s.block.log_listeners.append(lambda x: eventArr.append(self.c._translator.listen(x)))
+
+        with pytest.raises(tester.TransactionFailed):
+            self.c.attackFeePaid(1, 1024, 0, feePaid, value=feePaid)
+
+        assert eventArr == []
+
+
+        res = self.c.attackFeePaid(1, 1023, 0, feePaid, value=feePaid, profiling=True)
+        print('GAS: '+str(res['gas']))
+
+        assert eventArr == [
+            { '_event_type': 'EthPayment',
+                'amount': feePaid,
+                'recipient': 0 }
+        ]
 
 
     # based on https://github.com/ethers/btcrelay/blob/4fca910ca4d5d95c0a6b6d1a8c75b2d5a942e113/test/test_tokens.py#L361

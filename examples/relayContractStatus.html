@@ -24,7 +24,7 @@
       do NOT forget to update ABI files when needed
      */
 
-     var relayAddr = '0x1fd22a2006c133ca1d006bb4c14b721acfd6be14'; // ConsenSys testnet
+     var relayAddr = '0x667a70d589c166bdbc6e69a472abcbd192e74534'; // Morden
 
     // var relayAddr = web3.eth.namereg.addr('btcrelay');  // Olympic
     $('#relayAddr').text(relayAddr);
@@ -106,7 +106,7 @@
       <h2><a href="https://github.com/ethereum/btcrelay">Ethereum Bitcoin Relay</a>
          on <a href="https://github.com/ConsenSys/ConsenSys.github.io/wiki/ConsenSys-public-testnet">PUBLIC ETH TESTNET</a></h3>
       <h3>BTC Relay: <strong id="relayAddr"></strong></h3>
-      <h3><a href="./js/btcRelayAbi.js">ABI</a></h2>
+      <h3><a href="./BitcoinRelayABI.js">ABI</a></h2>
       <h3>Latest Block Hash: <strong id="latestBlockHash"></strong></h3>
       <div>
         <h3 style="display: inline-block">Latest Block#: <strong id="latestBlockHeight"></strong></h3>
@@ -117,6 +117,52 @@
         for the latest blocks.
       </h3>
       <h3>ETH fee: <strong id="feeVTX"></strong></h3>
+    </div>
+
+    <div>
+      <h3>Contract address: <b>0x667a70d589c166bdbc6e69a472abcbd192e74534</b></h3>
+      <h3>Verifying the Source Code</h3>
+      <p>
+      The deployed version of <a href="https://github.com/ethereum/btcrelay/tree/911befc02bb0d86ac2ba4950e200bf881a57680f">BTC Relay is from commit
+      911befc02bb0d86ac2ba4950e200bf881a57680f</a>
+      </p>
+      <p>
+      The main steps to verifying the source code is <br>
+      1) compile code to the evm (bytecode) <br>
+      2) compare the evm against the data used in the contract creation transaction
+      </p>
+      <h4>1)</h4>
+<pre>
+serpent compile btcBulkStoreHeaders.se > compiled.evm
+</pre>
+      <h4>2)</h4>
+      <p>Here's how to use Geth console to obtain the evm.  The receipt is used to
+      guarantee that the tx hash provided is the one that created the BTC Relay contract
+      (see contractAddress property of the receipt).
+      </p>
+<pre>
+> tx='0x396008f9bf2e6b9aed5f4d01db1dcdb960b5408b56d4821ff86856f2c3b5186a'
+> eth.getTransactionReceipt(tx)
+{
+  blockHash: "0x7c658ac73f044c46795bdf12ba964cfd9151c0b4b2470795e2e3af81d1e53a82",
+  blockNumber: 400064,
+  contractAddress: "0x667a70d589c166bdbc6e69a472abcbd192e74534",
+  cumulativeGasUsed: 2769050,
+  gasUsed: 2769050,
+  logs: [],
+  transactionHash: "0x396008f9bf2e6b9aed5f4d01db1dcdb960b5408b56d4821ff86856f2c3b5186a",
+  transactionIndex: 0
+}
+> objTx = eth.getTransaction(tx)
+> objTx.input
+</pre>
+      <p>
+            Compare objTx.input with the contents of compiled.evm and you will see
+            that they match identically (except for 0x at the front of objTx.input)
+      </p>
+      <p>
+        The version of the <a href="https://github.com/ethereum/serpent/tree/f0b4128f91d173fb3f6de48a6993e7db75446924">Serpent compiler used is commit f0b4128f91d173fb3f6de48a6993e7db75446924</a>
+      </p>
     </div>
 
     <!-- <h3>blockchain.info Latest Block Hash: <strong id="bciBlockHash"></strong></h3> -->

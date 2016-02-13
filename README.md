@@ -15,18 +15,18 @@ BTC Relay is [live](http://rawgit.com/ethereum/btcrelay/master/examples/relayCon
 ## API
 
 
-##### verifyTx(transactionHash, transactionIndex, merkleSibling, blockHash)
+##### verifyTx(rawTransaction, transactionIndex, merkleSibling, blockHash)
 
 Verifies the presence of a transaction on the Bitcoin blockchain, primarily that the transaction is on Bitcoin's main chain and has at least 6 confirmations.
 
-* `transactionHash` - hash of the transaction, as `uint256`
+* `rawTransaction` - raw `bytes` of the transaction
 * `transactionIndex` - transaction's index within the block, as `int256`
 * `merkleSibling` - array of the sibling hashes comprising the Merkle proof, as `int256[]`
 * `blockHash` - hash of the block that contains the transaction, as `int256`
 
-Returns `int256`
-* `1` if transaction is verified to be on the Bitcoin blockchain
-* or an error code, see [constants.se](constants.se)
+Returns `uint256`
+* hash of the verified Bitcoin transaction
+* `0` if `rawTransaction` is exactly 64 bytes in length or fails verification
 
 *Note:* See [examples/sampleCall.html](examples/sampleCall.html) including use of [bitcoin-proof](https://www.npmjs.com/package/bitcoin-proof) for constructing `merkleSibling`.
 
@@ -174,8 +174,8 @@ Returns `int256`
 
 ##### changeFeeRecipient(blockHash, fee, recipient)
 
-Set the `fee` and `recipient` for a given `blockHash`.  The caller must send
-exactly `getChangeRecipientFee()` to BTC Relay, and must also specify a `fee` lower than
+Set the `fee` and `recipient` for a given `blockHash`.  The call must have `msg.value`
+of at least `getChangeRecipientFee()`, and must also specify a `fee` lower than
 the current `getFeeAmount(blockHash)`.
 
 * `blockHash` - hash of the block as `int256`.

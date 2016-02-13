@@ -20,10 +20,9 @@
   var btcproof = require('bitcoin-proof');
 
   // var gRelayAddr = web3.eth.namereg.addr('btcrelay');
-  var gRelayAddr = '0x1fd22a2006c133ca1d006bb4c14b721acfd6be14';  // Morden
+  var gRelayAddr = '0x667a70d589c166bdbc6e69a472abcbd192e74534';  // Morden
   var gMerkleProof;
   var gBlockHashOfTx;
-  var gRawTx;
   var gFeeVerifyFinney;
 
   var RelayContractClass = web3.eth.contract(btcRelayAbi);  // see ./js/btcRelayAbi.js
@@ -32,18 +31,18 @@
 
   // shows how to use web3 to make an eth_call to the relay contract
   // verifyTx returns 1 (success) or 0 (verify failed)
-  function callVerifyTx(txHash, txIndex, merkleSibling, txBlockHash) {
+  function callVerifyTx(txBytes, txIndex, merkleSibling, txBlockHash) {
     // gFeeVerifyFinney is transferred!  coinbase must have it or verifyTx fails
     var feeWei = web3.toWei(gFeeVerifyFinney, 'finney');
     var objParam = { from: web3.eth.coinbase, value: feeWei, gas: 3000000 };
-    var res = gRelayContract.verifyTx.call(txHash, txIndex, merkleSibling, txBlockHash, objParam);
+    var res = gRelayContract.verifyTx.call(txBytes, txIndex, merkleSibling, txBlockHash, objParam);
 
-    document.getElementById('result').innerText = 'btcrelay verifyTx returned: ' + res.toString(10);
+    document.getElementById('result').innerText = res.toString(16);
   }
 
   function callContract() {
-    var transHex = $('#transHex').val();
-    var txHash = '0x' + transHex;
+    var txBytes = '0x' + $('#txHexText').val();
+    // console.log('txBytes: ' + txBytes)
     var txBlockHash = '0x' + gBlockHashOfTx;
 
     // web3.js wants 0x prepended
@@ -51,7 +50,7 @@
       return '0x' + sib;
     });
 
-    callVerifyTx(txHash, gMerkleProof.txIndex, merkleSibling, txBlockHash);
+    callVerifyTx(txBytes, gMerkleProof.txIndex, merkleSibling, txBlockHash);
   }
 
   // includes sample of using the bitcoin-proof module
@@ -59,8 +58,7 @@
     var txid = $('#transHex').val();
     var urlJsonTx = "https://btc.blockr.io/api/v1/tx/raw/" + txid;
     $.getJSON(urlJsonTx, function(data) {
-        gRawTx = data.data.tx.hex;
-        $('#txHexText').val(gRawTx);
+        $('#txHexText').val(data.data.tx.hex);
 
         var blockNum = data.data.tx.blockhash;
         var blockInfoUrl = "http://btc.blockr.io/api/v1/block/raw/"+blockNum;
@@ -145,7 +143,7 @@
     </div>
 
     <div class="row">
-      <div id="result"></div>
+      <div>btcrelay verifyTx returned: <span id="result"></span></div>
     </div>
 
     <!-- <div class="footer-logo">
