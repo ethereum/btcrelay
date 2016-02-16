@@ -24,7 +24,7 @@
       do NOT forget to update ABI files when needed
      */
 
-     var relayAddr = '0x667a70d589c166bdbc6e69a472abcbd192e74534'; // Morden
+     var relayAddr = '0x721f4261afbcf42a9c86d6f1d5e5043e47cb1fac'; // Morden
 
     // var relayAddr = web3.eth.namereg.addr('btcrelay');  // Olympic
     $('#relayAddr').text(relayAddr);
@@ -104,7 +104,7 @@
 
     <div class="jumbotron">
       <h2><a href="https://github.com/ethereum/btcrelay">Ethereum Bitcoin Relay</a>
-         on <a href="https://github.com/ConsenSys/ConsenSys.github.io/wiki/ConsenSys-public-testnet">PUBLIC ETH TESTNET</a></h3>
+         on <a href="https://github.com/ConsenSys/ConsenSys.github.io/wiki/ConsenSys-public-testnet">Morden public TESTNET</a></h3>
       <h3>BTC Relay: <strong id="relayAddr"></strong></h3>
       <h3><a href="./BitcoinRelayABI.js">ABI</a></h2>
       <h3>Latest Block Hash: <strong id="latestBlockHash"></strong></h3>
@@ -120,11 +120,11 @@
     </div>
 
     <div>
-      <h3>Contract address: <b>0x667a70d589c166bdbc6e69a472abcbd192e74534</b></h3>
+      <h3>Contract address: <b></b></h3>
       <h3>Verifying the Source Code</h3>
       <p>
-      The deployed version of <a href="https://github.com/ethereum/btcrelay/tree/911befc02bb0d86ac2ba4950e200bf881a57680f">BTC Relay is from commit
-      911befc02bb0d86ac2ba4950e200bf881a57680f</a>
+      The deployed version of <a href="https://github.com/ethereum/btcrelay/tree/1466934855225b1e4a87031d299c1209ba12d503">BTC Relay is from commit
+      1466934855225b1e4a87031d299c1209ba12d503</a>
       </p>
       <p>
       The main steps to verifying the source code is <br>
@@ -141,16 +141,16 @@ serpent compile btcBulkStoreHeaders.se > compiled.evm
       (see contractAddress property of the receipt).
       </p>
 <pre>
-> tx='0x396008f9bf2e6b9aed5f4d01db1dcdb960b5408b56d4821ff86856f2c3b5186a'
+> tx='0x81610fffbd056c84b9c66c178a0f570903ed3efdca09ec2616eecee1ed5f442e'
 > eth.getTransactionReceipt(tx)
 {
-  blockHash: "0x7c658ac73f044c46795bdf12ba964cfd9151c0b4b2470795e2e3af81d1e53a82",
-  blockNumber: 400064,
-  contractAddress: "0x667a70d589c166bdbc6e69a472abcbd192e74534",
+  blockHash: "0x2d87bf82aa75d08794baefc11c4a2a5f3eb1397f986fff486e1efcd3241fd5b9",
+  blockNumber: 421003,
+  contractAddress: "0x721f4261afbcf42a9c86d6f1d5e5043e47cb1fac",
   cumulativeGasUsed: 2769050,
   gasUsed: 2769050,
   logs: [],
-  transactionHash: "0x396008f9bf2e6b9aed5f4d01db1dcdb960b5408b56d4821ff86856f2c3b5186a",
+  transactionHash: "0x81610fffbd056c84b9c66c178a0f570903ed3efdca09ec2616eecee1ed5f442e",
   transactionIndex: 0
 }
 > objTx = eth.getTransaction(tx)
