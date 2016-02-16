@@ -1,8 +1,14 @@
 import sys
 
-# https://en.bitcoin.it/wiki/Difficulty
-
 DIFFICULTY_1 = 0x00000000FFFF0000000000000000000000000000000000000000000000000000
+
+NUMERATOR = DIFFICULTY_1 * 2**48
+
+# https://en.bitcoin.it/wiki/Difficulty
+# chainwork = D * 2**48 / 0xffff
+# where D = DIFFICULTY_1 / targetFromBits
+# thus chainwork = NUMERATOR / (targetFromBits * 0xffff)
+
 
 # based on http://www.righto.com/2014/02/bitcoin-mining-hard-way-algorithms.html#ref3
 def targetFromBits(bits):
@@ -20,9 +26,12 @@ with open("../headers/blockchain_headers") as f:
 
     diff_num = targetFromBits(int(diff_bits.encode('hex'), 16))
 
-    # diff_hex = hex(diff_num)
-    # print diff_hex
+    # diff_num = targetFromBits(0x1b0404cb)
 
-    print DIFFICULTY_1 / diff_num
+    denom = diff_num * 0xffff
+
+    print NUMERATOR / denom
+
+    # print DIFFICULTY_1 / diff_num
     # f.seek(80 * startBlock)
     # bhBytes = f.read(80 * count)
