@@ -240,13 +240,13 @@ def getChainWork():
     return(m_getScore(self.heaviestBlock))
 
 
-# return the difference between the cumulative difficulty at
+# return the difference between the chainWork at
 # the blockchain Head and its 10th ancestor
 #
 # this is not needed by the relay itself, but is provided in
-# case some contract wants to use the
-# Bitcoin network difficulty as a data feed for some purpose
-def getAverageBlockDifficulty():
+# case some contract wants to use the chainWork or Bitcoin network
+# difficulty (which can be derived) as a data feed for some purpose
+def getAverageChainWork():
     blockHash = self.heaviestBlock
 
     cumulDifficultyHead = m_getScore(blockHash)

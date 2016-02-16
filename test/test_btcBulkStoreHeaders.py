@@ -104,7 +104,7 @@ class TestBtcBulkStoreHeaders(object):
         cumulDiff = self.c.getChainWork()
         assert cumulDiff == 11 + 1  # +1 since setInitialParent was called with imaginary block
 
-        blockDifficulty = self.c.getAverageBlockDifficulty()
+        blockDifficulty = self.c.getAverageChainWork()
         assert blockDifficulty == 10
 
 
