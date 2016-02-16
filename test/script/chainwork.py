@@ -1,4 +1,5 @@
 import sys
+import os
 
 DIFFICULTY_1 = 0x00000000FFFF0000000000000000000000000000000000000000000000000000
 
@@ -23,20 +24,21 @@ bits = 486594666
 # bits = 486604799
 # print DIFFICULTY_1 / targetFromBits(bits) * 2**48 / 0xffff
 
-print 2**256 / (targetFromBits(bits)+1)
+# print 2**256 / (targetFromBits(bits)+1)
 
 # print (~targetFromBits(bits) / (targetFromBits(bits)+1)) + 1
 
 
 # print float(DIFFICULTY_1) / targetFromBits(bits)
-sys.exit(0)
+# print targetFromBits(bits)
+# sys.exit(0)
 
 with open("../headers/blockchain_headers") as f:
     end_block = 36288
     chainwork = 0
 
+    f.seek(72, os.SEEK_CUR)
     for i in range(end_block + 1):
-        f.seek(72)
         rev_diff_bits = f.read(4)
         diff_bits = rev_diff_bits[::-1]
 
@@ -54,8 +56,9 @@ with open("../headers/blockchain_headers") as f:
 
         if i % 2016 == 0:
             print str(i) + ': ' + str(chainwork)
+            print ' T=' +  diff_bits.encode('hex') #str(diff_num)
             print (i+1) * 4295032833 == chainwork
 
-        f.seek(80)
+        f.seek(76, os.SEEK_CUR)
 
     print str(end_block) + ': ' + str(chainwork)
