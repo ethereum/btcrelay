@@ -21,7 +21,7 @@ def targetFromBits(bits):
 # sys.exit(0)
 
 with open("../headers/blockchain_headers") as f:
-    end_block = 201600
+    end_block = 389087
     chainwork = 0
 
     f.seek(72, os.SEEK_CUR)

@@ -29,6 +29,6 @@
       data:
         - 0x00000000000000000198bcc5bd65fd0ccd1c7e3b49e0170ea80296cbfee05042
         - 389087  # make sure this follows rules of SetInitialParent()
-        - 1  # need to compute cumulative difficulty
+        - 16397390254392527044785120  # use test/script/chainwork.py or https://chainquery.com/bitcoin-api/getblock
       retry: 60
       wait: True
