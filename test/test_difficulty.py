@@ -87,7 +87,7 @@ class TestDifficulty(object):
 
         assert self.c.getLastBlockHeight() == startBlock-1+count
 
-        assert self.c.getCumulativeDifficulty() == \
+        assert self.c.getChainWork() == \
             self.DIFF_ADJUST*44455415962 + \
             (count-self.DIFF_ADJUST)*46684376316 + 1  # score starts at 1
 
@@ -105,7 +105,7 @@ class TestDifficulty(object):
             assert self.c.bulkStoreHeader(bhBytes, count) == startBlock-1+count
 
         assert self.c.getLastBlockHeight() == startBlock-1+count
-        assert self.c.getCumulativeDifficulty() == count*44455415962 + 1  # score starts at 1
+        assert self.c.getChainWork() == count*44455415962 + 1  # score starts at 1
 
         # adding a low difficulty block should fail since bits!=prevBits
         version = 1
@@ -143,7 +143,7 @@ class TestDifficulty(object):
             assert self.c.bulkStoreHeader(bhBytes, count) == startBlock-1+count
 
         assert self.c.getLastBlockHeight() == startBlock-1+count
-        assert self.c.getCumulativeDifficulty() == count*44455415962 + 1  # score starts at 1
+        assert self.c.getChainWork() == count*44455415962 + 1  # score starts at 1
 
         # adding a low difficulty block should fail since bits!=newBits
         version = 2
@@ -196,7 +196,7 @@ class TestDifficulty(object):
 
         assert self.c.getLastBlockHeight() == startBlock-1+count
 
-        assert self.c.getCumulativeDifficulty() == \
+        assert self.c.getChainWork() == \
             self.DIFF_ADJUST*244112 + \
             (count-self.DIFF_ADJUST)*434877 + 1  # score starts at 1
 
@@ -217,7 +217,7 @@ class TestDifficulty(object):
 
         assert self.c.getLastBlockHeight() == startBlock-1+count
 
-        assert self.c.getCumulativeDifficulty() == \
+        assert self.c.getChainWork() == \
             self.DIFF_ADJUST*1 + \
             (count-self.DIFF_ADJUST)*1 + 1  # score starts at 1
 
@@ -240,7 +240,7 @@ class TestDifficulty(object):
 
         assert self.c.getLastBlockHeight() == startBlock-1+count
 
-        assert self.c.getCumulativeDifficulty() == count*1 + 1  # score starts at 1
+        assert self.c.getChainWork() == count*1 + 1  # score starts at 1
 
 
     # based on https://github.com/petertodd/python-bitcoinlib/blob/2a5dda45b557515fb12a0a18e5dd48d2f5cd13c2/bitcoin/tests/test_serialize.py#L131
