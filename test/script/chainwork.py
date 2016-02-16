@@ -20,10 +20,10 @@ def targetFromBits(bits):
 # sys.exit(0)
 
 with open("../headers/blockchain_headers") as f:
-    end_block = 2
+    end_block = 2016
     chainwork = 0
 
-    for i in range(end_block):
+    for i in range(end_block + 1):
         f.seek(72)
         rev_diff_bits = f.read(4)
         diff_bits = rev_diff_bits[::-1]
