@@ -17,7 +17,7 @@ extern relayDestination: [processTransaction:[bytes,uint256]:int256]
 data block[2**256](_info, _ancestor, _blockHeader[], _feeInfo)
 
 
-# block with the highest score (aka the Head of the blockchain)
+# block with the highest score (aka the Tip of the blockchain)
 data heaviestBlock
 
 # highest score among all blocks (so far)
@@ -140,8 +140,8 @@ def storeBlockHeader(blockHeaderBytes:str):
         scoreBlock = scorePrevBlock + difficulty
         m_setScore(blockHash, scoreBlock)
 
-        # equality allows block with same score to become an (alternate) Head, so that
-        # when an (existing) Head becomes stale, the chain can continue with the alternate Head
+        # equality allows block with same score to become an (alternate) Tip, so that
+        # when an (existing) Tip becomes stale, the chain can continue with the alternate Tip
         if scoreBlock >= self.highScore:
             self.heaviestBlock = blockHash
             self.highScore = scoreBlock
@@ -224,24 +224,24 @@ def relayTx(txBytes:str, txIndex, sibling:arr, txBlockHash, contract):
     return(ERR_RELAY_VERIFY)
 
 
-# return the hash of the heaviest block aka the Head
+# return the hash of the heaviest block aka the Tip
 def getBlockchainHead():
     return(self.heaviestBlock)
 
 
-# return the height of the heaviest block aka the Head
+# return the height of the heaviest block aka the Tip
 def getLastBlockHeight():
     return(m_lastBlockHeight())
 
 
-# return the chainWork of the Head
+# return the chainWork of the Tip
 # http://bitcoin.stackexchange.com/questions/26869/what-is-chainwork
 def getChainWork():
     return(m_getScore(self.heaviestBlock))
 
 
 # return the difference between the chainWork at
-# the blockchain Head and its 10th ancestor
+# the blockchain Tip and its 10th ancestor
 #
 # this is not needed by the relay itself, but is provided in
 # case some contract wants to use the chainWork or Bitcoin network
@@ -249,7 +249,7 @@ def getChainWork():
 def getAverageChainWork():
     blockHash = self.heaviestBlock
 
-    chainWorkHead = m_getScore(blockHash)
+    chainWorkTip = m_getScore(blockHash)
 
     i = 0
     while i < 10:
@@ -258,7 +258,7 @@ def getAverageChainWork():
 
     chainWork10Ancestors = m_getScore(blockHash)
 
-    return(chainWorkHead - chainWork10Ancestors)
+    return(chainWorkTip - chainWork10Ancestors)
 
 
 # For a valid proof, returns the root of the Merkle tree.
