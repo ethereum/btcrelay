@@ -106,11 +106,13 @@ Returns `int256`
 
 ----
 
-##### getAverageBlockDifficulty()
+##### getAverageChainWork()
 
-Returns the difference between the cumulative difficulty of the latest block and the 10th block prior.
+Returns the difference between the chainWork of the latest block and the
+10th block prior.
 
-This is provided in case an Ethereum contract wants to use the Bitcoin network difficulty as a data feed for some purpose.
+This is provided in case an Ethereum contract wants to use the chainWork
+or Bitcoin network difficulty (which can be derived) as a data feed.
 
 ----
 

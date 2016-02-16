@@ -11,13 +11,13 @@ extern relayDestination: [processTransaction:[bytes,uint256]:int256]
 # - _info who's 32 bytes are comprised of "_height" 8bytes, "_ibIndex" 8bytes, "_score" 16bytes
 # -   "_height" is 1 more than the typical Bitcoin term height/blocknumber [see setInitialParent()]
 # -   "_ibIndex" is the block's index to internalBlock (see btcChain)
-# -   "_score" is 1 more than the cumulative difficulty [see setInitialParent()]
+# -   "_score" is 1 more than the chainWork [see setInitialParent()]
 # - _ancestor stores 8 32bit ancestor indices for more efficient backtracking (see btcChain)
 # - _feeInfo is used for incentive.se (see m_getFeeInfo)
 data block[2**256](_info, _ancestor, _blockHeader[], _feeInfo)
 
 
-# block with the highest score (aka the Head of the blockchain)
+# block with the highest score (aka the Tip of the blockchain)
 data heaviestBlock
 
 # highest score among all blocks (so far)
@@ -36,16 +36,19 @@ def init():
     # issues such as https://github.com/ethereum/serpent/issues/77 78 ...
 
 
-# this can only be called once and allows testing of storing
+# setInitialParent can only be called once and allows testing of storing
 # arbitrary headers and verifying/relaying transactions,
 # say from block 300K, instead of Satoshi's genesis block which
 # have 0 transactions until much later on
 #
-# This should be called using a real block on the Bitcoin blockchain.
+# setInitialParent should be called using a real block on the Bitcoin blockchain.
+# http://bitcoin.stackexchange.com/questions/26869/what-is-chainwork
+# chainWork can be computed using test/script.chainwork.py or
+# https://chainquery.com/bitcoin-api/getblock or local bitcoind
 #
 # Note: If used to store the imaginary block before Satoshi's
 # genesis, then it should be called as setInitialParent(0, 0, 1) and
-# means that getLastBlockHeight() and getCumulativeDifficulty() will be
+# means that getLastBlockHeight() and getChainWork() will be
 # 1 more than the usual: eg Satoshi's genesis has height 1 instead of 0
 # setInitialParent(0, 0, 1) is only for testing purposes and a TransactionFailed
 # error will happen when the first block divisible by 2016 is reached, because
@@ -56,7 +59,7 @@ def init():
 # called with 'height such that height mod 2016 = 2015', so that
 # TransactionFailed will be avoided when a difficulty computation is required.
 # This means the minimum height for setInitialParent is 2015.
-def setInitialParent(blockHash, height, cumulativeDifficulty):
+def setInitialParent(blockHash, height, chainWork):
     # reuse highScore as the flag for whether setInitialParent() has already been called
     if self.highScore != 0:
         return(0)
@@ -70,9 +73,9 @@ def setInitialParent(blockHash, height, cumulativeDifficulty):
     # real genesis block to be at height0)
     m_setHeight(blockHash, height)
 
-    # do NOT pass cumulativeDifficulty of 0, since score0 means
+    # do NOT pass chainWork of 0, since score0 means
     # block does NOT exist. see check in storeBlockHeader()
-    m_setScore(blockHash, cumulativeDifficulty)
+    m_setScore(blockHash, chainWork)
 
     # other fields do not need to be set, for example:
     # _ancestor can remain zeros because self.internalBlock[0] already points to blockHash
@@ -137,8 +140,8 @@ def storeBlockHeader(blockHeaderBytes:str):
         scoreBlock = scorePrevBlock + difficulty
         m_setScore(blockHash, scoreBlock)
 
-        # equality allows block with same score to become an (alternate) Head, so that
-        # when an (existing) Head becomes stale, the chain can continue with the alternate Head
+        # equality allows block with same score to become an (alternate) Tip, so that
+        # when an (existing) Tip becomes stale, the chain can continue with the alternate Tip
         if scoreBlock >= self.highScore:
             self.heaviestBlock = blockHash
             self.highScore = scoreBlock
@@ -221,40 +224,41 @@ def relayTx(txBytes:str, txIndex, sibling:arr, txBlockHash, contract):
     return(ERR_RELAY_VERIFY)
 
 
-# return the hash of the heaviest block aka the Head
+# return the hash of the heaviest block aka the Tip
 def getBlockchainHead():
     return(self.heaviestBlock)
 
 
-# return the height of the heaviest block aka the Head
+# return the height of the heaviest block aka the Tip
 def getLastBlockHeight():
     return(m_lastBlockHeight())
 
 
-# return the (total) cumulative difficulty of the Head
-def getCumulativeDifficulty():
+# return the chainWork of the Tip
+# http://bitcoin.stackexchange.com/questions/26869/what-is-chainwork
+def getChainWork():
     return(m_getScore(self.heaviestBlock))
 
 
-# return the difference between the cumulative difficulty at
-# the blockchain Head and its 10th ancestor
+# return the difference between the chainWork at
+# the blockchain Tip and its 10th ancestor
 #
 # this is not needed by the relay itself, but is provided in
-# case some contract wants to use the
-# Bitcoin network difficulty as a data feed for some purpose
-def getAverageBlockDifficulty():
+# case some contract wants to use the chainWork or Bitcoin network
+# difficulty (which can be derived) as a data feed for some purpose
+def getAverageChainWork():
     blockHash = self.heaviestBlock
 
-    cumulDifficultyHead = m_getScore(blockHash)
+    chainWorkTip = m_getScore(blockHash)
 
     i = 0
     while i < 10:
         blockHash = getPrevBlock(blockHash)
         i += 1
 
-    cumulDifficulty10Ancestors = m_getScore(blockHash)
+    chainWork10Ancestors = m_getScore(blockHash)
 
-    return(cumulDifficultyHead - cumulDifficulty10Ancestors)
+    return(chainWorkTip - chainWork10Ancestors)
 
 
 # For a valid proof, returns the root of the Merkle tree.

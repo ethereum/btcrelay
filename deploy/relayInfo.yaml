@@ -16,9 +16,9 @@
 
 -
   call:
-    getCumulativeDifficulty:
+    getChainWork:
       to: $RelayWithBulkStore
-      sig: getCumulativeDifficulty:[]:int256
+      sig: getChainWork:[]:int256
 
 -
   call:
