@@ -19,6 +19,18 @@ def targetFromBits(bits):
 # print hex(targetFromBits(0x1b0404cb))
 # sys.exit(0)
 
+bits = 486594666
+# bits = 486604799
+# print DIFFICULTY_1 / targetFromBits(bits) * 2**48 / 0xffff
+
+print 2**256 / (targetFromBits(bits)+1)
+
+# print (~targetFromBits(bits) / (targetFromBits(bits)+1)) + 1
+
+
+# print float(DIFFICULTY_1) / targetFromBits(bits)
+sys.exit(0)
+
 with open("../headers/blockchain_headers") as f:
     end_block = 36288
     chainwork = 0
@@ -30,9 +42,13 @@ with open("../headers/blockchain_headers") as f:
 
         diff_num = targetFromBits(int(diff_bits.encode('hex'), 16))
 
-        denom = diff_num * 0xffff
+        # denom = diff_num * 0xffff
 
-        chainwork += NUMERATOR / denom
+        block_proof = 2**256 / (diff_num+1)
+
+        chainwork += block_proof
+
+        # chainwork += NUMERATOR / denom
 
         # chainwork += DIFFICULTY_1 / diff_num * 2**48 / 0xffff
 
