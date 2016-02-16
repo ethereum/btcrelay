@@ -20,7 +20,7 @@ def targetFromBits(bits):
 # sys.exit(0)
 
 with open("../headers/blockchain_headers") as f:
-    end_block = 2016
+    end_block = 36288
     chainwork = 0
 
     for i in range(end_block + 1):
@@ -33,6 +33,12 @@ with open("../headers/blockchain_headers") as f:
         denom = diff_num * 0xffff
 
         chainwork += NUMERATOR / denom
+
+        # chainwork += DIFFICULTY_1 / diff_num * 2**48 / 0xffff
+
+        if i % 2016 == 0:
+            print str(i) + ': ' + str(chainwork)
+            print (i+1) * 4295032833 == chainwork
 
         f.seek(80)
 
