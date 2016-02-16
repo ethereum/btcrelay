@@ -20,18 +20,20 @@ def targetFromBits(bits):
 # sys.exit(0)
 
 with open("../headers/blockchain_headers") as f:
-    f.seek(72)
-    rev_diff_bits = f.read(4)
-    diff_bits = rev_diff_bits[::-1]
+    end_block = 2
+    chainwork = 0
 
-    diff_num = targetFromBits(int(diff_bits.encode('hex'), 16))
+    for i in range(end_block):
+        f.seek(72)
+        rev_diff_bits = f.read(4)
+        diff_bits = rev_diff_bits[::-1]
 
-    # diff_num = targetFromBits(0x1b0404cb)
+        diff_num = targetFromBits(int(diff_bits.encode('hex'), 16))
 
-    denom = diff_num * 0xffff
+        denom = diff_num * 0xffff
 
-    print NUMERATOR / denom
+        chainwork += NUMERATOR / denom
 
-    # print DIFFICULTY_1 / diff_num
-    # f.seek(80 * startBlock)
-    # bhBytes = f.read(80 * count)
+        f.seek(80)
+
+    print str(end_block) + ': ' + str(chainwork)
