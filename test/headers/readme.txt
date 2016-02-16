@@ -1,2 +1,2 @@
-blockchain_headers until 368494
-Source: https://headers.electrum.org/blockchain_headers
+blockchain_headers until 398668
+Initial Source: https://headers.electrum.org/blockchain_headers
