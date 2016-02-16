@@ -51,8 +51,8 @@
     // res = btcrelayTester.verifyTx.sendTransaction(0, 1, [], 0, {from: web3.eth.coinbase, value: web3.toWei('0.1', 'ether')});
     // console.log('txHash for verifyTx: ', res)
 
-    // mock cumulative difficulty since the initialization did not set it correctly
-    // var headScore = contract.getCumulativeDifficulty.call();
+    // mock chainWork since the initialization did not set it correctly
+    // var headScore = contract.getChainWork.call();
     // $('#latestBlockScore').text(web3.toBigNumber(headScore).toString(10));
     $('#latestBlockScore').text('...');
 
@@ -103,7 +103,7 @@
         <h3 style="display: inline-block">Latest Block#: <strong id="latestBlockHeight"></strong></h3>
         <div style="display: inline-block; margin-left:3em">may be behind since BTC testnet may produce blocks much faster than 1 every 10 mins&nbsp<a href="https://tbtc.blockr.io" target="_">tbtc.blockr.io</a>: <strong id="blockrBlockHeight"></strong></span>
       </div>
-      <h3>Latest Block Cumulative Difficulty: <strong id="latestBlockScore"></strong></h3>
+      <h3>Latest Block ChainWork: <strong id="latestBlockScore"></strong></h3>
       <h3 id="warnSync" style="display: none">Your Ethereum node may not be fully synced: <span id=nodeBlockNum></span>.  Check <a href="https://stats.ethdev.com" target="_">stats</a>
         for the latest blocks.
       </h3>

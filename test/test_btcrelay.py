@@ -60,11 +60,11 @@ class TestBtcRelay(object):
                 fakeb1 = dblSha256Flip(blockHeaderBytes) if i==1 else fakeb1
                 fakeb6 = dblSha256Flip(blockHeaderBytes) if i==6 else fakeb6
 
-                # print('@@@@ chain score: ' + str(self.c.getCumulativeDifficulty()))
+                # print('@@@@ chain score: ' + str(self.c.getChainWork()))
                 assert res == i+forkPrevNum
 
-        cumulDiff = self.c.getCumulativeDifficulty()
-        assert cumulDiff == 49402014931*7 + 1  # 1 is the initial score
+        chainWork = self.c.getChainWork()
+        assert chainWork == 49402014931*7 + 1  # 1 is the initial score
 
         #
         # fakeB1 is within6confirms so should NOT verify
@@ -114,11 +114,11 @@ class TestBtcRelay(object):
         blockHeaderBytes = map(lambda x: x.decode('hex'), headers)
         for i in range(6):  # only 6 blocks first
             res = self.c.storeBlockHeader(blockHeaderBytes[i])
-            # print('@@@@ real chain score: ' + str(self.c.getCumulativeDifficulty()))
+            # print('@@@@ real chain score: ' + str(self.c.getChainWork()))
             assert res == i+1+forkPrevNum
             eventArr.pop()  # pop the StoreHeader success event
 
-        assert self.c.getCumulativeDifficulty() == cumulDiff  # cumulDiff should not change
+        assert self.c.getChainWork() == chainWork  # chainWork should not change
         assert self.c.getBlockchainHead() == dblSha256Flip(blockHeaderBytes[-2])
 
         txInBlockOne = argsForVerifyTx(*self.tx1ofBlock363731())
@@ -170,11 +170,11 @@ class TestBtcRelay(object):
         blockHeaderBytes = map(lambda x: x.decode('hex'), headers)
         for i in range(5):  # store only 5 blocks first
             res = self.c.storeBlockHeader(blockHeaderBytes[i])
-            # print('@@@@ real chain score: ' + str(self.c.getCumulativeDifficulty()))
+            # print('@@@@ real chain score: ' + str(self.c.getChainWork()))
             assert res == i+1+forkPrevNum
 
-        cumulDiff = self.c.getCumulativeDifficulty()
-        assert cumulDiff == 49402014931*6 + 1  # 1 is the initial score
+        chainWork = self.c.getChainWork()
+        assert chainWork == 49402014931*6 + 1  # 1 is the initial score
 
         #
         # store 5 'fake' blocks
@@ -183,10 +183,10 @@ class TestBtcRelay(object):
             for i in range(5):
                 res = self.c.storeBlockHeader(dataFile.read(80))
 
-                # print('@@@@ chain score: ' + str(self.c.getCumulativeDifficulty()))
+                # print('@@@@ chain score: ' + str(self.c.getChainWork()))
                 assert res == i+1+forkPrevNum
 
-        assert self.c.getCumulativeDifficulty() == cumulDiff
+        assert self.c.getChainWork() == chainWork
 
         txInBlockZero = argsForVerifyTx(*self.tx1ofBlock363730())
         assert self.c.helperVerifyHash__(*txInBlockZero) == self.ERR_CONFIRMATIONS
@@ -199,7 +199,7 @@ class TestBtcRelay(object):
             res = self.c.storeBlockHeader(dataFile.read(80))
             assert res == forkPrevNum + 6
 
-        assert self.c.getCumulativeDifficulty() == 49402014931*7 + 1
+        assert self.c.getChainWork() == 49402014931*7 + 1
         assert self.c.helperVerifyHash__(*txInBlockZero) == 1
 
         #
@@ -238,10 +238,10 @@ class TestBtcRelay(object):
         blockHeaderBytes = map(lambda x: x.decode('hex'), headers)
         for i in range(6):
             res = self.c.storeBlockHeader(blockHeaderBytes[i])
-            # print('@@@@ real chain score: ' + str(self.c.getCumulativeDifficulty()))
+            # print('@@@@ real chain score: ' + str(self.c.getChainWork()))
             assert res == i+100000
 
-        cumulDiff = self.c.getCumulativeDifficulty()
+        chainWork = self.c.getChainWork()
 
         # block hashes
         b0 = 0x000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506
@@ -309,10 +309,10 @@ class TestBtcRelay(object):
         blockHeaderBytes = map(lambda x: x.decode('hex'), headers)
         for i in range(7):
             res = self.c.storeBlockHeader(blockHeaderBytes[i])
-            # print('@@@@ real chain score: ' + str(self.c.getCumulativeDifficulty()))
+            # print('@@@@ real chain score: ' + str(self.c.getChainWork()))
             assert res == i+100000
 
-        cumulDiff = self.c.getCumulativeDifficulty()
+        chainWork = self.c.getChainWork()
 
         # block hashes
         b0 = 0x000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506
@@ -379,10 +379,10 @@ class TestBtcRelay(object):
         blockHeaderBytes = map(lambda x: x.decode('hex'), headers)
         for i in range(7):
             res = self.c.storeBlockHeader(blockHeaderBytes[i])
-            # print('@@@@ real chain score: ' + str(self.c.getCumulativeDifficulty()))
+            # print('@@@@ real chain score: ' + str(self.c.getChainWork()))
             assert res == i+100000
 
-        cumulDiff = self.c.getCumulativeDifficulty()
+        chainWork = self.c.getChainWork()
 
         # block hashes
         b0 = 0x000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506
@@ -451,10 +451,10 @@ class TestBtcRelay(object):
             res = self.c.storeBlockHeader(blockHeaderBytes)
             hashPrevBlock = dblSha256Flip(blockHeaderBytes)
 
-            # print('@@@@ fake chain score: ' + str(self.c.getCumulativeDifficulty()))
+            # print('@@@@ fake chain score: ' + str(self.c.getChainWork()))
             assert res == i+100000  # fake blocks are stored since there is possibility they can become the main chain
 
-        assert self.c.getCumulativeDifficulty() == cumulDiff  # cumulDiff should not change
+        assert self.c.getChainWork() == chainWork  # chainWork should not change
         assert b6 == self.c.getBlockchainHead()
 
         # forked block should NOT verify
@@ -634,7 +634,7 @@ class TestBtcRelay(object):
         assert self.c.getBlockchainHead() == block1Hash
         assert self.c.getLastBlockHeight() == 1 + 1  # +1 since setInitialParent was called with imaginary block
 
-        assert self.c.getCumulativeDifficulty() == 2 + 1  # +1 since setInitialParent was called with imaginary block
+        assert self.c.getChainWork() == 2 + 1  # +1 since setInitialParent was called with imaginary block
 
         res = self.storeBlock2()
         assert res[0] == 2 + 1  # +1 since setInitialParent was called with imaginary block
@@ -666,8 +666,8 @@ class TestBtcRelay(object):
     def testStoreNewHead(self):
         parent = 0x00000000000000000a15bda775b0004fca6368c5b8a61cb0d3b793670b9369c2
         height = 357368
-        cumulDifficulty = 1981747039106115  # 1981795846593359 - 48807487244 (diff at 357369)
-        self.c.setInitialParent(parent, height, cumulDifficulty)
+        chainWork = 1981747039106115  # 1981795846593359 - 48807487244 (diff at 357369)
+        self.c.setInitialParent(parent, height, chainWork)
 
         orphanStr = '03000000c269930b6793b7d3b01ca6b8c56863ca4f00b075a7bd150a0000000000000000391c579bd59cb0199baf96dc1bc1066de0dc202bbe18f062a20aa25f78729376ba6f5d55f586161826f45178'
         bhBytes = orphanStr.decode('hex')
@@ -678,7 +678,7 @@ class TestBtcRelay(object):
         assert self.c.storeBlockHeader(bhBytes) == height + 1
         assert self.c.getBlockchainHead() == orphanHash
         assert self.c.getLastBlockHeight() == height + 1
-        assert self.c.getCumulativeDifficulty() == 1981795846593359
+        assert self.c.getChainWork() == 1981795846593359
 
         # real 357369
         headerStr = '03000000c269930b6793b7d3b01ca6b8c56863ca4f00b075a7bd150a00000000000000004bdc09e5405944a6319baf5e90335f221d5b91d44f5212c05bb1e751b997cc74db6f5d55f5861618351ec186'
@@ -690,7 +690,7 @@ class TestBtcRelay(object):
         assert self.c.storeBlockHeader(bhBytes) == height + 1
         assert self.c.getBlockchainHead() == hash357369
         assert self.c.getLastBlockHeight() == height + 1
-        assert self.c.getCumulativeDifficulty() == 1981795846593359
+        assert self.c.getChainWork() == 1981795846593359
 
 
     def testStoreExistingHeader(self):
@@ -804,7 +804,7 @@ class TestBtcRelay(object):
                 blockHeaderBytes = dataFile.read(80)
                 res = self.c.storeBlockHeader(blockHeaderBytes)
                 assert res == i+1+forkPrevNum
-        assert self.c.getCumulativeDifficulty() == 49402014931*6 + 1
+        assert self.c.getChainWork() == 49402014931*6 + 1
 
         txInBlockZero = argsForVerifyTx(*self.tx1ofBlock363730())
         with pytest.raises(tester.TransactionFailed):
