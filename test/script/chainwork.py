@@ -20,21 +20,8 @@ def targetFromBits(bits):
 # print hex(targetFromBits(0x1b0404cb))
 # sys.exit(0)
 
-bits = 486594666
-# bits = 486604799
-# print DIFFICULTY_1 / targetFromBits(bits) * 2**48 / 0xffff
-
-# print 2**256 / (targetFromBits(bits)+1)
-
-# print (~targetFromBits(bits) / (targetFromBits(bits)+1)) + 1
-
-
-# print float(DIFFICULTY_1) / targetFromBits(bits)
-# print targetFromBits(bits)
-# sys.exit(0)
-
 with open("../headers/blockchain_headers") as f:
-    end_block = 36288
+    end_block = 201600
     chainwork = 0
 
     f.seek(72, os.SEEK_CUR)
@@ -44,20 +31,14 @@ with open("../headers/blockchain_headers") as f:
 
         diff_num = targetFromBits(int(diff_bits.encode('hex'), 16))
 
-        # denom = diff_num * 0xffff
+        denom = diff_num * 0xffff
 
-        block_proof = 2**256 / (diff_num+1)
+        chainwork += NUMERATOR / denom
 
-        chainwork += block_proof
-
-        # chainwork += NUMERATOR / denom
-
-        # chainwork += DIFFICULTY_1 / diff_num * 2**48 / 0xffff
-
-        if i % 2016 == 0:
-            print str(i) + ': ' + str(chainwork)
-            print ' T=' +  diff_bits.encode('hex') #str(diff_num)
-            print (i+1) * 4295032833 == chainwork
+        # if i % 2016 == 0:
+        #     print str(i) + ': ' + str(chainwork)
+        #     #print ' T=' +  diff_bits.encode('hex') #str(diff_num)
+        #     print (i+1) * 4295032833 == chainwork
 
         f.seek(76, os.SEEK_CUR)
 
