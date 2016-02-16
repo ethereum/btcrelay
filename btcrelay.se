@@ -249,16 +249,16 @@ def getChainWork():
 def getAverageChainWork():
     blockHash = self.heaviestBlock
 
-    cumulDifficultyHead = m_getScore(blockHash)
+    chainWorkHead = m_getScore(blockHash)
 
     i = 0
     while i < 10:
         blockHash = getPrevBlock(blockHash)
         i += 1
 
-    cumulDifficulty10Ancestors = m_getScore(blockHash)
+    chainWork10Ancestors = m_getScore(blockHash)
 
-    return(cumulDifficultyHead - cumulDifficulty10Ancestors)
+    return(chainWorkHead - chainWork10Ancestors)
 
 
 # For a valid proof, returns the root of the Merkle tree.

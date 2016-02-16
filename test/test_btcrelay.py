@@ -63,8 +63,8 @@ class TestBtcRelay(object):
                 # print('@@@@ chain score: ' + str(self.c.getChainWork()))
                 assert res == i+forkPrevNum
 
-        cumulDiff = self.c.getChainWork()
-        assert cumulDiff == 49402014931*7 + 1  # 1 is the initial score
+        chainWork = self.c.getChainWork()
+        assert chainWork == 49402014931*7 + 1  # 1 is the initial score
 
         #
         # fakeB1 is within6confirms so should NOT verify
@@ -118,7 +118,7 @@ class TestBtcRelay(object):
             assert res == i+1+forkPrevNum
             eventArr.pop()  # pop the StoreHeader success event
 
-        assert self.c.getChainWork() == cumulDiff  # cumulDiff should not change
+        assert self.c.getChainWork() == chainWork  # chainWork should not change
         assert self.c.getBlockchainHead() == dblSha256Flip(blockHeaderBytes[-2])
 
         txInBlockOne = argsForVerifyTx(*self.tx1ofBlock363731())
@@ -173,8 +173,8 @@ class TestBtcRelay(object):
             # print('@@@@ real chain score: ' + str(self.c.getChainWork()))
             assert res == i+1+forkPrevNum
 
-        cumulDiff = self.c.getChainWork()
-        assert cumulDiff == 49402014931*6 + 1  # 1 is the initial score
+        chainWork = self.c.getChainWork()
+        assert chainWork == 49402014931*6 + 1  # 1 is the initial score
 
         #
         # store 5 'fake' blocks
@@ -186,7 +186,7 @@ class TestBtcRelay(object):
                 # print('@@@@ chain score: ' + str(self.c.getChainWork()))
                 assert res == i+1+forkPrevNum
 
-        assert self.c.getChainWork() == cumulDiff
+        assert self.c.getChainWork() == chainWork
 
         txInBlockZero = argsForVerifyTx(*self.tx1ofBlock363730())
         assert self.c.helperVerifyHash__(*txInBlockZero) == self.ERR_CONFIRMATIONS
@@ -241,7 +241,7 @@ class TestBtcRelay(object):
             # print('@@@@ real chain score: ' + str(self.c.getChainWork()))
             assert res == i+100000
 
-        cumulDiff = self.c.getChainWork()
+        chainWork = self.c.getChainWork()
 
         # block hashes
         b0 = 0x000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506
@@ -312,7 +312,7 @@ class TestBtcRelay(object):
             # print('@@@@ real chain score: ' + str(self.c.getChainWork()))
             assert res == i+100000
 
-        cumulDiff = self.c.getChainWork()
+        chainWork = self.c.getChainWork()
 
         # block hashes
         b0 = 0x000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506
@@ -382,7 +382,7 @@ class TestBtcRelay(object):
             # print('@@@@ real chain score: ' + str(self.c.getChainWork()))
             assert res == i+100000
 
-        cumulDiff = self.c.getChainWork()
+        chainWork = self.c.getChainWork()
 
         # block hashes
         b0 = 0x000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506
@@ -454,7 +454,7 @@ class TestBtcRelay(object):
             # print('@@@@ fake chain score: ' + str(self.c.getChainWork()))
             assert res == i+100000  # fake blocks are stored since there is possibility they can become the main chain
 
-        assert self.c.getChainWork() == cumulDiff  # cumulDiff should not change
+        assert self.c.getChainWork() == chainWork  # chainWork should not change
         assert b6 == self.c.getBlockchainHead()
 
         # forked block should NOT verify
@@ -666,8 +666,8 @@ class TestBtcRelay(object):
     def testStoreNewHead(self):
         parent = 0x00000000000000000a15bda775b0004fca6368c5b8a61cb0d3b793670b9369c2
         height = 357368
-        cumulDifficulty = 1981747039106115  # 1981795846593359 - 48807487244 (diff at 357369)
-        self.c.setInitialParent(parent, height, cumulDifficulty)
+        chainWork = 1981747039106115  # 1981795846593359 - 48807487244 (diff at 357369)
+        self.c.setInitialParent(parent, height, chainWork)
 
         orphanStr = '03000000c269930b6793b7d3b01ca6b8c56863ca4f00b075a7bd150a0000000000000000391c579bd59cb0199baf96dc1bc1066de0dc202bbe18f062a20aa25f78729376ba6f5d55f586161826f45178'
         bhBytes = orphanStr.decode('hex')
