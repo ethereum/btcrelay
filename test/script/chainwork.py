@@ -1,3 +1,6 @@
+# http://bitcoin.stackexchange.com/questions/26869/what-is-chainwork
+# To use this script, replace "end_block" with the desired one
+
 import sys
 import os
 
