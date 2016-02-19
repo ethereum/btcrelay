@@ -133,6 +133,10 @@ only screen and (min-device-pixel-ratio: 1.5) {
 	}
 }
 
+.button-smallfont {
+	font-size: 12px;
+}
+
 /* Header
 ---------------------------------------------------------------------------- */
 
@@ -186,7 +190,7 @@ only screen and (min-device-pixel-ratio: 1.5) {
 	background-color: #444;
 	color: #efefef;
 	border-radius: 3px;
-	padding: 20px;
+	padding: 15px 15px 15px 25px;
 	margin-bottom: 20px;
 }
 

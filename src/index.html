@@ -90,14 +90,25 @@
 
 				<div id="section-about" class="container-fluid page-section clearfix">
 
-					<div class="notice">
-						<h4>Code Review / Security Audit</h4>
-						<p>A code review/security audit is one of the major remaining items to deploy a version to Frontier.</p>
-						<a class="button button-dark blue button-black" href="https://github.com/ethereum/btcrelay/pull/10">Help Review the Code</a>
-					</div>
-
 					<div class="hero-headline bottommargin">
 						<h1 class="headline-reponsive">A bridge between the Bitcoin blockchain &amp; Ethereum smart contracts</h1>
+
+						<div class="notice" style="margin-top: 20px;">
+							<h4>NEWS</h4>
+							<div>
+								<p>BTC Relay is now live.</p>
+								<a class="button button-smallfont button-dark magenta button-black" href="#launch">How to use it</a>
+							</div>
+							<div style="margin-top: 10px;">
+								<p>Code Review / Security Audit:</p>
+								<div class="inline">
+									<a class="button button-smallfont button-dark blue button-black" href="https://github.com/ethereum/btcrelay/pull/10">Help Review the Code</a>
+									<span class="small" style="margin-left: 20px;">BTC Relay is part of the <a style="color: #aaa; text-decoration: underline;" href="https://blog.ethereum.org/2016/02/17/btc_relay_included_in_bounty_program/">Ethereum Bounty Program</a>.</span>
+								</div>
+							</div>
+						</div>
+
+
             <h3 class="link-center"><span class="magenta">BTC</span>  <i class="icon-link fa-rotate-135 make-space"></i>  <span class="blue">ETH</span></h3>
 						<span><a href="http://rawgit.com/ethereum/btcrelay/master/examples/relayContractStatus.html" target="_blank">BTC Relay</a>
 							allows Ethereum developers to interact with the Bitcoin blockchain and verify Bitcoin transactions. Relayers who submit blocks to support the Relay can earn Ether.</span>
@@ -115,7 +126,7 @@
 						</div>
 
 						<span>BTC Relay is an <strong>Ethereum contract</strong> that stores <strong>Bitcoin blockheaders</strong>. BTC Relay uses these blockheaders to build a mini-version of the Bitcoin blockchain: a method used by Bitcoin SPV light wallets.</span>
-						<span>BTC Relay is <strong>open-source, trustless, autonomous and decentralized</strong>: it is <a href="http://rawgit.com/ethereum/btcrelay/master/examples/relayContractStatus.html" target="_blank">live</a> on the testnet.</span>
+						<span>BTC Relay is <strong>open-source, trustless, autonomous and decentralized</strong>.</span>
 					</div>
 
 					<!-- Launch date -->
@@ -123,29 +134,25 @@
 					<a name="launchdate"></a>
 					<div id="launch" class="page-section">
 
-						<h2 class="bottommargin">Try now!</h2>
-
-						<div class="row clearfix">
-							<div class="col-md-12">
-							<p class="max80">BTC Relay is <a href="http://rawgit.com/ethereum/btcrelay/master/examples/relayContractStatus.html" target="_blank">LIVE</a> on the testnet.
-								It can verify Bitcoin mainnet transactions right now.
-								Try out the examples below, using test ether from a <a href="https://github.com/ConsenSys/ConsenSys.github.io/wiki/ConsenSys-public-testnet" target="_blank">faucet</a>.
-								BTC Relay in Frontier will be deployed in a couple months.</p>
-							</div>
-						</div>
+						<h2 class="bottommargin">Try it now!</h2>
 
             <div class="row clearfix">
 
-  						<div class="col-md-9">
+  						<div class="col-md-12">
 
   							<div class="accordion accordion-border clearfix">
 
-  								<div class="acctitle"><i class="acc-closed icon-ok-circle"></i><i class="acc-open icon-remove-circle"></i>Examples</div>
-  								<div class="acc_content clearfix">The following links are working examples of BTC Relay.</div>
-
-  								<div class="acctitle"><i class="acc-closed icon-ok-circle"></i><i class="acc-open icon-remove-circle"></i>Contract Status</div>
+  								<div class="acctitle" style="color: #cc0066;"><i class="acc-closed icon-ok-circle"></i><i class="acc-open icon-remove-circle"></i>Contract Status</div>
   								<div class="acc_content clearfix">
-                    <a href="http://rawgit.com/ethereum/btcrelay/master/examples/relayContractStatus.html" target="_blank"><strong>Here's the BTC Relay Contract Status</strong></a> that you can code against immediately, showing:
+
+  									<strong>BTC Relay</strong> is live on the public <a href="http://rawgit.com/ethereum/btcrelay/master/examples/relayContractStatus.html" target="_blank">Morden testnet</a> (<a href="https://github.com/ConsenSys/ConsenSys.github.io/wiki/ConsenSys-public-testnet" target="_blank">faucet info</a>). 
+										<br/><br/>
+  									It is also now available as an <a target="_blank" href="http://rawgit.com/ethereum/btcrelay/develop/examples/alphaContractStatus.html">alpha on Frontier</a>.
+										<br/><br/>
+  									A formal launch is planned in 2 months.
+
+										<br/><br/>
+                    You can code against these immediately, showing:
                     <ul class="verification-content">
                       <li>the Ethereum address and the ABI of the BTC Relay smart contract</li>
                       <li>the latest Bitcoin block BTC Relay has</li>
