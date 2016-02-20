@@ -228,6 +228,24 @@ class TestFee(object):
                 i += 1
 
 
+    def testStoreBlockZeroFee(self):
+        startBlockNum = 333000
+        block333K = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
+        self.c.setInitialParent(block333K, startBlockNum, 1)
+
+        weiFee = 15
+
+        blockHeaderStr = '0200000059c786bb379b65487f373279354f8ccc91ffcea2200c36080000000000000000dd9d7757a736fec629ab0ed0f602ba23c77afe7edec85a7026f641fd90bcf8f658ca8154747b1b1894fc742f'
+        bhBytes = blockHeaderStr.decode('hex')
+        res = self.c.storeBlockWithFee(bhBytes, weiFee, sender=tester.k1)
+        assert res == startBlockNum + 1
+
+        blockHash = dblSha256Flip(bhBytes)
+        expFeeRecipient = int(tester.a1.encode('hex'), 16)
+        assert self.c.getFeeAmount(blockHash) == weiFee
+        assert self.c.getFeeRecipient(blockHash) == expFeeRecipient
+
+
     def testGetHeaderWithFee(self):
         startBlockNum = 333000
         block333K = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
