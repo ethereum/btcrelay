@@ -229,9 +229,9 @@ class TestFee(object):
 
 
     def testGetHeaderWithFee(self):
-        blockNum = 333000
+        startBlockNum = 333000
         block333K = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
-        self.c.setInitialParent(block333K, blockNum-1, 1)
+        self.c.setInitialParent(block333K, startBlockNum, 1)
 
         weiFee = 15
 
@@ -288,9 +288,9 @@ class TestFee(object):
 
 
     def testBlockWithFee(self):
-        blockNum = 333000
+        startBlockNum = 333000
         block333K = 0x000000000000000008360c20a2ceff91cc8c4f357932377f48659b37bb86c759
-        self.c.setInitialParent(block333K, blockNum-1, 1)
+        self.c.setInitialParent(block333K, startBlockNum, 1)
 
         assert self.c.funcGetLastGasPrice() == 50*10**9
 
@@ -299,7 +299,7 @@ class TestFee(object):
         bhBytes = blockHeaderStr.decode('hex')
         res = self.c.storeBlockWithFee(bhBytes, expPayWei, profiling=True, sender=tester.k1)
         print('GAS: %s' % res['gas'])
-        assert res['output'] == blockNum
+        assert res['output'] == startBlockNum + 1
 
         blockHash = self.c.getBlockchainHead()
         res = self.c.getBlockHeader(blockHash, value=expPayWei, profiling=True)
