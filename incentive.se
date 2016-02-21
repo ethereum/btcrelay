@@ -93,6 +93,8 @@ macro m_getFeeInfo($blockHash):
     self.block[$blockHash]._feeInfo
 
 macro m_setFeeInfo($blockHash, $feeWei, $feeRecipient):
+    if $feeWei > 0xffffffffffffffffffffffff:
+        $feeWei = 0xffffffffffffffffffffffff
     self.block[$blockHash]._feeInfo = ($feeRecipient * BYTES_12) | $feeWei
 
 macro m_getFeeRecipient($blockHash):
