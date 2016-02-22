@@ -68,6 +68,11 @@ class TestStoreHeadersWithContract(object):
         sibling[0] = 0xfff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4
         sibling[1] = 0x8e30899078ca1813be036a073bbf80b86cdddde1c96e9e9c99e9e3782df4ae49
 
+        assert self.c.getFeeRecipient(b0) == int(self.submitter.address.encode('hex'), 16)
+        nextRec = int(tester.a0.encode('hex'), 16)
+        assert self.c.changeFeeRecipient(b0, feeWei-1, nextRec, value=self.c.getChangeRecipientFee())
+        assert self.c.getFeeRecipient(b0) == nextRec
+        assert self.c.getFeeAmount(b0) == feeWei - 1
 
         txBlockHash = b0
         res = self.c.verifyTx(rawTx, txIndex, sibling, txBlockHash, value=feeWei)
