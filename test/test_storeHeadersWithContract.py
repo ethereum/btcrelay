@@ -92,7 +92,7 @@ class TestStoreHeadersWithContract(object):
         ]
         blockHeaderBytes = map(lambda x: x.decode('hex'), headers)
         for i in range(7):
-            res = self.c.storeBlockWithFee(blockHeaderBytes[i], feeWei)
+            res = self.c.storeBlockWithFee(blockHeaderBytes[i], feeWei, sender=tester.k1)
             # print('@@@@ real chain score: ' + str(self.c.getChainWork()))
             assert res == i+100000
 
@@ -116,6 +116,11 @@ class TestStoreHeadersWithContract(object):
         sibling[0] = 0xfff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4
         sibling[1] = 0x8e30899078ca1813be036a073bbf80b86cdddde1c96e9e9c99e9e3782df4ae49
 
+        assert self.c.getFeeRecipient(b0) == int(tester.a1.encode('hex'), 16)
+        nextRec = int(tester.a0.encode('hex'), 16)
+        assert self.c.changeFeeRecipient(b0, feeWei-1, nextRec, value=self.c.getChangeRecipientFee())
+        assert self.c.getFeeRecipient(b0) == nextRec
+        assert self.c.getFeeAmount(b0) == feeWei - 1
 
         # verifyTx should only return 1 for b0
         txBlockHash = b0
