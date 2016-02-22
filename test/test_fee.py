@@ -549,10 +549,16 @@ class TestFee(object):
         with pytest.raises(tester.TransactionFailed):
             self.c.attackFeePaid(1, 1024, 0, feePaid, value=feePaid)
 
+        with pytest.raises(tester.TransactionFailed):
+            self.c.attackFeePaid(1, 1023, 0, feePaid, value=feePaid)
+
+        with pytest.raises(tester.TransactionFailed):
+            self.c.attackFeePaid(1, 1022, 0, feePaid, value=feePaid)
+
         assert eventArr == []
 
 
-        res = self.c.attackFeePaid(1, 1023, 0, feePaid, value=feePaid, profiling=True)
+        res = self.c.attackFeePaid(1, 1021, 0, feePaid, value=feePaid, profiling=True)
         print('GAS: '+str(res['gas']))
 
         assert eventArr == [

@@ -25,7 +25,7 @@ class TestBtcRelay(object):
 
 
     def setup_class(cls):
-        tester.gas_limit = int(2.7e6)  # include costs of debug methods
+        tester.gas_limit = int(2.8e6)  # include costs of debug methods
         cls.s = tester.state()
         cls.c = cls.s.abi_contract(cls.CONTRACT_DEBUG)
         cls.snapshot = cls.s.snapshot()
