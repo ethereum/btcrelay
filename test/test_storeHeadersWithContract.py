@@ -12,7 +12,7 @@ class TestStoreHeadersWithContract(object):
     CONTRACT_DEBUG = 'test/btcrelay_debug.se'
 
     def setup_class(cls):
-        tester.gas_limit = int(2.7e6)  # include costs of debug methods
+        tester.gas_limit = int(2.8e6)  # include costs of debug methods
         cls.s = tester.state()
         cls.c = cls.s.abi_contract(cls.CONTRACT_DEBUG)
 
@@ -76,8 +76,7 @@ class TestStoreHeadersWithContract(object):
 
         txBlockHash = b0
         res = self.c.verifyTx(rawTx, txIndex, sibling, txBlockHash, value=feeWei)
-        # actually don't reach here since TransactionFailed is thrown (tester.py line 201)
-        assert res == 0  # contract rejecting payment prevents verifications from happening
+        assert res == txHash
 
 
     # based on testVerifyIsFee
