@@ -39,13 +39,13 @@ macro m_saveAncestors($blockHashArg, $hashPrevBlockArg):
             # update ancWord with the remaining indexes
             with $i = 1:
                 while $i < NUM_ANCESTOR_DEPTHS:
-                    depth = m_getAncDepth($i)
+                    with $depth = m_getAncDepth($i):
 
-                    if m_getHeight($blockHash) % depth == 1:
-                        m_mwrite32(ref($ancWord) + 4*$i, $prevIbIndex)
-                    else:
-                        m_mwrite32(ref($ancWord) + 4*$i, m_getAncestor($hashPrevBlock, $i))
-                    $i += 1
+                        if m_getHeight($blockHash) % $depth == 1:
+                            m_mwrite32(ref($ancWord) + 4*$i, $prevIbIndex)
+                        else:
+                            m_mwrite32(ref($ancWord) + 4*$i, m_getAncestor($hashPrevBlock, $i))
+                        $i += 1
 
             # write the ancestor word to storage
             self.block[$blockHash]._ancestor = $ancWord
