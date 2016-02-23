@@ -53,7 +53,7 @@ def feePaid(txBlockHash, amountWei):
         if msg.value > 0:
             feeRecipient = m_getFeeRecipient(txBlockHash)
 
-            if self.depthCheck(2):
+            if self.depthCheck(0):
                 send(feeRecipient, msg.value)  # recipient's responsibility to accept the fee
                 log(type=EthPayment, feeRecipient, msg.value)  # send() may fail, but that's recipient's responsibility
             else:
@@ -87,6 +87,34 @@ def getChangeRecipientFee():
     return(m_getChangeRecipientFee())
 
 
+# since calling depthCheck itself is a CALL, this function
+# depthCheck returns 1 if n+1 CALL depth is available.
+# Thus calling depthCheck(0) will return 1 if a CALL is available: ie CALL
+# depth is at most 1023.
+#
+# Important note if porting/using this in Solidity, and make sure to test
+# boundary conditions CALL depth carefully -- from Martin Swende:
+# In Solidity, all internal "calls" are implemented using JUMP:s, since
+# CALL is at least 5 times as expensive. And JUMP does not increase the
+# CALL stack.
+#
+# So in order to do depth-check in Solidity, this won't work:
+# contract foo{
+#         depth_check(n) return (uint){
+#                 if (n > 0) return depth_check(n-1)
+#                 else return 1;
+#         }
+# }
+#
+# Instead, a level of explicit casting is required to trick Solidity to use
+# call, like this:
+#
+# contract foo{
+#         depth_check(n) return(uint){
+#                 if (n > 0) return foo(self).depth_check(n-1)
+#                 else return 1;
+#         }
+# }
 def depthCheck(n):
     if n:
         return(self.depthCheck(n-1))
