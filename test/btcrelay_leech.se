@@ -1,0 +1,18 @@
+
+extern realBTCRelay: [within6Confirms:[int256]:int256,inMainChain:[int256]:int256,computeMerkle:[int256,int256,int256[]]:uint256]
+
+def freeVerifyTx(btcrelay, txBytes:str, txIndex, sibling:arr, blockHeaderBytes:str):
+    txBlockHash = m_dblShaFlip(blockHeaderBytes)
+    txHash = m_dblShaFlip(txBytes)
+    if btcrelay.within6Confirms(txBlockHash) && btcrelay.inMainChain(txBlockHash):
+        if btcrelay.computeMerkle(txHash, txIndex, sibling) == self.getMerkleRoot(blockHeaderBytes):
+            return(1)
+    return(99)
+
+# TODO
+def getMerkleRoot(blockHeaderBytes:str):
+    return(1)
+
+# Bitcoin-way of hashing
+macro m_dblShaFlip($dataBytes):
+    flip32Bytes(sha256(sha256($dataBytes:str)))
