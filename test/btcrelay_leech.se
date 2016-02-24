@@ -13,6 +13,18 @@ def freeVerifyTx(btcrelay, txBytes:str, txIndex, sibling:arr, blockHeaderBytes:s
 def getMerkleRoot(blockHeaderBytes:str):
     return(1)
 
+
+# reverse 32 bytes given by '$b32'
+macro flip32Bytes($b32):
+    with $a = $b32:  # important to force $a to only be examined once below
+        with $i = 0:
+            # unrolling this would decrease gas usage, but would increase
+            # the gas cost for code size by over 700K and exceed the PI million block gas limit
+            while $i < 32:
+                mstore8(ref($o) + $i, byte(31 - $i, $a))
+                $i += 1
+    $o
+
 # Bitcoin-way of hashing
 macro m_dblShaFlip($dataBytes):
     flip32Bytes(sha256(sha256($dataBytes:str)))
