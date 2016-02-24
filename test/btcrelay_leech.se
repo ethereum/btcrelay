@@ -6,8 +6,8 @@ def freeVerifyTx(btcrelay, txBytes:str, txIndex, sibling:arr, blockHeaderBytes:s
     txHash = m_dblShaFlip(txBytes)
     if btcrelay.within6Confirms(txBlockHash) && btcrelay.inMainChain(txBlockHash):
         if btcrelay.computeMerkle(txHash, txIndex, sibling) == self.getMerkleRoot(blockHeaderBytes):
-            return(1)
-    return(99)
+            return(txHash:uint256)
+    return(0:uint256)
 
 # TODO
 def getMerkleRoot(blockHeaderBytes:str):
