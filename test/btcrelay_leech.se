@@ -5,8 +5,8 @@
 # the leecher is able to avoid BTC Relay's getBlockHeader fee.
 #
 # The leecher is no longer able to access BTC Relay's priv_inMainChain__ method.
-# It can still leech by using BTC Relay's getBlockHash() and asking for the
-# block height (in addition to the header)
+# The leecher is no longer able to access BTC Relay's getBlockHash() which
+# has been removed.
 
 extern realBTCRelay: [getBlockHash:[int256]:int256,within6Confirms:[int256]:int256,priv_inMainChain__:[int256]:int256,computeMerkle:[int256,int256,int256[]]:uint256]
 

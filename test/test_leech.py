@@ -76,8 +76,7 @@ class TestLeech(object):
         assert 2222 == self.leech.freeVerifyTx(self.c.address, rawTx, txIndex, sibling,
             blockHeaderBytes[0], 100001)  # wrong blockHeight
 
-        # with pytest.raises(tester.TransactionFailed):
         res = self.leech.freeVerifyTx(self.c.address, rawTx, txIndex, sibling,
             blockHeaderBytes[0], 100000, profiling=True)
         print('GAS: '+str(res['gas']))
-        assert res['output'] == txHash
+        assert res['output'] == 2222

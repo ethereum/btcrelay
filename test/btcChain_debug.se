@@ -8,6 +8,12 @@ def testingonlySetHeaviest(blockHash):
 def inMainChain(txBlockHash):
     return(self.priv_inMainChain__(txBlockHash))
 
+# wrapper
+def getBlockHash(blockHeight):
+    if blockHeight < 1 || blockHeight > m_getHeight(self.heaviestBlock):
+        return(0)
+    return(self.priv_fastGetBlockHash__(blockHeight))
+
 #
 # macro wrappers (since only functions are testable)
 #
