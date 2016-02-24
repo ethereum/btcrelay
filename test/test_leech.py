@@ -70,5 +70,5 @@ class TestLeech(object):
 
         # verifyTx should only return 1 for b0
         txBlockHash = b0
-        res = self.c.verifyTx(rawTx, txIndex, sibling, txBlockHash)
+        res = self.leech.freeVerifyTx(self.c.address, rawTx, txIndex, sibling, blockHeaderBytes[0])
         assert res == txHash
