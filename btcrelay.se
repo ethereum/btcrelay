@@ -124,7 +124,7 @@ def storeBlockHeader(blockHeaderBytes:str):
             prevTime = m_getTimestamp(hashPrevBlock)
 
             # (blockHeight - DIFFICULTY_ADJUSTMENT_INTERVAL) is same as [getHeight(hashPrevBlock) - (DIFFICULTY_ADJUSTMENT_INTERVAL - 1)]
-            startBlock = self.fastGetBlockHash(blockHeight - DIFFICULTY_ADJUSTMENT_INTERVAL)
+            startBlock = self.priv_fastGetBlockHash__(blockHeight - DIFFICULTY_ADJUSTMENT_INTERVAL)
             startTime = m_getTimestamp(startBlock)
 
             newBits = m_computeNewBits(prevTime, startTime, prevTarget)
@@ -193,7 +193,7 @@ def helperVerifyHash__(txHash:uint256, txIndex, sibling:arr, txBlockHash):
         log(type=VerifyTransaction, txHash, ERR_CONFIRMATIONS)
         return(ERR_CONFIRMATIONS)
 
-    if !self.inMainChain(txBlockHash):
+    if !self.priv_inMainChain__(txBlockHash):
         log(type=VerifyTransaction, txHash, ERR_CHAIN)
         return(ERR_CHAIN)
 

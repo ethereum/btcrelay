@@ -6,7 +6,7 @@
 # The inMainChain function of BTC Relay is what primarily allows the leecher
 # to function.
 
-extern realBTCRelay: [within6Confirms:[int256]:int256,inMainChain:[int256]:int256,computeMerkle:[int256,int256,int256[]]:uint256]
+extern realBTCRelay: [within6Confirms:[int256]:int256,priv_inMainChain__:[int256]:int256,computeMerkle:[int256,int256,int256[]]:uint256]
 
 # quite similar to btcrelay.se helperVerifyHash__
 def freeVerifyTx(btcrelay, txBytes:str, txIndex, sibling:arr, blockHeaderBytes:str):
@@ -16,7 +16,7 @@ def freeVerifyTx(btcrelay, txBytes:str, txIndex, sibling:arr, blockHeaderBytes:s
     if btcrelay.within6Confirms(txBlockHash):
         return(99:uint256)  # some error code (can trivially mimic btcrelay)
 
-    if !btcrelay.inMainChain(txBlockHash):
+    if !btcrelay.priv_inMainChain__(txBlockHash):
         return(88:uint256)  # some error code (can trivially mimic btcrelay)
 
     # get the merkle root from the header and convert it to little-endian

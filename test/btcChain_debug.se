@@ -4,6 +4,9 @@ inset('../btcrelay.se')  # btcrelay is still the contract under test
 def testingonlySetHeaviest(blockHash):
     self.heaviestBlock = blockHash
 
+# wrapper
+def inMainChain(txBlockHash):
+    return(self.priv_inMainChain__(txBlockHash))
 
 #
 # macro wrappers (since only functions are testable)
