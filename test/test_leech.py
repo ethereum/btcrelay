@@ -73,7 +73,11 @@ class TestLeech(object):
         txBlockHash = b0
         assert dblSha256Flip(blockHeaderBytes[0]) == txBlockHash
 
-        with pytest.raises(tester.TransactionFailed):
-            res = self.leech.freeVerifyTx(self.c.address, rawTx, txIndex, sibling, blockHeaderBytes[0], profiling=True)
-        # print('GAS: '+str(res['gas']))
-        # assert res['output'] == txHash
+        assert 2222 == self.leech.freeVerifyTx(self.c.address, rawTx, txIndex, sibling,
+            blockHeaderBytes[0], 100001)  # wrong blockHeight
+
+        # with pytest.raises(tester.TransactionFailed):
+        res = self.leech.freeVerifyTx(self.c.address, rawTx, txIndex, sibling,
+            blockHeaderBytes[0], 100000, profiling=True)
+        print('GAS: '+str(res['gas']))
+        assert res['output'] == txHash

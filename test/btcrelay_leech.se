@@ -3,21 +3,23 @@
 # The leecher makes use of publicly available functions, the ones declared in
 # the extern statement, and the block header.  By asking for the header,
 # the leecher is able to avoid BTC Relay's getBlockHeader fee.
-# The inMainChain function of BTC Relay is what primarily allows the leecher
-# to function.
+#
+# The leecher is no longer able to access BTC Relay's priv_inMainChain__ method.
+# It can still leech by using BTC Relay's getBlockHash() and asking for the
+# block height (in addition to the header)
 
-extern realBTCRelay: [within6Confirms:[int256]:int256,priv_inMainChain__:[int256]:int256,computeMerkle:[int256,int256,int256[]]:uint256]
+extern realBTCRelay: [getBlockHash:[int256]:int256,within6Confirms:[int256]:int256,priv_inMainChain__:[int256]:int256,computeMerkle:[int256,int256,int256[]]:uint256]
 
 # quite similar to btcrelay.se helperVerifyHash__
-def freeVerifyTx(btcrelay, txBytes:str, txIndex, sibling:arr, blockHeaderBytes:str):
+def freeVerifyTx(btcrelay, txBytes:str, txIndex, sibling:arr, blockHeaderBytes:str, blockHeight):
     txBlockHash = m_dblShaFlip(blockHeaderBytes)
     txHash = m_dblShaFlip(txBytes)
 
     if btcrelay.within6Confirms(txBlockHash):
-        return(99:uint256)  # some error code (can trivially mimic btcrelay)
+        return(1111:uint256)  # some error code (can trivially mimic btcrelay)
 
-    if !btcrelay.priv_inMainChain__(txBlockHash):
-        return(88:uint256)  # some error code (can trivially mimic btcrelay)
+    if btcrelay.getBlockHash(blockHeight) != txBlockHash:  # effectively checks that txBlockHash is in the main chain
+        return(2222:uint256)  # some error code (can trivially mimic btcrelay)
 
     # get the merkle root from the header and convert it to little-endian
     hashMerkleRootStr = slice(blockHeaderBytes, chars=36, chars=68)
