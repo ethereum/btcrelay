@@ -4,14 +4,41 @@ extern realBTCRelay: [within6Confirms:[int256]:int256,inMainChain:[int256]:int25
 def freeVerifyTx(btcrelay, txBytes:str, txIndex, sibling:arr, blockHeaderBytes:str):
     txBlockHash = m_dblShaFlip(blockHeaderBytes)
     txHash = m_dblShaFlip(txBytes)
-    if btcrelay.within6Confirms(txBlockHash) && btcrelay.inMainChain(txBlockHash):
-        if btcrelay.computeMerkle(txHash, txIndex, sibling) == self.getMerkleRoot(blockHeaderBytes):
-            return(txHash:uint256)
+
+    if btcrelay.within6Confirms(txBlockHash):
+        return(99:uint256)
+
+    if !btcrelay.inMainChain(txBlockHash):
+        return(88:uint256)
+
+    # return(btcrelay.computeMerkle(txHash, txIndex, sibling):uint256)
+    return(m_getMerkleRoot(blockHeaderBytes):uint256)
+
+    if btcrelay.computeMerkle(txHash, txIndex, sibling) == m_getMerkleRoot(blockHeaderBytes):
+        return(txHash:uint256)
     return(0:uint256)
 
-# TODO
-def getMerkleRoot(blockHeaderBytes:str):
-    return(1)
+
+macro m_getMerkleRoot($blockHeaderBytes):
+    flip32Bytes(slice($blockHeaderBytes, chars=36, chars=68))
+
+    # slice($blockHeaderBytes, chars=36, chars=68)
+
+    # load($blockHeaderBytes, chars=1)
+
+    # with $addr = ref($blockHeaderBytes):
+        # sload($addr)
+        # $addr
+        #load($blockHeaderBytes, chars=80)
+        # load($addr, items=80)
+        # sload($addr+1)
+    # with $addr = ref($blockHeaderBytes[0]):
+    # with $addr = $blockHeaderBytes:
+    #     flip32Bytes(sload($addr+1) * BYTES_4 + div(sload($addr+2), BYTES_28))  # must use div()
+
+
+macro BYTES_4: 2**32
+macro BYTES_28: 2**224
 
 
 # reverse 32 bytes given by '$b32'
