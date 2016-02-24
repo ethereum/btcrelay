@@ -70,5 +70,6 @@ class TestLeech(object):
 
         # verifyTx should only return 1 for b0
         txBlockHash = b0
+        assert dblSha256Flip(blockHeaderBytes[0]) == txBlockHash
         res = self.leech.freeVerifyTx(self.c.address, rawTx, txIndex, sibling, blockHeaderBytes[0])
         assert res == txHash

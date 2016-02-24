@@ -11,10 +11,20 @@ def freeVerifyTx(btcrelay, txBytes:str, txIndex, sibling:arr, blockHeaderBytes:s
     if !btcrelay.inMainChain(txBlockHash):
         return(88:uint256)
 
-    # return(btcrelay.computeMerkle(txHash, txIndex, sibling):uint256)
-    return(m_getMerkleRoot(blockHeaderBytes):uint256)
 
-    if btcrelay.computeMerkle(txHash, txIndex, sibling) == m_getMerkleRoot(blockHeaderBytes):
+    hashMerkleRootStr = slice(blockHeaderBytes, chars=36, chars=68)
+    merkleRoot = 0
+    pos = 0
+    while pos < 32:
+
+        merkleRoot += 256**pos * getch(hashMerkleRootStr, pos)
+        pos += 1
+
+    # return(merkleRoot:uint256)
+
+    # if btcrelay.computeMerkle(txHash, txIndex, sibling) == m_getMerkleRoot(blockHeaderBytes):
+
+    if btcrelay.computeMerkle(txHash, txIndex, sibling) == merkleRoot:
         return(txHash:uint256)
     return(0:uint256)
 
