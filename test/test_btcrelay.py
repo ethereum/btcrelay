@@ -335,8 +335,9 @@ class TestBtcRelay(object):
 
         # verifyTx should only return 1 for b0
         txBlockHash = b0
-        res = self.c.verifyTx(rawTx, txIndex, sibling, txBlockHash)
-        assert res == txHash
+        res = self.c.verifyTx(rawTx, txIndex, sibling, txBlockHash, profiling=True)
+        print('GAS: '+str(res['gas']))
+        assert res['output'] == txHash
 
         fakeRawTx = hex(txHash)[2:-1].decode('hex')[::-1] + hex(sibling[0])[2:-1].decode('hex')[::-1]
         sibling = [sibling[1]]

@@ -51,9 +51,13 @@ macro m_saveAncestors($blockHashArg, $hashPrevBlockArg):
             self.block[$blockHash]._ancestor = $ancWord
 
 
+# private (to prevent leeching)
 # returns 1 if 'txBlockHash' is in the main chain, ie not a fork
 # otherwise returns 0
-def inMainChain(txBlockHash):
+def priv_inMainChain__(txBlockHash):
+    if msg.sender != self:
+        ~invalid()
+
     txBlockHeight = m_getHeight(txBlockHash)
 
     # By assuming that a block with height 0 does not exist, we can do
@@ -63,23 +67,19 @@ def inMainChain(txBlockHash):
     if !txBlockHeight:
         return(0)
 
-    return(self.fastGetBlockHash(txBlockHeight) == txBlockHash)
+    return(self.priv_fastGetBlockHash__(txBlockHeight) == txBlockHash)
 
 
-# returns the blockHash at the given blockHeight
-# blockHeight must be greater than 0 (otherwise infinite loop since minimum height is 1)
-def getBlockHash(blockHeight):
-    if blockHeight < 1 || blockHeight > m_getHeight(self.heaviestBlock):
-        return(0)
-    return(self.fastGetBlockHash(blockHeight))
-
-
-# for internal use only since callers must ensure 2 things:
+# private (to prevent leeching)
+# callers must ensure 2 things:
 # * blockHeight is greater than 0 (otherwise infinite loop since
 # minimum height is 1)
 # * blockHeight is less than the height of heaviestBlock, otherwise the
 # heaviestBlock is returned
-def fastGetBlockHash(blockHeight):
+def priv_fastGetBlockHash__(blockHeight):
+    if msg.sender != self:
+        ~invalid()
+
     blockHash = self.heaviestBlock
     anc_index = NUM_ANCESTOR_DEPTHS - 1
 
