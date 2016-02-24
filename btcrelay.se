@@ -170,7 +170,7 @@ def verifyTx(txBytes:str, txIndex, sibling:arr, txBlockHash):
     if res == 1:
         return(txHash:uint256)
     else:
-        # log is done via verifyTx
+        # log is done via helperVerifyHash__
         return(0:uint256)
 
 
