@@ -11,6 +11,9 @@ contract BitcoinProcessor {
         _trustedBTCRelay = trustedBTCRelay;
     }
 
+    // processTransaction should avoid returning the same
+    // value as ERR_RELAY_VERIFY (in constants.se) to avoid confusing callers
+    //
     // this exact function signature is required as it has to match
     // the signature specified in BTCRelay (otherwise BTCRelay will not call it)
     function processTransaction(bytes txn, uint256 txHash) returns (int256) {

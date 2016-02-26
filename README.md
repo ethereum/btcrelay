@@ -40,17 +40,23 @@ Verifies a Bitcoin transaction per `verifyTx()` and relays the verified transact
 * `transactionIndex` - transaction's index within the block, as `int256`
 * `merkleSibling` - array of the sibling hashes comprising the Merkle proof, as `int256[]`
 * `blockHash` - hash of the block that contains the transaction, as `int256`
-* `contractAddress` - address of the Ethereum contract that will receive the verified Bitcoin transaction, as `int256`
+* `contractAddress` - address of the processor contract that will receive the verified Bitcoin transaction, as `int256`
 
-The Ethereum contract should have a function of signature
-`processTransaction(bytes rawTransaction, uint256 transactionHash)` and is what
-will be invoked by `relayTx` if the transaction passes verification.  For examples,
-see [BitcoinProcessor.sol](examples/BitcoinProcessor.sol)
+The processor contract at `contractAddress` should have a function of signature
+`processTransaction(bytes rawTransaction, uint256 transactionHash) returns (int256)`
+and is what will be invoked by `relayTx` if the transaction passes
+verification.  For examples, see
+[BitcoinProcessor.sol](examples/BitcoinProcessor.sol)
 and [example-btc-eth](example-btc-eth).
 
 Returns `int256`
-* value returned by the Ethereum contract's `processTransaction` function
-* or an error code, see [constants.se](constants.se)
+* value returned by the processor contract's `processTransaction` function
+* or ERR_RELAY_VERIFY, see [constants.se](constants.se)
+
+Note: Callers cannot be 100% certain when an ERR_RELAY_VERIFY occurs because
+it may also have been returned by processTransaction().  Callers should be
+aware of the contract that they are relaying transactions to, and
+understand what the processor contract's processTransaction method returns.
 
 ----
 

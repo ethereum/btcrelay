@@ -209,10 +209,14 @@ def helperVerifyHash__(txHash:uint256, txIndex, sibling:arr, txBlockHash):
 
 
 # relays transaction to target 'contract' processTransaction() method.
-# returns and logs the value of processTransaction().
+# returns and logs the value of processTransaction(), which is an int256.
 #
 # if the transaction does not pass verification, error code ERR_RELAY_VERIFY
-# is logged and returned
+# is logged and returned.
+# Note: callers cannot be 100% certain when an ERR_RELAY_VERIFY occurs because
+# it may also have been returned by processTransaction(). callers should be
+# aware of the contract that they are relaying transactions to and
+# understand what that contract's processTransaction method returns.
 def relayTx(txBytes:str, txIndex, sibling:arr, txBlockHash, contract):
     txHash = self.verifyTx(txBytes, txIndex, sibling, txBlockHash, value=msg.value)
     if txHash != 0:
