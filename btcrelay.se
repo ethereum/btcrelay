@@ -124,7 +124,7 @@ def storeBlockHeader(blockHeaderBytes:str):
             prevTime = m_getTimestamp(hashPrevBlock)
 
             # (blockHeight - DIFFICULTY_ADJUSTMENT_INTERVAL) is same as [getHeight(hashPrevBlock) - (DIFFICULTY_ADJUSTMENT_INTERVAL - 1)]
-            startBlock = self.fastGetBlockHash(blockHeight - DIFFICULTY_ADJUSTMENT_INTERVAL)
+            startBlock = self.priv_fastGetBlockHash__(blockHeight - DIFFICULTY_ADJUSTMENT_INTERVAL)
             startTime = m_getTimestamp(startBlock)
 
             newBits = m_computeNewBits(prevTime, startTime, prevTarget)
@@ -170,7 +170,7 @@ def verifyTx(txBytes:str, txIndex, sibling:arr, txBlockHash):
     if res == 1:
         return(txHash:uint256)
     else:
-        # log is done via verifyTx
+        # log is done via helperVerifyHash__
         return(0:uint256)
 
 
@@ -193,7 +193,7 @@ def helperVerifyHash__(txHash:uint256, txIndex, sibling:arr, txBlockHash):
         log(type=VerifyTransaction, txHash, ERR_CONFIRMATIONS)
         return(ERR_CONFIRMATIONS)
 
-    if !self.inMainChain(txBlockHash):
+    if !self.priv_inMainChain__(txBlockHash):
         log(type=VerifyTransaction, txHash, ERR_CHAIN)
         return(ERR_CHAIN)
 
@@ -209,10 +209,14 @@ def helperVerifyHash__(txHash:uint256, txIndex, sibling:arr, txBlockHash):
 
 
 # relays transaction to target 'contract' processTransaction() method.
-# returns and logs the value of processTransaction().
+# returns and logs the value of processTransaction(), which is an int256.
 #
 # if the transaction does not pass verification, error code ERR_RELAY_VERIFY
-# is logged and returned
+# is logged and returned.
+# Note: callers cannot be 100% certain when an ERR_RELAY_VERIFY occurs because
+# it may also have been returned by processTransaction(). callers should be
+# aware of the contract that they are relaying transactions to and
+# understand what that contract's processTransaction method returns.
 def relayTx(txBytes:str, txIndex, sibling:arr, txBlockHash, contract):
     txHash = self.verifyTx(txBytes, txIndex, sibling, txBlockHash, value=msg.value)
     if txHash != 0:
@@ -319,8 +323,23 @@ def getBlockHeader(blockHash):
     return(load(self.block[blockHash]._blockHeader[0], chars=80):str)
 
 
+# The getBlockHash(blockHeight) method has been removed because it could be
+# used by a leecher contract (test/btcrelay_leech.se for sample) to
+# trustlessly provide the BTC Relay service, without rewarding the
+# submitters of block headers, who provide a critical service.
+# To iterate through the "blockchain" of BTC Relay, getBlockchainHead() can
+# be used with getBlockHeader().  Once a header is obtained, its 4th byte
+# contains the hash of the previous block, which can then be passed again
+# to getBlockHeader().  This is how another contract can access BTC Relay's
+# blockchain trustlessly, but each getBlockHeader() invocation potentially
+# requires payment.
+# As usual, UIs and eth_call with getBlockHeader() will not need any fees at all
+# (even though sufficient 'value', by using getFeeAmount(blockHash),
+# must still be provided).
+
+
 # TODO is an API like getInitialParent() needed? it could be obtained using
-# web3.eth.getStorageAt using index 0
+# something like web3.eth.getStorageAt using index 0
 
 
 #

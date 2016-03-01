@@ -25,7 +25,7 @@ class TestBtcRelay(object):
 
 
     def setup_class(cls):
-        tester.gas_limit = int(2.7e6)  # include costs of debug methods
+        tester.gas_limit = int(2.8e6)  # include costs of debug methods
         cls.s = tester.state()
         cls.c = cls.s.abi_contract(cls.CONTRACT_DEBUG)
         cls.snapshot = cls.s.snapshot()
@@ -335,8 +335,9 @@ class TestBtcRelay(object):
 
         # verifyTx should only return 1 for b0
         txBlockHash = b0
-        res = self.c.verifyTx(rawTx, txIndex, sibling, txBlockHash)
-        assert res == txHash
+        res = self.c.verifyTx(rawTx, txIndex, sibling, txBlockHash, profiling=True)
+        print('GAS: '+str(res['gas']))
+        assert res['output'] == txHash
 
         fakeRawTx = hex(txHash)[2:-1].decode('hex')[::-1] + hex(sibling[0])[2:-1].decode('hex')[::-1]
         sibling = [sibling[1]]

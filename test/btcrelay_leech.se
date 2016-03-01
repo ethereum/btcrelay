@@ -1,0 +1,51 @@
+# This is a leecher contract which demonstrates how BTC Relay fees can be
+# avoided.
+# The leecher makes use of publicly available functions, the ones declared in
+# the extern statement, and the block header.  By asking for the header,
+# the leecher is able to avoid BTC Relay's getBlockHeader fee.
+#
+# The leecher is no longer able to access BTC Relay's priv_inMainChain__ method.
+# The leecher is no longer able to access BTC Relay's getBlockHash() which
+# has been removed.
+
+extern realBTCRelay: [getBlockHash:[int256]:int256,within6Confirms:[int256]:int256,priv_inMainChain__:[int256]:int256,computeMerkle:[int256,int256,int256[]]:uint256]
+
+# quite similar to btcrelay.se helperVerifyHash__
+def freeVerifyTx(btcrelay, txBytes:str, txIndex, sibling:arr, blockHeaderBytes:str, blockHeight):
+    txBlockHash = m_dblShaFlip(blockHeaderBytes)
+    txHash = m_dblShaFlip(txBytes)
+
+    if btcrelay.within6Confirms(txBlockHash):
+        return(1111:uint256)  # some error code (can trivially mimic btcrelay)
+
+    if btcrelay.getBlockHash(blockHeight) != txBlockHash:  # effectively checks that txBlockHash is in the main chain
+        return(2222:uint256)  # some error code (can trivially mimic btcrelay)
+
+    # get the merkle root from the header and convert it to little-endian
+    hashMerkleRootStr = slice(blockHeaderBytes, chars=36, chars=68)
+    merkleRoot = 0
+    pos = 0
+    while pos < 32:
+        merkleRoot += 256**pos * getch(hashMerkleRootStr, pos)
+        pos += 1
+
+
+    if btcrelay.computeMerkle(txHash, txIndex, sibling) == merkleRoot:
+        return(txHash:uint256)
+    return(0:uint256)
+
+
+# reverse 32 bytes given by '$b32'
+macro flip32Bytes($b32):
+    with $a = $b32:  # important to force $a to only be examined once below
+        with $i = 0:
+            # unrolling this would decrease gas usage, but would increase
+            # the gas cost for code size by over 700K and exceed the PI million block gas limit
+            while $i < 32:
+                mstore8(ref($o) + $i, byte(31 - $i, $a))
+                $i += 1
+    $o
+
+# Bitcoin-way of hashing
+macro m_dblShaFlip($dataBytes):
+    flip32Bytes(sha256(sha256($dataBytes:str)))

@@ -15,7 +15,7 @@
 
   <script>
   var web3 = require('web3');
-  web3.setProvider(new web3.providers.HttpProvider('http://morden.cloudapp.net:8545'));
+  web3.setProvider(new web3.providers.HttpProvider('http://frontier-lb.ether.camp'));
 
   var heightPerRelay;
 
@@ -24,7 +24,7 @@
       do NOT forget to update ABI files when needed
      */
 
-     var relayAddr = '0x23d0ff718861979e08db52627941eb0f1f3783b9'; // Morden
+     var relayAddr = '0x7fa5b9f51ef0b83883a9403b5df8f7c4d7150345'; // Alpha Frontier
 
     // var relayAddr = web3.eth.namereg.addr('btcrelay');  // Olympic
     $('#relayAddr').text(relayAddr);
@@ -103,9 +103,17 @@
     </div>
 
     <div class="jumbotron">
-      <h2><a href="https://github.com/ethereum/btcrelay">Ethereum Bitcoin Relay</a>
-         on <a href="https://github.com/ConsenSys/ConsenSys.github.io/wiki/ConsenSys-public-testnet">Morden public TESTNET</a></h3>
-      <h3>BTC Relay: <strong id="relayAddr"></strong></h3>
+      <p>This is an Alpha: don't be surprised if another version is deployed and
+        launched "more formally" later, and diverts attention from the Alpha.
+        Alpha starts at block 389088 and ends at block 389097, unless someone
+        submits more block headers to it.  You are encouraged to become familiar
+        by <a href="http://rawgit.com/ethereum/btcrelay/master/examples/relayContractStatus.html">
+        using the Morden public testnet version</a> first (which is also being
+        continuously supplied with Bitcoin mainnet block headers).
+      </p>
+      <h2>ALPHA <a href="https://github.com/ethereum/btcrelay">Ethereum Bitcoin Relay</a>
+         ALPHA</h3>
+      <h3>ALPHA BTC Relay: <strong id="relayAddr"></strong></h3>
       <h3><a href="./BitcoinRelayABI.js">ABI</a></h2>
       <h3>Latest Block Hash: <strong id="latestBlockHash"></strong></h3>
       <div>
@@ -120,11 +128,11 @@
     </div>
 
     <div>
-      <h3>Contract address: <b>0x23d0ff718861979e08db52627941eb0f1f3783b9</b></h3>
+      <h3>Contract address: <b>0x7fa5b9f51ef0b83883a9403b5df8f7c4d7150345</b></h3>
       <h3>Verifying the Source Code</h3>
       <p>
-      The deployed version of <a href="https://github.com/ethereum/btcrelay/tree/64ef22cc47ba457a549a575432cc666df71c8ddc">BTC Relay is from commit
-      64ef22cc47ba457a549a575432cc666df71c8ddc</a>
+      The deployed version of <a href="https://github.com/ethereum/btcrelay/tree/1466934855225b1e4a87031d299c1209ba12d503">BTC Relay is from commit
+      1466934855225b1e4a87031d299c1209ba12d503</a>
       </p>
       <p>
       The main steps to verifying the source code is <br>
@@ -141,18 +149,7 @@ serpent compile btcBulkStoreHeaders.se > compiled.evm
       (see contractAddress property of the receipt).
       </p>
 <pre>
-> tx='0x8e135b828db84bce864d4789cde112eacc04d3d21b5fa569f12f79d8d3ded3c6'
-> eth.getTransactionReceipt(tx)
-{
-  blockHash: "0x6739c150e39dbcc5c4c4b078a33061db444ef72ca4b671960fbec8ad49f4f99c",
-  blockNumber: 484230,
-  contractAddress: "0x23d0ff718861979e08db52627941eb0f1f3783b9",
-  cumulativeGasUsed: 2776382,
-  gasUsed: 2776382,
-  logs: [],
-  transactionHash: "0x8e135b828db84bce864d4789cde112eacc04d3d21b5fa569f12f79d8d3ded3c6",
-  transactionIndex: 0
-}
+> tx='0x37667f4040dfbdea040042dc142cb95cf738f5018f83b0c6a5d2a85d4fd27814'
 > objTx = eth.getTransaction(tx)
 > objTx.input
 </pre>
