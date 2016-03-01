@@ -24,7 +24,7 @@
       do NOT forget to update ABI files when needed
      */
 
-     var relayAddr = '0x721f4261afbcf42a9c86d6f1d5e5043e47cb1fac'; // Morden
+     var relayAddr = '0x23d0ff718861979e08db52627941eb0f1f3783b9'; // Morden
 
     // var relayAddr = web3.eth.namereg.addr('btcrelay');  // Olympic
     $('#relayAddr').text(relayAddr);
@@ -120,11 +120,11 @@
     </div>
 
     <div>
-      <h3>Contract address: <b>0x721f4261afbcf42a9c86d6f1d5e5043e47cb1fac</b></h3>
+      <h3>Contract address: <b>0x23d0ff718861979e08db52627941eb0f1f3783b9</b></h3>
       <h3>Verifying the Source Code</h3>
       <p>
-      The deployed version of <a href="https://github.com/ethereum/btcrelay/tree/1466934855225b1e4a87031d299c1209ba12d503">BTC Relay is from commit
-      1466934855225b1e4a87031d299c1209ba12d503</a>
+      The deployed version of <a href="https://github.com/ethereum/btcrelay/tree/64ef22cc47ba457a549a575432cc666df71c8ddc">BTC Relay is from commit
+      64ef22cc47ba457a549a575432cc666df71c8ddc</a>
       </p>
       <p>
       The main steps to verifying the source code is <br>
@@ -141,16 +141,16 @@ serpent compile btcBulkStoreHeaders.se > compiled.evm
       (see contractAddress property of the receipt).
       </p>
 <pre>
-> tx='0x81610fffbd056c84b9c66c178a0f570903ed3efdca09ec2616eecee1ed5f442e'
+> tx='0x8e135b828db84bce864d4789cde112eacc04d3d21b5fa569f12f79d8d3ded3c6'
 > eth.getTransactionReceipt(tx)
 {
-  blockHash: "0x2d87bf82aa75d08794baefc11c4a2a5f3eb1397f986fff486e1efcd3241fd5b9",
-  blockNumber: 421003,
-  contractAddress: "0x721f4261afbcf42a9c86d6f1d5e5043e47cb1fac",
-  cumulativeGasUsed: 2769050,
-  gasUsed: 2769050,
+  blockHash: "0x6739c150e39dbcc5c4c4b078a33061db444ef72ca4b671960fbec8ad49f4f99c",
+  blockNumber: 484230,
+  contractAddress: "0x23d0ff718861979e08db52627941eb0f1f3783b9",
+  cumulativeGasUsed: 2776382,
+  gasUsed: 2776382,
   logs: [],
-  transactionHash: "0x81610fffbd056c84b9c66c178a0f570903ed3efdca09ec2616eecee1ed5f442e",
+  transactionHash: "0x8e135b828db84bce864d4789cde112eacc04d3d21b5fa569f12f79d8d3ded3c6",
   transactionIndex: 0
 }
 > objTx = eth.getTransaction(tx)
