@@ -47,23 +47,34 @@ You should see that the balance of third does not change.  (If it does change, d
 you just pass midnight UTC?)
 
 
-
 GET OPERATION HASH
+Use eth.getTransactionReceipt on the txHash from `execute`.
+There should only be a couple of `logs`.  Look for the log that has `topics`
+0x1733cbb53659d713b79580f79f3f9ff215f78a7c7aa45890f3b89fc5cddfbf32
 
+0x1733... is equivalent to '0x'+web3.sha3('ConfirmationNeeded(bytes32,address,uint256,address,bytes)')
 
-Unlock the 2nd account (in Geth console), then this should transfer
-var second = '0x235c751c615945c026855a6cbdeda8ea0db65cb7';
+Now the first 32 bytes of `data` is the operation hash.
+Here's an example of `data`:
+data: "0xd2ba30ef5c75c50c5ffa58228d7b55ccb49e3a2120e400138c17e355a87af8e80000000000000000000000009fc6fefd7f33ca29ee17f2bfec944695e5f29caf0000000000000000000000000000000000000000000000000000000000000007000000000000000000000000fb365748c912fca6808db267342846645f3289e400000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000000"
+
+Set ophash to first 32 bytes of `data`:
 var ophash = '0xd2ba30ef5c75c50c5ffa58228d7b55ccb49e3a2120e400138c17e355a87af8e8';
-// use the operation hash
+
+Now unlock the 2nd account (in Geth console), then this transfer should work:
+var second = '0x235c751c615945c026855a6cbdeda8ea0db65cb7';
 Wallet.at(walletAddr).confirm(ophash, {from:second, gas:999000}).then(function(txHash) {
   console.log('txHash: ', txHash);
 });
 
-
+Check the balance of third and it should have 7 more wei.
 
 
 
 APPENDIX
+
+The operation hash can be obtained by using a `watch`.  Here are initial steps.
+They haven't been tried yet, since eth.getTransactionReceipt above was performed.
 
 Using `ConfirmationNeeded.watch`
 
