@@ -17,29 +17,75 @@ For testing, run these commands in a `truffle console`.
 
 LOAD WALLET
 var walletAddr = '0x338c1d1aaada5b55c2edaac20630ad6682f5ad3f';
-eth.sendTransaction({from: eth.accounts[0], to: walletAddr, gas: 99000, value: 50000});
+eth.sendTransaction({from: eth.accounts[0], to: walletAddr, gas: 999000, value: 50000});
 
 
 var walletAddr = '0x338c1d1aaada5b55c2edaac20630ad6682f5ad3f';
 var first = '0x9fc6fefd7f33ca29ee17f2bfec944695e5f29caf';
 var third = '0xfb365748c912fca6808db267342846645f3289e4';
-Wallet.at(walletAddr).execute(third, 100, 0, {from:first, gas:99000});
-Wallet.at(walletAddr).execute(third, 500, 0, {from:first, gas:99000});
-Wallet.at(walletAddr).execute(third, 300, 0, {from:first, gas:99000});
+Wallet.at(walletAddr).execute(third, 100, 0, {from:first, gas:999000});
+Wallet.at(walletAddr).execute(third, 500, 0, {from:first, gas:999000});
+Wallet.at(walletAddr).execute(third, 300, 0, {from:first, gas:999000});
+
+
+
+var filterConf = web3.eth.filter({topics:['0x'+web3.sha3('ConfirmationNeeded(bytes32,address,uint256,address,bytes)')]});
+filterConf.watch(function(error, result){
+  if (!err) {
+    console.log('@@ watch: ', result);
+  } else {
+    console.log(err);
+  }
+});
 
 Now this should not transfer
-Wallet.at(walletAddr).execute(third, 4, 0, {from:first, gas:99000});
+Wallet.at(walletAddr).execute(third, 7, 0, {from:first, gas:999000}).then(function(err, result) {
+  if (!err) {
+    console.log('execute txhash: ', result);
+  } else {
+    console.log('err execute: ', err);
+  }
+});
+
+
+filterConf.stopWatching();
+
+
+
+var eventConf = Wallet.at(walletAddr).allEvents();
+
+
 
 GET OPERATION HASH
 //var eventConf = Wallet.at(walletAddr).ConfirmationNeeded({initiatior:first});
-var eventConf = Wallet.at(walletAddr).ConfirmationNeeded({},{fromBlock:0, toBlock:'latest'});
+var eventConf = Wallet.at(walletAddr).ConfirmationNeeded({},{fromBlock:'latest', toBlock:'latest'});
 eventConf.watch(function(error, result){
-  if (!error)
-    console.log(result);
+  if (!err) {
+    console.log('eventConf watch: ', result);
+  } else {
+    console.log('err watch: ', err);
+  }
+});
+
+
+eventConf.get(function(err, logs) {
+  if (!err) {
+    console.log('eventConf logs: ', logs);
+  } else {
+    console.log('err watch: ', err);
+  }
+});
 });
 
 eventConf.stopWatching();
 
-Unlock the 2nd account, then this should transfer
-Wallet.at(walletAddr).execute(third, 4, 0, {from:first, gas:99000});
+Unlock the 2nd account (in Geth console), then this should transfer
+var second = '0x235c751c615945c026855a6cbdeda8ea0db65cb7';
+var ophash = '0xd2ba30ef5c75c50c5ffa58228d7b55ccb49e3a2120e400138c17e355a87af8e8';
+// use the operation hash
+Wallet.at(walletAddr).confirm(ophash, {from:second, gas:999000}).then(function(txHash) {
+  console.log('txHash: ', txHash);
+});
+
+
 
