@@ -27,57 +27,29 @@ Wallet.at(walletAddr).execute(third, 100, 0, {from:first, gas:999000});
 Wallet.at(walletAddr).execute(third, 500, 0, {from:first, gas:999000});
 Wallet.at(walletAddr).execute(third, 300, 0, {from:first, gas:999000});
 
+You can check the balance of third and it should have 900 more wei.
+At this stage, the daily withdrawal limit has been reached.
+Note: the limit is reset at midnight UTC.
 
 
-var filterConf = web3.eth.filter({topics:['0x'+web3.sha3('ConfirmationNeeded(bytes32,address,uint256,address,bytes)')]});
-filterConf.watch(function(error, result){
-  if (!err) {
-    console.log('@@ watch: ', result);
-  } else {
-    console.log(err);
-  }
-});
+Now, we can set up a `ConfirmationNeeded.watch` or `filter.watch`, before sending more wei.
+The purpose is so that we can get the ophash (operation hash), which will need to
+be `confirm`ed.  Untested ways are mentioned in the Appendix.
+
+We will proceed by obtaining the ophash from the receipt log.
 
 Now this should not transfer
-Wallet.at(walletAddr).execute(third, 7, 0, {from:first, gas:999000}).then(function(err, result) {
-  if (!err) {
-    console.log('execute txhash: ', result);
-  } else {
-    console.log('err execute: ', err);
-  }
+Wallet.at(walletAddr).execute(third, 7, 0, {from:first, gas:999000}).then(function(txHash) {
+  console.log('txHash: ', txHash);
 });
 
-
-filterConf.stopWatching();
-
-
-
-var eventConf = Wallet.at(walletAddr).allEvents();
+You should see that the balance of third does not change.  (If it does change, did
+you just pass midnight UTC?)
 
 
 
 GET OPERATION HASH
-//var eventConf = Wallet.at(walletAddr).ConfirmationNeeded({initiatior:first});
-var eventConf = Wallet.at(walletAddr).ConfirmationNeeded({},{fromBlock:'latest', toBlock:'latest'});
-eventConf.watch(function(error, result){
-  if (!err) {
-    console.log('eventConf watch: ', result);
-  } else {
-    console.log('err watch: ', err);
-  }
-});
 
-
-eventConf.get(function(err, logs) {
-  if (!err) {
-    console.log('eventConf logs: ', logs);
-  } else {
-    console.log('err watch: ', err);
-  }
-});
-});
-
-eventConf.stopWatching();
 
 Unlock the 2nd account (in Geth console), then this should transfer
 var second = '0x235c751c615945c026855a6cbdeda8ea0db65cb7';
@@ -89,3 +61,38 @@ Wallet.at(walletAddr).confirm(ophash, {from:second, gas:999000}).then(function(t
 
 
 
+
+
+APPENDIX
+
+Using `ConfirmationNeeded.watch`
+
+var eventConf = Wallet.at(walletAddr).ConfirmationNeeded({},{fromBlock:'latest', toBlock:'latest'});
+eventConf.watch(function(error, result){
+  if (!err) {
+    console.log('eventConf watch: ', result);
+  } else {
+    console.log('err watch: ', err);
+  }
+});
+
+// invoke Wallet.at(walletAddr).execute(third...
+
+eventConf.stopWatching();
+
+
+
+Using `filter.watch`
+
+var filterConf = web3.eth.filter({topics:['0x'+web3.sha3('ConfirmationNeeded(bytes32,address,uint256,address,bytes)')]});
+filterConf.watch(function(error, result){
+  if (!err) {
+    console.log('@@ watch: ', result);
+  } else {
+    console.log(err);
+  }
+});
+
+// invoke Wallet.at(walletAddr).execute(third...
+
+filterConf.stopWatching();
