@@ -73,15 +73,16 @@ Check the balance of third and it should have 7 more wei.
 
 APPENDIX
 
-The operation hash can be obtained by using a `watch`.  Here are initial steps.
-They haven't been tried yet, since eth.getTransactionReceipt above was performed.
+The operation hash can be obtained by using a `watch`.
 
 Using `ConfirmationNeeded.watch`
+This has been tested.
 
-var eventConf = Wallet.at(walletAddr).ConfirmationNeeded({},{fromBlock:'latest', toBlock:'latest'});
-eventConf.watch(function(error, result){
+var eventConf = Wallet.at(walletAddr).ConfirmationNeeded();
+eventConf.watch(function(err, result){
   if (!err) {
     console.log('eventConf watch: ', result);
+    console.log('ophash: ', result.args.operation);
   } else {
     console.log('err watch: ', err);
   }
@@ -90,13 +91,15 @@ eventConf.watch(function(error, result){
 // invoke Wallet.at(walletAddr).execute(third...
 
 eventConf.stopWatching();
+The ophash is result.args.operation
 
 
 
-Using `filter.watch`
+Using `filter.watch`.
+This hasn't been tested.
 
 var filterConf = web3.eth.filter({topics:['0x'+web3.sha3('ConfirmationNeeded(bytes32,address,uint256,address,bytes)')]});
-filterConf.watch(function(error, result){
+filterConf.watch(function(err, result){
   if (!err) {
     console.log('@@ watch: ', result);
   } else {
