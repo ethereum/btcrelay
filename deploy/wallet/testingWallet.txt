@@ -81,7 +81,14 @@ Wallet.at(walletAddr).removeOwner(second, {from:second, gas:999000}).then(functi
 });
 
 
-
+ADD OWNER
+Add the 2nd owner.  It's multisig so do multi:
+Wallet.at(walletAddr).addOwner(second, {from:first, gas:999000}).then(function(txHash) {
+  console.log('txHash: ', txHash);
+});
+Wallet.at(walletAddr).addOwner(second, {from:third, gas:999000}).then(function(txHash) {
+  console.log('txHash: ', txHash);
+});
 
 
 
