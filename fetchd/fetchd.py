@@ -29,6 +29,9 @@ pyepmLogger.setLevel(logging.INFO)
 # instance.relayContract = "0xba164d1e85526bd5e27fd15ad14b0eae91c45a93"
 # TESTNET relay: 0x142f674e911cc55c226af81ac4d6de0a671d4abf
 
+instance.walletContract = '0x338c1d1aaada5b55c2edaac20630ad6682f5ad3f' # Morden
+
+
 def main():
     # logging.basicConfig(level=logging.DEBUG)
     logger.info("fetchd using PyEPM %s" % __version__)
@@ -61,6 +64,10 @@ def main():
 
     feeVerifyTx = args.feeVTX
     logger.info('feeVTX: %s' % feeVerifyTx)
+
+    opHash = walletWithdraw()
+    print('opHash='+str(opHash))
+    return
 
 
     # logger.info('@@@ rpc: %s' % instance.jsonrpc_url)
@@ -246,6 +253,19 @@ def storeHeaders(bhBytes, chunkSize, feeVerifyTx):
     if chainHead != expHead:
         logger.info('@@@@@ MISMATCH chainHead: {0} expHead: {1}'.format(blockHashHex(chainHead), blockHashHex(expHead)))
         # sys.exit(1)
+
+
+def walletWithdraw():
+    # execute(address _to, uint _value, bytes _data)
+    sig = 'execute:[address,uint256,bytes]:bytes32'
+    data = [instance.walletContract, 3, '']
+    gas = 999000
+
+    pyepmLogger.setLevel(logging.INFO)
+    callResult = instance.call(instance.walletContract, sig=sig, data=data, gas=gas)
+    pyepmLogger.setLevel(logging.INFO)
+    opHash = callResult[0] if len(callResult) else callResult
+    return opHash
 
 
 def getLastBlockHeight():
