@@ -71,6 +71,20 @@ Check the balance of third and it should have 7 more wei.
 
 
 
+REMOVE OWNER
+Remove the 2nd owner.  It's multisig so do multi:
+Wallet.at(walletAddr).removeOwner(second, {from:first, gas:999000}).then(function(txHash) {
+  console.log('txHash: ', txHash);
+});
+Wallet.at(walletAddr).removeOwner(second, {from:second, gas:999000}).then(function(txHash) {
+  console.log('txHash: ', txHash);
+});
+
+
+
+
+
+
 APPENDIX
 
 The operation hash can be obtained by using a `watch`.
