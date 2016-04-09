@@ -66,11 +66,6 @@ def main():
     logger.info('feeVTX: %s' % feeVerifyTx)
 
 
-    opHash = walletWithdraw()
-    print('opHash='+str(opHash))
-    return
-
-
     # logger.info('@@@ rpc: %s' % instance.jsonrpc_url)
 
     # this can't be commented out easily since run() always does instance.heightToStartFetch = getLastBlockHeight() + 1 for retries
@@ -152,6 +147,22 @@ def run(feeVerifyTx, doFetch=False, network=BITCOIN_TESTNET, startBlock=0):
         break  # chainHead is same realHead
 
     actualHeight = last_block_height(network)  # pybitcointools 1.1.33
+
+    # average of 6*24=144 headers a day.  So AROUND every 100 headers we check
+    # the balance of sender and if it's less than 1 ETH, we ask for more ETH
+    # from the wallet
+    if actualHeight % 100 == 0:
+        myWei = instance.balance_at(instance.address)
+        myBalance = myWei / 1e18
+        logger.info('myBalance ETH: %s' % myBalance)
+
+        if myBalance < 1:
+            logger.info('going to walletWithdraw')
+            walletWithdraw()
+            myWei = instance.balance_at(instance.address)
+            myBalance = myWei / 1e18
+            logger.info('topped up ETH balance: %s' % myBalance)
+
 
     if startBlock:
         instance.heightToStartFetch = startBlock
