@@ -29,7 +29,10 @@ pyepmLogger.setLevel(logging.INFO)
 # instance.relayContract = "0xba164d1e85526bd5e27fd15ad14b0eae91c45a93"
 # TESTNET relay: 0x142f674e911cc55c226af81ac4d6de0a671d4abf
 
-instance.walletContract = '0x338c1d1aaada5b55c2edaac20630ad6682f5ad3f' # Morden
+instance.walletContract = '0xdc056dc1a79f6a07b28d351ceb084852f88febbb' # Morden
+instance.ethDaily = int(1e18)  # 1 ETH
+useWallet = True
+aWalletOwner = '0xd005c515db902b1b77beb98370ba1f16b3111d7b'
 
 
 def main():
@@ -64,6 +67,9 @@ def main():
 
     feeVerifyTx = args.feeVTX
     logger.info('feeVTX: %s' % feeVerifyTx)
+
+    if useWallet and instance.address != aWalletOwner:
+        logger.info('sender is not a wallet owner: %s' % instance.address)
 
 
     # logger.info('@@@ rpc: %s' % instance.jsonrpc_url)
@@ -151,7 +157,7 @@ def run(feeVerifyTx, doFetch=False, network=BITCOIN_TESTNET, startBlock=0):
     # average of 6*24=144 headers a day.  So AROUND every 100 headers we check
     # the balance of sender and if it's less than 1 ETH, we ask for more ETH
     # from the wallet
-    if actualHeight % 100 == 0:
+    if actualHeight % 100 == 0 and useWallet:
         myWei = instance.balance_at(instance.address)
         myBalance = myWei / 1e18
         logger.info('myBalance ETH: %s' % myBalance)
@@ -270,7 +276,7 @@ def storeHeaders(bhBytes, chunkSize, feeVerifyTx):
 def walletWithdraw():
     # execute(address _to, uint _value, bytes _data)
     sig = 'execute:[address,uint256,bytes]:bytes32'
-    data = [instance.address, 3, '']
+    data = [instance.address, instance.ethDaily, '']
     gas = 999000
 
     pyepmLogger.setLevel(logging.INFO)
