@@ -65,6 +65,7 @@ def main():
     feeVerifyTx = args.feeVTX
     logger.info('feeVTX: %s' % feeVerifyTx)
 
+
     opHash = walletWithdraw()
     print('opHash='+str(opHash))
     return
@@ -258,11 +259,11 @@ def storeHeaders(bhBytes, chunkSize, feeVerifyTx):
 def walletWithdraw():
     # execute(address _to, uint _value, bytes _data)
     sig = 'execute:[address,uint256,bytes]:bytes32'
-    data = [instance.walletContract, 3, '']
+    data = [instance.address, 3, '']
     gas = 999000
 
     pyepmLogger.setLevel(logging.INFO)
-    callResult = instance.call(instance.walletContract, sig=sig, data=data, gas=gas)
+    callResult = instance.transact(instance.walletContract, sig=sig, data=data, gas=gas)
     pyepmLogger.setLevel(logging.INFO)
     opHash = callResult[0] if len(callResult) else callResult
     return opHash
