@@ -45,8 +45,8 @@
     var feeVTX = web3.fromWei(contract.getFeeAmount.call(headHash), 'ether');
     $('#feeVTX').text(feeVTX);
 
-    var feeRecipient = contract.getFeeRecipient.call(headHash);
-    $('#feeRecipient').text('0x' + feeRecipient.toString(16));
+    var feeRecipient = contract.getFeeRecipient.call(headHash).toString(16);
+    $('#feeRecipient').text('0x' + feeRecipient);
 
 
     window.btcrelayTester = contract;
@@ -120,7 +120,8 @@
       <h3 id="warnSync" style="display: none">Your Ethereum node may not be fully synced: <span id=nodeBlockNum></span>.  Check <a href="https://stats.ethdev.com" target="_">stats</a>
         for the latest blocks.
       </h3>
-      <h3>ETH fee: <strong id="feeVTX"></strong> Relayer: <strong id="feeRecipient"></strong> </h3>
+      <h3>ETH fee: <strong id="feeVTX"></strong></h3>
+      <h5>Relayer: <strong id="feeRecipient"></strong></h5>
     </div>
 
     <div>
