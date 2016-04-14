@@ -166,25 +166,6 @@ def run(feeVerifyTx, feeRecipient, doFetch=False, network=BITCOIN_TESTNET, start
 
     logger.info('@@@ startFetch: {0} actualHeight: {1}'.format(instance.heightToStartFetch, actualHeight))
 
-
-    # average of 6*24=144 headers a day.  So AROUND every 100 headers we check
-    # the balance of sender and if it's less than 1 ETH, we ask for more ETH
-    # from the wallet.
-    # CHUNK_RANGE is used so that we ask for ETH if heightToStartFetch ends in
-    # ????00, ????01, ????02 to ????04
-    if instance.heightToStartFetch % 100 in CHUNK_RANGE and useWallet:
-        myWei = instance.balance_at(instance.address)
-        myBalance = myWei / 1e18
-        logger.info('myBalance ETH: %s' % myBalance)
-
-        if myBalance < 1:
-            logger.info('going to walletWithdraw')
-            walletWithdraw()
-            myWei = instance.balance_at(instance.address)
-            myBalance = myWei / 1e18
-            logger.info('topped up ETH balance: %s' % myBalance)
-
-
     chunkSize = CHUNK_SIZE
     fetchNum = actualHeight - instance.heightToStartFetch + 1
     numChunk = fetchNum / chunkSize
@@ -217,6 +198,25 @@ def fetchHeaders(chunkStartNum, chunkSize, numChunk, feeVerifyTx, feeRecipient, 
         logger.info('==================================')
 
         chunkStartNum += chunkSize
+
+
+        # average of 6*24=144 headers a day.  So AROUND every 100 headers we check
+        # the balance of sender and if it's less than 1 ETH, we ask for more ETH
+        # from the wallet.
+        # CHUNK_RANGE is used so that we ask for ETH if heightToStartFetch ends in
+        # ????00, ????01, ????02 to ????04
+        # if chunkStartNum % 100 in CHUNK_RANGE and useWallet:
+        if chunkStartNum % 100 == 21 and useWallet:  # test
+            myWei = instance.balance_at(instance.address)
+            myBalance = myWei / 1e18
+            logger.info('myBalance ETH: %s' % myBalance)
+
+            if myBalance < 1:
+                logger.info('going to walletWithdraw')
+                walletWithdraw()
+                myWei = instance.balance_at(instance.address)
+                myBalance = myWei / 1e18
+                logger.info('topped up ETH balance: %s' % myBalance)
 
 
 def storeHeaders(bhBytes, chunkSize, feeVerifyTx, feeRecipient):
