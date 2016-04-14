@@ -52,6 +52,7 @@ def main():
     parser.add_argument('-n', '--network', default=BITCOIN_TESTNET, choices=[BITCOIN_TESTNET, BITCOIN_MAINNET], help='Bitcoin network')
     parser.add_argument('-d', '--daemon', default=False, action='store_true', help='run as daemon')
     parser.add_argument('--feeVTX', default=0, type=int, help='fee to charge for verifications')
+    parser.add_argument('--feeRecipient', help='address of fee recipient')
 
     args = parser.parse_args()
 
@@ -71,6 +72,8 @@ def main():
     if useWallet and instance.address != aWalletOwner:
         logger.info('sender is not a wallet owner: %s' % instance.address)
 
+    feeRecipient = args.feeRecipient or instance.address
+    logger.info('feeRecipient: %s' % feeRecipient)
 
     # logger.info('@@@ rpc: %s' % instance.jsonrpc_url)
 
@@ -81,13 +84,13 @@ def main():
 
     # this will not handle exceptions or do retries.  need to use -d switch if desired
     if not args.daemon:
-        run(feeVerifyTx, doFetch=args.fetch, network=args.network, startBlock=args.startBlock)
+        run(feeVerifyTx, feeRecipient, doFetch=args.fetch, network=args.network, startBlock=args.startBlock)
         return
 
     while True:
         for i in range(4):
             try:
-                run(feeVerifyTx, doFetch=args.fetch, network=args.network, startBlock=args.startBlock)
+                run(feeVerifyTx, feeRecipient, doFetch=args.fetch, network=args.network, startBlock=args.startBlock)
                 sleep(SLEEP_TIME)
             except Exception as e:
                 logger.info(e)
@@ -102,7 +105,7 @@ def main():
             break
 
 
-def run(feeVerifyTx, doFetch=False, network=BITCOIN_TESTNET, startBlock=0):
+def run(feeVerifyTx, feeRecipient, doFetch=False, network=BITCOIN_TESTNET, startBlock=0):
     chainHead = getBlockchainHead()
     if not chainHead:
         raise ValueError("Empty BlockchainHead returned.")
@@ -186,12 +189,12 @@ def run(feeVerifyTx, doFetch=False, network=BITCOIN_TESTNET, startBlock=0):
     logger.info('----------------------------------')
 
     if doFetch:
-        fetchHeaders(instance.heightToStartFetch, chunkSize, numChunk, feeVerifyTx, network=network)
-        fetchHeaders(actualHeight - leftoverToFetch + 1, 1, leftoverToFetch, feeVerifyTx, network=network)
+        fetchHeaders(instance.heightToStartFetch, chunkSize, numChunk, feeVerifyTx, feeRecipient, network=network)
+        fetchHeaders(actualHeight - leftoverToFetch + 1, 1, leftoverToFetch, feeVerifyTx, feeRecipient, network=network)
         # sys.exit()
 
 
-def fetchHeaders(chunkStartNum, chunkSize, numChunk, feeVerifyTx, network=BITCOIN_TESTNET):
+def fetchHeaders(chunkStartNum, chunkSize, numChunk, feeVerifyTx, feeRecipient, network=BITCOIN_TESTNET):
     for j in range(numChunk):
         strings = ""
         for i in range(chunkSize):
@@ -202,7 +205,7 @@ def fetchHeaders(chunkStartNum, chunkSize, numChunk, feeVerifyTx, network=BITCOI
             logger.debug("Block header: %s" % repr(bhStr.decode('hex')))
             strings += bhStr
 
-        storeHeaders(strings.decode('hex'), chunkSize, feeVerifyTx)
+        storeHeaders(strings.decode('hex'), chunkSize, feeVerifyTx, feeRecipient)
 
         chainHead = getBlockchainHead()
         logger.info('@@@ DONE hexHead: %s' % blockHashHex(chainHead))
@@ -211,7 +214,7 @@ def fetchHeaders(chunkStartNum, chunkSize, numChunk, feeVerifyTx, network=BITCOI
         chunkStartNum += chunkSize
 
 
-def storeHeaders(bhBytes, chunkSize, feeVerifyTx):
+def storeHeaders(bhBytes, chunkSize, feeVerifyTx, feeRecipient):
 
     txCount = instance.transaction_count(defaultBlock='pending')
     logger.info('----------------------------------')
@@ -239,12 +242,12 @@ def storeHeaders(bhBytes, chunkSize, feeVerifyTx):
     #
 
     if feeVerifyTx != 0:
-        sig = 'storeBlockWithFee:[bytes,int256]:int256'
+        sig = 'storeBlockWithFeeAndRecipient:[bytes,int256,int256]:int256'
 
     for i in range(chunkSize):
         if feeVerifyTx != 0:
             offset = 80*i
-            data = [ bhBytes[offset:offset+80] , feeVerifyTx]
+            data = [ bhBytes[offset:offset+80] , feeVerifyTx, feeRecipient]
 
         # Wait for the transaction and retry if failed
         txHash = instance.transact(instance.relayContract, sig=sig, data=data, gas=gas, value=value)
