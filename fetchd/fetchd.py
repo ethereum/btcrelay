@@ -15,6 +15,8 @@ BITCOIN_TESTNET = 'testnet'
 SLEEP_TIME = 5 * 60  # 5 mins.  If changing, check retry logic
 GAS_FOR_STORE_HEADERS = 1200000  # it should take less than 1M gas, but buffer to avoid running out
 
+CHUNK_SIZE = 5  # number of headers to fetch at a time
+CHUNK_RANGE = range(CHUNK_SIZE)
 
 api_config = config.read_config()
 instance = api.Api(api_config)
@@ -157,10 +159,20 @@ def run(feeVerifyTx, feeRecipient, doFetch=False, network=BITCOIN_TESTNET, start
 
     actualHeight = last_block_height(network)  # pybitcointools 1.1.33
 
+    if startBlock:
+        instance.heightToStartFetch = startBlock
+    else:
+        instance.heightToStartFetch = getLastBlockHeight() + 1
+
+    logger.info('@@@ startFetch: {0} actualHeight: {1}'.format(instance.heightToStartFetch, actualHeight))
+
+
     # average of 6*24=144 headers a day.  So AROUND every 100 headers we check
     # the balance of sender and if it's less than 1 ETH, we ask for more ETH
-    # from the wallet
-    if actualHeight % 100 == 0 and useWallet:
+    # from the wallet.
+    # CHUNK_RANGE is used so that we ask for ETH if heightToStartFetch ends in
+    # ????00, ????01, ????02 to ????04
+    if instance.heightToStartFetch % 100 in CHUNK_RANGE and useWallet:
         myWei = instance.balance_at(instance.address)
         myBalance = myWei / 1e18
         logger.info('myBalance ETH: %s' % myBalance)
@@ -173,14 +185,7 @@ def run(feeVerifyTx, feeRecipient, doFetch=False, network=BITCOIN_TESTNET, start
             logger.info('topped up ETH balance: %s' % myBalance)
 
 
-    if startBlock:
-        instance.heightToStartFetch = startBlock
-    else:
-        instance.heightToStartFetch = getLastBlockHeight() + 1
-
-    logger.info('@@@ startFetch: {0} actualHeight: {1}'.format(instance.heightToStartFetch, actualHeight))
-
-    chunkSize = 5
+    chunkSize = CHUNK_SIZE
     fetchNum = actualHeight - instance.heightToStartFetch + 1
     numChunk = fetchNum / chunkSize
     leftoverToFetch = fetchNum % chunkSize
