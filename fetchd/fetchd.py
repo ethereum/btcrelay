@@ -287,11 +287,14 @@ def walletWithdraw():
     data = [instance.address, instance.ethDaily, '']
     gas = 999000
 
-    pyepmLogger.setLevel(logging.INFO)
-    callResult = instance.transact(instance.walletContract, sig=sig, data=data, gas=gas)
-    pyepmLogger.setLevel(logging.INFO)
-    opHash = callResult[0] if len(callResult) else callResult
-    return opHash
+    # Wait for the transaction to be mined and retry if failed
+    txHash = instance.transact(instance.walletContract, sig=sig, data=data, gas=gas)
+    logger.info("Got txHash: %s" % txHash)
+    txResult = False
+    while txResult is False:
+        txResult = instance.wait_for_transaction(transactionHash=txHash, defaultBlock="pending", retry=30, verbose=True)
+        if txResult is False:
+            txHash = instance.transact(instance.walletContract, sig=sig, data=data, gas=gas)
 
 
 def getLastBlockHeight():
