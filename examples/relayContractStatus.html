@@ -46,7 +46,7 @@
     $('#feeVTX').text(feeVTX);
 
     var feeRecipient = contract.getFeeRecipient.call(headHash);
-    $('#feeRecipient').text('0x' + feeRecipient);
+    $('#feeRecipient').text('0x' + feeRecipient.toString(16));
 
 
     window.btcrelayTester = contract;
