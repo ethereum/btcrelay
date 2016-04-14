@@ -205,8 +205,7 @@ def fetchHeaders(chunkStartNum, chunkSize, numChunk, feeVerifyTx, feeRecipient, 
         # from the wallet.
         # CHUNK_RANGE is used so that we ask for ETH if heightToStartFetch ends in
         # ????00, ????01, ????02 to ????04
-        # if chunkStartNum % 100 in CHUNK_RANGE and useWallet:
-        if chunkStartNum % 100 == 21 and useWallet:  # test
+        if chunkStartNum % 100 in CHUNK_RANGE and useWallet:
             myWei = instance.balance_at(instance.address)
             myBalance = myWei / 1e18
             logger.info('myBalance ETH: %s' % myBalance)
@@ -287,12 +286,19 @@ def walletWithdraw():
     data = [instance.address, instance.ethDaily, '']
     gas = 999000
 
-    # Wait for the transaction to be mined and retry if failed
+    # Wait for the transaction retry if failed
     txHash = instance.transact(instance.walletContract, sig=sig, data=data, gas=gas)
     logger.info("Got txHash: %s" % txHash)
     txResult = False
     while txResult is False:
         txResult = instance.wait_for_transaction(transactionHash=txHash, defaultBlock="pending", retry=30, verbose=True)
+        if txResult is False:
+            txHash = instance.transact(instance.walletContract, sig=sig, data=data, gas=gas)
+
+    # Wait for the transaction to be mined and retry if failed
+    txResult = False
+    while txResult is False:
+        txResult = instance.wait_for_transaction(transactionHash=txHash, defaultBlock="latest", retry=30, verbose=True)
         if txResult is False:
             txHash = instance.transact(instance.walletContract, sig=sig, data=data, gas=gas)
 
