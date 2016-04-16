@@ -129,7 +129,7 @@ def run(feeVerifyTx, feeRecipient, doFetch=False, network=BITCOIN_TESTNET, start
         heightToRefetch = contractHeight
         while chainHead != realHead:
             logger.info('@@@ chainHead: {0}  realHead: {1}'.format(chainHead, realHead))
-            fetchHeaders(heightToRefetch, 1, 1, feeVerifyTx, network=network)
+            fetchHeaders(heightToRefetch, 1, 1, feeVerifyTx, feeRecipient, network=network)
 
             # wait for some blocks because Geth has a delay (at least in RPC), of
             # returning the correct data.  the non-orphaned header may already
