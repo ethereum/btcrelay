@@ -298,7 +298,7 @@ def walletWithdraw():
     # Wait for the transaction to be mined and retry if failed
     txResult = False
     while txResult is False:
-        txResult = instance.wait_for_transaction(transactionHash=txHash, defaultBlock="latest", retry=30, verbose=True)
+        txResult = instance.wait_for_transaction(transactionHash=txHash, defaultBlock="latest", retry=60, verbose=True)
         if txResult is False:
             txHash = instance.transact(instance.walletContract, sig=sig, data=data, gas=gas)
 
