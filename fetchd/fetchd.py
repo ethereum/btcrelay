@@ -203,9 +203,10 @@ def fetchHeaders(chunkStartNum, chunkSize, numChunk, feeVerifyTx, feeRecipient, 
         # average of 6*24=144 headers a day.  So AROUND every 100 headers we check
         # the balance of sender and if it's less than 1 ETH, we ask for more ETH
         # from the wallet.
-        # CHUNK_RANGE is used so that we ask for ETH if heightToStartFetch ends in
+        # CHUNK_RANGE is used when chunkSize>1 so that we ask for ETH if chunkStartNum ends in
         # ????00, ????01, ????02 to ????04
-        if chunkStartNum % 100 in CHUNK_RANGE and useWallet:
+        if ((chunkSize == 1 and chunkStartNum % 100) or
+            (chunkStartNum % 100 in CHUNK_RANGE)) and useWallet:
             myWei = instance.balance_at(instance.address)
             myBalance = myWei / 1e18
             logger.info('myBalance ETH: %s' % myBalance)
