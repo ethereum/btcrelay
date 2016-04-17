@@ -259,6 +259,7 @@ def storeHeaders(bhBytes, chunkSize, feeVerifyTx, feeRecipient):
         txResult = False
         while txResult is False:
             txResult = instance.wait_for_transaction(transactionHash=txHash, defaultBlock="pending", retry=30, verbose=True)
+            logger.info("store header pendingblock txResult: %s" % txResult)
             if txResult is False:
                 txHash = instance.transact(instance.relayContract, sig=sig, data=data, gas=gas, value=value)
 
@@ -266,6 +267,7 @@ def storeHeaders(bhBytes, chunkSize, feeVerifyTx, feeRecipient):
         txResult = False
         while txResult is False:
             txResult = instance.wait_for_transaction(transactionHash=txHash, defaultBlock="latest", retry=60, verbose=True)
+            logger.info("store header latestblock txResult: %s" % txResult)
             if txResult is False:
                 txHash = instance.transact(instance.relayContract, sig=sig, data=data, gas=gas, value=value)
 
