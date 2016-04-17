@@ -255,7 +255,7 @@ def storeHeaders(bhBytes, chunkSize, feeVerifyTx, feeRecipient):
 
         # Wait for the transaction and retry if failed
         txHash = instance.transact(instance.relayContract, sig=sig, data=data, gas=gas, value=value)
-        logger.info("Got txHash: %s" % txHash)
+        logger.info("store header txHash: %s" % txHash)
         txResult = False
         while txResult is False:
             txResult = instance.wait_for_transaction(transactionHash=txHash, defaultBlock="pending", retry=30, verbose=True)
@@ -288,7 +288,7 @@ def walletWithdraw():
 
     # Wait for the transaction retry if failed
     txHash = instance.transact(instance.walletContract, sig=sig, data=data, gas=gas)
-    logger.info("Got txHash: %s" % txHash)
+    logger.info("walletWithdraw txHash: %s" % txHash)
     txResult = False
     while txResult is False:
         txResult = instance.wait_for_transaction(transactionHash=txHash, defaultBlock="pending", retry=30, verbose=True)
