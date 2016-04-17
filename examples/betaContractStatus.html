@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Ethereum: Bitcoin Relay Contract Status</title>
+  <link rel="stylesheet" href="./css/bootstrap.min.css">
+  <link rel="stylesheet" href="./css/dapp.css">
+  <script src="./js/jquery-2.1.3.min.js"></script>
+  <script src="./js/bootstrap.min.js"></script>
+
+  <script src="./js/btcRelayAbi.js"></script>
+  <script src="./js/tokenContractAbi.js"></script>
+
+  <script src="./js/bignumber.js"></script>
+  <script src="./js/web3.min.js"></script>
+
+  <script>
+  var web3 = require('web3');
+  web3.setProvider(new web3.providers.HttpProvider('http://frontier-lb.ether.camp'));
+
+  var heightPerRelay;
+
+  $(function() {
+    /*
+      do NOT forget to update ABI files when needed
+     */
+
+     var relayAddr = '0x7fa5b9f51ef0b83883a9403b5df8f7c4d7150345'; // Alpha Frontier
+
+    // var relayAddr = web3.eth.namereg.addr('btcrelay');  // Olympic
+    $('#relayAddr').text(relayAddr);
+
+
+    updateBCI();
+    updateBlockr();
+
+    var RelayContract = web3.eth.contract(btcRelayAbi);  // see ./js/btcRelayAbi.js
+    var contract = RelayContract.at(relayAddr);
+
+    heightPerRelay = contract.getLastBlockHeight.call().toString();
+    $('#latestBlockHeight').text(heightPerRelay);
+
+    var headHash = contract.getBlockchainHead.call();
+    $('#latestBlockHash').text(formatHash(headHash));
+
+    var feeVTX = web3.fromWei(contract.getFeeAmount.call(headHash), 'ether');
+    $('#feeVTX').text(feeVTX);
+
+    window.btcrelayTester = contract;
+    // signature of verifyTx is (txHash, txIndex, merkleSiblingArray, txBlockHash)
+    // to make a call to verifyTx so that btcrelay will get some fees,
+    // run this code in the browser developer console: fees will be sent
+    // from the coinbase
+    // res = btcrelayTester.verifyTx.sendTransaction(0, 1, [], 0, {from: web3.eth.coinbase, value: web3.toWei('0.1', 'ether')});
+    // console.log('txHash for verifyTx: ', res)
+
+
+    //setTimeout(checkHeights, 1000);
+  });
+
+  function updateBCI() {
+    // 2 calls needed since https://blockchain.info/latestblock is missing CORS
+    $.getJSON('https://blockchain.info/q/getblockcount?cors=true', function(data) {
+      $('#bciBlockHeight').text(data);
+    });
+
+    // https://github.com/blockchain/api-v1-client-python/issues/17
+    // $.getJSON('https://blockchain.info/q/latesthash?cors=true', function(data) {
+    //   $('#bciBlockHash').text(data);
+    // });
+  }
+
+  function updateBlockr() {
+    $.getJSON('http://btc.blockr.io/api/v1/block/info/last', function(data) {
+      $('#blockrBlockHeight').text(data.data.nb);
+    });
+  }
+
+  function checkHeights() {
+    var bciHeight = $('#bciBlockHeight').text();
+    var blockrHeight = $('#blockrBlockHeight').text();
+    if (!bciHeight || !blockrHeight ||
+      heightPerRelay === bciHeight || heightPerRelay === blockrHeight) {
+        $('#warnSync').hide();
+    }
+    else {
+      $('#nodeBlockNum').text(web3.eth.blockNumber);
+      $('#warnSync').show();
+    }
+  }
+
+  function formatHash(bnHash) {
+    var hash = bnHash.toString(16);
+    return Array(64 - hash.length + 1).join('0') + hash;
+  }
+
+  </script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="logo">
+      <img src="./images/ethereum-logo-small.png"/>
+    </div>
+
+    <div class="jumbotron">
+      <p>This is an Alpha: don't be surprised if another version is deployed and
+        launched "more formally" later, and diverts attention from the Alpha.
+        Alpha starts at block 389088 and ends at block 389097, unless someone
+        submits more block headers to it.  You are encouraged to become familiar
+        by <a href="http://rawgit.com/ethereum/btcrelay/master/examples/relayContractStatus.html">
+        using the Morden public testnet version</a> first (which is also being
+        continuously supplied with Bitcoin mainnet block headers).
+      </p>
+      <h2>ALPHA <a href="https://github.com/ethereum/btcrelay">Ethereum Bitcoin Relay</a>
+         ALPHA</h3>
+      <h3>ALPHA BTC Relay: <strong id="relayAddr"></strong></h3>
+      <h3><a href="./BitcoinRelayABI.js">ABI</a></h2>
+      <h3>Latest Block Hash: <strong id="latestBlockHash"></strong></h3>
+      <div>
+        <h3 style="display: inline-block">Latest Block#: <strong id="latestBlockHeight"></strong></h3>
+        <div style="display: inline-block; margin-left:3em"><a href="https://blockchain.info" target="_">blockchain.info</a>: <strong id="bciBlockHeight"></strong></div>
+        <span><a href="https://btc.blockr.io" target="_">btc.blockr.io</a>: <strong id="blockrBlockHeight"></strong></span>
+      </div>
+      <h3 id="warnSync" style="display: none">Your Ethereum node may not be fully synced: <span id=nodeBlockNum></span>.  Check <a href="https://stats.ethdev.com" target="_">stats</a>
+        for the latest blocks.
+      </h3>
+      <h3>ETH fee: <strong id="feeVTX"></strong></h3>
+    </div>
+
+    <div>
+      <h3>Contract address: <b>0x7fa5b9f51ef0b83883a9403b5df8f7c4d7150345</b></h3>
+      <h3>Verifying the Source Code</h3>
+      <p>
+      The deployed version of <a href="https://github.com/ethereum/btcrelay/tree/1466934855225b1e4a87031d299c1209ba12d503">BTC Relay is from commit
+      1466934855225b1e4a87031d299c1209ba12d503</a>
+      </p>
+      <p>
+      The main steps to verifying the source code is <br>
+      1) compile code to the evm (bytecode) <br>
+      2) compare the evm against the data used in the contract creation transaction
+      </p>
+      <h4>1)</h4>
+<pre>
+serpent compile btcBulkStoreHeaders.se > compiled.evm
+</pre>
+      <h4>2)</h4>
+      <p>Here's how to use Geth console to obtain the evm.  The receipt is used to
+      guarantee that the tx hash provided is the one that created the BTC Relay contract
+      (see contractAddress property of the receipt).
+      </p>
+<pre>
+> tx='0x37667f4040dfbdea040042dc142cb95cf738f5018f83b0c6a5d2a85d4fd27814'
+> objTx = eth.getTransaction(tx)
+> objTx.input
+</pre>
+      <p>
+            Compare objTx.input with the contents of compiled.evm and you will see
+            that they match identically (except for 0x at the front of objTx.input)
+      </p>
+      <p>
+        The version of the <a href="https://github.com/ethereum/serpent/tree/f0b4128f91d173fb3f6de48a6993e7db75446924">Serpent compiler used is commit f0b4128f91d173fb3f6de48a6993e7db75446924</a>
+      </p>
+    </div>
+
+    <!-- <h3>blockchain.info Latest Block Hash: <strong id="bciBlockHash"></strong></h3> -->
+
+    <!-- <div class="footer-logo">
+      <img src="./images/ETH_DEV_LOGO_LARGE.svg"/>
+    </div> -->
+  </div>
+</body>
+
+</html>
