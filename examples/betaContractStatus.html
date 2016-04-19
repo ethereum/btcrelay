@@ -44,7 +44,7 @@
 
     var feeVTX = web3.fromWei(contract.getFeeAmount.call(headHash), 'ether');
     $('#feeVTX').text(feeVTX);
-    
+
     var feeRecipient = contract.getFeeRecipient.call(headHash).toString(16);
     $('#feeRecipient').text('0x' + feeRecipient);
 
@@ -106,17 +106,8 @@
     </div>
 
     <div class="jumbotron">
-      <p>This is an Alpha: don't be surprised if another version is deployed and
-        launched "more formally" later, and diverts attention from the Alpha.
-        Alpha starts at block 389088 and ends at block 389097, unless someone
-        submits more block headers to it.  You are encouraged to become familiar
-        by <a href="http://rawgit.com/ethereum/btcrelay/master/examples/relayContractStatus.html">
-        using the Morden public testnet version</a> first (which is also being
-        continuously supplied with Bitcoin mainnet block headers).
-      </p>
-      <h2>ALPHA <a href="https://github.com/ethereum/btcrelay">Ethereum Bitcoin Relay</a>
-         ALPHA</h3>
-      <h3>ALPHA BTC Relay: <strong id="relayAddr"></strong></h3>
+      <h2>BETA <a href="https://github.com/ethereum/btcrelay">Ethereum Bitcoin Relay</a></h2>
+      <h3>BTC Relay: <strong id="relayAddr"></strong></h3>
       <h3><a href="./BitcoinRelayABI.js">ABI</a></h2>
       <h3>Latest Block Hash: <strong id="latestBlockHash"></strong></h3>
       <div>
@@ -163,6 +154,18 @@ serpent compile btcBulkStoreHeaders.se > compiled.evm
       </p>
       <p>
         The version of the <a href="https://github.com/ethereum/serpent/tree/51ee60857fe53c871fa916ef66fc1b4255bb9433">Serpent compiler used is commit 51ee60857fe53c871fa916ef66fc1b4255bb9433</a>
+      </p>
+    </div>
+
+    <div class="jumbotron">
+      <p>
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  THE SOFTWARE.
       </p>
     </div>
 
