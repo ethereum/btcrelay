@@ -72,7 +72,12 @@ gulp.task('scripts', function() {
     return gulp.src([
             'src/js/jquery.js',
             'src/js/plugins.js',
-            'src/js/functions.js'
+            'src/js/functions.js',
+
+            'src/js/bignumber.js',
+            'src/js/web3.min.js',
+            'src/js/btcRelayAbi.js',
+            'src/js/contractStatus.js'
         ])
         .pipe(concat('all.js'))
         .pipe(gulp.dest('tmp'))
