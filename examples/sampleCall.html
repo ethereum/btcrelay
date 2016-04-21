@@ -16,11 +16,11 @@
 
   <script type="text/javascript">
   var web3 = require('web3');
-      web3.setProvider(new web3.providers.HttpProvider('http://morden.cloudapp.net:8545'));
+      web3.setProvider(new web3.providers.HttpProvider('http://frontier-lb.ether.camp'));
   var btcproof = require('bitcoin-proof');
 
   // var gRelayAddr = web3.eth.namereg.addr('btcrelay');
-  var gRelayAddr = '0x5770345100a27b15f5b40bec86a701f888e8c601';  // Morden
+  var gRelayAddr = '0x41f274c0023f83391de4e0733c609df5a124c3d4';  // mainnet
   var gMerkleProof;
   var gBlockHashOfTx;
   var gFeeVerifyFinney;
@@ -85,8 +85,8 @@
   }
 
   $(function() {
-    // tx[1] of block 389100
-    $('#transHex').val('e19a1d5283fbd68c299169946dfd7a921b06bdde21b19ddf9f2de6972824c577');
+    // tx[1] of block 408000
+    $('#transHex').val('dd059634699e85b51af4964ab97d5e75fb7cd86b748d0ee1c537ca1850101dc7');
     $('#btn-get-tx').click(getTxInfo);
     $('#relayAddr').text(gRelayAddr);
   });
