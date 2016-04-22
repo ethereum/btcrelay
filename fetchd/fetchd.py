@@ -81,6 +81,10 @@ def main():
 
     feeRecipient = args.feeRecipient or instance.address
     logger.info('feeRecipient: %s' % feeRecipient)
+    
+    if feeRecipient != instance.address and !useWallet:
+        logger.warn('feeRecipient %s is not sender %s and contract wallet is not used' % (feeRecipient, instance.address))
+        sys.exit()
 
     # logger.info('@@@ rpc: %s' % instance.jsonrpc_url)
 
