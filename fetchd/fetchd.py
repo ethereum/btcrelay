@@ -82,7 +82,7 @@ def main():
     feeRecipient = args.feeRecipient or instance.address
     logger.info('feeRecipient: %s' % feeRecipient)
     
-    if feeRecipient != instance.address and !useWallet:
+    if feeRecipient != instance.address and not useWallet:
         logger.warn('feeRecipient %s is not sender %s and contract wallet is not used' % (feeRecipient, instance.address))
         sys.exit()
 
