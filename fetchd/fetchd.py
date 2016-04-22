@@ -31,10 +31,10 @@ pyepmLogger.setLevel(logging.INFO)
 # instance.relayContract = "0xba164d1e85526bd5e27fd15ad14b0eae91c45a93"
 # TESTNET relay: 0x142f674e911cc55c226af81ac4d6de0a671d4abf
 
-instance.walletContract = '0xdc056dc1a79f6a07b28d351ceb084852f88febbb' # Morden
-instance.ethDaily = int(1e18)  # 1 ETH
-useWallet = True
-aWalletOwner = '0xd005c515db902b1b77beb98370ba1f16b3111d7b'
+useWallet = False  # when True, need to set the following remaining values:
+instance.walletContract = ''  # address of the contract wallet
+instance.weiRefill = int(1e18)  # 1 ETH.  Amount to refill the "hot" wallet each time walletWithdraw() is called
+aWalletOwner = ''  # address of an owner of the contract wallet
 
 
 def main():
@@ -71,8 +71,13 @@ def main():
     feeVerifyTx = args.feeVTX
     logger.info('feeVTX: %s' % feeVerifyTx)
 
-    if useWallet and instance.address != aWalletOwner:
-        logger.info('sender is not a wallet owner: %s' % instance.address)
+    if useWallet:
+        if instance.walletContract == '' or aWalletOwner == '':
+            logger.info('wallet contract and owner address need to both be set')
+            sys.exit()
+        if instance.address != aWalletOwner:
+            logger.info('sender is not a wallet owner: %s' % instance.address)
+            sys.exit()
 
     feeRecipient = args.feeRecipient or instance.address
     logger.info('feeRecipient: %s' % feeRecipient)
@@ -286,7 +291,7 @@ def storeHeaders(bhBytes, chunkSize, feeVerifyTx, feeRecipient):
 def walletWithdraw():
     # execute(address _to, uint _value, bytes _data)
     sig = 'execute:[address,uint256,bytes]:bytes32'
-    data = [instance.address, instance.ethDaily, '']
+    data = [instance.address, instance.weiRefill, '']
     gas = 999000
 
     # Wait for the transaction retry if failed
