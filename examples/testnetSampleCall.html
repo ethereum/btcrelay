@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Ethereum: get ether with bitcoin</title>
+  <link rel="stylesheet" href="./css/bootstrap.min.css">
+  <link rel="stylesheet" href="./css/dapp.css">
+  <script src="./js/jquery-2.1.3.min.js"></script>
+  <script src="./js/bootstrap.min.js"></script>
+
+  <script src="./js/btcRelayAbi.js"></script>
+
+  <script src="./js/bignumber.js"></script>
+  <script src="./js/web3.min.js"></script>
+
+  <script src="./js/bitcoin-proof.js"></script>
+
+  <script type="text/javascript">
+  var web3 = require('web3');
+      web3.setProvider(new web3.providers.HttpProvider('http://morden.cloudapp.net:8545'));
+  var btcproof = require('bitcoin-proof');
+
+  // var gRelayAddr = web3.eth.namereg.addr('btcrelay');
+  var gRelayAddr = '0x5770345100a27b15f5b40bec86a701f888e8c601';  // Morden
+  var gMerkleProof;
+  var gBlockHashOfTx;
+  var gFeeVerifyFinney;
+
+  var RelayContractClass = web3.eth.contract(btcRelayAbi);  // see ./js/btcRelayAbi.js
+  var gRelayContract = RelayContractClass.at(gRelayAddr);
+
+
+  // shows how to use web3 to make an eth_call to the relay contract
+  // verifyTx returns 1 (success) or 0 (verify failed)
+  function callVerifyTx(txBytes, txIndex, merkleSibling, txBlockHash) {
+    // gFeeVerifyFinney is transferred!  coinbase must have it or verifyTx fails
+    var feeWei = web3.toWei(gFeeVerifyFinney, 'finney');
+    var objParam = { from: web3.eth.coinbase, value: feeWei, gas: 3000000 };
+    var res = gRelayContract.verifyTx.call(txBytes, txIndex, merkleSibling, txBlockHash, objParam);
+
+    document.getElementById('result').innerText = res.toString(16);
+  }
+
+  function callContract() {
+    var txBytes = '0x' + $('#txHexText').val();
+    // console.log('txBytes: ' + txBytes)
+    var txBlockHash = '0x' + gBlockHashOfTx;
+
+    // web3.js wants 0x prepended
+    var merkleSibling = gMerkleProof.sibling.map(function(sib) {
+      return '0x' + sib;
+    });
+
+    callVerifyTx(txBytes, gMerkleProof.txIndex, merkleSibling, txBlockHash);
+  }
+
+  // includes sample of using the bitcoin-proof module
+  function getTxInfo() {
+    var txid = $('#transHex').val();
+    var urlJsonTx = "https://btc.blockr.io/api/v1/tx/raw/" + txid;
+    $.getJSON(urlJsonTx, function(data) {
+        $('#txHexText').val(data.data.tx.hex);
+
+        var blockNum = data.data.tx.blockhash;
+        var blockInfoUrl = "http://btc.blockr.io/api/v1/block/raw/"+blockNum;
+        $.getJSON(blockInfoUrl, function(res) {
+            gBlockHashOfTx = res.data.hash;
+            $('#txBlockHash').text(gBlockHashOfTx)
+
+            var txIndex;
+            for (var key in res.data.tx) {
+              if (res.data.tx[key] == txid) {
+                txIndex = key;
+                break;
+              }
+            }
+
+            gMerkleProof = btcproof.getProof(res.data.tx, txIndex);
+            console.log('merkle proof: ', gMerkleProof)
+            $('#mProof').val(JSON.stringify(gMerkleProof));
+
+            gFeeVerifyFinney = web3.fromWei(gRelayContract.getFeeAmount.call('0x'+gBlockHashOfTx), 'finney');
+            $('#feeVerifyTx').text(gFeeVerifyFinney);
+        })
+    })
+  }
+
+  $(function() {
+    // tx[1] of block 389100
+    $('#transHex').val('e19a1d5283fbd68c299169946dfd7a921b06bdde21b19ddf9f2de6972824c577');
+    $('#btn-get-tx').click(getTxInfo);
+    $('#relayAddr').text(gRelayAddr);
+  });
+
+  </script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="logo">
+      <img src="./images/ethereum-logo-small.png"/>
+    </div>
+
+    <p class="lead">BTC Relay at <span id="relayAddr"></span></p>
+
+    <p>This is a sample of calling the verifyTx method on the BTC Relay contract
+    </p>
+
+    <h2>1.</h2>
+    <div class="row">
+      <form class="form">
+        <div class="form-group">
+          <label for="transHex">Bitcoin Transaction Hash</label>
+          <input type="text" class="form-control" id="transHex" size="64" maxlength="64"></input>
+        </div>
+        <button type="button" class="btn btn-default" id="btn-get-tx">Lookup</button>
+      </form>
+    </div>
+
+    <h2>2.</h2>
+    <div class="row">
+      <form>
+        <div class="form-group">
+          <label for="txHexText">Raw Transaction</label>
+          <textarea readonly class="form-control" name="textarea" id="txHexText" rows="6" cols="50"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="mProof">Merkle Proof</label>
+          <textarea readonly class="form-control" name="textarea" id="mProof" rows="6" cols="50"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="col-md-1 control-label">Block Hash</label>
+          <p class="form-control-static" id="txBlockHash">0</p>
+        </div>
+
+        <div class="form-group">
+          <label class="col-md-2 control-label">Verification fee milli-ether</label>
+          <p class="form-control-static" id="feeVerifyTx">?</p>
+        </div>
+        <button type="button" class="btn btn-default" onclick="callContract();">Call verifyTx</button>
+      </form>
+    </div>
+
+    <div class="row">
+      <div>BTC Relay verifyTx returned: <span id="result"></span></div>
+    </div>
+
+    <!-- <div class="footer-logo">
+      <img src="./images/ETH_DEV_LOGO_LARGE.svg"/>
+    </div> -->
+  </div>
+</body>
+</html>
