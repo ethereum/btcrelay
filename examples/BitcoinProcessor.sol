@@ -10,10 +10,13 @@ THE SOFTWARE.
 See the LICENSE file in https://github.com/ethereum/btcrelay for further details.
 
 Example contract that can process Bitcoin transactions relayed to it via
-BTC Relay.
+BTC Relay.  This stores the Bitcoin transaction hash and the Ethereum block
+number (so people running the same example with the same Bitcoin transaction
+can get an indication that the storage was indeed updated).
 */
 contract BitcoinProcessor {
     uint256 public lastTxHash;
+    uint256 public ethBlock;
 
     address private _trustedBTCRelay;
 
@@ -32,6 +35,7 @@ contract BitcoinProcessor {
         // only allow trustedBTCRelay, otherwise anyone can provide a fake txn
         if (msg.sender == _trustedBTCRelay) {
             log1("processTransaction txHash, ", bytes32(txHash));
+            ethBlock = block.number;
             lastTxHash = txHash;
             // parse & do whatever with txn
             // For example, you should probably check if txHash has already
