@@ -1,7 +1,17 @@
 /*
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+See the LICENSE file in https://github.com/ethereum/btcrelay for further details.
+
 Example contract that can process Bitcoin transactions relayed to it via
-BTCRelay.
- */
+BTC Relay.
+*/
 contract BitcoinProcessor {
     uint256 public lastTxHash;
 
@@ -24,6 +34,8 @@ contract BitcoinProcessor {
             log1("processTransaction txHash, ", bytes32(txHash));
             lastTxHash = txHash;
             // parse & do whatever with txn
+            // For example, you should probably check if txHash has already
+            // been processed, to prevent replay attacks.
             return 1;
         }
 
