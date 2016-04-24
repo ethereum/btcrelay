@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Ethereum: get ether with bitcoin</title>
+  <title>BTC Relay relayTx sample</title>
   <link rel="stylesheet" href="./css/bootstrap.min.css">
   <link rel="stylesheet" href="./css/dapp.css">
   <script src="./js/jquery-2.1.3.min.js"></script>
@@ -17,15 +17,17 @@
   <script type="text/javascript">
   var web3 = require('web3');
       web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
+      // web3.eth.coinbase should be unlocked and rpccorsdomain should be * for this sample
+
   var btcproof = require('bitcoin-proof');
 
-  // var gRelayAddr = web3.eth.namereg.addr('btcrelay');
-
   var gRelayAddr = '0x5770345100a27b15f5b40bec86a701f888e8c601';  // testnet Morden
+
+  // source code of processor contract is BitcoinProcessor.sol
   var gProcessorAddr = '0x59c9fb53d658b15a7dded65c693703baf58cf63c'; // testnet Morden
+
   var gMerkleProof;
   var gBlockHashOfTx;
-  var gRawTx;
 
 
   function doRelayTx(txBytes, txIndex, merkleSibling, txBlockHash) {
@@ -59,8 +61,8 @@
     var txid = $('#transHex').val();
     var urlJsonTx = "https://btc.blockr.io/api/v1/tx/raw/" + txid;
     $.getJSON(urlJsonTx, function(data) {
-        gRawTx = data.data.tx.hex;
-        $('#txHexText').val(gRawTx);
+        var rawTx = data.data.tx.hex;
+        $('#txHexText').val(rawTx);
 
         var blockNum = data.data.tx.blockhash;
         var blockInfoUrl = "//btc.blockr.io/api/v1/block/raw/"+blockNum;
