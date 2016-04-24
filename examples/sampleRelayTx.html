@@ -16,15 +16,15 @@
 
   <script type="text/javascript">
   var web3 = require('web3');
-      web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
+      web3.setProvider(new web3.providers.HttpProvider('http://morden.cloudapp.net:8545'));
   var btcproof = require('bitcoin-proof');
 
   // var gRelayAddr = web3.eth.namereg.addr('btcrelay');
   //
   // THIS SAMPLE IS NOT UPDATED
   //
-  var gRelayAddr = '0xf8702bd4ce8c7617bf8400a11ff153c7a8a018fe';  // ConsenSys testnet
-  var gProcessorAddr = '0x6782deb2308b7c7444e4ac0de04f2bf677264663'; // ConsenSys testnet
+  var gRelayAddr = '0x5770345100a27b15f5b40bec86a701f888e8c601';  // testnet Morden
+  var gProcessorAddr = '0x3e558713a1a875f91dd864d1db6c2ab796f98aa1'; // testnet Morden
   var gMerkleProof;
   var gBlockHashOfTx;
   var gRawTx;
@@ -90,10 +90,8 @@
   }
 
   $(function() {
-    // tx[1] of block 360276
-    // var sampleTx = 'be44a9201e8016b1772e7331f3c3c8a4820060307df4603033dc5350a01ac279';
-    var sampleTx = 'a0abd241bb5f6c068bbce83c4b96355694556dba9b85dba693cfbf197379fe90';
-    $('#transHex').val(sampleTx);
+    // tx[1] of block 408000
+    $('#transHex').val('dd059634699e85b51af4964ab97d5e75fb7cd86b748d0ee1c537ca1850101dc7');
     $('#btn-get-tx').click(getTxInfo);
     $('#relayAddr').text(gRelayAddr);
   });
