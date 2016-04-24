@@ -16,7 +16,7 @@
 
   <script type="text/javascript">
   var web3 = require('web3');
-      web3.setProvider(new web3.providers.HttpProvider('http://morden.cloudapp.net:8545'));
+      web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
   var btcproof = require('bitcoin-proof');
 
   // var gRelayAddr = web3.eth.namereg.addr('btcrelay');
@@ -41,7 +41,7 @@
     // document.getElementById('result').innerText = 'btcrelay verifyTx returned: ' + res.toString(10);
     // return;
 
-    var ethTx = contract.relayTx.sendTransaction(txHex, txHash, txIndex, merkleSibling, txBlockHash, gProcessorAddr, objParam);
+    var ethTx = contract.relayTx.sendTransaction('0x'+gRawTx, txIndex, merkleSibling, txBlockHash, gProcessorAddr, objParam);
     document.getElementById('result').innerText = 'Ethereum tx hash: ' + ethTx;
     // console.log('@@@ relayTx receipt: ', receipt)
     // when the tx is mined, the storage of gProcessorAddr at key0 will have txHash
