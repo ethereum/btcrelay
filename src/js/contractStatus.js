@@ -3,7 +3,7 @@ web3.setProvider(new web3.providers.HttpProvider('http://frontier-lb.ether.camp'
 
 var heightPerRelay;
 
-$(function() {
+function contractStatus() {
   /*
     do NOT forget to update ABI files when needed
    */
@@ -42,7 +42,7 @@ $(function() {
 
 
   //setTimeout(checkHeights, 1000);
-});
+}
 
 function updateBCI() {
   // 2 calls needed since https://blockchain.info/latestblock is missing CORS
