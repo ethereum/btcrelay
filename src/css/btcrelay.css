@@ -146,7 +146,7 @@ only screen and (min-device-pixel-ratio: 1.5) {
 
 @media only screen and (min-width: 992px) {
 	#content {
-		margin-top: 50px;
+		margin-top: 20px;
 	}
 }
 
@@ -207,6 +207,26 @@ only screen and (min-device-pixel-ratio: 1.5) {
 	margin-bottom: 0;
 }
 
+/* Nav
+---------------------------------------------------------------------------- */
+
+.nav>li>a {
+	margin-top: 25px;
+	text-transform: uppercase;
+	font-weight: 400;
+	color: #444;
+}
+
+.nav-pills>li.active>a, .nav-pills>li.active>a:focus, .nav-pills>li.active>a:hover {
+	color: #444;
+	font-weight: 800;
+	background-color: transparent;
+}
+
+.nav>li>a:hover {
+	font-weight: 800;
+	color: #069;
+}
 
 /* Headings
 ---------------------------------------------------------------------------- */
@@ -219,7 +239,7 @@ only screen and (min-device-pixel-ratio: 1.5) {
 	color: #444;
 	letter-spacing: -1px;
 	word-spacing: 5px;
-	margin-bottom: 0;
+	margin-bottom: 30px;
 	max-width: 90%;
 	font-family: 'Lato', Helvetica, Arial, sans-serif;
 }
