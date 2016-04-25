@@ -74,10 +74,13 @@ gulp.task('scripts', function() {
             'src/js/plugins.js',
             'src/js/functions.js',
 
+            'src/js/bitcoin-proof.js',
             'src/js/bignumber.js',
             'src/js/web3.min.js',
             'src/js/btcRelayAbi.js',
-            'src/js/contractStatus.js'
+
+            'src/js/contractStatus.js',
+            'src/js/testnetSampleCall.js'
         ])
         .pipe(concat('all.js'))
         .pipe(gulp.dest('tmp'))
