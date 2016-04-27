@@ -215,7 +215,7 @@ def fetchHeaders(chunkStartNum, chunkSize, numChunk, feeVerifyTx, feeRecipient, 
         # CHUNK_RANGE is used when chunkSize>1 so that we ask for ETH if chunkStartNum ends in
         # ????00, ????01, ????02 to ????04
         if ((chunkSize == 1 and chunkStartNum % 100 == 0) or
-            (chunkStartNum % 100 in CHUNK_RANGE)) and useWallet:
+            (chunkSize == CHUNK_RANGE and chunkStartNum % 100 in CHUNK_RANGE)) and useWallet:
             myWei = instance.balance_at(instance.address)
             myBalance = myWei / 1e18
             logger.info('myBalance ETH: %s' % myBalance)
