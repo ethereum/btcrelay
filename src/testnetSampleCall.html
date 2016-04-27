@@ -83,13 +83,14 @@
 
 			<div class="content-wrap">
 
-				<div id="section-about" class="container-fluid page-section clearfix">
+				<div class="container-fluid page-section clearfix">
 
 					<!-- <div class="line topmargin-lg bottommargin-lg"></div> -->
 
           <p class="lead">BTC Relay Morden testnet at <span id="relayAddr"></span></p>
 
-          <p>This is a sample of calling the verifyTx method on the BTC Relay contract
+          <p>This is a sample of calling the
+            <a href="https://github.com/ethereum/btcrelay#verifytxrawtransaction-transactionindex-merklesibling-blockhash">verifyTx </a>method on the BTC Relay contract
           </p>
 
           <h2>1.</h2>
@@ -135,6 +136,17 @@
 
 				</div>
 
+        <div class="line"></div>
+
+				<div class="container-fluid page-section">
+          <div>View page source to see the main steps:</div>
+          <ul>
+            <li>Getting a raw transaction from a hash</li>
+            <li>Using <a href="https://www.npmjs.com/package/bitcoin-proof">bitcoin-proof </a>to get a Merkle proof</li>
+            <li>Calling <a href="https://github.com/ethereum/btcrelay#verifytxrawtransaction-transactionindex-merklesibling-blockhash">verifyTx</a></li>
+          </ul>
+        </div>
+
 			</div>
 
 		</section><!-- #content end -->
@@ -143,10 +155,7 @@
 		<footer id="footer" class="dark">
 			<div id="copyrights" style="background-color:#111;">
 				<div class="container-fluid">
-					BTC Relay is licensed under the <a href="https://github.com/ethereum/btcrelay/blob/master/LICENSE" target="_blank">MIT License</a>. &nbsp; Check it out on <a href="https://github.com/ethereum/btcrelay" target="_blank">Github</a>.
-
-					<div class="pull-right">info [at] btcrelay.org</div>
-
+					BTC Relay is licensed under the <a href="https://github.com/ethereum/btcrelay/blob/master/LICENSE" target="_blank">MIT License</a>
 				</div>
 			</div>
 		</footer><!-- #footer end -->
