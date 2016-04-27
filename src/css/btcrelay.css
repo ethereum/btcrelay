@@ -35,7 +35,7 @@ h2 {
 	right: 0;
 	width: 25%;
 	height: 100%;
-	background-image: url(../images/small_steps.png); 
+	background-image: url(../images/small_steps.png);
 }
 
 /* retina */
@@ -45,7 +45,7 @@ only screen and (-moz-min-device-pixel-ratio: 1.5),
 only screen and (-o-min-device-pixel-ratio: 3/2),
 only screen and (min-device-pixel-ratio: 1.5) {
 	.side-cover-wrapper {
-		background-image: url(../images/pattern_relay@2x.png); 
+		background-image: url(../images/pattern_relay@2x.png);
 		background-size: 100px 100px;
 	}
 }*/
@@ -101,7 +101,20 @@ only screen and (min-device-pixel-ratio: 1.5) {
 	background: transparent url(../images/logo@2x.png) no-repeat center center;
 	height: 88px;
 	width: 300px;
+	display: inline-block;
 }
+
+.header-logos .ethereum {
+	float: right;
+	margin-top: 20px;
+	background-image: url(../images/ethereum-logo.png);
+	background-size: 150px 150px;
+	background-repeat: no-repeat;
+	height: 150px;
+	width: 150px;
+	display: inline-block;
+}
+
 
 /* retina */
 @media only screen and (-Webkit-min-device-pixel-ratio: 1.5),
@@ -569,4 +582,3 @@ textarea.border-form-control {
 	color: rgba(255,255,255,0.6);
 	font-size: 14px;
 }
-
