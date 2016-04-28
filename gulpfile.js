@@ -127,7 +127,7 @@ gulp.task('scripts', function() {
             'src/js/jquery.js',
             'src/js/plugins.js',
             'src/js/functions.js',
-
+            'src/js/extra.js',
             'src/js/bitcoin-proof.js',
             'src/js/bignumber.js',
             'src/js/web3.min.js',
@@ -145,7 +145,10 @@ gulp.task('scripts', function() {
 // Watch Files For Changes
 gulp.task('watch', function() {
     gulp.watch('src/images/*', ['copy']);
-    gulp.watch('src/*.html', ['minifyHTML']);
+    gulp.watch('src/index.hbs', ['handlebars-index']);
+    gulp.watch('src/developers.hbs', ['handlebars-dev']);
+    gulp.watch('src/relayer.hbs', ['handlebars-relayer']);
+    gulp.watch('src/faq.hbs', ['handlebars-faq']);
     gulp.watch('src/css/*.css', ['css']);
     gulp.watch('src/js/*.js', ['scripts']);
 });
