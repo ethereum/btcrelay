@@ -159,7 +159,7 @@ Bitcoin blockchain, Relayers can call `storeBlockWithFee`.  The Relayer will be 
 in the block, or the header is retrieved via `getBlockHeader`, the Relayer will be
  rewarded with `getFeeAmount()`.
 
-To avoid a relayer R1 from setting excessing fees, it is possible for a relayer R2
+To avoid a relayer R1 from setting excessive fees, it is possible for a relayer R2
 to `changeFeeRecipient()`.  R2 must specify a fee lower than what R1 specified, and
 pay `getChangeRecipientFee()` to R1, but now R2 will be the `getFeeRecipient()` for the block
 and will earn all future `getFeeAmount()`.
