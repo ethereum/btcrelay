@@ -16,15 +16,15 @@ h2 {
 
 #wrapper {
 	margin: 0;
-	width: 75%;
+	width: 90%;
 	-webkit-box-shadow: none;
 	box-shadow: none;
 	opacity: 1 !important;
 	background-color: #f9f9f9;
 }
 
-.device-md #wrapper { width: 80%; }
-.device-sm #wrapper { width: 90%; }
+.device-md #wrapper { width: 95%; }
+.device-sm #wrapper { width: 100%; }
 .device-xs #wrapper,
 .device-xxs #wrapper { width: 100%; }
 
@@ -33,7 +33,7 @@ h2 {
 	top: 0;
 	left: auto;
 	right: 0;
-	width: 25%;
+	width: 10%;
 	height: 100%;
 	background-image: url(../images/small_steps.png);
 }
@@ -50,8 +50,8 @@ only screen and (min-device-pixel-ratio: 1.5) {
 	}
 }*/
 
-.device-md .side-cover-wrapper { width: 20%; }
-.device-sm .side-cover-wrapper { width: 10%; }
+.device-md .side-cover-wrapper { width: 5%; }
+.device-sm .side-cover-wrapper { width: 0; }
 .device-xs .side-cover-wrapper,
 .device-xxs .side-cover-wrapper { width: 0; }
 
@@ -74,10 +74,6 @@ only screen and (min-device-pixel-ratio: 1.5) {
 .device-xxs .container-fluid {
 	padding-left: 40px;
 	padding-right: 40px;
-}
-
-.max80 {
-	max-width: 80%;
 }
 
 .fa-rotate-135 { /* icon rotate */
@@ -253,7 +249,7 @@ only screen and (min-device-pixel-ratio: 1.5) {
 	letter-spacing: -1px;
 	word-spacing: 5px;
 	margin-bottom: 30px;
-	max-width: 90%;
+	max-width: 100%;
 	font-family: 'Lato', Helvetica, Arial, sans-serif;
 }
 
@@ -264,13 +260,13 @@ only screen and (min-device-pixel-ratio: 1.5) {
 	font-size: 16px;
 	line-height: 2;
 	color: #444;
-	max-width: 90%;
+	max-width: 100%;
 	margin-top: 20px;
 }
 
 .hero-headline .link-center {
 	text-align: center;
-	max-width: 80%;
+	max-width: 100%;
 	margin-top: 20px;
 	margin-bottom: 15px;
 }
@@ -287,7 +283,7 @@ only screen and (min-device-pixel-ratio: 1.5) {
 	display: flex;
   justify-content: center;
   flex-direction: column;
-  max-width: 80%;
+  max-width: 100%;
   margin-top: 10px;
 }
 
@@ -537,7 +533,7 @@ textarea.border-form-control {
 	display: flex;
   justify-content: center;
   flex-direction: row;
-  max-width: 80%;
+  max-width: 90%;
 }
 
 .sponsor-logos .ethereum {
@@ -555,7 +551,7 @@ textarea.border-form-control {
 	height: 118px;
 	width: 145px;
 	margin-top: 4px;
-	margin-left: 80%;
+	margin-left: 90%;
 }
 
 @media (max-width: 450px) {
