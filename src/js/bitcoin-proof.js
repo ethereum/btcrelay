@@ -15742,117 +15742,136 @@ module.exports = function(arr, obj){
 };
 },{}],"bitcoin-proof":[function(require,module,exports){
 (function (Buffer){
-const crypto = require('crypto');
+var createHash = require('crypto').createHash;
 
-var sha256 = exports.sha256 = function(data) {
-  return new Buffer(crypto.createHash('sha256').update(data).digest('binary'), 'binary');
-};
+/**
+ * @param {Buffer} buf1
+ * @return {Buffer}
+ */
+function sha256x2 (buf1, buf2) {
+  var buf = createHash('sha256').update(buf1).update(buf2).digest();
+  return createHash('sha256').update(buf).digest();
+}
 
-var twoSha256 = exports.twoSha256 = function(data) {
-  return sha256(sha256(data));
-};
+/**
+ * Reverse CURRENT buffer
+ * @param {Buffer} buf
+ * @return {Buffer}
+ */
+function reverse (buf) {
+  return Array.prototype.reverse.call(buf);
+}
 
-var bufReverse = exports.bufReverse = function(buf) {
-  return new Buffer(Array.prototype.slice.call(buf).reverse());
-};
-
-var getProof = exports.getProof = function(txs, index) {
-  // if (txs.length == 0) {
-  //   return [util.NULL_HASH.slice(0)];
-  // }
-
-  // adapted from BitcoinJ and bitcore
-  var tree = txs.map(function(txStr) {
-    return new Buffer(txStr, 'hex');
-  });
-
-  var j = 0;
-
-  if (index >= 0) {
-    var lookFor = txs[index].toString('hex');
-    var proof = {
-      txHash: txs[index],
-      txIndex: index,
-      sibling: []
-    };
-    var foundSibling = false;
+/**
+ * @param {Buffer} buf1
+ * @param {Buffer} buf2
+ * @return {Buffer}
+ */
+function isEqual (buf1, buf2) {
+  if (buf1.length !== buf2.length) {
+    return false;
   }
 
-  // Now step through each level ...
-  for (var size = txs.length; size > 1; size = Math.floor((size + 1) / 2)) {
-    // and for each leaf on that level ..
-    for (var i = 0; i < size; i += 2) {
-      var i2 = Math.min(i + 1, size - 1);
-      var a = tree[j + i];
-      var b = tree[j + i2];
-
-      if (index >= 0) {
-        var aHex = a.toString('hex'),
-          bHex = b.toString('hex');
-// console.log('lf: ', lookFor, aHex, bHex)
-        if (lookFor === aHex) {
-          proof.sibling.push(bHex);
-          foundSibling = true;
-// console.log('pA: ', proof)
-        } else if (lookFor === bHex) {
-          proof.sibling.push(aHex);
-          foundSibling = true;
-// console.log('pB: ', proof)
-        }
-      }
-
-      var dblSha = twoSha256(Buffer.concat([bufReverse(a), bufReverse(b)]));
-      dblSha = bufReverse(dblSha);
-
-      if (foundSibling) {
-        lookFor = dblSha.toString('hex');
-        // console.log('@@@@@@@@ ', bufReverse(a), bufReverse(b), lookFor)
-
-        foundSibling = false;
-      }
-
-      tree.push(dblSha);
+  for (var i = 0; i < buf1.length; ++i) {
+    if (buf1[i] !== buf2[i]) {
+      return false;
     }
-    j += size;
   }
 
-  if (index >= 0) {
-    // console.log('@@@@@@@@@proof: ', proof)
-    return proof;
+  return true;
+}
+
+/**
+ * @typedef {Object} ProofObject
+ * @param {string} txId
+ * @param {number} txIndex
+ * @param {string[]} sibling
+ */
+
+/**
+ * @param {string[]} txIds
+ * @param {number} txIndex
+ * @return {ProofObject}
+ */
+exports.getProof = function (txIds, txIndex) {
+  var proof = {
+    txId: txIds[txIndex],
+    txIndex: txIndex,
+    sibling: []
+  };
+
+  var tree = new Array(txIds.length);
+  for (var i = 0; i < tree.length; ++i) {
+    tree[i] = reverse(new Buffer(txIds[i], 'hex'));
   }
+  var target = tree[txIndex];
 
-  return tree[tree.length - 1].toString('hex');
-};
+  while (tree.length !== 1) {
+    var newTree = new Array(~~((tree.length + 1) / 2));
+    for (var j = 0; j < tree.length; j += 2) {
+      var hash1 = tree[j];
+      var hash2 = tree[Math.min(j + 1, tree.length - 1)];
 
-exports.getMerkleRoot = function(txs) {
-  return getProof(txs, null);
-};
+      newTree[j / 2] = sha256x2(hash1, hash2);
 
-exports.getTxMerkle = function(tx, proofObj) {
-  var resultHash = new Buffer(tx, 'hex'),
-    left,
-    right,
-    txIndex = proofObj.txIndex;
-
-  proofObj.sibling.forEach(function(sibling) {
-    var proofHex = new Buffer(sibling, 'hex'),
-      sideOfSibling = txIndex % 2;  // 0 means sibling is on the right; 1 means left
-
-    if (sideOfSibling === 1) {
-      left = proofHex;
-      right = resultHash;
-    } else if (sideOfSibling === 0) {
-      left = resultHash;
-      right = proofHex;
+      if (isEqual(target, hash1)) {
+        proof.sibling.push(reverse(hash2).toString('hex'));
+        target = newTree[j / 2];
+      } else if (isEqual(target, hash2)) {
+        proof.sibling.push(reverse(hash1).toString('hex'));
+        target = newTree[j / 2];
+      }
     }
 
-    resultHash = twoSha256(Buffer.concat([bufReverse(left), bufReverse(right)]));
-    resultHash = bufReverse(resultHash);
+    tree = newTree;
+  }
 
-    txIndex = Math.floor(txIndex / 2);
-  });
+  return proof;
+};
 
-  return resultHash.toString('hex');
+/**
+ * @param {ProofObject} proofObj
+ * @return {string}
+ */
+exports.getTxMerkle = function (proofObj) {
+  var target = reverse(new Buffer(proofObj.txId, 'hex'));
+  var txIndex = proofObj.txIndex;
+  var sibling = proofObj.sibling;
+
+  for (var i = 0; i < proofObj.sibling.length; ++i, txIndex = ~~(txIndex / 2)) {
+    if (txIndex % 2 === 1) {
+      target = sha256x2(reverse(new Buffer(sibling[i], 'hex')), target);
+    } else {
+      target = sha256x2(target, reverse(new Buffer(sibling[i], 'hex')));
+    }
+  }
+
+  return reverse(target).toString('hex');
+};
+
+/**
+ * @param {string[]} txIds
+ * @return {string}
+ */
+exports.getMerkleRoot = function (txIds) {
+  var tree = new Array(txIds.length);
+  for (var i = 0; i < tree.length; ++i) {
+    tree[i] = reverse(new Buffer(txIds[i], 'hex'));
+  }
+
+  while (tree.length !== 1) {
+    var newTree = new Array(~~((tree.length + 1) / 2));
+    for (var j = 0; j < tree.length; j += 2) {
+      var hash1 = tree[j];
+      var hash2 = tree[Math.min(j + 1, tree.length - 1)];
+
+      newTree[j / 2] = sha256x2(hash1, hash2);
+    }
+
+    tree = newTree;
+  }
+
+  return reverse(tree[0]).toString('hex');
 };
 
 }).call(this,require("buffer").Buffer)
