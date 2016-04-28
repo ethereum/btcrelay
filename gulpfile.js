@@ -10,6 +10,8 @@ var sourcemaps = require('gulp-sourcemaps');
 var htmlmin = require('gulp-htmlmin');
 var autoprefixer = require('gulp-autoprefixer');
 var watch = require('gulp-watch');
+var hb = require('gulp-hb');
+var layouts = require('handlebars-layouts');
 var del = require('del');
 var connect = require('gulp-connect');
 var notify = require('gulp-notify');
@@ -17,6 +19,58 @@ var notify = require('gulp-notify');
 gulp.task('clean', function(cb) {
   del(['dist'], cb);
   del(['tmp'], cb);
+});
+
+// Compile home template
+gulp.task('handlebars-index', function () {
+    return gulp.src('./src/index.hbs')
+        .pipe(hb({
+            helpers: [
+                './node_modules/handlebars-layouts/index.js'
+            ],
+            partials: './src/partials/layout.hbs'
+        }))
+        .pipe(rename('index.html'))
+        .pipe(gulp.dest('./dist'));
+});
+
+// Compile developers template
+gulp.task('handlebars-dev', function () {
+    return gulp.src('./src/developers.hbs')
+        .pipe(hb({
+            helpers: [
+                './node_modules/handlebars-layouts/index.js'
+            ],
+            partials: './src/partials/layout.hbs'
+        }))
+        .pipe(rename('developers.html'))
+        .pipe(gulp.dest('./dist'));
+});
+
+// Compile relayer template
+gulp.task('handlebars-relayer', function () {
+    return gulp.src('./src/relayer.hbs')
+        .pipe(hb({
+            helpers: [
+                './node_modules/handlebars-layouts/index.js'
+            ],
+            partials: './src/partials/layout.hbs'
+        }))
+        .pipe(rename('relayer.html'))
+        .pipe(gulp.dest('./dist'));
+});
+
+// Compile faq template
+gulp.task('handlebars-faq', function () {
+    return gulp.src('./src/faq.hbs')
+        .pipe(hb({
+            helpers: [
+                './node_modules/handlebars-layouts/index.js'
+            ],
+            partials: './src/partials/layout.hbs'
+        }))
+        .pipe(rename('faq.html'))
+        .pipe(gulp.dest('./dist'));
 });
 
 // Copy all static assets
@@ -77,7 +131,9 @@ gulp.task('scripts', function() {
             'src/js/bitcoin-proof.js',
             'src/js/bignumber.js',
             'src/js/web3.min.js',
-            'src/js/btcRelayAbi.js'
+            'src/js/btcRelayAbi.js',
+            'src/js/contractStatus.js',
+            'src/js/testnetSampleCall.js'
         ])
         .pipe(concat('all.js'))
         .pipe(gulp.dest('tmp'))
@@ -104,5 +160,6 @@ gulp.task('connect', function() {
 });
 
 // Default Task
-gulp.task('default', ['clean', 'copy', 'minifyHTML', 'css', 'scripts',
+gulp.task('default', ['clean', 'handlebars-index', 'handlebars-dev',
+    'handlebars-relayer', 'handlebars-faq', 'copy', 'minifyHTML', 'css', 'scripts',
     'connect', 'watch']);
