@@ -578,3 +578,22 @@ textarea.border-form-control {
 	color: rgba(255,255,255,0.6);
 	font-size: 14px;
 }
+
+#nettabs li.tabinfo a {
+	font-weight: 700;
+  font-size: 20px;
+}
+
+#nettabs li.tabinfo.active a {
+	color: #069;
+}
+
+.tab-header {
+	margin-top: 20px;
+	color: #069;
+}
+
+.red-tab-header {
+	margin-top: 20px;
+	color: #c06;
+}

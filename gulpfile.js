@@ -28,9 +28,10 @@ gulp.task('handlebars-index', function () {
             helpers: [
                 './node_modules/handlebars-layouts/index.js'
             ],
-            partials: './src/partials/layout.hbs'
+            partials: './src/partials/*.hbs'
         }))
-        .pipe(rename('index.html'))
+        .pipe(gulp.dest('./tmp'))
+        .pipe(rename('./index.html'))
         .pipe(gulp.dest('./dist'));
 });
 
@@ -41,8 +42,9 @@ gulp.task('handlebars-dev', function () {
             helpers: [
                 './node_modules/handlebars-layouts/index.js'
             ],
-            partials: './src/partials/layout.hbs'
+            partials: './src/partials/*.hbs'
         }))
+        .pipe(gulp.dest('./tmp'))
         .pipe(rename('developers.html'))
         .pipe(gulp.dest('./dist'));
 });
@@ -54,8 +56,9 @@ gulp.task('handlebars-relayer', function () {
             helpers: [
                 './node_modules/handlebars-layouts/index.js'
             ],
-            partials: './src/partials/layout.hbs'
+            partials: './src/partials/*.hbs'
         }))
+        .pipe(gulp.dest('./tmp'))
         .pipe(rename('relayer.html'))
         .pipe(gulp.dest('./dist'));
 });
@@ -67,8 +70,9 @@ gulp.task('handlebars-faq', function () {
             helpers: [
                 './node_modules/handlebars-layouts/index.js'
             ],
-            partials: './src/partials/layout.hbs'
+            partials: './src/partials/*.hbs'
         }))
+        .pipe(gulp.dest('./tmp'))
         .pipe(rename('faq.html'))
         .pipe(gulp.dest('./dist'));
 });
@@ -133,7 +137,8 @@ gulp.task('scripts', function() {
             'src/js/web3.min.js',
             'src/js/btcRelayAbi.js',
             'src/js/contractStatus.js',
-            'src/js/testnetSampleCall.js'
+            'src/js/testnetSampleCall.js',
+            'src/js/status-main.js'
         ])
         .pipe(concat('all.js'))
         .pipe(gulp.dest('tmp'))

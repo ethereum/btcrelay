@@ -24,37 +24,20 @@
                             </div>
                         </div>
 
-                        <ul class="nav nav-tabs nav-justified" id="nettabs"> <li role="presentation" class="active"><a href="#mainnet">Mainnet</a></li> <li role="presentation"><a href="#testnet">Testnet</a></li></ul>
+                        <ul class="nav nav-tabs nav-justified" id="nettabs"> <li class="tabinfo active" role="presentation" class="active"><a href="#mainnet">Main Net</a></li> <li class="tabinfo" role="presentation"><a href="#testnet">Test Net</a></li></ul>
 
                         <div class="tab-content">
                             <div class="tab-pane active" id="mainnet">
-                                <p>mainnet.hbs</p>
+                                {{> mainnet }}
                             </div>
                             <div class="tab-pane" id="testnet">
-                                <p>testnet.hbs</p>
+                                {{> testnet }}
                             </div>
                         </div>
 
+                        <hr />
+                        <hr />
 
-                        <h3 class="link-center"><span class="magenta">BTC</span>  <i class="icon-link fa-rotate-135 make-space"></i>  <span class="blue">ETH</span></h3>
-                        <span><a href="http://rawgit.com/ethereum/btcrelay/master/examples/relayContractStatus.html" target="_blank">BTC Relay</a>
-                            allows Ethereum developers to interact with the Bitcoin blockchain and verify Bitcoin transactions. Relayers who submit blocks to support the Relay can earn Ether.</span>
-
-                        <div class="graphic-box">
-                            <div class="pre-graphic"><span>Users pay for verifications.</span></div>
-                            <div class="graphic_arrow arrow_down"></div>
-                            <div class="graphic">
-                                <a href="#launchdate" class="button button-dark magenta button-black">Verify a Bitcoin Tx</a>
-                                <a href="#launchdate" class="button button-dark blue button-black">Become a Relayer</a>
-                                <div class="graphic_arrow"></div>
-                            </div>
-                            <div class="graphic_arrow"></div>
-                            <div class="post-graphic"><span>Relayers provide them &amp; earn rewards.</span></div>
-                        </div>
-
-                        <span>BTC Relay is an <strong>Ethereum contract</strong> that stores <strong>Bitcoin blockheaders</strong>. BTC Relay uses these blockheaders to build a mini-version of the Bitcoin blockchain: a method used by Bitcoin SPV light wallets.</span>
-                        <span>BTC Relay is <strong>open-source, trustless, autonomous and decentralized</strong>.</span>
-                    </div>
 
                     <!-- Launch date -->
 
