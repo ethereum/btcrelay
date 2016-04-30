@@ -30,7 +30,7 @@
 
 
   // shows how to use web3 to make an eth_call to the relay contract
-  // verifyTx returns 1 (success) or 0 (verify failed)
+  // verifyTx returns a non-zero transaction hash (success) or 0 (verify failed)
   function callVerifyTx(txBytes, txIndex, merkleSibling, txBlockHash) {
     // gFeeVerifyFinney is transferred!  coinbase must have it or verifyTx fails
     var feeWei = web3.toWei(gFeeVerifyFinney, 'finney');
@@ -53,13 +53,18 @@
     callVerifyTx(txBytes, gMerkleProof.txIndex, merkleSibling, txBlockHash);
   }
 
-  // includes sample of using the bitcoin-proof module
+  // A transaction hash by itself has no meaning (it's just a hash), so a
+  // service (like blockr.io) needs to be used to lookup the raw transaction.
+  // This function also shows how to use the bitcoin-proof module.
   function getTxInfo() {
     var txid = $('#transHex').val();
     var urlJsonTx = "https://btc.blockr.io/api/v1/tx/raw/" + txid;
     $.getJSON(urlJsonTx, function(data) {
         $('#txHexText').val(data.data.tx.hex);
 
+        // A separate call is needed because the transaction index, the position
+        // of the transaction in the block, is needed to be able to compute the
+        // Merkle proof
         var blockNum = data.data.tx.blockhash;
         var blockInfoUrl = "http://btc.blockr.io/api/v1/block/raw/"+blockNum;
         $.getJSON(blockInfoUrl, function(res) {
@@ -74,6 +79,8 @@
               }
             }
 
+            // Proof can now be computed from the raw transaction and
+            // transaction index
             gMerkleProof = btcproof.getProof(res.data.tx, txIndex);
             console.log('merkle proof: ', gMerkleProof)
             $('#mProof').val(JSON.stringify(gMerkleProof));
@@ -149,7 +156,7 @@
     <div class="row">
       <div>View page source to see the main steps:</div>
       <ul>
-        <li>Getting a raw transaction from a hash</li>
+        <li>Getting a raw transaction and its index from a hash</li>
         <li>Using <a href="https://www.npmjs.com/package/bitcoin-proof">bitcoin-proof </a>to get a Merkle proof</li>
         <li>Calling <a href="https://github.com/ethereum/btcrelay#verifytxrawtransaction-transactionindex-merklesibling-blockhash">verifyTx</a></li>
       </ul>
