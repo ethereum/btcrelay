@@ -9,7 +9,7 @@
 1. storage of Bitcoin block headers
 1. inspection of the latest Bitcoin block header that is stored
 
-##### BTC Relay contract address and ABI:
+## BTC Relay contract address and ABI:
 
 <!--- * mainnet --->
 * [testnet Morden](http://btcrelay.surge.sh/testnetContractStatus.html)
