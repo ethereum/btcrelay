@@ -28,16 +28,17 @@
 
   var gMerkleProof;
   var gBlockHashOfTx;
+  var gFeeVerifyFinney;
 
+  var RelayContractClass = web3.eth.contract(btcRelayAbi);  // see ./js/btcRelayAbi.js
+  var gRelayContract = RelayContractClass.at(gRelayAddr);
 
   function doRelayTx(txBytes, txIndex, merkleSibling, txBlockHash) {
-    var RelayContract = web3.eth.contract(btcRelayAbi);  // see ./js/btcRelayAbi.js
-    var contract = RelayContract.at(gRelayAddr);
+    // gFeeVerifyFinney is transferred!  coinbase must have it or relayTx fails
+    var feeWei = web3.toWei(gFeeVerifyFinney, 'finney');
+    var objParam = { from: web3.eth.coinbase, value: feeWei, gas: 1900000 };
 
-    var ethFeeToPay = web3.toWei('0.2', 'ether');  // open testnetContractStatus.html to check current fee
-    var objParam = { from: web3.eth.coinbase, value: ethFeeToPay, gas: 1900000 };
-
-    var ethTx = contract.relayTx.sendTransaction(txBytes, txIndex, merkleSibling, txBlockHash, gProcessorAddr, objParam);
+    var ethTx = gRelayContract.relayTx.sendTransaction(txBytes, txIndex, merkleSibling, txBlockHash, gProcessorAddr, objParam);
     document.getElementById('result').innerText = ethTx;
     // console.log('@@@ relayTx receipt: ', receipt)
     // when the tx is mined, the storage of gProcessorAddr at key0 will have
@@ -88,6 +89,9 @@
             gMerkleProof = btcproof.getProof(res.data.tx, txIndex);
             console.log('merkle proof: ', gMerkleProof)
             $('#mProof').val(JSON.stringify(gMerkleProof));
+
+            gFeeVerifyFinney = web3.fromWei(gRelayContract.getFeeAmount.call('0x'+gBlockHashOfTx), 'finney');
+            $('#feeVerifyTx').text(gFeeVerifyFinney);
         })
     })
   }
@@ -161,6 +165,10 @@
           </div>
         </div>
         <br><br><br>
+        <div class="form-group">
+          <label class="col-md-2 control-label">Verification fee milli-ether</label>
+          <p class="form-control-static" id="feeVerifyTx">?</p>
+        </div>
         <button type="button" class="btn btn-default" onclick="callContract();">send transaction relayTx</button>
       </form>
     </div>
