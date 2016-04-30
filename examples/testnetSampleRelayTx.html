@@ -108,20 +108,26 @@
       <img src="./images/BTCRelayLogo.png"/>
     </div>
 
-    <p class="lead">BTC Relay Morden testnet at <span id="relayAddr"></span></p>
-
-    <p>This is a sample of using BTC Relay <a href="https://github.com/ethereum/btcrelay#relaytxrawtransaction-transactionindex-merklesibling-blockhash-contractaddress">relayTx</a>, which is the easiest way to
-      integrate BTC Relay.<br>A Bitcoin transaction is relayed to <a href="https://github.com/ethereum/btcrelay/blob/master/examples/BitcoinProcessor.sol">BitcoinProcessor.sol</a> that
-        has been deployed at <a href="https://morden.ether.camp/account/59c9fb53d658b15a7dded65c693703baf58cf63c">0x59c9fb53d658b15a7dded65c693703baf58cf63c</a>
-    </p>
-
     <div class="row">
       <h3>To integrate BTC Relay:</h3>
       <ul>
         <li>Create and deploy a BitcoinProcessor contract with a processTransaction
           function with the following signature:</li>
+          <i>function processTransaction(bytes txn, uint256 txHash) returns (int256)</i>
         <li>From your frontend, call BTC Relay <a href="https://github.com/ethereum/btcrelay#relaytxrawtransaction-transactionindex-merklesibling-blockhash-contractaddress">relayTx</a></li>
       </ul>
+    </div>
+
+    <div class="row">
+      <p class="lead">BTC Relay Morden testnet at <span id="relayAddr"></span></p>
+
+      <p>This is a sample of using BTC Relay <a href="https://github.com/ethereum/btcrelay#relaytxrawtransaction-transactionindex-merklesibling-blockhash-contractaddress">relayTx</a>, which is the easiest way to
+        integrate BTC Relay.<br>
+        A Bitcoin transaction is relayed to <a href="https://github.com/ethereum/btcrelay/blob/master/examples/BitcoinProcessor.sol">BitcoinProcessor.sol</a> that
+        has been deployed at <a href="https://morden.ether.camp/account/59c9fb53d658b15a7dded65c693703baf58cf63c">0x59c9fb53d658b15a7dded65c693703baf58cf63c</a><br>
+        To run this sample you need a testnet client configured like:
+        geth --testnet --unlock 0 --rpc --rpcport 8545 --rpccorsdomain=* --rpcaddr localhost<br>
+      </p>
     </div>
 
     <h2>1.</h2>
