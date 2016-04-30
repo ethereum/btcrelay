@@ -34,7 +34,7 @@
     var RelayContract = web3.eth.contract(btcRelayAbi);  // see ./js/btcRelayAbi.js
     var contract = RelayContract.at(gRelayAddr);
 
-    var ethFeeToPay = web3.toWei('0.2', 'ether');  // open relayContractStatus.html to check current fee
+    var ethFeeToPay = web3.toWei('0.2', 'ether');  // open testnetContractStatus.html to check current fee
     var objParam = { from: web3.eth.coinbase, value: ethFeeToPay, gas: 1900000 };
 
     var ethTx = contract.relayTx.sendTransaction(txBytes, txIndex, merkleSibling, txBlockHash, gProcessorAddr, objParam);

@@ -132,7 +132,7 @@ or Bitcoin network difficulty (which can be derived) as a data feed.
 
 `getLastBlockHeight` - returns the block height of the latest block, as `int256`
 
-See [BitcoinRelayAbi.js](examples/BitcoinRelayABI.js) for other APIs and [relayContractStatus.html](examples/relayContractStatus.html) for an example of calling some of them.
+See [BitcoinRelayAbi.js](examples/BitcoinRelayABI.js) for other APIs and [testnetContractStatus.html](examples/testnetContractStatus.html) for an example of calling some of them.
 
 ----
 
@@ -151,17 +151,17 @@ The following APIs are described in `Incentives for Relayers` below.
 * [testnetSampleCall.html](http://btcrelay.surge.sh/testnetSampleCall.html) for calling [`verifyTx`](#verifytxrawtransaction-transactionindex-merklesibling-blockhash) including use of [bitcoin-proof](https://www.npmjs.com/package/bitcoin-proof) for constructing `merkleSibling`.
 
 <!--- * mainnet [sampleCall.html](TODO) for calling [`verifyTx`](#verifytxrawtransaction-transactionindex-merklesibling-blockhash) (very similar to above). --->
- 
+
 * [testnetSampleRelayTx.html](http://btcrelay.surge.sh/testnetSampleRelayTx.html) shows [`relayTx`](#relaytxrawtransaction-transactionindex-merklesibling-blockhash-contractaddress) relaying a Bitcoin transaction from the frontend to an Ethereum contract.
 
-* [relayContractStatus.html](examples/relayContractStatus.html) for calling other basic functions.
+* [testnetContractStatus.html](examples/testnetContractStatus.html) for calling other basic functions.
 
 ----
 
 ## How to use BTC Relay
 
 The easiest way to use BTC Relay is via [`relayTx`](#relaytxrawtransaction-transactionindex-merklesibling-blockhash-contractaddress) because the ABI can remain on the frontend.
- 
+
 [testnetSampleRelayTx.html](http://btcrelay.surge.sh/testnetSampleRelayTx.html) shows how a Bitcoin transaction from the frontend can be passed (relayed) to an Ethereum contract.
 
 See other [examples](#examples) for other ways to use BTC Relay.
