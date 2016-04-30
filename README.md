@@ -148,21 +148,17 @@ The following APIs are described in `Incentives for Relayers` below.
 
 [Examples](https://github.com/ethereum/btcrelay/tree/master/examples) for how to use BTC Relay include:
 
-* [testnetSampleCall.html](http://btcrelay.surge.sh/testnetSampleCall.html) for calling `verifyTx` including use of [bitcoin-proof](https://www.npmjs.com/package/bitcoin-proof) for constructing `merkleSibling`.
+* [testnetSampleCall.html](http://btcrelay.surge.sh/testnetSampleCall.html) for calling [`verifyTx`](#verifytxrawtransaction-transactionindex-merklesibling-blockhash) including use of [bitcoin-proof](https://www.npmjs.com/package/bitcoin-proof) for constructing `merkleSibling`.
 
-* mainnet [sampleCall.html](TODO) for calling `verifyTx` (very similar to above).
+* mainnet [sampleCall.html](TODO) for calling [`verifyTx`](#verifytxrawtransaction-transactionindex-merklesibling-blockhash) (very similar to above).
+ 
+* [testnetSampleRelayTx.html](http://btcrelay.surge.sh/testnetSampleRelayTx.html) shows [`relayTx`](#relaytxrawtransaction-transactionindex-merklesibling-blockhash-contractaddress) relaying a Bitcoin transaction from the frontend to an Ethereum contract.
+
+* [relayContractStatus.html](examples/relayContractStatus.html) for calling other basic functions.
 
 The easiest way to use BTC Relay is via [`relayTx`](#relaytxrawtransaction-transactionindex-merklesibling-blockhash-contractaddress) because one's contract will not need a stub: the BTC Relay ABI can simply remain on the frontend (JSON).
  
 * [testnetSampleRelayTx.html](http://btcrelay.surge.sh/testnetSampleRelayTx.html) shows how a Bitcoin transaction from the frontend can be passed (relayed) to an Ethereum contract.
-
-
-
-Other?
-
-* [example-btc-eth](example-btc-eth) for relaying a Bitcoin transaction to an Ethereum contract using `relayTx`.
-
-* [relayContractStatus.html](examples/relayContractStatus.html) for calling other basic functions.
 
 ----
 
