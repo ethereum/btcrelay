@@ -145,6 +145,23 @@
       <div>BTC Relay Ethereum tx hash: <span id="result"></span></div>
     </div>
 
+    <div class="row">
+      When this tx is mined, check the <a href="https://morden.ether.camp/account/59c9fb53d658b15a7dded65c693703baf58cf63c">
+      BitcoinProcessor</a> sample contract.  In its storage, the lastTxHash
+      value should be the same as your input, and ethBlock block will be the
+      mined Ethereum block number.  If morden.ether.camp isn't running,
+      you can use web3.eth.getStorageAt('0x59c9fb53d658b15a7dded65c693703baf58cf63c', 0)
+      and web3.toDecimal(web3.eth.getStorageAt('0x59c9fb53d658b15a7dded65c693703baf58cf63c', 0))
+      to look up the values in storage.
+    </div>
+    <div class="row">
+      This example shows the use of a BitcoinProcessor contract, which receives
+      Bitcoin transactions via relayTx.  This is the easiest way to use BTC Relay
+      because it does not need a stub, whereas using the verifyTx API in a contract
+      will require a stub.
+      </thead>
+    </div>
+    
     <!-- <div class="footer-logo">
       <img src="./images/ETH_DEV_LOGO_LARGE.svg"/>
     </div> -->
