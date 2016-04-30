@@ -9,8 +9,12 @@
 1. storage of Bitcoin block headers
 1. inspection of the latest Bitcoin block header that is stored
 
-BTC Relay is [live](http://rawgit.com/ethereum/btcrelay/master/examples/relayContractStatus.html) on the testnet.
+The BTC Relay contract address and ABI is available on:
 
+* mainnet
+* [testnet Morden](http://btcrelay.surge.sh/testnetContractStatus.html)
+
+The address and ABI is all that's needed to use BTC Relay, in addition to the API documentation below.
 
 ## API
 
