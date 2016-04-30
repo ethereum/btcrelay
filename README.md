@@ -156,9 +156,15 @@ The following APIs are described in `Incentives for Relayers` below.
 
 * [relayContractStatus.html](examples/relayContractStatus.html) for calling other basic functions.
 
-The easiest way to use BTC Relay is via [`relayTx`](#relaytxrawtransaction-transactionindex-merklesibling-blockhash-contractaddress) because one's contract will not need a stub: the BTC Relay ABI can simply remain on the frontend (JSON).
+----
+
+## How to use BTC Relay
+
+The easiest way to use BTC Relay is via [`relayTx`](#relaytxrawtransaction-transactionindex-merklesibling-blockhash-contractaddress) because the ABI can remain on the frontend.
  
-* [testnetSampleRelayTx.html](http://btcrelay.surge.sh/testnetSampleRelayTx.html) shows how a Bitcoin transaction from the frontend can be passed (relayed) to an Ethereum contract.
+[testnetSampleRelayTx.html](http://btcrelay.surge.sh/testnetSampleRelayTx.html) shows how a Bitcoin transaction from the frontend can be passed (relayed) to an Ethereum contract.
+
+See other [examples](#examples) for other ways to use BTC Relay.
 
 ----
 
