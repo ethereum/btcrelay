@@ -15,7 +15,7 @@ The BTC Relay contract address and ABI is available on:
 * [testnet Morden](http://btcrelay.surge.sh/testnetContractStatus.html)
 
 The address and ABI is all that's needed to use BTC Relay, in addition to the API documentation below.
-bt
+
 ## API
 
 
