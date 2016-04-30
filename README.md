@@ -11,7 +11,7 @@
 
 The BTC Relay contract address and ABI is available on:
 
-* mainnet
+<!--- * mainnet --->
 * [testnet Morden](http://btcrelay.surge.sh/testnetContractStatus.html)
 
 The address and ABI is all that's needed to use BTC Relay, in addition to the API documentation below.
@@ -150,7 +150,7 @@ The following APIs are described in `Incentives for Relayers` below.
 
 * [testnetSampleCall.html](http://btcrelay.surge.sh/testnetSampleCall.html) for calling [`verifyTx`](#verifytxrawtransaction-transactionindex-merklesibling-blockhash) including use of [bitcoin-proof](https://www.npmjs.com/package/bitcoin-proof) for constructing `merkleSibling`.
 
-* mainnet [sampleCall.html](TODO) for calling [`verifyTx`](#verifytxrawtransaction-transactionindex-merklesibling-blockhash) (very similar to above).
+<!--- * mainnet [sampleCall.html](TODO) for calling ---> [`verifyTx`](#verifytxrawtransaction-transactionindex-merklesibling-blockhash) (very similar to above).
  
 * [testnetSampleRelayTx.html](http://btcrelay.surge.sh/testnetSampleRelayTx.html) shows [`relayTx`](#relaytxrawtransaction-transactionindex-merklesibling-blockhash-contractaddress) relaying a Bitcoin transaction from the frontend to an Ethereum contract.
 
