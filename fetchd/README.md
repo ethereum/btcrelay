@@ -6,7 +6,9 @@
 
 1. Get BTCRelayAddress from: http://cdn.rawgit.com/ethereum/btcrelay/master/examples/relayContractStatus.html
 
-1. `python fetchd.py -s <YourUnlockedAccount> -r <BTCRelayAddress> -n btc --rpcPort 8545 --fetch -d --gasPrice 500000000000`  use YourUnlockedAccount
+1. `python fetchd.py -s <YourUnlockedAccount> -r <BTCRelayAddress> -n btc --rpcPort 8545 --fetch -d --gasPrice <GasPrice>`  use YourUnlockedAccount
+
+In Homestead, `<GasPrice>` can be 200000000000.
 
 If you want to set a fee, which is specified in units of wei, add `--fee <weiAmount>`
 

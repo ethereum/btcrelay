@@ -15,7 +15,7 @@
 
   <script>
   var web3 = require('web3');
-  web3.setProvider(new web3.providers.HttpProvider('http://morden.cloudapp.net:8545'));
+  web3.setProvider(new web3.providers.HttpProvider('http://frontier-lb.ether.camp'));
 
   var heightPerRelay;
 
@@ -24,7 +24,7 @@
       do NOT forget to update ABI files when needed
      */
 
-     var relayAddr = '0x23d0ff718861979e08db52627941eb0f1f3783b9'; // Morden
+     var relayAddr = '0x41f274c0023f83391de4e0733c609df5a124c3d4'; // Alpha Frontier
 
     // var relayAddr = web3.eth.namereg.addr('btcrelay');  // Olympic
     $('#relayAddr').text(relayAddr);
@@ -44,6 +44,9 @@
 
     var feeVTX = web3.fromWei(contract.getFeeAmount.call(headHash), 'ether');
     $('#feeVTX').text(feeVTX);
+
+    var feeRecipient = contract.getFeeRecipient.call(headHash).toString(16);
+    $('#feeRecipient').text('0x' + feeRecipient);
 
     window.btcrelayTester = contract;
     // signature of verifyTx is (txHash, txIndex, merkleSiblingArray, txBlockHash)
@@ -99,14 +102,16 @@
 <body>
   <div class="container">
     <div class="logo">
-      <img src="./images/ethereum-logo-small.png"/>
+      <img src="./images/BTCRelayLogo.png"/>
     </div>
 
     <div class="jumbotron">
-      <h2><a href="https://github.com/ethereum/btcrelay">Ethereum Bitcoin Relay</a>
-         on <a href="https://github.com/ConsenSys/ConsenSys.github.io/wiki/ConsenSys-public-testnet">Morden public TESTNET</a></h3>
-      <h3>BTC Relay: <strong id="relayAddr"></strong></h3>
-      <h3><a href="./BitcoinRelayABI.js">ABI</a></h2>
+      <h2>BETA <a href="https://github.com/ethereum/btcrelay#btc-relay">Ethereum Bitcoin Relay</a></h2>
+      <h3>Contract address: <strong id="relayAddr"></strong></h3>
+      <div class="row">
+        <div class="col-md-2"><h3><a href="./BitcoinRelayABI.js">ABI</a></h3></div>
+        <div class="col-md-2"><h3><a href="https://github.com/ethereum/btcrelay#api">API</a></h3></div>
+      </div>
       <h3>Latest Block Hash: <strong id="latestBlockHash"></strong></h3>
       <div>
         <h3 style="display: inline-block">Latest Block#: <strong id="latestBlockHeight"></strong></h3>
@@ -117,14 +122,15 @@
         for the latest blocks.
       </h3>
       <h3>ETH fee: <strong id="feeVTX"></strong></h3>
+      <h5>Relayer: <strong id="feeRecipient"></strong></h5>
     </div>
 
     <div>
-      <h3>Contract address: <b>0x23d0ff718861979e08db52627941eb0f1f3783b9</b></h3>
+      <h3>Contract address: <b>0x41f274c0023f83391de4e0733c609df5a124c3d4</b></h3>
       <h3>Verifying the Source Code</h3>
       <p>
-      The deployed version of <a href="https://github.com/ethereum/btcrelay/tree/64ef22cc47ba457a549a575432cc666df71c8ddc">BTC Relay is from commit
-      64ef22cc47ba457a549a575432cc666df71c8ddc</a>
+      The deployed version of <a href="https://github.com/ethereum/btcrelay/tree/41753486b770665319f39da55676732b11af40fe">BTC Relay is from commit
+      41753486b770665319f39da55676732b11af40fe</a>
       </p>
       <p>
       The main steps to verifying the source code is <br>
@@ -141,18 +147,7 @@ serpent compile btcBulkStoreHeaders.se > compiled.evm
       (see contractAddress property of the receipt).
       </p>
 <pre>
-> tx='0x8e135b828db84bce864d4789cde112eacc04d3d21b5fa569f12f79d8d3ded3c6'
-> eth.getTransactionReceipt(tx)
-{
-  blockHash: "0x6739c150e39dbcc5c4c4b078a33061db444ef72ca4b671960fbec8ad49f4f99c",
-  blockNumber: 484230,
-  contractAddress: "0x23d0ff718861979e08db52627941eb0f1f3783b9",
-  cumulativeGasUsed: 2776382,
-  gasUsed: 2776382,
-  logs: [],
-  transactionHash: "0x8e135b828db84bce864d4789cde112eacc04d3d21b5fa569f12f79d8d3ded3c6",
-  transactionIndex: 0
-}
+> tx='0xa51ce97bd9a1e7be15c0e7bd2782967239cb9bc015c6088c37cc8931c8283f17'
 > objTx = eth.getTransaction(tx)
 > objTx.input
 </pre>
@@ -161,15 +156,27 @@ serpent compile btcBulkStoreHeaders.se > compiled.evm
             that they match identically (except for 0x at the front of objTx.input)
       </p>
       <p>
-        The version of the <a href="https://github.com/ethereum/serpent/tree/f0b4128f91d173fb3f6de48a6993e7db75446924">Serpent compiler used is commit f0b4128f91d173fb3f6de48a6993e7db75446924</a>
+        The version of the <a href="https://github.com/ethereum/serpent/tree/51ee60857fe53c871fa916ef66fc1b4255bb9433">Serpent compiler used is commit 51ee60857fe53c871fa916ef66fc1b4255bb9433</a>
+      </p>
+    </div>
+
+    <div class="jumbotron">
+      <p>
+        <a href="https://github.com/ethereum/btcrelay/blob/master/LICENSE">BTC RELAY IS PROVIDED "AS IS"</a>, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  THE SOFTWARE.
       </p>
     </div>
 
     <!-- <h3>blockchain.info Latest Block Hash: <strong id="bciBlockHash"></strong></h3> -->
 
-    <!-- <div class="footer-logo">
-      <img src="./images/ETH_DEV_LOGO_LARGE.svg"/>
-    </div> -->
+    <div class="footer-logo">
+      <img src="./images/ethereum-logo-small.png"/>
+    </div>
   </div>
 </body>
 

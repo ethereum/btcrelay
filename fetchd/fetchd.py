@@ -15,6 +15,8 @@ BITCOIN_TESTNET = 'testnet'
 SLEEP_TIME = 5 * 60  # 5 mins.  If changing, check retry logic
 GAS_FOR_STORE_HEADERS = 1200000  # it should take less than 1M gas, but buffer to avoid running out
 
+CHUNK_SIZE = 5  # number of headers to fetch at a time
+CHUNK_RANGE = range(CHUNK_SIZE)
 
 api_config = config.read_config()
 instance = api.Api(api_config)
@@ -28,6 +30,12 @@ pyepmLogger.setLevel(logging.INFO)
 # instance.address = "0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826"
 # instance.relayContract = "0xba164d1e85526bd5e27fd15ad14b0eae91c45a93"
 # TESTNET relay: 0x142f674e911cc55c226af81ac4d6de0a671d4abf
+
+useWallet = False  # when True, need to set the following remaining values:
+instance.walletContract = ''  # address of the contract wallet
+instance.weiRefill = int(1e18)  # 1 ETH.  Amount to refill the "hot" wallet each time walletWithdraw() is called
+aWalletOwner = ''  # address of an owner of the contract wallet
+
 
 def main():
     # logging.basicConfig(level=logging.DEBUG)
@@ -46,6 +54,7 @@ def main():
     parser.add_argument('-n', '--network', default=BITCOIN_TESTNET, choices=[BITCOIN_TESTNET, BITCOIN_MAINNET], help='Bitcoin network')
     parser.add_argument('-d', '--daemon', default=False, action='store_true', help='run as daemon')
     parser.add_argument('--feeVTX', default=0, type=int, help='fee to charge for verifications')
+    parser.add_argument('--feeRecipient', help='address of fee recipient')
 
     args = parser.parse_args()
 
@@ -62,6 +71,20 @@ def main():
     feeVerifyTx = args.feeVTX
     logger.info('feeVTX: %s' % feeVerifyTx)
 
+    if useWallet:
+        if instance.walletContract == '' or aWalletOwner == '':
+            logger.info('wallet contract and owner address need to both be set')
+            sys.exit()
+        if instance.address != aWalletOwner:
+            logger.info('sender is not a wallet owner: %s' % instance.address)
+            sys.exit()
+
+    feeRecipient = args.feeRecipient or instance.address
+    logger.info('feeRecipient: %s' % feeRecipient)
+    
+    if feeRecipient != instance.address and not useWallet:
+        logger.warn('feeRecipient %s is not sender %s and contract wallet is not used' % (feeRecipient, instance.address))
+        sys.exit()
 
     # logger.info('@@@ rpc: %s' % instance.jsonrpc_url)
 
@@ -72,13 +95,13 @@ def main():
 
     # this will not handle exceptions or do retries.  need to use -d switch if desired
     if not args.daemon:
-        run(feeVerifyTx, doFetch=args.fetch, network=args.network, startBlock=args.startBlock)
+        run(feeVerifyTx, feeRecipient, doFetch=args.fetch, network=args.network, startBlock=args.startBlock)
         return
 
     while True:
         for i in range(4):
             try:
-                run(feeVerifyTx, doFetch=args.fetch, network=args.network, startBlock=args.startBlock)
+                run(feeVerifyTx, feeRecipient, doFetch=args.fetch, network=args.network, startBlock=args.startBlock)
                 sleep(SLEEP_TIME)
             except Exception as e:
                 logger.info(e)
@@ -93,7 +116,7 @@ def main():
             break
 
 
-def run(feeVerifyTx, doFetch=False, network=BITCOIN_TESTNET, startBlock=0):
+def run(feeVerifyTx, feeRecipient, doFetch=False, network=BITCOIN_TESTNET, startBlock=0):
     chainHead = getBlockchainHead()
     if not chainHead:
         raise ValueError("Empty BlockchainHead returned.")
@@ -115,7 +138,7 @@ def run(feeVerifyTx, doFetch=False, network=BITCOIN_TESTNET, startBlock=0):
         heightToRefetch = contractHeight
         while chainHead != realHead:
             logger.info('@@@ chainHead: {0}  realHead: {1}'.format(chainHead, realHead))
-            fetchHeaders(heightToRefetch, 1, 1, feeVerifyTx, network=network)
+            fetchHeaders(heightToRefetch, 1, 1, feeVerifyTx, feeRecipient, network=network)
 
             # wait for some blocks because Geth has a delay (at least in RPC), of
             # returning the correct data.  the non-orphaned header may already
@@ -152,7 +175,7 @@ def run(feeVerifyTx, doFetch=False, network=BITCOIN_TESTNET, startBlock=0):
 
     logger.info('@@@ startFetch: {0} actualHeight: {1}'.format(instance.heightToStartFetch, actualHeight))
 
-    chunkSize = 5
+    chunkSize = CHUNK_SIZE
     fetchNum = actualHeight - instance.heightToStartFetch + 1
     numChunk = fetchNum / chunkSize
     leftoverToFetch = fetchNum % chunkSize
@@ -161,12 +184,12 @@ def run(feeVerifyTx, doFetch=False, network=BITCOIN_TESTNET, startBlock=0):
     logger.info('----------------------------------')
 
     if doFetch:
-        fetchHeaders(instance.heightToStartFetch, chunkSize, numChunk, feeVerifyTx, network=network)
-        fetchHeaders(actualHeight - leftoverToFetch + 1, 1, leftoverToFetch, feeVerifyTx, network=network)
+        fetchHeaders(instance.heightToStartFetch, chunkSize, numChunk, feeVerifyTx, feeRecipient, network=network)
+        fetchHeaders(actualHeight - leftoverToFetch + 1, 1, leftoverToFetch, feeVerifyTx, feeRecipient, network=network)
         # sys.exit()
 
 
-def fetchHeaders(chunkStartNum, chunkSize, numChunk, feeVerifyTx, network=BITCOIN_TESTNET):
+def fetchHeaders(chunkStartNum, chunkSize, numChunk, feeVerifyTx, feeRecipient, network=BITCOIN_TESTNET):
     for j in range(numChunk):
         strings = ""
         for i in range(chunkSize):
@@ -177,7 +200,7 @@ def fetchHeaders(chunkStartNum, chunkSize, numChunk, feeVerifyTx, network=BITCOI
             logger.debug("Block header: %s" % repr(bhStr.decode('hex')))
             strings += bhStr
 
-        storeHeaders(strings.decode('hex'), chunkSize, feeVerifyTx)
+        storeHeaders(strings.decode('hex'), chunkSize, feeVerifyTx, feeRecipient)
 
         chainHead = getBlockchainHead()
         logger.info('@@@ DONE hexHead: %s' % blockHashHex(chainHead))
@@ -186,7 +209,26 @@ def fetchHeaders(chunkStartNum, chunkSize, numChunk, feeVerifyTx, network=BITCOI
         chunkStartNum += chunkSize
 
 
-def storeHeaders(bhBytes, chunkSize, feeVerifyTx):
+        # average of 6*24=144 headers a day.  So AROUND every 100 headers we check
+        # the balance of sender and if it's less than 1 ETH, we ask for more ETH
+        # from the wallet.
+        # CHUNK_RANGE is used when chunkSize>1 so that we ask for ETH if chunkStartNum ends in
+        # ????00, ????01, ????02 to ????04
+        if ((chunkSize == 1 and chunkStartNum % 100 == 0) or
+            (chunkSize == CHUNK_RANGE and chunkStartNum % 100 in CHUNK_RANGE)) and useWallet:
+            myWei = instance.balance_at(instance.address)
+            myBalance = myWei / 1e18
+            logger.info('myBalance ETH: %s' % myBalance)
+
+            if myBalance < 1:
+                logger.info('going to walletWithdraw')
+                walletWithdraw()
+                myWei = instance.balance_at(instance.address)
+                myBalance = myWei / 1e18
+                logger.info('topped up ETH balance: %s' % myBalance)
+
+
+def storeHeaders(bhBytes, chunkSize, feeVerifyTx, feeRecipient):
 
     txCount = instance.transaction_count(defaultBlock='pending')
     logger.info('----------------------------------')
@@ -214,19 +256,20 @@ def storeHeaders(bhBytes, chunkSize, feeVerifyTx):
     #
 
     if feeVerifyTx != 0:
-        sig = 'storeBlockWithFee:[bytes,int256]:int256'
+        sig = 'storeBlockWithFeeAndRecipient:[bytes,int256,int256]:int256'
 
     for i in range(chunkSize):
         if feeVerifyTx != 0:
             offset = 80*i
-            data = [ bhBytes[offset:offset+80] , feeVerifyTx]
+            data = [ bhBytes[offset:offset+80] , feeVerifyTx, feeRecipient]
 
         # Wait for the transaction and retry if failed
         txHash = instance.transact(instance.relayContract, sig=sig, data=data, gas=gas, value=value)
-        logger.info("Got txHash: %s" % txHash)
+        logger.info("store header txHash: %s" % txHash)
         txResult = False
         while txResult is False:
             txResult = instance.wait_for_transaction(transactionHash=txHash, defaultBlock="pending", retry=30, verbose=True)
+            logger.info("store header pendingblock txResult: %s" % txResult)
             if txResult is False:
                 txHash = instance.transact(instance.relayContract, sig=sig, data=data, gas=gas, value=value)
 
@@ -234,6 +277,7 @@ def storeHeaders(bhBytes, chunkSize, feeVerifyTx):
         txResult = False
         while txResult is False:
             txResult = instance.wait_for_transaction(transactionHash=txHash, defaultBlock="latest", retry=60, verbose=True)
+            logger.info("store header latestblock txResult: %s" % txResult)
             if txResult is False:
                 txHash = instance.transact(instance.relayContract, sig=sig, data=data, gas=gas, value=value)
 
@@ -246,6 +290,29 @@ def storeHeaders(bhBytes, chunkSize, feeVerifyTx):
     if chainHead != expHead:
         logger.info('@@@@@ MISMATCH chainHead: {0} expHead: {1}'.format(blockHashHex(chainHead), blockHashHex(expHead)))
         # sys.exit(1)
+
+
+def walletWithdraw():
+    # execute(address _to, uint _value, bytes _data)
+    sig = 'execute:[address,uint256,bytes]:bytes32'
+    data = [instance.address, instance.weiRefill, '']
+    gas = 999000
+
+    # Wait for the transaction retry if failed
+    txHash = instance.transact(instance.walletContract, sig=sig, data=data, gas=gas)
+    logger.info("walletWithdraw txHash: %s" % txHash)
+    txResult = False
+    while txResult is False:
+        txResult = instance.wait_for_transaction(transactionHash=txHash, defaultBlock="pending", retry=30, verbose=True)
+        if txResult is False:
+            txHash = instance.transact(instance.walletContract, sig=sig, data=data, gas=gas)
+
+    # Wait for the transaction to be mined and retry if failed
+    txResult = False
+    while txResult is False:
+        txResult = instance.wait_for_transaction(transactionHash=txHash, defaultBlock="latest", retry=60, verbose=True)
+        if txResult is False:
+            txHash = instance.transact(instance.walletContract, sig=sig, data=data, gas=gas)
 
 
 def getLastBlockHeight():
