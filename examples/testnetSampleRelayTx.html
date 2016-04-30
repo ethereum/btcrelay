@@ -56,7 +56,9 @@
     doRelayTx(txBytes, gMerkleProof.txIndex, merkleSibling, txBlockHash);
   }
 
-  // includes sample of using the bitcoin-proof module
+  // A transaction hash by itself has no meaning (it's just a hash), so a
+  // service (like blockr.io) needs to be used to lookup the raw transaction.
+  // This function also shows how to use the bitcoin-proof module.
   function getTxInfo() {
     var txid = $('#transHex').val();
     var urlJsonTx = "https://btc.blockr.io/api/v1/tx/raw/" + txid;
@@ -64,6 +66,9 @@
         var rawTx = data.data.tx.hex;
         $('#txHexText').val(rawTx);
 
+        // A separate call is needed because the transaction index, the position
+        // of the transaction in the block, is needed to be able to compute the
+        // Merkle proof
         var blockNum = data.data.tx.blockhash;
         var blockInfoUrl = "//btc.blockr.io/api/v1/block/raw/"+blockNum;
         $.getJSON(blockInfoUrl, function(res) {
@@ -78,6 +83,8 @@
               }
             }
 
+            // Proof can now be computed from the raw transaction and
+            // transaction index
             gMerkleProof = btcproof.getProof(res.data.tx, txIndex);
             console.log('merkle proof: ', gMerkleProof)
             $('#mProof').val(JSON.stringify(gMerkleProof));
