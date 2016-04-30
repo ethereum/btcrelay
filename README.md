@@ -15,7 +15,7 @@ The BTC Relay contract address and ABI is available on:
 * [testnet Morden](http://btcrelay.surge.sh/testnetContractStatus.html)
 
 The address and ABI is all that's needed to use BTC Relay, in addition to the API documentation below.
-
+bt
 ## API
 
 
@@ -51,7 +51,7 @@ The processor contract at `contractAddress` should have a function of signature
 and is what will be invoked by `relayTx` if the transaction passes
 verification.  For examples, see
 [BitcoinProcessor.sol](examples/BitcoinProcessor.sol)
-and [example-btc-eth](example-btc-eth).
+and [testnetSampleRelayTx.html](examples/testnetSampleRelayTx.html).
 
 Returns `int256`
 * value returned by the processor contract's `processTransaction` function
