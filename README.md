@@ -7,7 +7,7 @@
 1. verification of a Bitcoin transaction
 1. optionally relay the Bitcoin transaction to any Ethereum contract
 1. storage of Bitcoin block headers
-1. inspection of the latest Bitcoin block header that is stored
+1. inspection of the latest Bitcoin block header stored in the contract
 
 ## BTC Relay contract address and ABI:
 
@@ -164,7 +164,8 @@ The easiest way to use BTC Relay is via [`relayTx`](#relaytxrawtransaction-trans
 
 [testnetSampleRelayTx.html](http://btcrelay.surge.sh/testnetSampleRelayTx.html) shows how a Bitcoin transaction from the frontend can be passed (relayed) to an Ethereum contract.
 
-See other [examples](#examples) for other ways to use BTC Relay.
+See other [examples](#examples) for other ways to use BTC Relay and the
+[docs for FAQ.](http://btc-relay.readthedocs.io)
 
 ----
 
@@ -177,7 +178,7 @@ Bitcoin blockchain, Relayers can call `storeBlockWithFee`.  The Relayer will be 
 in the block, or the header is retrieved via `getBlockHeader`, the Relayer will be
  rewarded with `getFeeAmount()`.
 
-To avoid a relayer R1 from setting excessive fees, it is possible for a relayer R2
+[To avoid a relayer R1 from setting excessive fees](http://btc-relay.readthedocs.io/en/latest/frequently-asked-questions.html#what-prevents-fees-from-being-too-high), it is possible for a relayer R2
 to `changeFeeRecipient()`.  R2 must specify a fee lower than what R1 specified, and
 pay `getChangeRecipientFee()` to R1, but now R2 will be the `getFeeRecipient()` for the block
 and will earn all future `getFeeAmount()`.

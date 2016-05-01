@@ -31,9 +31,15 @@ pyepmLogger.setLevel(logging.INFO)
 # instance.relayContract = "0xba164d1e85526bd5e27fd15ad14b0eae91c45a93"
 # TESTNET relay: 0x142f674e911cc55c226af81ac4d6de0a671d4abf
 
+# To use a wallet, deploy and configure https://github.com/ethereum/dapp-bin/blob/69cb5e8c82074b5fbf9c01f75145c3cad5af85e2/wallet/wallet.sol
+# Update the 4 wallet variables below.  Using an instance of the contract wallet
+# can allow more ETH to be stored in the wallet, while a much smaller amount of
+# ETH can be stored in the "--sender" unlocked account.  The "sender" can request
+# a daily amount from the contract wallet, and should be unable to fully withdraw from
+# the contract wallet if it has been deployed and configured correctly.
 useWallet = False  # when True, need to set the following remaining values:
 instance.walletContract = ''  # address of the contract wallet
-instance.weiRefill = int(1e18)  # 1 ETH.  Amount to refill the "hot" wallet each time walletWithdraw() is called
+instance.weiRefill = int(1e18)  # 1 ETH.  Amount to refill the "hot" sender account each time walletWithdraw() is called
 aWalletOwner = ''  # address of an owner of the contract wallet
 
 
@@ -81,7 +87,7 @@ def main():
 
     feeRecipient = args.feeRecipient or instance.address
     logger.info('feeRecipient: %s' % feeRecipient)
-    
+
     if feeRecipient != instance.address and not useWallet:
         logger.warn('feeRecipient %s is not sender %s and contract wallet is not used' % (feeRecipient, instance.address))
         sys.exit()
@@ -215,7 +221,7 @@ def fetchHeaders(chunkStartNum, chunkSize, numChunk, feeVerifyTx, feeRecipient, 
         # CHUNK_RANGE is used when chunkSize>1 so that we ask for ETH if chunkStartNum ends in
         # ????00, ????01, ????02 to ????04
         if ((chunkSize == 1 and chunkStartNum % 100 == 0) or
-            (chunkSize == CHUNK_RANGE and chunkStartNum % 100 in CHUNK_RANGE)) and useWallet:
+            (chunkSize == CHUNK_SIZE and chunkStartNum % 100 in CHUNK_RANGE)) and useWallet:
             myWei = instance.balance_at(instance.address)
             myBalance = myWei / 1e18
             logger.info('myBalance ETH: %s' % myBalance)
