@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>BTC Relay verifyTx eth_call sample</title>
+  <title>BTC Relay verifyTx eth_call sample - testnet Morden</title>
   <link rel="stylesheet" href="./css/bootstrap.min.css">
   <link rel="stylesheet" href="./css/dapp.css">
   <script src="./js/jquery-2.1.3.min.js"></script>
@@ -16,11 +16,11 @@
 
   <script type="text/javascript">
   var web3 = require('web3');
-      web3.setProvider(new web3.providers.HttpProvider('http://frontier-lb.ether.camp'));
+      web3.setProvider(new web3.providers.HttpProvider('http://morden.cloudapp.net:8545'));
   var btcproof = require('bitcoin-proof');
 
   // var gRelayAddr = web3.eth.namereg.addr('btcrelay');
-  var gRelayAddr = '0x41f274c0023f83391de4e0733c609df5a124c3d4';  // mainnet
+  var gRelayAddr = '0x5770345100a27b15f5b40bec86a701f888e8c601';  // Morden
   var gMerkleProof;
   var gBlockHashOfTx;
   var gFeeVerifyFinney;
@@ -30,7 +30,7 @@
 
 
   // shows how to use web3 to make an eth_call to the relay contract
-  // verifyTx returns 1 (success) or 0 (verify failed)
+  // verifyTx returns a non-zero transaction hash (success) or 0 (verify failed)
   function callVerifyTx(txBytes, txIndex, merkleSibling, txBlockHash) {
     // gFeeVerifyFinney is transferred!  coinbase must have it or verifyTx fails
     var feeWei = web3.toWei(gFeeVerifyFinney, 'finney');
@@ -53,13 +53,18 @@
     callVerifyTx(txBytes, gMerkleProof.txIndex, merkleSibling, txBlockHash);
   }
 
-  // includes sample of using the bitcoin-proof module
+  // A transaction hash by itself has no meaning (it's just a hash), so a
+  // service (like blockr.io) needs to be used to lookup the raw transaction.
+  // This function also shows how to use the bitcoin-proof module.
   function getTxInfo() {
     var txid = $('#transHex').val();
     var urlJsonTx = "https://btc.blockr.io/api/v1/tx/raw/" + txid;
     $.getJSON(urlJsonTx, function(data) {
         $('#txHexText').val(data.data.tx.hex);
 
+        // A separate call is needed because the transaction index, the position
+        // of the transaction in the block, is needed to be able to compute the
+        // Merkle proof
         var blockNum = data.data.tx.blockhash;
         var blockInfoUrl = "http://btc.blockr.io/api/v1/block/raw/"+blockNum;
         $.getJSON(blockInfoUrl, function(res) {
@@ -74,6 +79,8 @@
               }
             }
 
+            // Proof can now be computed from the raw transaction and
+            // transaction index
             gMerkleProof = btcproof.getProof(res.data.tx, txIndex);
             console.log('merkle proof: ', gMerkleProof)
             $('#mProof').val(JSON.stringify(gMerkleProof));
@@ -100,7 +107,7 @@
       <img src="./images/BTCRelayLogo.png"/>
     </div>
 
-    <p class="lead">BTC Relay at <span id="relayAddr"></span></p>
+    <p class="lead">BTC Relay Morden testnet at <span id="relayAddr"></span></p>
 
     <p>This is a sample of calling the verifyTx method on the BTC Relay contract
     </p>
@@ -144,6 +151,17 @@
 
     <div class="row">
       <div>BTC Relay verifyTx returned: <span id="result"></span></div>
+    </div>
+
+    <hr>
+
+    <div class="row">
+      <div>View page source to see the main steps:</div>
+      <ul>
+        <li>Getting a raw transaction and its index from a hash</li>
+        <li>Using <a href="https://www.npmjs.com/package/bitcoin-proof">bitcoin-proof </a>to get a Merkle proof</li>
+        <li>Calling <a href="https://github.com/ethereum/btcrelay#verifytxrawtransaction-transactionindex-merklesibling-blockhash">verifyTx</a></li>
+      </ul>
     </div>
 
     <div class="footer-logo">

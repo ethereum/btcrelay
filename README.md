@@ -9,8 +9,12 @@
 1. storage of Bitcoin block headers
 1. inspection of the latest Bitcoin block header that is stored
 
-BTC Relay is [live](http://rawgit.com/ethereum/btcrelay/master/examples/relayContractStatus.html) on the testnet.
+## BTC Relay contract address and ABI:
 
+<!--- * mainnet --->
+* [testnet Morden](http://btcrelay.surge.sh/testnetContractStatus.html)
+
+The address and ABI is all that's needed to use BTC Relay, in addition to the API documentation below.
 
 ## API
 
@@ -47,7 +51,7 @@ The processor contract at `contractAddress` should have a function of signature
 and is what will be invoked by `relayTx` if the transaction passes
 verification.  For examples, see
 [BitcoinProcessor.sol](examples/BitcoinProcessor.sol)
-and [example-btc-eth](example-btc-eth).
+and [testnetSampleRelayTx.html](examples/testnetSampleRelayTx.html).
 
 Returns `int256`
 * value returned by the processor contract's `processTransaction` function
@@ -128,7 +132,7 @@ or Bitcoin network difficulty (which can be derived) as a data feed.
 
 `getLastBlockHeight` - returns the block height of the latest block, as `int256`
 
-See [BitcoinRelayAbi.js](examples/BitcoinRelayABI.js) for other APIs and [relayContractStatus.html](examples/relayContractStatus.html) for an example of calling some of them.
+See [BitcoinRelayAbi.js](examples/BitcoinRelayABI.js) for other APIs and [testnetContractStatus.html](examples/testnetContractStatus.html) for an example of calling some of them.
 
 ----
 
@@ -142,11 +146,25 @@ The following APIs are described in `Incentives for Relayers` below.
 
 ## Examples
 
-* [sampleCall.html](examples/sampleCall.html) for calling `verifyTx` including use of [bitcoin-proof](https://www.npmjs.com/package/bitcoin-proof) for constructing `merkleSibling`.
+[Examples](https://github.com/ethereum/btcrelay/tree/master/examples) for how to use BTC Relay include:
 
-* [example-btc-eth](example-btc-eth) for relaying a Bitcoin transaction to an Ethereum contract using `relayTx`.
+* [testnetSampleCall.html](http://btcrelay.surge.sh/testnetSampleCall.html) for calling [`verifyTx`](#verifytxrawtransaction-transactionindex-merklesibling-blockhash) including use of [bitcoin-proof](https://www.npmjs.com/package/bitcoin-proof) for constructing `merkleSibling`.
 
-* [relayContractStatus.html](examples/relayContractStatus.html) for calling other basic functions.
+<!--- * mainnet [sampleCall.html](TODO) for calling [`verifyTx`](#verifytxrawtransaction-transactionindex-merklesibling-blockhash) (very similar to above). --->
+
+* [testnetSampleRelayTx.html](http://btcrelay.surge.sh/testnetSampleRelayTx.html) shows [`relayTx`](#relaytxrawtransaction-transactionindex-merklesibling-blockhash-contractaddress) relaying a Bitcoin transaction from the frontend to an Ethereum contract.
+
+* [testnetContractStatus.html](examples/testnetContractStatus.html) for calling other basic functions.
+
+----
+
+## How to use BTC Relay
+
+The easiest way to use BTC Relay is via [`relayTx`](#relaytxrawtransaction-transactionindex-merklesibling-blockhash-contractaddress) because the ABI can remain on the frontend.
+
+[testnetSampleRelayTx.html](http://btcrelay.surge.sh/testnetSampleRelayTx.html) shows how a Bitcoin transaction from the frontend can be passed (relayed) to an Ethereum contract.
+
+See other [examples](#examples) for other ways to use BTC Relay.
 
 ----
 
@@ -159,7 +177,7 @@ Bitcoin blockchain, Relayers can call `storeBlockWithFee`.  The Relayer will be 
 in the block, or the header is retrieved via `getBlockHeader`, the Relayer will be
  rewarded with `getFeeAmount()`.
 
-To avoid a relayer R1 from setting excessing fees, it is possible for a relayer R2
+To avoid a relayer R1 from setting excessive fees, it is possible for a relayer R2
 to `changeFeeRecipient()`.  R2 must specify a fee lower than what R1 specified, and
 pay `getChangeRecipientFee()` to R1, but now R2 will be the `getFeeRecipient()` for the block
 and will earn all future `getFeeAmount()`.
@@ -255,4 +273,13 @@ py.test test/ -s
 
 ## License
 
-[MIT](LICENSE)
+See [full MIT License](LICENSE) including:
+```
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+```

@@ -27,8 +27,8 @@
       to: $RelayWithBulkStore
       sig: setInitialParent:[int256,int256,int256]:int256
       data:
-        - 0x00000000000000000198bcc5bd65fd0ccd1c7e3b49e0170ea80296cbfee05042
-        - 389087  # make sure this follows rules of SetInitialParent()
-        - 16397390254392527044785120  # use test/script/chainwork.py or https://chainquery.com/bitcoin-api/getblock
+        - 0x0000000000000000045645e2acd740a88d2b3a09369e9f0f80d5376e4b6c5189
+        - 407231  # make sure this follows rules of SetInitialParent()
+        - 27039907020307577168735424  # use test/script/chainwork.py or https://chainquery.com/bitcoin-api/getblock
       retry: 60
       wait: True

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>BTC Relay relayTx sample</title>
+  <link rel="stylesheet" href="./css/bootstrap.min.css">
+  <link rel="stylesheet" href="./css/dapp.css">
+  <script src="./js/jquery-2.1.3.min.js"></script>
+  <script src="./js/bootstrap.min.js"></script>
+
+  <script src="./js/btcRelayAbi.js"></script>
+
+  <script src="./js/bignumber.js"></script>
+  <script src="./js/web3.min.js"></script>
+
+  <script src="./js/bitcoin-proof.js"></script>
+
+  <script type="text/javascript">
+  var web3 = require('web3');
+      web3.setProvider(new web3.providers.HttpProvider('http://localhost:8545'));
+      // web3.eth.coinbase should be unlocked and rpccorsdomain should be * for this sample
+
+  var btcproof = require('bitcoin-proof');
+
+  var gRelayAddr = '0x5770345100a27b15f5b40bec86a701f888e8c601';  // testnet Morden
+
+  // source code of processor contract is BitcoinProcessor.sol
+  var gProcessorAddr = '0x59c9fb53d658b15a7dded65c693703baf58cf63c'; // testnet Morden
+
+  var gMerkleProof;
+  var gBlockHashOfTx;
+  var gFeeVerifyFinney;
+
+  var RelayContractClass = web3.eth.contract(btcRelayAbi);  // see ./js/btcRelayAbi.js
+  var gRelayContract = RelayContractClass.at(gRelayAddr);
+
+  function doRelayTx(txBytes, txIndex, merkleSibling, txBlockHash) {
+    // gFeeVerifyFinney is transferred!  coinbase must have it or relayTx fails
+    var feeWei = web3.toWei(gFeeVerifyFinney, 'finney');
+    var objParam = { from: web3.eth.coinbase, value: feeWei, gas: 1900000 };
+
+    var ethTx = gRelayContract.relayTx.sendTransaction(txBytes, txIndex, merkleSibling, txBlockHash, gProcessorAddr, objParam);
+    document.getElementById('result').innerText = ethTx;
+    // console.log('@@@ relayTx receipt: ', receipt)
+    // when the tx is mined, the storage of gProcessorAddr at key0 will have
+    // the Bitcoin transaction hash
+  }
+
+  function callContract() {
+    var txBytes = '0x' + $('#txHexText').val();
+    var txBlockHash = '0x' + gBlockHashOfTx;
+
+    // web3.js wants 0x prepended
+    var merkleSibling = gMerkleProof.sibling.map(function(sib) {
+      return '0x' + sib;
+    });
+
+    doRelayTx(txBytes, gMerkleProof.txIndex, merkleSibling, txBlockHash);
+  }
+
+  // A transaction hash by itself has no meaning (it's just a hash), so a
+  // service (like blockr.io) needs to be used to lookup the raw transaction.
+  // This function also shows how to use the bitcoin-proof module.
+  function getTxInfo() {
+    var txid = $('#transHex').val();
+    var urlJsonTx = "https://btc.blockr.io/api/v1/tx/raw/" + txid;
+    $.getJSON(urlJsonTx, function(data) {
+        var rawTx = data.data.tx.hex;
+        $('#txHexText').val(rawTx);
+
+        // A separate call is needed because the transaction index, the position
+        // of the transaction in the block, is needed to be able to compute the
+        // Merkle proof
+        var blockNum = data.data.tx.blockhash;
+        var blockInfoUrl = "//btc.blockr.io/api/v1/block/raw/"+blockNum;
+        $.getJSON(blockInfoUrl, function(res) {
+            gBlockHashOfTx = res.data.hash;
+            $('#txBlockHash').text(gBlockHashOfTx)
+
+            var txIndex;
+            for (var key in res.data.tx) {
+              if (res.data.tx[key] == txid) {
+                txIndex = key;
+                break;
+              }
+            }
+
+            // Proof can now be computed from the raw transaction and
+            // transaction index
+            gMerkleProof = btcproof.getProof(res.data.tx, txIndex);
+            console.log('merkle proof: ', gMerkleProof)
+            $('#mProof').val(JSON.stringify(gMerkleProof));
+
+            gFeeVerifyFinney = web3.fromWei(gRelayContract.getFeeAmount.call('0x'+gBlockHashOfTx), 'finney');
+            $('#feeVerifyTx').text(gFeeVerifyFinney);
+        })
+    })
+  }
+
+  $(function() {
+    // tx[1] of block 408000
+    $('#transHex').val('dd059634699e85b51af4964ab97d5e75fb7cd86b748d0ee1c537ca1850101dc7');
+    $('#btn-get-tx').click(getTxInfo);
+    $('#relayAddr').text(gRelayAddr);
+  });
+
+  </script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="logo">
+      <img src="./images/BTCRelayLogo.png"/>
+    </div>
+
+    <div class="row">
+      <h3>To integrate BTC Relay:</h3>
+      <ul>
+        <li>Create and deploy a BitcoinProcessor contract with a processTransaction
+          function with the following signature:</li>
+          <i>function processTransaction(bytes txn, uint256 txHash) returns (int256)</i>
+        <li>From your frontend, call BTC Relay <a href="https://github.com/ethereum/btcrelay#relaytxrawtransaction-transactionindex-merklesibling-blockhash-contractaddress">relayTx</a></li>
+      </ul>
+    </div>
+
+    <div class="row">
+      <p class="lead">BTC Relay Morden testnet at <span id="relayAddr"></span></p>
+
+      <p>This is a sample of using BTC Relay <a href="https://github.com/ethereum/btcrelay#relaytxrawtransaction-transactionindex-merklesibling-blockhash-contractaddress">relayTx</a>, which is the easiest way to
+        integrate BTC Relay because the ABI can remain in the frontend.<br>
+        A Bitcoin transaction is relayed to <a href="https://github.com/ethereum/btcrelay/blob/master/examples/BitcoinProcessor.sol">BitcoinProcessor.sol</a> that
+        has been deployed at <a href="https://morden.ether.camp/account/59c9fb53d658b15a7dded65c693703baf58cf63c">0x59c9fb53d658b15a7dded65c693703baf58cf63c</a><br>
+        To run this sample you need a testnet client configured like:
+        geth --testnet --unlock 0 --rpc --rpcport 8545 --rpccorsdomain=* --rpcaddr localhost<br>
+      </p>
+    </div>
+
+    <h2>1.</h2>
+    <div class="row">
+      <form class="form">
+        <div class="form-group">
+          <label for="transHex">Bitcoin Transaction Hash</label>
+          <input type="text" class="form-control" id="transHex" size="64" maxlength="64"></input>
+        </div>
+        <button type="button" class="btn btn-default" id="btn-get-tx">Lookup</button>
+      </form>
+    </div>
+
+    <h2>2.</h2>
+    <div class="row">
+      <form>
+        <div class="form-group">
+          <label for="txHexText">Raw Transaction</label>
+          <textarea readonly class="form-control" name="textarea" id="txHexText" rows="6" cols="50"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="mProof">Merkle Proof</label>
+          <textarea readonly class="form-control" name="textarea" id="mProof" rows="6" cols="50"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="col-md-1 control-label">Block Hash</label>
+          <div class="col-md-9">
+            <p class="form-control-static" id="txBlockHash">0</p>
+          </div>
+        </div>
+        <br><br><br>
+        <div class="form-group">
+          <label class="col-md-2 control-label">Verification fee milli-ether</label>
+          <p class="form-control-static" id="feeVerifyTx">?</p>
+        </div>
+        <button type="button" class="btn btn-default" onclick="callContract();">send transaction relayTx</button>
+      </form>
+    </div>
+
+    <div class="row">
+      <div>BTC Relay Ethereum tx hash: <span id="result">[click buttons in step1 then step2]</span></div>
+    </div>
+
+    <hr>
+
+    <div class="row">
+      When this tx is mined, check the <a href="https://morden.ether.camp/account/59c9fb53d658b15a7dded65c693703baf58cf63c">
+      BitcoinProcessor</a> sample contract.  In its storage, the lastTxHash
+      value should be the same as your input, and ethBlock block will be the
+      mined Ethereum block number.<br>
+      If morden.ether.camp isn't running,
+      you can use web3.eth.getStorageAt('0x59c9fb53d658b15a7dded65c693703baf58cf63c', 0)
+      and web3.toDecimal(web3.eth.getStorageAt('0x59c9fb53d658b15a7dded65c693703baf58cf63c', 0))
+      to look up the values in storage.
+    </div>
+    <div class="row">
+      This example shows the use of a BitcoinProcessor contract, which receives
+      Bitcoin transactions via relayTx.  This is the easiest way to use BTC Relay
+      because the ABI can remain on the frontend.
+      </thead>
+    </div>
+
+    <hr>
+
+    <div class="row">
+      <div>View page source to see the main steps:</div>
+      <ul>
+        <li>Getting a raw transaction and its index from a hash</li>
+        <li>Using <a href="https://www.npmjs.com/package/bitcoin-proof">bitcoin-proof </a>to get a Merkle proof</li>
+        <li>Calling <a href="https://github.com/ethereum/btcrelay#relaytxrawtransaction-transactionindex-merklesibling-blockhash-contractaddress">relayTx</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-logo">
+      <img src="./images/ethereum-logo-small.png"/>
+    </div>
+  </div>
+</body>
+</html>
