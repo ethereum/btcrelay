@@ -164,7 +164,8 @@ The easiest way to use BTC Relay is via [`relayTx`](#relaytxrawtransaction-trans
 
 [testnetSampleRelayTx.html](http://btcrelay.surge.sh/testnetSampleRelayTx.html) shows how a Bitcoin transaction from the frontend can be passed (relayed) to an Ethereum contract.
 
-See other [examples](#examples) for other ways to use BTC Relay.
+See other [examples](#examples) for other ways to use BTC Relay and the
+[docs](http://btc-relay.readthedocs.io) for FAQ.
 
 ----
 
