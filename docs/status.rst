@@ -2,10 +2,6 @@
 BTC Relay Status
 ###########################
 
-***************
-Questions
-***************
-
 What is shown on the Status page?
 =============================
 
