@@ -22,7 +22,7 @@
 	<meta name="theme-color" content="#ffffff">
 	<link href='https://fonts.googleapis.com/css?family=Lato:400,300,300italic,400italic,700,700italic|Montserrat:400,700' rel='stylesheet' type='text/css'>
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
-  
+
   <title>BTC Relay verifyTx eth_call sample</title>
   <link rel="stylesheet" href="./css/bootstrap.min.css">
   <link rel="stylesheet" href="./css/dapp.css">
@@ -124,7 +124,7 @@
 
     <p class="lead">BTC Relay at <span id="relayAddr"></span></p>
 
-    <p>This is a sample of calling the verifyTx method on the BTC Relay contract
+    <p>This is a sample of calling <a href="https://github.com/ethereum/btcrelay/tree/master#verifytxrawtransaction-transactionindex-merklesibling-blockhash">verifyTx</a>
     </p>
 
     <h2>1.</h2>
@@ -166,6 +166,17 @@
 
     <div class="row">
       <div>BTC Relay verifyTx returned: <span id="result"></span></div>
+    </div>
+
+    <hr>
+
+    <div class="row">
+      <div>View page source to see the main steps:</div>
+      <ul>
+        <li>Getting a raw transaction and its index from a hash</li>
+        <li>Using <a href="https://www.npmjs.com/package/bitcoin-proof">bitcoin-proof </a>to get a Merkle proof</li>
+        <li>Calling <a href="https://github.com/ethereum/btcrelay#verifytxrawtransaction-transactionindex-merklesibling-blockhash">verifyTx</a></li>
+      </ul>
     </div>
 
     <div class="footer-logo">
