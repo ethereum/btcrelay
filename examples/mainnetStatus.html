@@ -1,7 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html dir="ltr" lang="en-US">
 <head>
-  <title>Ethereum: Bitcoin Relay Contract Status</title>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<meta name="description" content="btc relay, ethereum, bitcoin, bitcoin relay, smart contracts, sidechain, peg" />
+	<link rel="apple-touch-icon" sizes="57x57" href="images/favicons/apple-icon-57x57.png">
+	<link rel="apple-touch-icon" sizes="60x60" href="images/favicons/apple-icon-60x60.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="images/favicons/apple-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="76x76" href="images/favicons/apple-icon-76x76.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="images/favicons/apple-icon-114x114.png">
+	<link rel="apple-touch-icon" sizes="120x120" href="images/favicons/apple-icon-120x120.png">
+	<link rel="apple-touch-icon" sizes="144x144" href="images/favicons/apple-icon-144x144.png">
+	<link rel="apple-touch-icon" sizes="152x152" href="images/favicons/apple-icon-152x152.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="images/favicons/apple-icon-180x180.png">
+	<link rel="icon" type="image/png" sizes="192x192"  href="images/favicons/android-icon-192x192.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="images/favicons/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="96x96" href="images/favicons/favicon-96x96.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="images/favicons/favicon-16x16.png">
+	<link rel="manifest" href="images/favicons/manifest.json">
+	<meta name="msapplication-TileColor" content="#ffffff">
+	<meta name="msapplication-TileImage" content="images/favicons/ms-icon-144x144.png">
+	<meta name="theme-color" content="#ffffff">
+	<link href='https://fonts.googleapis.com/css?family=Lato:400,300,300italic,400italic,700,700italic|Montserrat:400,700' rel='stylesheet' type='text/css'>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Ethereum Bitcoin Relay Status</title>
   <link rel="stylesheet" href="./css/bootstrap.min.css">
   <link rel="stylesheet" href="./css/dapp.css">
   <script src="./js/jquery-2.1.3.min.js"></script>
@@ -106,35 +128,36 @@
     </div>
 
     <div class="jumbotron">
-      <h3>Contract address: <strong id="relayAddr"></strong></h3>
+      <h3><small>Contract address: </small><strong id="relayAddr"></strong></h3>
       <div class="row">
         <div class="col-xs-2"><h3><a href="./BitcoinRelayABI.js">ABI</a></h3></div>
         <div class="col-xs-2"><h3><a href="https://github.com/ethereum/btcrelay#api">API</a></h3></div>
       </div>
-      <h2>Status BETA <a href="https://github.com/ethereum/btcrelay#btc-relay">Ethereum Bitcoin Relay</a></h2>
-      <h3>Latest Block Hash: <strong id="latestBlockHash"></strong></h3>
+      <hr>
+      <h2 class="text-center"><strong>STATUS</strong></h2>
+      <h5>Latest Block Hash: <strong id="latestBlockHash"></strong></h5>
       <div>
         <h3 style="display: inline-block">Latest Block#: <strong id="latestBlockHeight"></strong></h3>
         <div style="display: inline-block; margin-left:3em"><a href="https://blockchain.info" target="_">blockchain.info</a>: <strong id="bciBlockHeight"></strong></div>
         <span><a href="https://btc.blockr.io" target="_">btc.blockr.io</a>: <strong id="blockrBlockHeight"></strong></span>
       </div>
-      <h5>Initial Block: <strong id="initialBlock">407232</strong></h5>
       <h3 id="warnSync" style="display: none">Your Ethereum node may not be fully synced: <span id=nodeBlockNum></span>.  Check <a href="https://stats.ethdev.com" target="_">stats</a>
         for the latest blocks.
       </h3>
       <h3>ETH fee: <strong id="feeVTX"></strong></h3>
       <h5>Relayer: <strong id="feeRecipient"></strong></h5>
+      <h5 class="text-right">Initial Block: <strong id="initialBlock">407232</strong></h5>
+      <h5 class="text-right"><a href="http://btc-relay.readthedocs.io/en/latest/status.html">FAQ</a></h5>
     </div>
 
     <div>
-      <h3>Contract address: <b>0x41f274c0023f83391de4e0733c609df5a124c3d4</b></h3>
-      <h3>Verifying the Source Code</h3>
+      <h3>Verifying the Source Code <small>at 0x41f274c0023f83391de4e0733c609df5a124c3d4</small></h3>
       <p>
       The deployed version of <a href="https://github.com/ethereum/btcrelay/tree/41753486b770665319f39da55676732b11af40fe">BTC Relay is from commit
       41753486b770665319f39da55676732b11af40fe</a>
       </p>
       <p>
-      The main steps to verifying the source code is <br>
+      The main steps to verifying the source code are: <br>
       1) compile code to the evm (bytecode) <br>
       2) compare the evm against the data used in the contract creation transaction
       </p>
@@ -161,6 +184,8 @@ serpent compile btcBulkStoreHeaders.se > compiled.evm
       </p>
     </div>
 
+    <hr>
+
     <div class="jumbotron">
       <p>
         <a href="https://github.com/ethereum/btcrelay/blob/master/LICENSE">BTC RELAY IS PROVIDED "AS IS"</a>, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
@@ -173,7 +198,7 @@ serpent compile btcBulkStoreHeaders.se > compiled.evm
       </p>
     </div>
 
-    <!-- <h3>blockchain.info Latest Block Hash: <strong id="bciBlockHash"></strong></h3> -->
+    <hr>
 
     <div class="footer-logo">
       <img src="./images/ethereum-logo-small.png"/>
