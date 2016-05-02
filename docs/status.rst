@@ -29,13 +29,13 @@ account that was first to successfully submit the block header to BTC Relay.
 What is the fee for previous blocks?
 =============================
 
-Use `getFeeAmount. <https://github.com/ethereum/btcrelay/tree/master#getfeeamountblockhash>`_
+Use `getFeeAmount(). <https://github.com/ethereum/btcrelay/tree/master#getfeeamountblockhash>`_
 
 
 What can I do if the fee is too high?
 =============================
 
-An option is to `changeFeeRecipient <https://github.com/ethereum/btcrelay/tree/master#changefeerecipientblockhash-fee-recipient>`_
+An option is to `changeFeeRecipient() <https://github.com/ethereum/btcrelay/tree/master#changefeerecipientblockhash-fee-recipient>`_
 to yourself.  Make sure you satisfy all requirements for successful completion.
 
 
