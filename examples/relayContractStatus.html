@@ -128,13 +128,13 @@
     </div>
 
     <div class="jumbotron">
-      <h3>Contract address: <strong id="relayAddr"></strong></h3>
+      <h3><small>Contract address: </small><strong id="relayAddr"></strong></h3>
       <div class="row">
         <div class="col-xs-2"><h3><a href="./BitcoinRelayABI.js">ABI</a></h3></div>
         <div class="col-xs-2"><h3><a href="https://github.com/ethereum/btcrelay#api">API</a></h3></div>
       </div>
       <hr>
-      <h2>Status BETA <a href="https://github.com/ethereum/btcrelay#btc-relay">Ethereum Bitcoin Relay</a></h2>
+      <h2 class="text-center"><strong>STATUS</strong></h2>
       <h5>Latest Block Hash: <strong id="latestBlockHash"></strong></h5>
       <div>
         <h3 style="display: inline-block">Latest Block#: <strong id="latestBlockHeight"></strong></h3>
@@ -151,14 +151,13 @@
     </div>
 
     <div>
-      <h3>Contract address: <b>0x41f274c0023f83391de4e0733c609df5a124c3d4</b></h3>
-      <h3>Verifying the Source Code</h3>
+      <h3>Verifying the Source Code <small>at 0x41f274c0023f83391de4e0733c609df5a124c3d4</small></h3>
       <p>
       The deployed version of <a href="https://github.com/ethereum/btcrelay/tree/41753486b770665319f39da55676732b11af40fe">BTC Relay is from commit
       41753486b770665319f39da55676732b11af40fe</a>
       </p>
       <p>
-      The main steps to verifying the source code is <br>
+      The main steps to verifying the source code are: <br>
       1) compile code to the evm (bytecode) <br>
       2) compare the evm against the data used in the contract creation transaction
       </p>
@@ -185,6 +184,8 @@ serpent compile btcBulkStoreHeaders.se > compiled.evm
       </p>
     </div>
 
+    <hr>
+
     <div class="jumbotron">
       <p>
         <a href="https://github.com/ethereum/btcrelay/blob/master/LICENSE">BTC RELAY IS PROVIDED "AS IS"</a>, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
@@ -197,7 +198,7 @@ serpent compile btcBulkStoreHeaders.se > compiled.evm
       </p>
     </div>
 
-    <!-- <h3>blockchain.info Latest Block Hash: <strong id="bciBlockHash"></strong></h3> -->
+    <hr>
 
     <div class="footer-logo">
       <img src="./images/ethereum-logo-small.png"/>
