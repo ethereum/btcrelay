@@ -69,11 +69,18 @@
     var feeWei = web3.toWei(gFeeVerifyFinney, 'finney');
     var objParam = { from: web3.eth.coinbase, value: feeWei, gas: 1900000 };
 
-    var ethTx = gRelayContract.relayTx.sendTransaction(txBytes, txIndex, merkleSibling, txBlockHash, gProcessorAddr, objParam);
-    document.getElementById('result').innerText = ethTx;
-    // console.log('@@@ relayTx receipt: ', receipt)
-    // when the tx is mined, the storage of gProcessorAddr at key0 will have
-    // the Bitcoin transaction hash
+    gRelayContract.relayTx.sendTransaction(txBytes, txIndex, merkleSibling,
+				txBlockHash, gProcessorAddr, objParam, function(err, ethTx) {
+			if (err) {
+				console.log('@@@ relayTx error');
+				return;
+			}
+
+			document.getElementById('result').innerText = ethTx;
+	    // console.log('@@@ relayTx receipt: ', receipt)
+	    // when the tx is mined, the storage of gProcessorAddr at key0 will have
+	    // the Bitcoin transaction hash
+		});
   }
 
   function callContract() {
@@ -121,8 +128,15 @@
             console.log('merkle proof: ', gMerkleProof)
             $('#mProof').val(JSON.stringify(gMerkleProof));
 
-            gFeeVerifyFinney = web3.fromWei(gRelayContract.getFeeAmount.call('0x'+gBlockHashOfTx), 'finney');
-            $('#feeVerifyTx').text(gFeeVerifyFinney);
+						gRelayContract.getFeeAmount.call('0x'+gBlockHashOfTx, function(err, feeWei) {
+							if (err) {
+								console.log('@@@ getFeeAmount error');
+								return;
+							}
+
+							gFeeVerifyFinney = web3.fromWei(feeWei, 'finney');
+	            $('#feeVerifyTx').text(gFeeVerifyFinney);
+						})
         })
     })
   }
