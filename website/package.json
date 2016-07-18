@@ -37,6 +37,7 @@
     "grunt-contrib-watch": "1.0.0",
     "grunt-express": "^1.4.1",
     "grunt-open": "^0.2.3",
+    "grunt-parallel": "^0.5.1",
     "load-grunt-tasks": "3.5.0"
   }
 }

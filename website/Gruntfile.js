@@ -230,13 +230,13 @@ module.exports = function(grunt) {
 			},
 
 			stylesless: {
-				options: { livereload: false },
+				options: { livereload: true },
 				files: [SRC_FILES_LESS],
 				tasks: ['less:development', 'autoprefixer']
 			},
 
 			pug: {
-				options: { livereload: false },
+				options: { livereload: true },
 				files: [WATCH_FILES_PUG],
 				tasks: ['pug:development']
 			}
