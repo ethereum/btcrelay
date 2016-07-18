@@ -36,8 +36,13 @@
   <script src="./js/web3.min.js"></script>
 
   <script>
-  var web3 = require('web3');
-  web3.setProvider(new web3.providers.HttpProvider('https://morden.infura.io:8545'));
+	if (typeof web3 !== 'undefined') {
+    // Web3 has been injected by the browser (Mist/MetaMask)
+    web3 = new Web3(web3.currentProvider);
+  } else {
+    // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
+    web3 = new Web3(new Web3.providers.HttpProvider("https://morden.infura.io:8545"));
+  }
 
   var heightPerRelay;
 
