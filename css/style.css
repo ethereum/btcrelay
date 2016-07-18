@@ -4,6 +4,7 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
+@import url(https://fonts.googleapis.com/css?family=Montserrat);
 html {
   font-family: sans-serif;
   -ms-text-size-adjust: 100%;
@@ -6752,7 +6753,14 @@ button.close {
 }
 body {
   color: #969696;
+  font-family: 'Montserrat', sans-serif;
   font-size: 14px;
+}
+section h2 {
+  font-size: 30px;
+  text-transform: uppercase;
+  color: #1f435e;
+  opacity: 0.3;
 }
 header {
   width: 100%;
@@ -6775,6 +6783,7 @@ header .navbar-brand img {
   width: auto;
 }
 header .nav li a {
+  font-size: 12px;
   line-height: 35px;
   text-transform: uppercase;
 }
