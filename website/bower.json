@@ -1,0 +1,23 @@
+{
+  "name": "btc-relay-bower",
+  "version": "0.0.1",
+  "authors": [
+    "cubedro <contact@siteshop.ro>"
+  ],
+  "description": "Grunt bootstrap",
+  "moduleType": [
+    "amd"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.5"
+  }
+}
