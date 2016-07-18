@@ -178,7 +178,7 @@ module.exports = function(grunt) {
 			development: {
 				options: {
 					pretty: true,
-					debug: true
+					debug: true,
 					data: {
 					}
 				},
@@ -187,7 +187,7 @@ module.exports = function(grunt) {
 
 			production: {
 				options: {
-					debug: false
+					debug: false,
 					data: {
 					}
 				},
