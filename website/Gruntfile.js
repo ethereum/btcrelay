@@ -7,14 +7,14 @@ module.exports = function(grunt) {
 	var SRC_DIR = 'src/';
 	var SRC_DIR_JS = SRC_DIR + 'js/';
 	var SRC_DIR_LESS = SRC_DIR + 'less/';
-	var SRC_DIR_JADE = SRC_DIR + 'views/';
+	var SRC_DIR_PUG = SRC_DIR + 'views/';
 	var SRC_DIR_IMAGES = SRC_DIR + 'images/';
 	var SRC_DIR_FONTS = SRC_DIR + 'fonts/';
 	var SRC_FILES_JS = SRC_DIR_JS + '*.js';
 	var SRC_FILE_LESS = SRC_DIR_LESS + 'style.less';
 	var SRC_FILES_LESS = SRC_DIR_LESS + '*.less';
-	var SRC_FILES_JADE = SRC_DIR_JADE + '*.jade';
-	var WATCH_FILES_JADE = SRC_DIR_JADE + '**/*.jade';
+	var SRC_FILES_PUG = SRC_DIR_PUG + '*.pug';
+	var WATCH_FILES_PUG = SRC_DIR_PUG + '**/*.pug';
 	var SRC_FILES_IMAGES = SRC_DIR_IMAGES + '**';
 	var SRC_FILES_FONTS = SRC_DIR_FONTS + '**';
 
@@ -48,10 +48,10 @@ module.exports = function(grunt) {
 		'Safari >= 6'
 	];
 
-	var JADE_FILE_CFG =  [{
+	var PUG_FILE_CFG =  [{
 		expand: true,
-		cwd: SRC_DIR_JADE,
-		src: ['**/*.jade'],
+		cwd: SRC_DIR_PUG,
+		src: ['**/*.pug'],
 		dest: BUILD_DIR,
 		ext: '.html'
 	}];
@@ -173,8 +173,8 @@ module.exports = function(grunt) {
 			}
 		},
 
-		// configure the jade template file compilation
-		jade: {
+		// configure the pug template file compilation
+		pug: {
 			development: {
 				options: {
 					pretty: true,
@@ -182,7 +182,7 @@ module.exports = function(grunt) {
 					data: {
 					}
 				},
-				files: JADE_FILE_CFG
+				files: PUG_FILE_CFG
 			},
 
 			production: {
@@ -191,7 +191,7 @@ module.exports = function(grunt) {
 					data: {
 					}
 				},
-				files: JADE_FILE_CFG
+				files: PUG_FILE_CFG
 			}
 		},
 
@@ -235,10 +235,10 @@ module.exports = function(grunt) {
 				tasks: ['less:development', 'autoprefixer']
 			},
 
-			jade: {
+			pug: {
 				options: { livereload: false },
-				files: [WATCH_FILES_JADE],
-				tasks: ['jade:development']
+				files: [WATCH_FILES_PUG],
+				tasks: ['pug:development']
 			}
 		},
 
@@ -286,7 +286,7 @@ module.exports = function(grunt) {
 			'Compiles all of the assets and copies them' +
 			' to th build directory',
 			['clean:build', 'copy:build', 'stylesheets:' + mode, 'scripts:' + mode,
-				'copy:vendor', 'jade:' + mode]
+				'copy:vendor', 'pug:' + mode]
 		);
 	};
 
