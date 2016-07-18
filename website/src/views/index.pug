@@ -15,18 +15,21 @@ html
 								span.icon-bar
 								span.icon-bar
 								span.icon-bar
-							a.navbar-brand
+							a.navbar-brand(href="/")
 								img(src="./images/logo.svg")
 						div#navbar-collapse.collapse.navbar-collapse
 							ul.nav.navbar-nav.navbar-right
-								li.active
-									a(href="#") Home
 								li
-									a(href="#produse") Developers
+									a(href="/developers") Developers
 								li
-									a(href="#companie") Become a relayer
+									a(href="/become-a-relayer") Become a relayer
 								li
-									a(href="#blog") Faq
+									a(href="/faq") Faq
 								li
-									a(href="#blog") Git
+									a(href="https://github.com/ethereum/btcrelay" target="_blank") Git
 		h1 test
+		section
+			div.container.text-center
+				h2 What is it exactly?
+				p BTC Relay is an Ethereum contract that stores Bitcoin blockheaders. BTC Relay uses these blockheaders to build a mini-version of the Bitcoin blockchain: a method used by Bitcoin SPV light wallets.
+				p BTC Relay is open-source, trustless, autonomous and decentralized.
