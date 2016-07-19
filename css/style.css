@@ -6784,6 +6784,12 @@ section h2 {
   opacity: 0.3;
   margin-bottom: 50px;
 }
+section h4 {
+  font-size: 16px;
+  font-weight: 300;
+  color: #1f435e;
+  text-transform: uppercase;
+}
 section p {
   font-size: 16px;
   font-weight: 300;
@@ -6794,6 +6800,11 @@ section p {
 }
 section .img-responsive {
   width: 100%;
+  max-width: 885px;
+  margin: 0 auto;
+}
+section span.feature {
+  font-weight: 300;
 }
 header {
   width: 100%;
