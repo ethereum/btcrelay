@@ -214,13 +214,13 @@ module.exports = function(grunt) {
 			images: {
 				options: { livereload: false },
 				files: [SRC_FILES_IMAGES],
-				tasks: ['clan:images', 'copy']
+				tasks: ['clean:images', 'copy']
 			},
 
 			fonts: {
 				options: { livereload: false },
 				files: [SRC_FILES_FONTS],
-				tasks: ['clan:fonts', 'copy']
+				tasks: ['clean:fonts', 'copy']
 			},
 
 			scripts: {
