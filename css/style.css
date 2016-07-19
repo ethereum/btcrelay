@@ -6804,7 +6804,16 @@ section .img-responsive {
   margin: 0 auto;
 }
 section span.feature {
+  display: inline-block;
   font-weight: 300;
+  margin-bottom: 25px;
+}
+footer {
+  padding: 25px 0px;
+  font-weight: 300;
+}
+footer a {
+  text-decoration: underline;
 }
 header {
   width: 100%;
