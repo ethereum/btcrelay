@@ -37,3 +37,49 @@ header {
 		}
 	}
 }
+
+.left-menu {
+	.nav {
+		li {
+			text-transform: uppercase;
+
+			&.header {
+				background-color: #fff;
+				font-size: 16px;
+			}
+
+			a {
+				color: #525252;
+			}
+
+			> a:hover,
+			&.active > a,
+			&.active > a:hover {
+				color: #fff;
+				background-color: #525252;
+			}
+
+			&.dropdown {
+				ul {
+					display: none;
+				}
+
+				&.active ul {
+					display: block;
+				}
+
+				ul > li {
+					a {
+						padding-left: 30px;
+					}
+
+					> a:hover,
+					&.active > a {
+						color: #fff;
+						background-color: #0092c1;
+					}
+				}
+			}
+		}
+	}
+}
