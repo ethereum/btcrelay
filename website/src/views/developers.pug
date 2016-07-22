@@ -1,0 +1,57 @@
+html
+	head
+		meta(charset="utf-8")
+		meta(name="viewport", content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no")
+		title BTC Relay
+		link(rel='stylesheet', href='./css/style.css')
+	body.grey-bg
+		header
+			div.container
+				nav.navbar.navbar-default
+					div.container-fluid
+						div.navbar-header
+							button.navbar-toggle.collapsed(type="button", data-toggle="collapse", data-target="#navbar-collapse", aria-expanded="false")
+								span.sr-only Toggle navigation
+								span.icon-bar
+								span.icon-bar
+								span.icon-bar
+							a.navbar-brand(href="/")
+								img(src="./images/logo.svg")
+						div#navbar-collapse.collapse.navbar-collapse
+							ul.nav.navbar-nav.navbar-right
+								li.active
+									a(href="/developers.html") Developers
+								li
+									a(href="/become-a-relayer.html") Become a relayer
+								li
+									a(href="/faq.html") Faq
+								li
+									a(href="https://github.com/ethereum/btcrelay" target="_blank") Git
+		div.container
+			div.row
+				div.col-lg-3
+					div.left-menu
+						ul.nav.nav-stacked
+							li.header.active
+								a(href="#") Main Net
+							li
+								a(href="#") Status
+							li.dropdown
+								a.dropdown-toggle(href="#") Examples #[span.carret]
+								ul.nav
+									li
+										a(href="#") Verify TX
+									li
+										a(href="#") Relay TX
+									li
+										a(href="#") Bitcoin processor
+							li
+								a(href="#") How to verify source code
+							li
+								a(href="#") Help
+				div.col-lg-9
+		footer
+			div.container.text-center BTC Relay is licensed under the #[a(href="https://en.wikipedia.org/wiki/MIT_License" target="_blank") MIT License]. Check it out on #[a(href="https://github.com/ethereum/btcrelay" target="_blank") Github].
+
+		script(src="./js/jquery.min.js")
+		script(src="./js/bootstrap.min.js")
