@@ -6876,3 +6876,33 @@ header .nav li.active a {
   background-color: transparent !important;
   color: #007b9e !important;
 }
+.left-menu .nav li {
+  text-transform: uppercase;
+}
+.left-menu .nav li.header {
+  background-color: #fff;
+  font-size: 16px;
+}
+.left-menu .nav li a {
+  color: #525252;
+}
+.left-menu .nav li > a:hover,
+.left-menu .nav li.active > a,
+.left-menu .nav li.active > a:hover {
+  color: #fff;
+  background-color: #525252;
+}
+.left-menu .nav li.dropdown ul {
+  display: none;
+}
+.left-menu .nav li.dropdown.active ul {
+  display: block;
+}
+.left-menu .nav li.dropdown ul > li a {
+  padding-left: 30px;
+}
+.left-menu .nav li.dropdown ul > li > a:hover,
+.left-menu .nav li.dropdown ul > li.active > a {
+  color: #fff;
+  background-color: #0092c1;
+}
