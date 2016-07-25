@@ -6892,12 +6892,6 @@ header .nav li.active a {
   color: #fff;
   background-color: #525252;
 }
-.left-menu .nav li.dropdown ul {
-  display: none;
-}
-.left-menu .nav li.dropdown.active ul {
-  display: block;
-}
 .left-menu .nav li.dropdown ul > li a {
   padding-left: 30px;
 }
