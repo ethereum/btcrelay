@@ -6847,6 +6847,21 @@ footer {
 footer a {
   text-decoration: underline;
 }
+.developers h1 {
+  font-size: 24px;
+  font-weight: 300;
+  color: #282828;
+  text-transform: uppercase;
+  margin-top: 45px;
+  margin-bottom: 45px;
+}
+.developers .red {
+  color: #ff0000;
+}
+.developers .left {
+  text-transform: uppercase;
+  color: #3f3f3f;
+}
 header {
   width: 100%;
   height: auto;
