@@ -6847,6 +6847,9 @@ footer {
 footer a {
   text-decoration: underline;
 }
+.developers {
+  color: #3f3f3f;
+}
 .developers h1 {
   font-size: 24px;
   font-weight: 300;
@@ -6855,12 +6858,28 @@ footer a {
   margin-top: 45px;
   margin-bottom: 45px;
 }
+.developers a {
+  color: #0092c1;
+}
+.developers p {
+  font-weight: 300;
+  color: #969696;
+}
+.developers p a {
+  font-weight: 400;
+  text-transform: uppercase;
+}
+.developers hr {
+  border-top-color: #d2d2d2;
+  border-bottom: 1px solid #ffffff;
+}
 .developers .red {
   color: #ff0000;
 }
 .developers .left {
   text-transform: uppercase;
-  color: #3f3f3f;
+  opacity: 0.7;
+  text-shadow: 0px 1px 0px #ffffff;
 }
 header {
   width: 100%;

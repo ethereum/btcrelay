@@ -117,6 +117,8 @@ footer {
 }
 
 .developers {
+	color: @text-grey-color;
+
 	h1 {
 		font-size: 24px;
 		font-weight: 300;
@@ -126,12 +128,32 @@ footer {
 		margin-bottom: 45px;
 	}
 
+	a {
+		color: #0092c1;
+	}
+
+	p {
+		font-weight: 300;
+		color: @base-color;
+
+		a {
+			font-weight: 400;
+			text-transform: uppercase;
+		}
+	}
+
+	hr {
+		border-top-color: #d2d2d2;
+		border-bottom: 1px solid #ffffff;
+	}
+
 	.red {
 		color: @red-color;
 	}
 
 	.left {
 		text-transform: uppercase;
-		color: @text-grey-color;
+		opacity: 0.7;
+		text-shadow: 0px 1px 0px rgba(255, 255, 255, 1);
 	}
 }
