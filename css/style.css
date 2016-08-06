@@ -6762,10 +6762,15 @@ button.close {
   font-style: normal;
   font-weight: 300;
 }
+html {
+  position: relative;
+  min-height: 100%;
+}
 body {
   color: #969696;
   font-family: 'Montserrat', sans-serif;
   font-size: 14px;
+  margin-bottom: 70px;
 }
 body.grey-bg {
   background-color: #f5f5f5;
@@ -6840,6 +6845,9 @@ section span.feature {
   margin-bottom: 25px;
 }
 footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
   padding: 25px 0px;
   font-weight: 300;
   background-color: #fff;
@@ -6920,15 +6928,23 @@ header .nav li.active a {
   background-color: transparent !important;
   color: #007b9e !important;
 }
+.left-menu {
+  height: 100% !important;
+  position: absolute;
+  background-color: #ebebeb;
+}
 .left-menu .nav li {
   text-transform: uppercase;
+}
+.left-menu .nav li a {
+  color: #525252;
+  padding: 10px 22px;
+  letter-spacing: -0.1px;
 }
 .left-menu .nav li.header {
   background-color: #fff;
   font-size: 16px;
-}
-.left-menu .nav li a {
-  color: #525252;
+  line-height: 37px;
 }
 .left-menu .nav li > a:hover,
 .left-menu .nav li.active > a,
@@ -6937,7 +6953,7 @@ header .nav li.active a {
   background-color: #525252;
 }
 .left-menu .nav li.dropdown ul > li a {
-  padding-left: 30px;
+  padding-left: 42px;
 }
 .left-menu .nav li.dropdown ul > li > a:hover,
 .left-menu .nav li.dropdown ul > li.active > a {
