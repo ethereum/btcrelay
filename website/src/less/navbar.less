@@ -1,8 +1,11 @@
 header {
+	position: absolute;
+	top: 0;
 	width: 100%;
 	height: auto;
 	background-color: #fff;
 	box-shadow: 0px 1px 0px 1px rgba(0,0,0,0.08);
+	z-index: 1000;
 
 	.navbar {
 		background: transparent;
@@ -54,8 +57,6 @@ header {
 }
 
 .left-menu {
-	height: 100% !important;
-	position: absolute;
 	background-color: #ebebeb;
 
 	.nav {
@@ -92,6 +93,20 @@ header {
 						color: #fff;
 						background-color: #0092c1;
 					}
+				}
+			}
+		}
+	}
+}
+
+@media (max-width: 768px) {
+	header {
+		.nav {
+			li {
+				text-align: center;
+
+				&:not(:last-child) {
+					border-bottom: 1px solid #e7e7e7;
 				}
 			}
 		}
