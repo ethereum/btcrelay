@@ -16,11 +16,12 @@
 }
 
 html, body {
-	position: relative;
-	height: 100%;
+	min-height: 100vh;
+	height: auto;
 }
 
 body {
+	position: relative;
 	color: @base-color;
 	font-family: 'Montserrat', sans-serif;
 	font-size: 14px;
@@ -30,10 +31,6 @@ body {
 	&.grey-bg {
 		background-color: @grey-color;
 	}
-}
-
-.full-height {
-	height: 100%;
 }
 
 section {
@@ -118,9 +115,13 @@ section {
 }
 
 footer {
+	position: absolute;
+	bottom: 0px;
+	width: 100%;
 	padding: 25px 0px;
 	font-weight: 300;
 	background-color: #fff;
+	z-index: 999;
 
 	a {
 		text-decoration: underline;
@@ -166,5 +167,9 @@ footer {
 		text-transform: uppercase;
 		opacity: 0.7;
 		text-shadow: 0px 1px 0px rgba(255, 255, 255, 1);
+	}
+
+	pre {
+		max-width: 340px;
 	}
 }

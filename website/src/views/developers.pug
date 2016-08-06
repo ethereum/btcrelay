@@ -8,61 +8,65 @@ html
 	body.grey-bg
 		- var page = 'developers';
 		include ./partials/header.pug
-		div.content.full-height
-			div.container.full-height
-				div.row.full-height
-					div.col-md-3.full-height
-						include ./partials/sidebar.pug
-					div.developers.col-md-9
-						h1 Main net live status
-						hr
-						div.row
-							div.col-lg-3
-								span.left Contract information
-							div.col-lg-9.text-right
-								a#contract-address(href="http://etherscan.io/address/0x41f274c0023f83391de4e0733c609df5a124c3d4" target="_blank") 0x41f274c0023f83391de4e0733c609df5a124c3d4
-							div.col-lg-12
-								hr
-
-							div.col-lg-3
-								span.left Latest block hash
-							div.col-lg-9.text-right
-								span#block-hash 000000000000000000e1cbea710bc0fd154a...e9ca40e
-							div.col-lg-12
-								hr
-
-							div.col-lg-3
-								br
-								span.left Latest block #
-							div.col-lg-9.text-right
-								span BTC Relay #[span#btc-relay.red # 415382]
-								br
-								| #[a(href="https://blockchain.info" target="_blank") Blockchain.info] #[span#blockchaininfo # 415382]
-								br
-								| #[a(href="https://btc.blockr.io" target="_blank") btc.blockr.io] #[span#blockr # 415382]
-							div.col-lg-12
-								hr
-
-							div.col-lg-3
-								span.left Eth fee
-							div.col-lg-9.text-right
-								span#eth-fee.red 0.001
-							div.col-lg-12
-								hr
-
-							div.col-lg-3
-								span.left Relayer address
-							div.col-lg-9.text-right
-								a#relayer-address(href="http://etherscan.io/address/0x1a23fd30aabf5ad53bab3093dcd4948e15cec80" target="_blank") 0x1a23fd30aabf5ad53bab3093dcd4948e15cec80
-							div.col-lg-12
-								hr
-
-						p.text-right
-							| For more information visit #[a(href="/faq.html") Status FAQ]
+		div.container
+			div.row
+				div.col-md-3.static
+					include ./partials/sidebar.pug
+				div.col-md-9.developers
+					h1 Main net live status
+					hr
+					div.row
+						div.col-lg-3
+							span.left Contract information
+						div.col-lg-9.text-right
+							a#contract-address(href="http://etherscan.io/address/0x41f274c0023f83391de4e0733c609df5a124c3d4" target="_blank") 0x41f274c0023f83391de4e0733c609df5a124c3d4
 							br
-							| If you need more help visit #[a(href="https://gitter.im/ethereum/btcrelay" target="_blank") BTC Relay Gitter]
+							a(href="#abi") ABI
+							a(href="#api") API
+							div.abi
+								include ./partials/abi.pug
+						div.col-lg-12
+							hr
+
+						div.col-lg-3
+							span.left Latest block hash
+						div.col-lg-9.text-right
+							span#block-hash 00000000000000e1cbea710bc0fd154a...e9ca40e
+						div.col-lg-12
+							hr
+
+						div.col-lg-3
 							br
+							span.left Latest block #
+						div.col-lg-9.text-right
+							span BTC Relay #[span#btc-relay.red # 415382]
 							br
+							| #[a(href="https://blockchain.info" target="_blank") Blockchain.info] #[span#blockchaininfo # 415382]
+							br
+							| #[a(href="https://btc.blockr.io" target="_blank") btc.blockr.io] #[span#blockr # 415382]
+						div.col-lg-12
+							hr
+
+						div.col-lg-3
+							span.left Eth fee
+						div.col-lg-9.text-right
+							span#eth-fee.red 0.001
+						div.col-lg-12
+							hr
+
+						div.col-lg-3
+							span.left Relayer address
+						div.col-lg-9.text-right
+							a#relayer-address(href="http://etherscan.io/address/0x1a23fd30aabf5ad53bab3093dcd4948e15cec80" target="_blank") 0x1a23fd30aabf5ad53bab3093dcd4948e15cec80
+						div.col-lg-12
+							hr
+
+					p.text-right
+						| For more information visit #[a(href="/faq.html") Status FAQ]
+						br
+						| If you need more help visit #[a(href="https://gitter.im/ethereum/btcrelay" target="_blank") BTC Relay Gitter]
+						br
+						br
 		include ./partials/footer.pug
 
 		script(src="./js/jquery.min.js")

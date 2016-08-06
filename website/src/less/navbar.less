@@ -56,7 +56,15 @@ header {
 	}
 }
 
+.static {
+	position: static;
+}
+
 .left-menu {
+	position: absolute;
+	top: 65px;
+	bottom: 70px;
+	z-index: 800;
 	background-color: #ebebeb;
 
 	.panel {
@@ -122,6 +130,17 @@ header {
 			}
 		}
 	}
+
+	@media (min-width: 992px) and (max-width: 1199px) {
+		width: 212px;
+	}
+
+
+	@media (max-width: 991px) {
+		position: static;
+		top: 0;
+		bottom: 0;
+	}
 }
 
 @media (max-width: 768px) {
@@ -135,5 +154,11 @@ header {
 				}
 			}
 		}
+	}
+
+	.left-menu {
+		position: static;
+		top: 0;
+		bottom: 0;
 	}
 }

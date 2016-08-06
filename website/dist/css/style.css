@@ -6764,10 +6764,11 @@ button.close {
 }
 html,
 body {
-  position: relative;
-  height: 100%;
+  min-height: 100vh;
+  height: auto;
 }
 body {
+  position: relative;
   color: #969696;
   font-family: 'Montserrat', sans-serif;
   font-size: 14px;
@@ -6776,9 +6777,6 @@ body {
 }
 body.grey-bg {
   background-color: #f5f5f5;
-}
-.full-height {
-  height: 100%;
 }
 section {
   padding: 50px 0;
@@ -6850,9 +6848,13 @@ section span.feature {
   margin-bottom: 25px;
 }
 footer {
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
   padding: 25px 0px;
   font-weight: 300;
   background-color: #fff;
+  z-index: 999;
 }
 footer a {
   text-decoration: underline;
@@ -6890,6 +6892,9 @@ footer a {
   text-transform: uppercase;
   opacity: 0.7;
   text-shadow: 0px 1px 0px #ffffff;
+}
+.developers pre {
+  max-width: 340px;
 }
 header {
   position: absolute;
@@ -6933,7 +6938,14 @@ header .nav li.active a {
   background-color: transparent !important;
   color: #007b9e !important;
 }
+.static {
+  position: static;
+}
 .left-menu {
+  position: absolute;
+  top: 65px;
+  bottom: 70px;
+  z-index: 800;
   background-color: #ebebeb;
 }
 .left-menu .panel {
@@ -6985,11 +6997,28 @@ header .nav li.active a {
   color: #fff;
   background-color: #0092c1;
 }
+@media (min-width: 992px) and (max-width: 1199px) {
+  .left-menu {
+    width: 212px;
+  }
+}
+@media (max-width: 991px) {
+  .left-menu {
+    position: static;
+    top: 0;
+    bottom: 0;
+  }
+}
 @media (max-width: 768px) {
   header .nav li {
     text-align: center;
   }
   header .nav li:not(:last-child) {
     border-bottom: 1px solid #e7e7e7;
+  }
+  .left-menu {
+    position: static;
+    top: 0;
+    bottom: 0;
   }
 }
