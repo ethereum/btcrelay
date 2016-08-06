@@ -1,0 +1,40 @@
+div.left-menu
+	ul.nav.nav-stacked
+		li.header.active
+			a(href="#main-net" data-toggle="collapse") Main Net
+	ul.nav.nav-stacked.collapse.in#main-net
+		li.active
+			a(href="#") Status
+		li.dropdown
+			a.dropdown-toggle(href="#main-examples" data-toggle="collapse") Examples #[span.caret]
+			ul.nav.collapse#main-examples
+				li
+					a(href="#") Verify TX
+				li
+					a(href="#") Relay TX
+				li
+					a(href="#") Bitcoin processor
+		li
+			a(href="#") How to verify source code
+	ul.nav.nav-stacked
+		li.header
+			a(href="#test-net" data-toggle="collapse") Test net
+	ul.nav.nav-stacked.collapse#test-net
+		li
+			a(href="#") Status
+		li.dropdown
+			a.dropdown-toggle(href="#test-examples" data-toggle="collapse") Examples #[span.caret]
+			ul.nav.collapse#test-examples
+				li
+					a(href="#") Verify TX
+				li
+					a(href="#") Relay TX
+				li
+					a(href="#") Bitcoin processor
+		li
+			a(href="#") How to verify source code
+	ul.nav.nav-stacked
+		li
+			a(href="#") Help
+		li
+			a(href="") Terms of use

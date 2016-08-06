@@ -31,11 +31,13 @@
     </header>
     <div class="container">
       <div class="row">
-        <div class="col-lg-3">
+        <div class="col-md-3" style="position: relative">
           <div class="left-menu">
             <ul class="nav nav-stacked">
-              <li class="header active"><a href="#">Main Net</a></li>
-              <li><a href="#">Status</a></li>
+              <li class="header active"><a href="#main-net" data-toggle="collapse">Main Net</a></li>
+            </ul>
+            <ul class="nav nav-stacked collapse in" id="main-net">
+              <li class="active"><a href="#">Status</a></li>
               <li class="dropdown"><a class="dropdown-toggle" href="#main-examples" data-toggle="collapse">Examples <span class="caret"></span></a>
                 <ul class="nav collapse" id="main-examples">
                   <li><a href="#">Verify TX</a></li>
@@ -44,8 +46,11 @@
                 </ul>
               </li>
               <li><a href="#">How to verify source code</a></li>
-              <li><a href="#">Help</a></li>
-              <li class="header"><a href="#">Test net</a></li>
+            </ul>
+            <ul class="nav nav-stacked">
+              <li class="header"><a href="#test-net" data-toggle="collapse">Test net</a></li>
+            </ul>
+            <ul class="nav nav-stacked collapse" id="test-net">
               <li><a href="#">Status</a></li>
               <li class="dropdown"><a class="dropdown-toggle" href="#test-examples" data-toggle="collapse">Examples <span class="caret"></span></a>
                 <ul class="nav collapse" id="test-examples">
@@ -55,11 +60,14 @@
                 </ul>
               </li>
               <li><a href="#">How to verify source code</a></li>
+            </ul>
+            <ul class="nav nav-stacked">
               <li><a href="#">Help</a></li>
+              <li><a href="">Terms of use</a></li>
             </ul>
           </div>
         </div>
-        <div class="developers col-lg-9">
+        <div class="developers col-md-9">
           <h1>Main net live status</h1>
           <hr>
           <div class="row">

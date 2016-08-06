@@ -15,10 +15,16 @@
 
 }
 
+html {
+	position: relative;
+	min-height: 100%;
+}
+
 body {
 	color: @base-color;
 	font-family: 'Montserrat', sans-serif;
 	font-size: 14px;
+	margin-bottom: 70px;
 
 	&.grey-bg {
 		background-color: @grey-color;
@@ -107,6 +113,9 @@ section {
 }
 
 footer {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
 	padding: 25px 0px;
 	font-weight: 300;
 	background-color: #fff;

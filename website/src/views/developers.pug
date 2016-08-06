@@ -10,44 +10,9 @@ html
 		include ./partials/header.pug
 		div.container
 			div.row
-				div.col-lg-3
-					div.left-menu
-						ul.nav.nav-stacked
-							li.header.active
-								a(href="#") Main Net
-							li
-								a(href="#") Status
-							li.dropdown
-								a.dropdown-toggle(href="#main-examples" data-toggle="collapse") Examples #[span.caret]
-								ul.nav.collapse#main-examples
-									li
-										a(href="#") Verify TX
-									li
-										a(href="#") Relay TX
-									li
-										a(href="#") Bitcoin processor
-							li
-								a(href="#") How to verify source code
-							li
-								a(href="#") Help
-							li.header
-								a(href="#") Test net
-							li
-								a(href="#") Status
-							li.dropdown
-								a.dropdown-toggle(href="#test-examples" data-toggle="collapse") Examples #[span.caret]
-								ul.nav.collapse#test-examples
-									li
-										a(href="#") Verify TX
-									li
-										a(href="#") Relay TX
-									li
-										a(href="#") Bitcoin processor
-							li
-								a(href="#") How to verify source code
-							li
-								a(href="#") Help
-				div.developers.col-lg-9
+				div.col-md-3(style="position: relative;")
+					include ./partials/sidebar.pug
+				div.developers.col-md-9
 					h1 Main net live status
 					hr
 					div.row
