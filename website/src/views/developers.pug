@@ -3,7 +3,7 @@ html
 	head
 		meta(charset="utf-8")
 		meta(name="viewport", content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no")
-		title BTC Relay
+		title BTC Relay - Developers
 		link(rel='stylesheet', href='./css/style.css')
 	body.grey-bg
 		- var page = 'developers';
@@ -63,8 +63,7 @@ html
 							| If you need more help visit #[a(href="https://gitter.im/ethereum/btcrelay" target="_blank") BTC Relay Gitter]
 							br
 							br
-		footer
-			div.container.text-center BTC Relay is licensed under the #[a(href="https://en.wikipedia.org/wiki/MIT_License" target="_blank") MIT License]. Check it out on #[a(href="https://github.com/ethereum/btcrelay" target="_blank") Github].
+		include ./partials/footer.pug
 
 		script(src="./js/jquery.min.js")
 		script(src="./js/bootstrap.min.js")
