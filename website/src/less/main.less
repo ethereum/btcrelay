@@ -132,7 +132,7 @@ footer {
 .pink-button,
 .pink-button:focus {
 	display: block;
-	float: right;
+	width: auto;
 	font-size: 16px;
 	letter-spacing: 6px;
 	color: #fff !important;
@@ -140,13 +140,19 @@ footer {
 	text-decoration: none !important;
 	box-shadow: 0px 1px 2px 0px rgba(176, 176, 176, 1);
 	padding: 7px 15px;
+	padding-top: 5px;
+	border-top: 2px solid transparent;
 	margin-top: 2px;
-	margin-bottom: 0px;
-	margin-left: 30px;
+	margin-left: 15px;
+	margin-right: 15px;
 
 	&:hover {
-		margin-top: 0px !important;
+		border-top: none;
+		border-bottom: 2px solid transparent;
+		margin-top: 0px;
 		margin-bottom: 2px;
+		padding-top: 7px;
+		padding-bottom: 5px;
 		box-shadow: 0px 3px 6px 0px rgba(176, 176, 176, .57);
 	}
 }
@@ -156,7 +162,6 @@ footer {
 
 	h1 {
 		font-size: 24px;
-		font-weight: 300;
 		color: @dark-grey-color;
 		text-transform: uppercase;
 		margin-top: 45px;
@@ -193,13 +198,36 @@ footer {
 	}
 
 	.button-group {
-		padding-top: 13px;
+		float: right;
+		padding-top: 11px;
 		padding-bottom: 20px;
+		margin-top: 2px;
+		margin-bottom: 2px;
+		margin-right: -15px;
+		clear: both;
 	}
 
 	pre {
 		width: 100%;
 		height: 140px;
 		white-space: normal;
+	}
+
+	#latestBlockHash {
+		text-overflow: ellipse;
+	}
+
+	@media (max-width: 768px) {
+		text-align: center;
+
+		.text-right {
+			text-align: center;
+		}
+
+		.button-group {
+			display: inline-block;
+			margin: 0 auto;
+			float: none;
+		}
 	}
 }

@@ -19,12 +19,12 @@ html
 						div.col-lg-3
 							span.left Contract information
 						div.col-lg-9.text-right
-							a#contract-address(href="http://etherscan.io/address/0x41f274c0023f83391de4e0733c609df5a124c3d4" target="_blank") 0x41f274c0023f83391de4e0733c609df5a124c3d4
+							a#relayAddr(href="http://etherscan.io/address/0x41f274c0023f83391de4e0733c609df5a124c3d4" target="_blank") 0x41f274c0023f83391de4e0733c609df5a124c3d4
 							br
 							div.button-group
-								a.pink-button.collapsed(href="#abi" data-toggle="collapse" aria-expanded="false") ABI
-								a.pink-button(href="https://github.com/ethereum/btcrelay#api" target="_blank") API
-								div.clearfix
+								a.pink-button.pull-right(href="https://github.com/ethereum/btcrelay#api" target="_blank") API
+								a.pink-button.pull-right.collapsed(role="button" data-toggle="collapse" href="#abi" aria-controls="main-net" aria-expanded="false") ABI
+							div.clearfix
 							div#abi.collapse
 								include ./partials/abi.pug
 						div.col-lg-12
@@ -33,7 +33,7 @@ html
 						div.col-lg-3
 							span.left Latest block hash
 						div.col-lg-9.text-right
-							span#block-hash 00000000000000e1cbea710bc0fd154a...e9ca40e
+							span#latestBlockHash 00000000000000e1cbea710bc0fd154a...e9ca40e
 						div.col-lg-12
 							hr
 

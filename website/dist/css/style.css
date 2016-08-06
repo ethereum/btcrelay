@@ -6863,7 +6863,7 @@ footer a {
 .pink-button,
 .pink-button:focus {
   display: block;
-  float: right;
+  width: auto;
   font-size: 16px;
   letter-spacing: 6px;
   color: #fff !important;
@@ -6872,14 +6872,20 @@ footer a {
   -webkit-box-shadow: 0px 1px 2px 0px #b0b0b0;
           box-shadow: 0px 1px 2px 0px #b0b0b0;
   padding: 7px 15px;
+  padding-top: 5px;
+  border-top: 2px solid transparent;
   margin-top: 2px;
-  margin-bottom: 0px;
-  margin-left: 30px;
+  margin-left: 15px;
+  margin-right: 15px;
 }
 .pink-button:hover,
 .pink-button:focus:hover {
-  margin-top: 0px !important;
+  border-top: none;
+  border-bottom: 2px solid transparent;
+  margin-top: 0px;
   margin-bottom: 2px;
+  padding-top: 7px;
+  padding-bottom: 5px;
   -webkit-box-shadow: 0px 3px 6px 0px rgba(176, 176, 176, 0.57);
           box-shadow: 0px 3px 6px 0px rgba(176, 176, 176, 0.57);
 }
@@ -6888,7 +6894,6 @@ footer a {
 }
 .developers h1 {
   font-size: 24px;
-  font-weight: 300;
   color: #282828;
   text-transform: uppercase;
   margin-top: 45px;
@@ -6918,13 +6923,34 @@ footer a {
   text-shadow: 0px 1px 0px #ffffff;
 }
 .developers .button-group {
-  padding-top: 13px;
+  float: right;
+  padding-top: 11px;
   padding-bottom: 20px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  margin-right: -15px;
+  clear: both;
 }
 .developers pre {
   width: 100%;
   height: 140px;
   white-space: normal;
+}
+.developers #latestBlockHash {
+  text-overflow: ellipse;
+}
+@media (max-width: 768px) {
+  .developers {
+    text-align: center;
+  }
+  .developers .text-right {
+    text-align: center;
+  }
+  .developers .button-group {
+    display: inline-block;
+    margin: 0 auto;
+    float: none;
+  }
 }
 header {
   position: absolute;
