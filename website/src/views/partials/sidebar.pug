@@ -3,10 +3,10 @@ div.left-menu.full-height
 		li.header.active
 			a(href="#main-net" data-toggle="collapse") Main Net
 	ul.nav.nav-stacked.collapse.in#main-net
-		li.active
+		li
 			a(href="#") Status
 		li.dropdown
-			a.dropdown-toggle(href="#main-examples" data-toggle="collapse") Examples #[span.caret]
+			a.dropdown-toggle.collapsed(href="#main-examples" data-toggle="collapse" aria-expanded="false") Examples #[span.caret]
 			ul.nav.collapse#main-examples
 				li
 					a(href="#") Verify TX
@@ -23,7 +23,7 @@ div.left-menu.full-height
 		li
 			a(href="#") Status
 		li.dropdown
-			a.dropdown-toggle(href="#test-examples" data-toggle="collapse") Examples #[span.caret]
+			a.dropdown-toggle.collapsed(href="#test-examples" data-toggle="collapse" aria-expanded="false") Examples #[span.caret]
 			ul.nav.collapse#test-examples
 				li
 					a(href="#") Verify TX

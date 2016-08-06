@@ -83,6 +83,20 @@ header {
 			}
 
 			&.dropdown {
+				span.caret {
+					float: right;
+					margin-top: 7px;
+				}
+				> a:not(.collapsed) {
+					background-color: #525252;
+					color: #fff;
+
+					span.caret {
+						border-top: 0;
+						border-bottom: 4px dashed;
+					}
+				}
+
 				ul > li {
 					a {
 						padding-left: 42px;
