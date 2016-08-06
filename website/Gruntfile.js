@@ -51,7 +51,7 @@ module.exports = function(grunt) {
 	var PUG_FILE_CFG =  [{
 		expand: true,
 		cwd: SRC_DIR_PUG,
-		src: ['**/*.pug'],
+		src: ['*.pug'],
 		dest: BUILD_DIR,
 		ext: '.html'
 	}];
