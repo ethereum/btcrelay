@@ -1,38 +1,41 @@
 div.left-menu.full-height
-	ul.nav.nav-stacked
-		li.header.active
-			a(href="#main-net" data-toggle="collapse") Main Net
-	ul.nav.nav-stacked.collapse.in#main-net
-		li
-			a(href="#") Status
-		li.dropdown
-			a.dropdown-toggle.collapsed(href="#main-examples" data-toggle="collapse" aria-expanded="false") Examples #[span.caret]
-			ul.nav.collapse#main-examples
+	div.panel-group#accordion(role="tablist" aria-multiselectable="true")
+		div.panel
+			ul.nav.nav-stacked#mainnetHeading(role="tab")
+				li.header.active
+					a(role="button" data-toggle="collapse" data-parent="#accordion" href="#main-net" aria-expanded="true" aria-controls="main-net") Main Net
+			ul.nav.nav-stacked.collapse.in#main-net(role="tabpanel" aria-labelledby="mainnetHeading")
 				li
-					a(href="#") Verify TX
+					a(href="#") Status
+				li.dropdown
+					a.dropdown-toggle.collapsed(href="#main-examples" data-toggle="collapse" aria-expanded="false") Examples #[span.caret]
+					ul.nav.collapse#main-examples
+						li
+							a(href="#") Verify TX
+						li
+							a(href="#") Relay TX
+						li
+							a(href="#") Bitcoin processor
 				li
-					a(href="#") Relay TX
+					a(href="#") How to verify source code
+		div.panel
+			ul.nav.nav-stacked#testnetHeading(role="tab")
+				li.header
+					a(role="button" data-toggle="collapse" data-parent="#accordion" href="#test-net" aria-expanded="false" aria-controls="test-net") Test net
+			ul.nav.nav-stacked.collapse#test-net(role="tabpanel" aria-labelledby="testnetHeading")
 				li
-					a(href="#") Bitcoin processor
-		li
-			a(href="#") How to verify source code
-	ul.nav.nav-stacked
-		li.header
-			a(href="#test-net" data-toggle="collapse") Test net
-	ul.nav.nav-stacked.collapse#test-net
-		li
-			a(href="#") Status
-		li.dropdown
-			a.dropdown-toggle.collapsed(href="#test-examples" data-toggle="collapse" aria-expanded="false") Examples #[span.caret]
-			ul.nav.collapse#test-examples
+					a(href="#") Status
+				li.dropdown
+					a.dropdown-toggle.collapsed(href="#test-examples" data-toggle="collapse" aria-expanded="false") Examples #[span.caret]
+					ul.nav.collapse#test-examples
+						li
+							a(href="#") Verify TX
+						li
+							a(href="#") Relay TX
+						li
+							a(href="#") Bitcoin processor
 				li
-					a(href="#") Verify TX
-				li
-					a(href="#") Relay TX
-				li
-					a(href="#") Bitcoin processor
-		li
-			a(href="#") How to verify source code
+					a(href="#") How to verify source code
 	ul.nav.nav-stacked
 		li
 			a(href="#") Help

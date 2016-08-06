@@ -59,6 +59,12 @@ header {
 .left-menu {
 	background-color: #ebebeb;
 
+	.panel {
+		border: none;
+		background-color: transparent;
+		box-shadow: none;
+	}
+
 	.nav {
 		li {
 			text-transform: uppercase;
@@ -73,6 +79,11 @@ header {
 				background-color: #fff;
 				font-size: 16px;
 				line-height: 37px;
+
+				&:not(.active) > a:focus {
+					background-color: #fff;
+					color: #525252;
+				}
 			}
 
 			> a:hover,
