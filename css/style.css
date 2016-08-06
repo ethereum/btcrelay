@@ -6936,6 +6936,12 @@ header .nav li.active a {
 .left-menu {
   background-color: #ebebeb;
 }
+.left-menu .panel {
+  border: none;
+  background-color: transparent;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+}
 .left-menu .nav li {
   text-transform: uppercase;
 }
@@ -6948,6 +6954,10 @@ header .nav li.active a {
   background-color: #fff;
   font-size: 16px;
   line-height: 37px;
+}
+.left-menu .nav li.header:not(.active) > a:focus {
+  background-color: #fff;
+  color: #525252;
 }
 .left-menu .nav li > a:hover,
 .left-menu .nav li.active > a,

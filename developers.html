@@ -34,34 +34,40 @@
         <div class="row full-height">
           <div class="col-md-3 full-height">
             <div class="left-menu full-height">
-              <ul class="nav nav-stacked">
-                <li class="header active"><a href="#main-net" data-toggle="collapse">Main Net</a></li>
-              </ul>
-              <ul class="nav nav-stacked collapse in" id="main-net">
-                <li><a href="#">Status</a></li>
-                <li class="dropdown"><a class="dropdown-toggle collapsed" href="#main-examples" data-toggle="collapse" aria-expanded="false">Examples <span class="caret"></span></a>
-                  <ul class="nav collapse" id="main-examples">
-                    <li><a href="#">Verify TX</a></li>
-                    <li><a href="#">Relay TX</a></li>
-                    <li><a href="#">Bitcoin processor</a></li>
+              <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                <div class="panel">
+                  <ul class="nav nav-stacked" id="mainnetHeading" role="tab">
+                    <li class="header active"><a role="button" data-toggle="collapse" data-parent="#accordion" href="#main-net" aria-expanded="true" aria-controls="main-net">Main Net</a></li>
                   </ul>
-                </li>
-                <li><a href="#">How to verify source code</a></li>
-              </ul>
-              <ul class="nav nav-stacked">
-                <li class="header"><a href="#test-net" data-toggle="collapse">Test net</a></li>
-              </ul>
-              <ul class="nav nav-stacked collapse" id="test-net">
-                <li><a href="#">Status</a></li>
-                <li class="dropdown"><a class="dropdown-toggle collapsed" href="#test-examples" data-toggle="collapse" aria-expanded="false">Examples <span class="caret"></span></a>
-                  <ul class="nav collapse" id="test-examples">
-                    <li><a href="#">Verify TX</a></li>
-                    <li><a href="#">Relay TX</a></li>
-                    <li><a href="#">Bitcoin processor</a></li>
+                  <ul class="nav nav-stacked collapse in" id="main-net" role="tabpanel" aria-labelledby="mainnetHeading">
+                    <li><a href="#">Status</a></li>
+                    <li class="dropdown"><a class="dropdown-toggle collapsed" href="#main-examples" data-toggle="collapse" aria-expanded="false">Examples <span class="caret"></span></a>
+                      <ul class="nav collapse" id="main-examples">
+                        <li><a href="#">Verify TX</a></li>
+                        <li><a href="#">Relay TX</a></li>
+                        <li><a href="#">Bitcoin processor</a></li>
+                      </ul>
+                    </li>
+                    <li><a href="#">How to verify source code</a></li>
                   </ul>
-                </li>
-                <li><a href="#">How to verify source code</a></li>
-              </ul>
+                </div>
+                <div class="panel">
+                  <ul class="nav nav-stacked" id="testnetHeading" role="tab">
+                    <li class="header"><a role="button" data-toggle="collapse" data-parent="#accordion" href="#test-net" aria-expanded="false" aria-controls="test-net">Test net</a></li>
+                  </ul>
+                  <ul class="nav nav-stacked collapse" id="test-net" role="tabpanel" aria-labelledby="testnetHeading">
+                    <li><a href="#">Status</a></li>
+                    <li class="dropdown"><a class="dropdown-toggle collapsed" href="#test-examples" data-toggle="collapse" aria-expanded="false">Examples <span class="caret"></span></a>
+                      <ul class="nav collapse" id="test-examples">
+                        <li><a href="#">Verify TX</a></li>
+                        <li><a href="#">Relay TX</a></li>
+                        <li><a href="#">Bitcoin processor</a></li>
+                      </ul>
+                    </li>
+                    <li><a href="#">How to verify source code</a></li>
+                  </ul>
+                </div>
+              </div>
               <ul class="nav nav-stacked">
                 <li><a href="#">Help</a></li>
                 <li><a href="">Terms of use</a></li>
