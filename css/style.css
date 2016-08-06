@@ -6906,6 +6906,16 @@ header .nav li a {
   line-height: 35px;
   text-transform: uppercase;
 }
+header .nav li a.github {
+  line-height: 24px;
+}
+header .nav li a.github svg {
+  fill: #777;
+  margin-top: 4px;
+}
+header .nav li a.github:hover svg {
+  fill: #333;
+}
 header .nav li.active a {
   background-color: transparent !important;
   color: #007b9e !important;
