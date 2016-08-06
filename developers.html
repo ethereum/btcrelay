@@ -29,75 +29,77 @@
         </nav>
       </div>
     </header>
-    <div class="container">
-      <div class="row">
-        <div class="col-md-3" style="position: relative">
-          <div class="left-menu">
-            <ul class="nav nav-stacked">
-              <li class="header active"><a href="#main-net" data-toggle="collapse">Main Net</a></li>
-            </ul>
-            <ul class="nav nav-stacked collapse in" id="main-net">
-              <li class="active"><a href="#">Status</a></li>
-              <li class="dropdown"><a class="dropdown-toggle" href="#main-examples" data-toggle="collapse">Examples <span class="caret"></span></a>
-                <ul class="nav collapse" id="main-examples">
-                  <li><a href="#">Verify TX</a></li>
-                  <li><a href="#">Relay TX</a></li>
-                  <li><a href="#">Bitcoin processor</a></li>
-                </ul>
-              </li>
-              <li><a href="#">How to verify source code</a></li>
-            </ul>
-            <ul class="nav nav-stacked">
-              <li class="header"><a href="#test-net" data-toggle="collapse">Test net</a></li>
-            </ul>
-            <ul class="nav nav-stacked collapse" id="test-net">
-              <li><a href="#">Status</a></li>
-              <li class="dropdown"><a class="dropdown-toggle" href="#test-examples" data-toggle="collapse">Examples <span class="caret"></span></a>
-                <ul class="nav collapse" id="test-examples">
-                  <li><a href="#">Verify TX</a></li>
-                  <li><a href="#">Relay TX</a></li>
-                  <li><a href="#">Bitcoin processor</a></li>
-                </ul>
-              </li>
-              <li><a href="#">How to verify source code</a></li>
-            </ul>
-            <ul class="nav nav-stacked">
-              <li><a href="#">Help</a></li>
-              <li><a href="">Terms of use</a></li>
-            </ul>
-          </div>
-        </div>
-        <div class="developers col-md-9">
-          <h1>Main net live status</h1>
-          <hr>
-          <div class="row">
-            <div class="col-lg-3"><span class="left">Contract information</span></div>
-            <div class="col-lg-9 text-right"><a id="contract-address" href="http://etherscan.io/address/0x41f274c0023f83391de4e0733c609df5a124c3d4" target="_blank">0x41f274c0023f83391de4e0733c609df5a124c3d4</a></div>
-            <div class="col-lg-12">
-              <hr>
-            </div>
-            <div class="col-lg-3"><span class="left">Latest block hash</span></div>
-            <div class="col-lg-9 text-right"><span id="block-hash">000000000000000000e1cbea710bc0fd154a...e9ca40e</span></div>
-            <div class="col-lg-12">
-              <hr>
-            </div>
-            <div class="col-lg-3"><br><span class="left">Latest block #</span></div>
-            <div class="col-lg-9 text-right"><span>BTC Relay <span class="red" id="btc-relay"># 415382</span></span><br><a href="https://blockchain.info" target="_blank">Blockchain.info</a> <span id="blockchaininfo"># 415382</span><br><a href="https://btc.blockr.io" target="_blank">btc.blockr.io</a> <span id="blockr"># 415382</span></div>
-            <div class="col-lg-12">
-              <hr>
-            </div>
-            <div class="col-lg-3"><span class="left">Eth fee</span></div>
-            <div class="col-lg-9 text-right"><span class="red" id="eth-fee">0.001</span></div>
-            <div class="col-lg-12">
-              <hr>
-            </div>
-            <div class="col-lg-3"><span class="left">Relayer address</span></div>
-            <div class="col-lg-9 text-right"><a id="relayer-address" href="http://etherscan.io/address/0x1a23fd30aabf5ad53bab3093dcd4948e15cec80" target="_blank">0x1a23fd30aabf5ad53bab3093dcd4948e15cec80</a></div>
-            <div class="col-lg-12">
-              <hr>
+    <div class="content full-height">
+      <div class="container full-height">
+        <div class="row full-height">
+          <div class="col-md-3 full-height">
+            <div class="left-menu full-height">
+              <ul class="nav nav-stacked">
+                <li class="header active"><a href="#main-net" data-toggle="collapse">Main Net</a></li>
+              </ul>
+              <ul class="nav nav-stacked collapse in" id="main-net">
+                <li class="active"><a href="#">Status</a></li>
+                <li class="dropdown"><a class="dropdown-toggle" href="#main-examples" data-toggle="collapse">Examples <span class="caret"></span></a>
+                  <ul class="nav collapse" id="main-examples">
+                    <li><a href="#">Verify TX</a></li>
+                    <li><a href="#">Relay TX</a></li>
+                    <li><a href="#">Bitcoin processor</a></li>
+                  </ul>
+                </li>
+                <li><a href="#">How to verify source code</a></li>
+              </ul>
+              <ul class="nav nav-stacked">
+                <li class="header"><a href="#test-net" data-toggle="collapse">Test net</a></li>
+              </ul>
+              <ul class="nav nav-stacked collapse" id="test-net">
+                <li><a href="#">Status</a></li>
+                <li class="dropdown"><a class="dropdown-toggle" href="#test-examples" data-toggle="collapse">Examples <span class="caret"></span></a>
+                  <ul class="nav collapse" id="test-examples">
+                    <li><a href="#">Verify TX</a></li>
+                    <li><a href="#">Relay TX</a></li>
+                    <li><a href="#">Bitcoin processor</a></li>
+                  </ul>
+                </li>
+                <li><a href="#">How to verify source code</a></li>
+              </ul>
+              <ul class="nav nav-stacked">
+                <li><a href="#">Help</a></li>
+                <li><a href="">Terms of use</a></li>
+              </ul>
             </div>
           </div>
-          <p class="text-right">For more information visit <a href="/faq.html">Status FAQ</a><br>If you need more help visit <a href="https://gitter.im/ethereum/btcrelay" target="_blank">BTC Relay Gitter</a><br><br></p>
+          <div class="developers col-md-9">
+            <h1>Main net live status</h1>
+            <hr>
+            <div class="row">
+              <div class="col-lg-3"><span class="left">Contract information</span></div>
+              <div class="col-lg-9 text-right"><a id="contract-address" href="http://etherscan.io/address/0x41f274c0023f83391de4e0733c609df5a124c3d4" target="_blank">0x41f274c0023f83391de4e0733c609df5a124c3d4</a></div>
+              <div class="col-lg-12">
+                <hr>
+              </div>
+              <div class="col-lg-3"><span class="left">Latest block hash</span></div>
+              <div class="col-lg-9 text-right"><span id="block-hash">000000000000000000e1cbea710bc0fd154a...e9ca40e</span></div>
+              <div class="col-lg-12">
+                <hr>
+              </div>
+              <div class="col-lg-3"><br><span class="left">Latest block #</span></div>
+              <div class="col-lg-9 text-right"><span>BTC Relay <span class="red" id="btc-relay"># 415382</span></span><br><a href="https://blockchain.info" target="_blank">Blockchain.info</a> <span id="blockchaininfo"># 415382</span><br><a href="https://btc.blockr.io" target="_blank">btc.blockr.io</a> <span id="blockr"># 415382</span></div>
+              <div class="col-lg-12">
+                <hr>
+              </div>
+              <div class="col-lg-3"><span class="left">Eth fee</span></div>
+              <div class="col-lg-9 text-right"><span class="red" id="eth-fee">0.001</span></div>
+              <div class="col-lg-12">
+                <hr>
+              </div>
+              <div class="col-lg-3"><span class="left">Relayer address</span></div>
+              <div class="col-lg-9 text-right"><a id="relayer-address" href="http://etherscan.io/address/0x1a23fd30aabf5ad53bab3093dcd4948e15cec80" target="_blank">0x1a23fd30aabf5ad53bab3093dcd4948e15cec80</a></div>
+              <div class="col-lg-12">
+                <hr>
+              </div>
+            </div>
+            <p class="text-right">For more information visit <a href="/faq.html">Status FAQ</a><br>If you need more help visit <a href="https://gitter.im/ethereum/btcrelay" target="_blank">BTC Relay Gitter</a><br><br></p>
+          </div>
         </div>
       </div>
     </div>
