@@ -21,9 +21,11 @@ html
 						div.col-lg-9.text-right
 							a#contract-address(href="http://etherscan.io/address/0x41f274c0023f83391de4e0733c609df5a124c3d4" target="_blank") 0x41f274c0023f83391de4e0733c609df5a124c3d4
 							br
-							a(href="#abi") ABI
-							a(href="#api") API
-							div.abi
+							div.button-group
+								a.pink-button.collapsed(href="#abi" data-toggle="collapse" aria-expanded="false") ABI
+								a.pink-button(href="https://github.com/ethereum/btcrelay#api" target="_blank") API
+								div.clearfix
+							div#abi.collapse
 								include ./partials/abi.pug
 						div.col-lg-12
 							hr
