@@ -87,22 +87,25 @@
               <hr>
             </div>
             <div class="col-lg-3"><span class="left">Latest block hash</span></div>
-            <div class="col-lg-9 text-right"><span id="latestBlockHash">00000000000000e1cbea710bc0fd154a...e9ca40e</span></div>
+            <div class="col-lg-9 text-right">
+              <div id="latestBlockHash">00000000000000e1cbea710bc0fd154a...e9ca40e</div>
+            </div>
             <div class="col-lg-12">
+              <div class="alert alert-danger" id="warnSync" style="display:none"><span class="glyphicon glyphicon-exclamation-sign"></span>Your Ethereum node may not be fully synced: <span id="nodeBlockNum">415382</span>. Check <a href="https://ethstats.net" target="_blank">stats</a> for the latest blocks.</div>
               <hr>
             </div>
             <div class="col-lg-3"><br><span class="left">Latest block #</span></div>
-            <div class="col-lg-9 text-right"><span>BTC Relay <span class="red" id="btc-relay"># 415382</span></span><br><a href="https://blockchain.info" target="_blank">Blockchain.info</a> <span id="blockchaininfo"># 415382</span><br><a href="https://btc.blockr.io" target="_blank">btc.blockr.io</a> <span id="blockr"># 415382</span></div>
+            <div class="col-lg-9 text-right"><span>BTC Relay <span class="red" id="latestBlockHeight"># 415382</span></span><br><a href="https://blockchain.info" target="_blank">Blockchain.info</a> <span id="bciBlockHeight"># 415382</span><br><a href="https://btc.blockr.io" target="_blank">btc.blockr.io</a> <span id="blockrBlockHeight"># 415382</span></div>
             <div class="col-lg-12">
               <hr>
             </div>
             <div class="col-lg-3"><span class="left">Eth fee</span></div>
-            <div class="col-lg-9 text-right"><span class="red" id="eth-fee">0.001</span></div>
+            <div class="col-lg-9 text-right"><span class="red" id="feeVTX">0.001</span></div>
             <div class="col-lg-12">
               <hr>
             </div>
             <div class="col-lg-3"><span class="left">Relayer address</span></div>
-            <div class="col-lg-9 text-right"><a id="relayer-address" href="http://etherscan.io/address/0x1a23fd30aabf5ad53bab3093dcd4948e15cec80" target="_blank">0x1a23fd30aabf5ad53bab3093dcd4948e15cec80</a></div>
+            <div class="col-lg-9 text-right"><a id="feeRecipient" href="http://etherscan.io/address/0x1a23fd30aabf5ad53bab3093dcd4948e15cec80" target="_blank">0x1a23fd30aabf5ad53bab3093dcd4948e15cec80</a></div>
             <div class="col-lg-12">
               <hr>
             </div>
@@ -116,5 +119,8 @@
     </footer>
     <script src="./js/jquery.min.js"></script>
     <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/bignumber.min.js"></script>
+    <script src="./js/web3.min.js"></script>
+    <script src="./js/app.js"></script>
   </body>
 </html>

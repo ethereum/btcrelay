@@ -6937,7 +6937,18 @@ footer a {
   white-space: normal;
 }
 .developers #latestBlockHash {
-  text-overflow: ellipse;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.developers .alert {
+  margin-top: 15px;
+}
+.developers .alert .glyphicon {
+  font-size: 18px;
+  line-height: 12px;
+  top: 4px;
+  padding-right: 10px;
 }
 @media (max-width: 768px) {
   .developers {
