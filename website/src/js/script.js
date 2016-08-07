@@ -122,7 +122,7 @@ function callVerifyTx(txBytes, txIndex, merkleSibling, txBlockHash) {
   var res = ContractObject.verifyTx.call(txBytes, txIndex, merkleSibling, txBlockHash, objParam);
 
   $('#txReturned').text(res.toString(16));
-  $('.status-box .glyphicon').removeClass('glyphicon-repeat').removeClass('glyphicon-ok').removeClass('glyphicon-remove').removeClass('.spinning');
+  $('.status-box .glyphicon').removeClass('glyphicon-repeat').removeClass('glyphicon-ok').removeClass('glyphicon-remove').removeClass('spinning');
 
   if(res.toString(16) === $('#btcTxHash').val()) {
     $('.status-box').addClass('success');
@@ -135,7 +135,7 @@ function callVerifyTx(txBytes, txIndex, merkleSibling, txBlockHash) {
 
 function callContract() {
   $('.status-box').removeClass('danger').removeClass('success');
-  $('.status-box .glyphicon').removeClass('glyphicon-repeat').removeClass('glyphicon-ok').removeClass('glyphicon-remove').removeClass('.spinning').addClass('glyphicon-repeat').addClass('.spinning');
+  $('.status-box .glyphicon').removeClass('glyphicon-repeat').removeClass('glyphicon-ok').removeClass('glyphicon-remove').removeClass('spinning').addClass('glyphicon-repeat').addClass('spinning');
   var txBytes = '0x' + $('#rawTransaction').text();
   var txBlockHash = '0x' + gBlockHashOfTx;
 
@@ -157,7 +157,7 @@ function getTxInfo(isRelay) {
   $('#feeVerifyTx').html('-');
   $('#txReturned').html('-');
   $('.status-box').removeClass('danger').removeClass('success');
-  $('.status-box .glyphicon').removeClass('glyphicon-repeat').removeClass('glyphicon-ok').removeClass('glyphicon-remove').removeClass('.spinning').addClass('glyphicon-repeat');
+  $('.status-box .glyphicon').removeClass('glyphicon-repeat').removeClass('glyphicon-ok').removeClass('glyphicon-remove').removeClass('spinning').addClass('glyphicon-repeat');
 
   var txid = $('#btcTxHash').val();
   var urlJsonTx = "https://btc.blockr.io/api/v1/tx/raw/" + txid;
@@ -210,15 +210,29 @@ function doRelayTx(txBytes, txIndex, merkleSibling, txBlockHash) {
       txBlockHash, gProcessorAddr, objParam, function(err, ethTx) {
     if (err) {
       console.log('@@@ relayTx error');
+      console.error(err);
+      $('#txHashReturned').hide();
+      $('#txHashError').show();
+      $('.status-box').removeClass('danger').removeClass('success').addClass('danger');
+      $('.status-box .glyphicon').removeClass('glyphicon-repeat').removeClass('glyphicon-ok').removeClass('glyphicon-remove').removeClass('spinning').addClass('glyphicon-remove');
+      $('#txHashError').text(err.toString());
       return;
     }
 
+    $('#txHashReturned').show();
+    $('#txHashError').hide();
+    $('.status-box').removeClass('danger').removeClass('success').addClass('success');
+    $('.status-box .glyphicon').removeClass('glyphicon-repeat').removeClass('glyphicon-ok').removeClass('glyphicon-remove').removeClass('spinning').addClass('glyphicon-ok');
     $('#txHashReturned').text(ethTx);
     $('#txHashReturned').attr('href', 'http://' + (net === 'test' ? 'testnet.' : '') + 'etherscan.io/tx/' + ethTx);
   });
 }
 
 function callRelayContract() {
+  $('#txHashError').text('');
+  $('#txHashError').hide();
+  $('.status-box').removeClass('danger').removeClass('success');
+  $('.status-box .glyphicon').removeClass('glyphicon-repeat').removeClass('glyphicon-ok').removeClass('glyphicon-remove').removeClass('spinning').addClass('glyphicon-repeat').addClass('spinning');
   var txBytes = '0x' + $('#txHexText').val();
   var txBlockHash = '0x' + gBlockHashOfTx;
 
@@ -288,9 +302,9 @@ $(function() {
     $('#feeVerifyTx').html('-');
     $('#txReturned').html('-');
     $('#txHashReturned').text('-');
-    $('#txHashReturned').attr('html', '#');
+    $('#txHashReturned').attr('href', '#');
     $('.status-box').removeClass('danger').removeClass('success');
-    $('.status-box .glyphicon').removeClass('glyphicon-repeat').removeClass('glyphicon-ok').removeClass('glyphicon-remove').removeClass('.spinning').addClass('glyphicon-repeat');
+    $('.status-box .glyphicon').removeClass('glyphicon-repeat').removeClass('glyphicon-ok').removeClass('glyphicon-remove').removeClass('spinning').addClass('glyphicon-repeat');
     $('#verifyPage').addClass('verify-active').show();
 
     $('#header').html('Verify Tx <small>' + (lastNet === 'main' ? '(Main net)' : '(Morden test net)') + '</small>');
@@ -312,9 +326,11 @@ $(function() {
     $('#feeVerifyTx').html('-');
     $('#txReturned').html('-');
     $('#txHashReturned').text('-');
-    $('#txHashReturned').attr('html', '#');
+    $('#txHashReturned').attr('href', '#');
+    $('#txHashReturned').show();
+    $('#txHashError').hide();
     $('.status-box').removeClass('danger').removeClass('success');
-    $('.status-box .glyphicon').removeClass('glyphicon-repeat').removeClass('glyphicon-ok').removeClass('glyphicon-remove').removeClass('.spinning').addClass('glyphicon-repeat');
+    $('.status-box .glyphicon').removeClass('glyphicon-repeat').removeClass('glyphicon-ok').removeClass('glyphicon-remove').removeClass('spinning').addClass('glyphicon-repeat');
     $('#verifyPage').addClass('relay-active').show();
 
     $('#header').html('Relay Tx <small>' + (lastNet === 'main' ? '(Main net)' : '(Morden test net)') + '</small>');
