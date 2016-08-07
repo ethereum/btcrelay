@@ -5,7 +5,7 @@ div#verifyPage.example-page
 		div.col-lg-3
 			span.left BTC Relay
 		div.col-lg-9.text-right
-			a#relayAddr(href="http://etherscan.io/address/0x41f274c0023f83391de4e0733c609df5a124c3d4" target="_blank") 0x41f274c0023f83391de4e0733c609df5a124c3d4
+			a#relayAddr1(href="http://etherscan.io/address/0x41f274c0023f83391de4e0733c609df5a124c3d4" target="_blank") 0x41f274c0023f83391de4e0733c609df5a124c3d4
 		div.col-lg-12
 			hr
 		div.col-lg-1
@@ -46,14 +46,17 @@ div#verifyPage.example-page
 
 			h3 Results
 			span.left BTC Relay verifyTx returned
-			div.text-result#txReturned -
+			div.text-result
+				span#txReturned -
+				div.status-box
+					span.glyphicon.glyphicon-repeat
 
 	hr
 	p
 		strong View page source to see the main steps:
 	ul
 		li Getting a raw transaction and its index from a hash
-		li Using #[a() bitcoin-proof] to get a Merkle proof
-		li Calling #[a() verifyTx]
+		li Using #[a(href="https://www.npmjs.com/package/bitcoin-proof" target="_blank") bitcoin-proof] to get a Merkle proof
+		li Calling #[a(href="https://github.com/ethereum/btcrelay#verifytxrawtransaction-transactionindex-merklesibling-blockhash" target="_blank") verifyTx]
 	br
 	br

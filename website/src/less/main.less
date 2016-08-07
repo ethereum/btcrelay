@@ -332,11 +332,32 @@ footer {
 
 	textarea,
 	div.text-result {
+		padding: 12px 16px;
 		background-color: @light-grey-color;
 	}
 
 	div.text-result {
+		position: relative;
 		word-wrap: break-word;
+
+		div.status-box {
+			position: absolute;
+			right: 0px;
+			top: 0px;
+			bottom: 0px;
+			line-height: 23px;
+			padding: 12px 16px;
+			border-left: 1px solid #b6b7b7;
+			font-size: 20px;
+
+			&.success {
+				color: @green-color;
+			}
+
+			&.danger {
+				color: @brand-danger;
+			}
+		}
 	}
 
 	@media (max-width: 768px) {
@@ -352,4 +373,19 @@ footer {
 			float: none;
 		}
 	}
+}
+
+.glyphicon.spinning {
+    animation: spin 1s infinite linear;
+    -webkit-animation: spin2 1s infinite linear;
+}
+
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg); }
+    to { transform: scale(1) rotate(360deg); }
+}
+
+@-webkit-keyframes spin2 {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
 }

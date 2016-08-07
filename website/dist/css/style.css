@@ -7039,10 +7039,28 @@ footer a {
 }
 .developers textarea,
 .developers div.text-result {
+  padding: 12px 16px;
   background-color: #f0f0f0;
 }
 .developers div.text-result {
+  position: relative;
   word-wrap: break-word;
+}
+.developers div.text-result div.status-box {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+  line-height: 23px;
+  padding: 12px 16px;
+  border-left: 1px solid #b6b7b7;
+  font-size: 20px;
+}
+.developers div.text-result div.status-box.success {
+  color: #049e00;
+}
+.developers div.text-result div.status-box.danger {
+  color: #d9534f;
 }
 @media (max-width: 768px) {
   .developers {
@@ -7055,6 +7073,51 @@ footer a {
     display: inline-block;
     margin: 0 auto;
     float: none;
+  }
+}
+.glyphicon.spinning {
+  -o-animation: spin 1s infinite linear;
+     animation: spin 1s infinite linear;
+  -webkit-animation: spin2 1s infinite linear;
+}
+@-webkit-keyframes spin {
+  from {
+    -webkit-transform: scale(1) rotate(0deg);
+            transform: scale(1) rotate(0deg);
+  }
+  to {
+    -webkit-transform: scale(1) rotate(360deg);
+            transform: scale(1) rotate(360deg);
+  }
+}
+@-o-keyframes spin {
+  from {
+    -o-transform: scale(1) rotate(0deg);
+       transform: scale(1) rotate(0deg);
+  }
+  to {
+    -o-transform: scale(1) rotate(360deg);
+       transform: scale(1) rotate(360deg);
+  }
+}
+@keyframes spin {
+  from {
+    -webkit-transform: scale(1) rotate(0deg);
+         -o-transform: scale(1) rotate(0deg);
+            transform: scale(1) rotate(0deg);
+  }
+  to {
+    -webkit-transform: scale(1) rotate(360deg);
+         -o-transform: scale(1) rotate(360deg);
+            transform: scale(1) rotate(360deg);
+  }
+}
+@-webkit-keyframes spin2 {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
   }
 }
 header {

@@ -37,7 +37,7 @@
                   <li class="header active"><a role="button" data-toggle="collapse" data-parent="#accordion" href="#main-net" aria-expanded="true" aria-controls="main-net">Main Net</a></li>
                 </ul>
                 <ul class="nav nav-stacked collapse in" id="main-net" role="tabpanel" aria-labelledby="mainnetHeading">
-                  <li><a href="#">Status</a></li>
+                  <li><a class="statusPage" href="#" data-net="main">Status</a></li>
                   <li class="dropdown"><a class="dropdown-toggle collapsed" href="#main-examples" data-toggle="collapse" aria-expanded="false">Examples <span class="caret"></span></a>
                     <ul class="nav collapse example-list" id="main-examples">
                       <li class="active"><a class="verifyTxPage" href="#">Verify TX</a></li>
@@ -53,7 +53,7 @@
                   <li class="header"><a role="button" data-toggle="collapse" data-parent="#accordion" href="#test-net" aria-expanded="false" aria-controls="test-net">Test net</a></li>
                 </ul>
                 <ul class="nav nav-stacked collapse" id="test-net" role="tabpanel" aria-labelledby="testnetHeading">
-                  <li><a href="#">Status</a></li>
+                  <li><a class="statusPage" href="#" data-net="test">Status</a></li>
                   <li class="dropdown"><a class="dropdown-toggle collapsed" href="#test-examples" data-toggle="collapse" aria-expanded="false">Examples <span class="caret"></span></a>
                     <ul class="nav collapse example-list" id="test-examples">
                       <li><a class="verifyTxPage" href="#">Verify TX</a></li>
@@ -118,7 +118,7 @@
             <hr>
             <div class="row">
               <div class="col-lg-3"><span class="left">BTC Relay</span></div>
-              <div class="col-lg-9 text-right"><a id="relayAddr" href="http://etherscan.io/address/0x41f274c0023f83391de4e0733c609df5a124c3d4" target="_blank">0x41f274c0023f83391de4e0733c609df5a124c3d4</a></div>
+              <div class="col-lg-9 text-right"><a id="relayAddr1" href="http://etherscan.io/address/0x41f274c0023f83391de4e0733c609df5a124c3d4" target="_blank">0x41f274c0023f83391de4e0733c609df5a124c3d4</a></div>
               <div class="col-lg-12">
                 <hr>
               </div>
@@ -145,15 +145,17 @@
                 <button class="btn-rounded" id="btn-verify-tx">Call verifyTx</button>
                 <hr>
                 <h3>Results</h3><span class="left">BTC Relay verifyTx returned</span>
-                <div class="text-result" id="txReturned">-</div>
+                <div class="text-result"><span id="txReturned">-</span>
+                  <div class="status-box"><span class="glyphicon glyphicon-repeat"></span></div>
+                </div>
               </div>
             </div>
             <hr>
             <p><strong>View page source to see the main steps:</strong></p>
             <ul>
               <li>Getting a raw transaction and its index from a hash</li>
-              <li>Using <a>bitcoin-proof</a> to get a Merkle proof</li>
-              <li>Calling <a>verifyTx</a></li>
+              <li>Using <a href="https://www.npmjs.com/package/bitcoin-proof" target="_blank">bitcoin-proof</a> to get a Merkle proof</li>
+              <li>Calling <a href="https://github.com/ethereum/btcrelay#verifytxrawtransaction-transactionindex-merklesibling-blockhash" target="_blank">verifyTx</a></li>
             </ul><br><br>
           </div>
         </div>

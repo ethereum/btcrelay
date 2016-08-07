@@ -15906,9 +15906,12 @@ function updatePage(net) {
 
     web3 = new Web3(new Web3.providers.HttpProvider(net === 'main' ? mainNetHost : testNetHost));
 
-    $('#header').html((net === 'main' ? 'Main' : 'Test') + ' net live status' + (net === 'test' ? ' <small>(may need relayers)</small>' : ''));
     $('#relayAddr').text(relayAddr);
+    $('#relayAddr').attr('href', 'http://' + (net === 'test' ? 'testnet.' : '') + 'etherscan.io/address/' + relayAddr);
+    $('#relayAddr1').text(relayAddr);
+    $('#relayAddr1').attr('href', 'http://' + (net === 'test' ? 'testnet.' : '') + 'etherscan.io/address/' + relayAddr);
   }
+  $('#header').html((net === 'main' ? 'Main' : 'Test') + ' net live status' + (net === 'test' ? ' <small>(may need relayers)</small>' : ''));
 
   $('#warnSync').hide();
 
@@ -15989,9 +15992,20 @@ function callVerifyTx(txBytes, txIndex, merkleSibling, txBlockHash) {
   var res = ContractObject.verifyTx.call(txBytes, txIndex, merkleSibling, txBlockHash, objParam);
 
   $('#txReturned').text(res.toString(16));
+  $('.status-box .glyphicon').removeClass('glyphicon-repeat').removeClass('glyphicon-ok').removeClass('glyphicon-remove').removeClass('.spinning');
+
+  if(res.toString(16) === $('#btcTxHash').val()) {
+    $('.status-box').addClass('success');
+    $('.status-box .glyphicon').addClass('glyphicon-ok');
+  } else {
+    $('.status-box').addClass('danger');
+    $('.status-box .glyphicon').addClass('glyphicon-remove');
+  }
 }
 
 function callContract() {
+  $('.status-box').removeClass('danger').removeClass('success');
+  $('.status-box .glyphicon').removeClass('glyphicon-repeat').removeClass('glyphicon-ok').removeClass('glyphicon-remove').removeClass('.spinning').addClass('glyphicon-repeat').addClass('.spinning');
   var txBytes = '0x' + $('#rawTransaction').text();
   var txBlockHash = '0x' + gBlockHashOfTx;
 
@@ -16008,6 +16022,8 @@ function getTxInfo() {
   $('#txBlockHash').html('-');
   $('#feeVerifyTx').html('-');
   $('#txReturned').html('-');
+  $('.status-box').removeClass('danger').removeClass('success');
+  $('.status-box .glyphicon').removeClass('glyphicon-repeat').removeClass('glyphicon-ok').removeClass('glyphicon-remove').removeClass('.spinning').addClass('glyphicon-repeat');
 
   var txid = $('#btcTxHash').val();
   var urlJsonTx = "https://btc.blockr.io/api/v1/tx/raw/" + txid;
@@ -16044,14 +16060,19 @@ function getTxInfo() {
  */
 
 $(function() {
-  $('.example-page').hide();
-  $('.example-list li').removeClass('active');
+  function cleanup() {
+    $('.example-page').hide();
+    $('.example-list li').removeClass('active');
+  }
+
+  cleanup();
 
   $('#mainnetHeading').on('click', function(e) {
     $(this).find('li.header').removeClass('active').addClass('active');
     $('#testnetHeading').find('li.header').removeClass('active');
-    $('.example-page').hide();
-    $('.example-list li').removeClass('active');
+
+    cleanup();
+
     $('#statusPage').show();
     updatePage('main');
   });
@@ -16059,20 +16080,27 @@ $(function() {
   $('#testnetHeading').on('click', function(e) {
     $(this).find('li.header').removeClass('active').addClass('active');
     $('#mainnetHeading').find('li.header').removeClass('active');
-    $('.example-page').hide();
-    $('.example-list li').removeClass('active');
+
+    cleanup();
+
     $('#statusPage').show();
     updatePage('test');
   });
 
-  updatePage('main');
+  $('.statusPage').on('click', function(e) {
+    $('#' + $(this).data('net') + 'netHeading').trigger('click');
+  });
+
+
+  /*
+  Verify TX
+   */
 
   $('.verifyTxPage').on('click', function(e) {
-    $('.example-page').hide();
-    $('.example-list li').removeClass('active');
+    cleanup();
+
     $(this).parent().addClass('active');
     $('#statusPage').hide();
-
 
     // Reset fields
     $('#btcTxHash').val('dd059634699e85b51af4964ab97d5e75fb7cd86b748d0ee1c537ca1850101dc7');
@@ -16081,6 +16109,8 @@ $(function() {
     $('#txBlockHash').html('-');
     $('#feeVerifyTx').html('-');
     $('#txReturned').html('-');
+    $('.status-box').removeClass('danger').removeClass('success');
+    $('.status-box .glyphicon').removeClass('glyphicon-repeat').removeClass('glyphicon-ok').removeClass('glyphicon-remove').removeClass('.spinning').addClass('glyphicon-repeat');
     $('#verifyPage').show();
 
     $('#header').html('Verify Tx <small>' + (lastNet === 'main' ? '(Main net)' : '(Morden test net)') + '</small>');
@@ -16089,4 +16119,11 @@ $(function() {
   $('#btn-get-tx').click(getTxInfo);
 
   $('#btn-verify-tx').click(callContract);
+
+
+  /*
+  Init
+   */
+
+  updatePage('main');
 });

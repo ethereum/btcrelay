@@ -6,7 +6,7 @@ div.left-menu
 					a(role="button" data-toggle="collapse" data-parent="#accordion" href="#main-net" aria-expanded="true" aria-controls="main-net") Main Net
 			ul.nav.nav-stacked.collapse.in#main-net(role="tabpanel" aria-labelledby="mainnetHeading")
 				li
-					a(href="#") Status
+					a.statusPage(href="#" data-net="main") Status
 				li.dropdown
 					a.dropdown-toggle.collapsed(href="#main-examples" data-toggle="collapse" aria-expanded="false") Examples #[span.caret]
 					ul.nav.collapse.example-list#main-examples
@@ -24,7 +24,7 @@ div.left-menu
 					a(role="button" data-toggle="collapse" data-parent="#accordion" href="#test-net" aria-expanded="false" aria-controls="test-net") Test net
 			ul.nav.nav-stacked.collapse#test-net(role="tabpanel" aria-labelledby="testnetHeading")
 				li
-					a(href="#") Status
+					a.statusPage(href="#" data-net="test") Status
 				li.dropdown
 					a.dropdown-toggle.collapsed(href="#test-examples" data-toggle="collapse" aria-expanded="false") Examples #[span.caret]
 					ul.nav.collapse.example-list#test-examples
