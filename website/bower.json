@@ -18,6 +18,8 @@
     "tests"
   ],
   "dependencies": {
-    "bootstrap": "~3.3.5"
+    "bootstrap": "~3.3.5",
+    "bignumber.js": "~2.4.0",
+    "web3": "~0.16.0"
   }
 }

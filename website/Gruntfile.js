@@ -27,6 +27,12 @@ module.exports = function(grunt) {
 	var SRC_BOOTSTRAP_JS_DIR = SRC_BOWER_DIR + SRC_BOOTSTRAP_DIR + 'js/';
 	var SRC_BOOTSTRAP_JS_FILE = 'bootstrap.min.js';
 	var SRC_BOOTSTRAP_FONTS_DIR = SRC_BOWER_DIR + SRC_BOOTSTRAP_DIR + 'fonts/';
+	var SRC_BIGNUMBER_DIR = 'bignumber.js/';
+	var SRC_BIGNUMBER_JS_DIR = SRC_BOWER_DIR + SRC_BIGNUMBER_DIR;
+	var SRC_BIGNUMBER_JS_FILE = 'bignumber.min.js';
+	var SRC_WEB3_DIR = 'web3/dist/';
+	var SRC_WEB3_JS_DIR = SRC_BOWER_DIR + SRC_WEB3_DIR;
+	var SRC_WEB3_JS_FILE = 'web3.min.js';
 
 	// build paths
 	var BUILD_DIR = 'dist/';
@@ -108,6 +114,18 @@ module.exports = function(grunt) {
 				{
 					cwd: SRC_JQUERY_JS_DIR,
 					src: SRC_JQUERY_JS_FILE,
+					dest: BUILD_DIR_JS,
+					expand: true
+				},
+				{
+					cwd: SRC_BIGNUMBER_JS_DIR,
+					src: SRC_BIGNUMBER_JS_FILE,
+					dest: BUILD_DIR_JS,
+					expand: true
+				},
+				{
+					cwd: SRC_WEB3_JS_DIR,
+					src: SRC_WEB3_JS_FILE,
 					dest: BUILD_DIR_JS,
 					expand: true
 				}]
@@ -224,7 +242,7 @@ module.exports = function(grunt) {
 			},
 
 			scripts: {
-				options: { livereload: false },
+				options: { livereload: true },
 				files: [SRC_FILES_JS],
 				tasks: ['concat']
 			},

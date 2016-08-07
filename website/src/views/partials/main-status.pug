@@ -1,0 +1,59 @@
+h1 Main net live status
+hr
+div.row
+	div.col-lg-3
+		span.left Contract information
+	div.col-lg-9.text-right
+		a#relayAddr(href="http://etherscan.io/address/0x41f274c0023f83391de4e0733c609df5a124c3d4" target="_blank") 0x41f274c0023f83391de4e0733c609df5a124c3d4
+		br
+		div.button-group
+			a.pink-button.pull-right(href="https://github.com/ethereum/btcrelay#api" target="_blank") API
+			a.pink-button.pull-right.collapsed(role="button" data-toggle="collapse" href="#abi" aria-controls="main-net" aria-expanded="false") ABI
+		div.clearfix
+		div#abi.collapse
+			include ./abi.pug
+	div.col-lg-12
+		hr
+
+	div.col-lg-3
+		span.left Latest block hash
+	div.col-lg-9.text-right
+		div#latestBlockHash 00000000000000e1cbea710bc0fd154a...e9ca40e
+	div.col-lg-12
+		div.alert.alert-danger#warnSync(style="display:none;")
+			span.glyphicon.glyphicon-exclamation-sign
+			| Your Ethereum node may not be fully synced: #[span#nodeBlockNum 415382]. Check #[a(href="https://ethstats.net" target="_blank") stats] for the latest blocks.
+		hr
+
+	div.col-lg-3
+		br
+		span.left Latest block #
+	div.col-lg-9.text-right
+		span BTC Relay #[span#latestBlockHeight.red # 415382]
+		br
+		| #[a(href="https://blockchain.info" target="_blank") Blockchain.info] #[span#bciBlockHeight # 415382]
+		br
+		| #[a(href="https://btc.blockr.io" target="_blank") btc.blockr.io] #[span#blockrBlockHeight # 415382]
+	div.col-lg-12
+		hr
+
+	div.col-lg-3
+		span.left Eth fee
+	div.col-lg-9.text-right
+		span#feeVTX.red 0.001
+	div.col-lg-12
+		hr
+
+	div.col-lg-3
+		span.left Relayer address
+	div.col-lg-9.text-right
+		a#feeRecipient(href="http://etherscan.io/address/0x1a23fd30aabf5ad53bab3093dcd4948e15cec80" target="_blank") 0x1a23fd30aabf5ad53bab3093dcd4948e15cec80
+	div.col-lg-12
+		hr
+
+p.text-right
+	| For more information visit #[a(href="http://btc-relay.readthedocs.io/en/latest/status.html" target="_blank") Status FAQ]
+	br
+	| If you need more help visit #[a(href="https://gitter.im/ethereum/btcrelay" target="_blank") BTC Relay Gitter]
+	br
+	br
