@@ -266,6 +266,17 @@ module.exports = function(grunt) {
 				// Gets the port from the connect configuration
 				path: 'http://localhost:<%= express.all.options.port%>'
 			}
+		},
+
+		surge: {
+			'BTC Relay': {
+				options: {
+					// The path or directory to your compiled project
+					project: 'dist/',
+					// The domain or subdomain to deploy to
+					domain: 'staging-btcrelay.surge.sh'
+				}
+			}
 		}
 	});
 
@@ -355,6 +366,8 @@ module.exports = function(grunt) {
 
 	// register development mode as the main task
 	grunt.registerTask('default', 'Default task: development', 'development');
+
+	grunt.registerTask('deploy', ['surge']);
 
 	// grunt.registerTask('build',   'default');
 };
