@@ -44,7 +44,7 @@
                       <li><a class="relayTxPage" href="#">Relay TX</a></li>
                     </ul>
                   </li>
-                  <li><a href="#">How to verify source code</a></li>
+                  <li><a class="sourcePage" href="#">How to verify source code</a></li>
                 </ul>
               </div>
               <div class="panel">
@@ -59,7 +59,7 @@
                       <li><a class="relayTxPage" href="#">Relay TX</a></li>
                     </ul>
                   </li>
-                  <li><a href="#">How to verify source code</a></li>
+                  <li><a class="sourcePage" href="#">How to verify source code</a></li>
                 </ul>
               </div>
             </div>
@@ -71,6 +71,51 @@
         </div>
         <div class="col-md-9 developers">
           <h1 id="header">Main net live status</h1>
+          <div id="sourcePage">
+            <p class="main-only">The deployed version of <a href="https://github.com/ethereum/btcrelay/tree/41753486b770665319f39da55676732b11af40fe" target="_blank">BTC Relay is from commit 41753486b770665319f39da55676732b11af40fe</a></p>
+            <p class="test-only">The deployed version of <a href="https://github.com/ethereum/btcrelay/tree/6fa4098747b9c030ed7a64b304dbcfa35100afe0" target="_blank">BTC Relay is from commit 6fa4098747b9c030ed7a64b304dbcfa35100afe0</a></p>
+            <p>In order to verify the source code please follow the these steps:</p>
+            <hr>
+            <div class="row">
+              <div class="col-sm-1">
+                <div class="circle">1</div>
+              </div>
+              <div class="col-sm-11">
+                <h3>Compile code to the evm (bytecode)</h3>
+                <pre>serpent compile btcBulkStoreHeaders.se > compiled.evm</pre>
+              </div>
+              <div class="col-sm-12">
+                <hr>
+              </div>
+              <div class="col-sm-1">
+                <div class="circle">2</div>
+              </div>
+              <div class="col-sm-11">
+                <h3>compare the evm against the data used in the contract creation transaction</h3>
+                <p>Here's how to use Geth console to obtain the evm. The receipt is used to guarantee that the tx hash provided is the one that created the BTC Relay contract (see contractAddress property of the receipt).</p>
+                <pre class="text-left main-only">> tx='0xa51ce97bd9a1e7be15c0e7bd2782967239cb9bc015c6088c37cc8931c8283f17'
+> objTx = eth.getTransaction(tx)
+> objTx.input</pre>
+                <pre class="text-left test-only">> tx='0x8e135b828db84bce864d4789cde112eacc04d3d21b5fa569f12f79d8d3ded3c6'
+> eth.getTransactionReceipt(tx)
+{
+  blockHash: "0x6739c150e39dbcc5c4c4b078a33061db444ef72ca4b671960fbec8ad49f4f99c",
+  blockNumber: 484230,
+  contractAddress: "0x5770345100a27b15f5b40bec86a701f888e8c601",
+  cumulativeGasUsed: 2776382,
+  gasUsed: 2776382,
+  logs: [],
+  transactionHash: "0x8e135b828db84bce864d4789cde112eacc04d3d21b5fa569f12f79d8d3ded3c6",
+  transactionIndex: 0
+}
+> objTx = eth.getTransaction(tx)
+> objTx.input</pre>
+                <p>Compare objTx.input with the contents of compiled.evm and you will see that they match identically (except for 0x at the front of objTx.input)</p>
+                <p class="main-only">The version of the <a href="https://github.com/ethereum/serpent/tree/51ee60857fe53c871fa916ef66fc1b4255bb9433" target="_blank">Serpent compiler used is commit 51ee60857fe53c871fa916ef66fc1b4255bb9433</a></p>
+                <p class="test-only">The version of the <a href="https://github.com/ethereum/serpent/tree/f0b4128f91d173fb3f6de48a6993e7db75446924" target="_blank">Serpent compiler used is commit f0b4128f91d173fb3f6de48a6993e7db75446924</a></p>
+              </div>
+            </div>
+          </div>
           <div id="statusPage">
             <hr>
             <div class="row">
@@ -78,11 +123,11 @@
               <div class="col-lg-9 text-right"><a id="relayAddr" href="#" target="_blank">-</a><br>
                 <div class="button-group"><a class="pink-button pull-right" href="https://github.com/ethereum/btcrelay#api" target="_blank">API</a><a class="pink-button pull-right collapsed" role="button" data-toggle="collapse" href="#abi" aria-controls="main-net" aria-expanded="false">ABI</a></div>
                 <div class="clearfix"></div>
-                <div class="collapse" id="abi">
-                  <pre>[{"constant": false, "type": "function", "name": "bulkStoreHeader(bytes,int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "bytes", "name": "headersBytes"}, {"type": "int256", "name": "count"}]}, {"constant": false, "type": "function", "name": "changeFeeRecipient(int256,int256,int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "int256", "name": "blockHash"}, {"type": "int256", "name": "feeWei"}, {"type": "int256", "name": "feeRecipient"}]}, {"constant": false, "type": "function", "name": "computeMerkle(int256,int256,int256[])", "outputs": [{"type": "uint256", "name": "out"}], "inputs": [{"type": "int256", "name": "txHash"}, {"type": "int256", "name": "txIndex"}, {"type": "int256[]", "name": "sibling"}]}, {"constant": false, "type": "function", "name": "depthCheck(int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "int256", "name": "n"}]}, {"constant": false, "type": "function", "name": "feePaid(int256,int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "int256", "name": "txBlockHash"}, {"type": "int256", "name": "amountWei"}]}, {"constant": false, "type": "function", "name": "getAverageChainWork()", "outputs": [{"type": "int256", "name": "out"}], "inputs": []}, {"constant": false, "type": "function", "name": "getBlockHeader(int256)", "outputs": [{"type": "bytes", "name": "out"}], "inputs": [{"type": "int256", "name": "blockHash"}]}, {"constant": false, "type": "function", "name": "getBlockchainHead()", "outputs": [{"type": "int256", "name": "out"}], "inputs": []}, {"constant": false, "type": "function", "name": "getChainWork()", "outputs": [{"type": "int256", "name": "out"}], "inputs": []}, {"constant": false, "type": "function", "name": "getChangeRecipientFee()", "outputs": [{"type": "int256", "name": "out"}], "inputs": []}, {"constant": false, "type": "function", "name": "getFeeAmount(int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "int256", "name": "blockHash"}]}, {"constant": false, "type": "function", "name": "getFeeRecipient(int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "int256", "name": "blockHash"}]}, {"constant": false, "type": "function", "name": "getLastBlockHeight()", "outputs": [{"type": "int256", "name": "out"}], "inputs": []}, {"constant": false, "type": "function", "name": "helperVerifyHash__(uint256,int256,int256[],int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "uint256", "name": "txHash"}, {"type": "int256", "name": "txIndex"}, {"type": "int256[]", "name": "sibling"}, {"type": "int256", "name": "txBlockHash"}]}, {"constant": false, "type": "function", "name": "priv_fastGetBlockHash__(int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "int256", "name": "blockHeight"}]}, {"constant": false, "type": "function", "name": "priv_inMainChain__(int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "int256", "name": "txBlockHash"}]}, {"constant": false, "type": "function", "name": "relayTx(bytes,int256,int256[],int256,int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "bytes", "name": "txBytes"}, {"type": "int256", "name": "txIndex"}, {"type": "int256[]", "name": "sibling"}, {"type": "int256", "name": "txBlockHash"}, {"type": "int256", "name": "contract"}]}, {"constant": false, "type": "function", "name": "setInitialParent(int256,int256,int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "int256", "name": "blockHash"}, {"type": "int256", "name": "height"}, {"type": "int256", "name": "chainWork"}]}, {"constant": false, "type": "function", "name": "storeBlockHeader(bytes)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "bytes", "name": "blockHeaderBytes"}]}, {"constant": false, "type": "function", "name": "storeBlockWithFee(bytes,int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "bytes", "name": "blockHeaderBytes"}, {"type": "int256", "name": "feeWei"}]}, {"constant": false, "type": "function", "name": "storeBlockWithFeeAndRecipient(bytes,int256,int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "bytes", "name": "blockHeaderBytes"}, {"type": "int256", "name": "feeWei"}, {"type": "int256", "name": "feeRecipient"}]}, {"constant": false, "type": "function", "name": "verifyTx(bytes,int256,int256[],int256)", "outputs": [{"type": "uint256", "name": "out"}], "inputs": [{"type": "bytes", "name": "txBytes"}, {"type": "int256", "name": "txIndex"}, {"type": "int256[]", "name": "sibling"}, {"type": "int256", "name": "txBlockHash"}]}, {"constant": false, "type": "function", "name": "within6Confirms(int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "int256", "name": "txBlockHash"}]}, {"inputs": [{"indexed": true, "type": "int256", "name": "recipient"}, {"indexed": false, "type": "int256", "name": "amount"}], "type": "event", "name": "EthPayment(int256,int256)"}, {"inputs": [{"indexed": true, "type": "uint256", "name": "blockHash"}, {"indexed": true, "type": "int256", "name": "returnCode"}], "type": "event", "name": "GetHeader(uint256,int256)"}, {"inputs": [{"indexed": true, "type": "uint256", "name": "txHash"}, {"indexed": true, "type": "int256", "name": "returnCode"}], "type": "event", "name": "RelayTransaction(uint256,int256)"}, {"inputs": [{"indexed": true, "type": "uint256", "name": "blockHash"}, {"indexed": true, "type": "int256", "name": "returnCode"}], "type": "event", "name": "StoreHeader(uint256,int256)"}, {"inputs": [{"indexed": true, "type": "uint256", "name": "txHash"}, {"indexed": true, "type": "int256", "name": "returnCode"}], "type": "event", "name": "VerifyTransaction(uint256,int256)"}]</pre>
-                </div>
               </div>
               <div class="col-lg-12">
+                <div class="collapse" id="abi">
+                  <pre class="abi">[{"constant": false, "type": "function", "name": "bulkStoreHeader(bytes,int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "bytes", "name": "headersBytes"}, {"type": "int256", "name": "count"}]}, {"constant": false, "type": "function", "name": "changeFeeRecipient(int256,int256,int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "int256", "name": "blockHash"}, {"type": "int256", "name": "feeWei"}, {"type": "int256", "name": "feeRecipient"}]}, {"constant": false, "type": "function", "name": "computeMerkle(int256,int256,int256[])", "outputs": [{"type": "uint256", "name": "out"}], "inputs": [{"type": "int256", "name": "txHash"}, {"type": "int256", "name": "txIndex"}, {"type": "int256[]", "name": "sibling"}]}, {"constant": false, "type": "function", "name": "depthCheck(int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "int256", "name": "n"}]}, {"constant": false, "type": "function", "name": "feePaid(int256,int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "int256", "name": "txBlockHash"}, {"type": "int256", "name": "amountWei"}]}, {"constant": false, "type": "function", "name": "getAverageChainWork()", "outputs": [{"type": "int256", "name": "out"}], "inputs": []}, {"constant": false, "type": "function", "name": "getBlockHeader(int256)", "outputs": [{"type": "bytes", "name": "out"}], "inputs": [{"type": "int256", "name": "blockHash"}]}, {"constant": false, "type": "function", "name": "getBlockchainHead()", "outputs": [{"type": "int256", "name": "out"}], "inputs": []}, {"constant": false, "type": "function", "name": "getChainWork()", "outputs": [{"type": "int256", "name": "out"}], "inputs": []}, {"constant": false, "type": "function", "name": "getChangeRecipientFee()", "outputs": [{"type": "int256", "name": "out"}], "inputs": []}, {"constant": false, "type": "function", "name": "getFeeAmount(int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "int256", "name": "blockHash"}]}, {"constant": false, "type": "function", "name": "getFeeRecipient(int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "int256", "name": "blockHash"}]}, {"constant": false, "type": "function", "name": "getLastBlockHeight()", "outputs": [{"type": "int256", "name": "out"}], "inputs": []}, {"constant": false, "type": "function", "name": "helperVerifyHash__(uint256,int256,int256[],int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "uint256", "name": "txHash"}, {"type": "int256", "name": "txIndex"}, {"type": "int256[]", "name": "sibling"}, {"type": "int256", "name": "txBlockHash"}]}, {"constant": false, "type": "function", "name": "priv_fastGetBlockHash__(int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "int256", "name": "blockHeight"}]}, {"constant": false, "type": "function", "name": "priv_inMainChain__(int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "int256", "name": "txBlockHash"}]}, {"constant": false, "type": "function", "name": "relayTx(bytes,int256,int256[],int256,int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "bytes", "name": "txBytes"}, {"type": "int256", "name": "txIndex"}, {"type": "int256[]", "name": "sibling"}, {"type": "int256", "name": "txBlockHash"}, {"type": "int256", "name": "contract"}]}, {"constant": false, "type": "function", "name": "setInitialParent(int256,int256,int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "int256", "name": "blockHash"}, {"type": "int256", "name": "height"}, {"type": "int256", "name": "chainWork"}]}, {"constant": false, "type": "function", "name": "storeBlockHeader(bytes)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "bytes", "name": "blockHeaderBytes"}]}, {"constant": false, "type": "function", "name": "storeBlockWithFee(bytes,int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "bytes", "name": "blockHeaderBytes"}, {"type": "int256", "name": "feeWei"}]}, {"constant": false, "type": "function", "name": "storeBlockWithFeeAndRecipient(bytes,int256,int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "bytes", "name": "blockHeaderBytes"}, {"type": "int256", "name": "feeWei"}, {"type": "int256", "name": "feeRecipient"}]}, {"constant": false, "type": "function", "name": "verifyTx(bytes,int256,int256[],int256)", "outputs": [{"type": "uint256", "name": "out"}], "inputs": [{"type": "bytes", "name": "txBytes"}, {"type": "int256", "name": "txIndex"}, {"type": "int256[]", "name": "sibling"}, {"type": "int256", "name": "txBlockHash"}]}, {"constant": false, "type": "function", "name": "within6Confirms(int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "int256", "name": "txBlockHash"}]}, {"inputs": [{"indexed": true, "type": "int256", "name": "recipient"}, {"indexed": false, "type": "int256", "name": "amount"}], "type": "event", "name": "EthPayment(int256,int256)"}, {"inputs": [{"indexed": true, "type": "uint256", "name": "blockHash"}, {"indexed": true, "type": "int256", "name": "returnCode"}], "type": "event", "name": "GetHeader(uint256,int256)"}, {"inputs": [{"indexed": true, "type": "uint256", "name": "txHash"}, {"indexed": true, "type": "int256", "name": "returnCode"}], "type": "event", "name": "RelayTransaction(uint256,int256)"}, {"inputs": [{"indexed": true, "type": "uint256", "name": "blockHash"}, {"indexed": true, "type": "int256", "name": "returnCode"}], "type": "event", "name": "StoreHeader(uint256,int256)"}, {"inputs": [{"indexed": true, "type": "uint256", "name": "txHash"}, {"indexed": true, "type": "int256", "name": "returnCode"}], "type": "event", "name": "VerifyTransaction(uint256,int256)"}]</pre>
+                </div>
                 <hr>
               </div>
               <div class="col-lg-3"><span class="left">Latest block hash</span></div>
