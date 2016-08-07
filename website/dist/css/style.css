@@ -7041,6 +7041,9 @@ footer a {
 .developers div.text-result {
   background-color: #f0f0f0;
 }
+.developers div.text-result {
+  word-wrap: break-word;
+}
 @media (max-width: 768px) {
   .developers {
     text-align: center;

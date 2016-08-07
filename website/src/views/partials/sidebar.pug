@@ -9,9 +9,9 @@ div.left-menu
 					a(href="#") Status
 				li.dropdown
 					a.dropdown-toggle.collapsed(href="#main-examples" data-toggle="collapse" aria-expanded="false") Examples #[span.caret]
-					ul.nav.collapse#main-examples
-						li
-							a(href="#") Verify TX
+					ul.nav.collapse.example-list#main-examples
+						li.active
+							a.verifyTxPage(href="#") Verify TX
 						li
 							a(href="#") Relay TX
 						li
@@ -27,9 +27,9 @@ div.left-menu
 					a(href="#") Status
 				li.dropdown
 					a.dropdown-toggle.collapsed(href="#test-examples" data-toggle="collapse" aria-expanded="false") Examples #[span.caret]
-					ul.nav.collapse#test-examples
+					ul.nav.collapse.example-list#test-examples
 						li
-							a(href="#") Verify TX
+							a.verifyTxPage(href="#") Verify TX
 						li
 							a(href="#") Relay TX
 						li

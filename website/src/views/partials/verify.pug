@@ -1,4 +1,4 @@
-div#verifyPage
+div#verifyPage.example-page
 	p This is a sample of calling #[a(href="https://github.com/ethereum/btcrelay/tree/master#verifytxrawtransaction-transactionindex-merklesibling-blockhash" target="_blank" style="text-transform: none;") verifyTx]
 	hr
 	div.row
@@ -16,8 +16,8 @@ div#verifyPage
 
 			br
 
-			input(type="text" name="btcTxHash" value="dd059634699e85b51af4964ab97d5e75fb7cd86b748d0ee1c537ca1850101dc7")
-			button.btn-rounded(onClick="") Lookup
+			input#btcTxHash(type="text" value="dd059634699e85b51af4964ab97d5e75fb7cd86b748d0ee1c537ca1850101dc7")
+			button.btn-rounded#btn-get-tx Lookup
 
 			hr
 
@@ -29,10 +29,10 @@ div#verifyPage
 			div.text-result#merkleProof -
 
 			span.left Block hash
-			div.text-result#verifyBlockHash -
+			div.text-result#txBlockHash -
 
 			span.left Verification Fee
-			div.text-result#verificationFee -
+			div.text-result#feeVerifyTx -
 
 			hr
 
@@ -40,7 +40,7 @@ div#verifyPage
 			div.circle 2
 		div.col-lg-11
 			h3 Verify transaction
-			button.btn-rounded(onClick="") Call verifyTx
+			button.btn-rounded#btn-verify-tx Call verifyTx
 
 			hr
 

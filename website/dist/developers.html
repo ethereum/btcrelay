@@ -39,8 +39,8 @@
                 <ul class="nav nav-stacked collapse in" id="main-net" role="tabpanel" aria-labelledby="mainnetHeading">
                   <li><a href="#">Status</a></li>
                   <li class="dropdown"><a class="dropdown-toggle collapsed" href="#main-examples" data-toggle="collapse" aria-expanded="false">Examples <span class="caret"></span></a>
-                    <ul class="nav collapse" id="main-examples">
-                      <li><a href="#">Verify TX</a></li>
+                    <ul class="nav collapse example-list" id="main-examples">
+                      <li class="active"><a class="verifyTxPage" href="#">Verify TX</a></li>
                       <li><a href="#">Relay TX</a></li>
                       <li><a href="#">Bitcoin processor</a></li>
                     </ul>
@@ -55,8 +55,8 @@
                 <ul class="nav nav-stacked collapse" id="test-net" role="tabpanel" aria-labelledby="testnetHeading">
                   <li><a href="#">Status</a></li>
                   <li class="dropdown"><a class="dropdown-toggle collapsed" href="#test-examples" data-toggle="collapse" aria-expanded="false">Examples <span class="caret"></span></a>
-                    <ul class="nav collapse" id="test-examples">
-                      <li><a href="#">Verify TX</a></li>
+                    <ul class="nav collapse example-list" id="test-examples">
+                      <li><a class="verifyTxPage" href="#">Verify TX</a></li>
                       <li><a href="#">Relay TX</a></li>
                       <li><a href="#">Bitcoin processor</a></li>
                     </ul>
@@ -73,7 +73,7 @@
         </div>
         <div class="col-md-9 developers">
           <h1 id="header">Main net live status</h1>
-          <div class="hidden" id="statusPage">
+          <div id="statusPage">
             <hr>
             <div class="row">
               <div class="col-lg-3"><span class="left">Contract information</span></div>
@@ -113,7 +113,7 @@
             </div>
             <p class="text-right">For more information visit <a href="http://btc-relay.readthedocs.io/en/latest/status.html" target="_blank">Status FAQ</a><br>If you need more help visit <a href="https://gitter.im/ethereum/btcrelay" target="_blank">BTC Relay Gitter</a><br><br></p>
           </div>
-          <div id="verifyPage">
+          <div class="example-page" id="verifyPage">
             <p>This is a sample of calling <a href="https://github.com/ethereum/btcrelay/tree/master#verifytxrawtransaction-transactionindex-merklesibling-blockhash" target="_blank" style="text-transform: none">verifyTx</a></p>
             <hr>
             <div class="row">
@@ -127,14 +127,14 @@
               </div>
               <div class="col-lg-11">
                 <h3>Find a transaction</h3><span class="left">Bitcoin transaction hash</span><br>
-                <input type="text" name="btcTxHash" value="dd059634699e85b51af4964ab97d5e75fb7cd86b748d0ee1c537ca1850101dc7">
-                <button class="btn-rounded" onClick="">Lookup</button>
+                <input id="btcTxHash" type="text" value="dd059634699e85b51af4964ab97d5e75fb7cd86b748d0ee1c537ca1850101dc7">
+                <button class="btn-rounded" id="btn-get-tx">Lookup</button>
                 <hr>
                 <h3>Results</h3><span class="left">Raw transaction</span>
                 <div class="text-result" id="rawTransaction">-</div><span class="left">Merkle proof</span>
                 <div class="text-result" id="merkleProof">-</div><span class="left">Block hash</span>
-                <div class="text-result" id="verifyBlockHash">-</div><span class="left">Verification Fee</span>
-                <div class="text-result" id="verificationFee">-</div>
+                <div class="text-result" id="txBlockHash">-</div><span class="left">Verification Fee</span>
+                <div class="text-result" id="feeVerifyTx">-</div>
                 <hr>
               </div>
               <div class="col-lg-1">
@@ -142,7 +142,7 @@
               </div>
               <div class="col-lg-11">
                 <h3>Verify transaction</h3>
-                <button class="btn-rounded" onClick="">Call verifyTx</button>
+                <button class="btn-rounded" id="btn-verify-tx">Call verifyTx</button>
                 <hr>
                 <h3>Results</h3><span class="left">BTC Relay verifyTx returned</span>
                 <div class="text-result" id="txReturned">-</div>
