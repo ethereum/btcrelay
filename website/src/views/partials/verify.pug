@@ -1,0 +1,59 @@
+div#verifyPage
+	p This is a sample of calling #[a(href="https://github.com/ethereum/btcrelay/tree/master#verifytxrawtransaction-transactionindex-merklesibling-blockhash" target="_blank" style="text-transform: none;") verifyTx]
+	hr
+	div.row
+		div.col-lg-3
+			span.left BTC Relay
+		div.col-lg-9.text-right
+			a#relayAddr(href="http://etherscan.io/address/0x41f274c0023f83391de4e0733c609df5a124c3d4" target="_blank") 0x41f274c0023f83391de4e0733c609df5a124c3d4
+		div.col-lg-12
+			hr
+		div.col-lg-1
+			div.circle 1
+		div.col-lg-11
+			h3 Find a transaction
+			span.left Bitcoin transaction hash
+
+			br
+
+			input(type="text" name="btcTxHash" value="dd059634699e85b51af4964ab97d5e75fb7cd86b748d0ee1c537ca1850101dc7")
+			button.btn-rounded(onClick="") Lookup
+
+			hr
+
+			h3 Results
+			span.left Raw transaction
+			div.text-result#rawTransaction -
+
+			span.left Merkle proof
+			div.text-result#merkleProof -
+
+			span.left Block hash
+			div.text-result#verifyBlockHash -
+
+			span.left Verification Fee
+			div.text-result#verificationFee -
+
+			hr
+
+		div.col-lg-1
+			div.circle 2
+		div.col-lg-11
+			h3 Verify transaction
+			button.btn-rounded(onClick="") Call verifyTx
+
+			hr
+
+			h3 Results
+			span.left BTC Relay verifyTx returned
+			div.text-result#txReturned -
+
+	hr
+	p
+		strong View page source to see the main steps:
+	ul
+		li Getting a raw transaction and its index from a hash
+		li Using #[a() bitcoin-proof] to get a Merkle proof
+		li Calling #[a() verifyTx]
+	br
+	br

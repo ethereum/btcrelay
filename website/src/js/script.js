@@ -92,5 +92,5 @@ $(function() {
     updatePage('test');
   });
 
-  getStatus('main');
+  // getStatus('main');
 });
