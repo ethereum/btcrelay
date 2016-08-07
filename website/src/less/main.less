@@ -275,14 +275,16 @@ footer {
 
 	pre {
 		width: 100%;
-		max-height: 140px;
-		white-space: normal;
+		background-color: #ececec;
+
+		&.abi {
+			max-height: 200px;
+			white-space: normal;
+		}
 	}
 
 	code {
 		border: 1px solid @code-border-color;
-		// border: 1px solid @code-color;
-		// border-color: @code-border-color;
 		border-radius: 2px;
 	}
 
@@ -395,6 +397,30 @@ footer {
 		.relay-only {
 			display: none;
 			visibility: hidden;
+		}
+	}
+
+	.mainNet {
+		.main-only {
+			display: block;
+			visibility: visible;
+		}
+
+		.test-only {
+			display: none;
+			visibility: hidden;
+		}
+	}
+
+	.testNet {
+		.main-only {
+			display: none;
+			visibility: hidden;
+		}
+
+		.test-only {
+			display: block;
+			visibility: visible;
 		}
 	}
 

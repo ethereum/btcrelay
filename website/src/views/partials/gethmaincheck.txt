@@ -1,0 +1,3 @@
+> tx='0xa51ce97bd9a1e7be15c0e7bd2782967239cb9bc015c6088c37cc8931c8283f17'
+> objTx = eth.getTransaction(tx)
+> objTx.input

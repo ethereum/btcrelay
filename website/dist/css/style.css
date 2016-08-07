@@ -6989,7 +6989,10 @@ footer a {
 }
 .developers pre {
   width: 100%;
-  max-height: 140px;
+  background-color: #ececec;
+}
+.developers pre.abi {
+  max-height: 200px;
   white-space: normal;
 }
 .developers code {
@@ -7087,6 +7090,22 @@ footer a {
 .developers .verify-active .relay-only {
   display: none;
   visibility: hidden;
+}
+.developers .mainNet .main-only {
+  display: block;
+  visibility: visible;
+}
+.developers .mainNet .test-only {
+  display: none;
+  visibility: hidden;
+}
+.developers .testNet .main-only {
+  display: none;
+  visibility: hidden;
+}
+.developers .testNet .test-only {
+  display: block;
+  visibility: visible;
 }
 .developers .metamask-logo {
   display: block;

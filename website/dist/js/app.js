@@ -16133,6 +16133,7 @@ function callRelayContract() {
 $(function() {
   function cleanup() {
     $('.example-page').hide();
+    $('#sourcePage').hide();
     $('.example-list li').removeClass('active');
   }
 
@@ -16215,6 +16216,14 @@ $(function() {
     $('#verifyPage').addClass('relay-active').show();
 
     $('#header').html('Relay Tx <small>' + (lastNet === 'main' ? '(Main net)' : '(Morden test net)') + '</small>');
+  });
+
+  $('.sourcePage').on('click', function(e) {
+    cleanup();
+    $('#statusPage').hide();
+    $('#sourcePage').removeClass('mainNet').removeClass('testNet').addClass((lastNet === 'main' ? 'main' : 'test') + 'Net');
+     $('#header').html('Verifying the Source Code <small>at ' + (lastNet === 'main' ? mainNetAddr : testNetAddr) + '</small>');
+    $('#sourcePage').show();
   });
 
   $('#btn-get-tx').click(getTxInfo);
