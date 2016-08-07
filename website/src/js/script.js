@@ -93,6 +93,7 @@ function checkHeights() {
   }
   else {
     $('#nodeBlockNum').text('# ' + web3.eth.blockNumber);
+    $('#statsLink').attr('href', (lastNet === 'test' ? 'https://morden.io/' : 'https://ethstats.net'));
     $('#warnSync').show();
   }
 }
