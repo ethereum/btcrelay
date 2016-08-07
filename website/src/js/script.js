@@ -1,20 +1,26 @@
-function getMainStatus() {
-	if (typeof web3 !== 'undefined') {
-    // Web3 has been injected by the browser (Mist/MetaMask)
-    web3 = new Web3(web3.currentProvider);
-  } else {
-    // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
-    web3 = new Web3(new Web3.providers.HttpProvider("http://frontier-lb.ether.camp"));
-  }
+var mainNetHost = 'http://frontier-lb.ether.camp';
+var testNetHost = 'https://morden.infura.io:8545';
+var mainNetAddr = '0x41f274c0023f83391de4e0733c609df5a124c3d4';
+var testNetAddr = '0x5770345100a27b15f5b40bec86a701f888e8c601';
 
-  var heightPerRelay;
+$(function() {
+  function getStatus(net) {
+    $('#header').html((net === 'main' ? 'Main' : 'Test') + ' net live status' + (net === 'test' ? ' <small>(may need relayers)</small>' : ''));
+  	// if (typeof web3 !== 'undefined') {
+   //    // Web3 has been injected by the browser (Mist/MetaMask)
+   //    web3 = new Web3(web3.currentProvider);
+   //  } else {
+      // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
+      web3 = new Web3(new Web3.providers.HttpProvider(net === 'main' ? mainNetHost : testNetHost));
+    // }
 
-  $(function() {
+    var heightPerRelay;
+
     /*
       do NOT forget to update ABI files when needed
      */
 
-     var relayAddr = '0x41f274c0023f83391de4e0733c609df5a124c3d4'; // Alpha Frontier
+    var relayAddr = net === 'main' ? mainNetAddr : testNetAddr; // Alpha Frontier
 
     // var relayAddr = web3.eth.namereg.addr('btcrelay');  // Olympic
     $('#relayAddr').text(relayAddr);
@@ -48,7 +54,7 @@ function getMainStatus() {
 
 
     //setTimeout(checkHeights, 1000);
-  });
+  }
 
   function updateBCI() {
     // 2 calls needed since https://blockchain.info/latestblock is missing CORS
@@ -90,6 +96,14 @@ function getMainStatus() {
     var ethAddress = bnEthAddress.toString(16);
     return Array(40 - ethAddress.length + 1).join('0') + ethAddress;
   }
-}
 
-getMainStatus();
+  getStatus('main');
+
+  $('#mainnetHeading').on('click', function(e) {
+    setTimeout(function() {getStatus('main');}, 400);
+  });
+
+  $('#testnetHeading').on('click', function(e) {
+    setTimeout(function() {getStatus('test');}, 400);
+  });
+});
