@@ -2,34 +2,30 @@ var mainNetHost = 'http://frontier-lb.ether.camp';
 var testNetHost = 'https://morden.infura.io:8545';
 var mainNetAddr = '0x41f274c0023f83391de4e0733c609df5a124c3d4';
 var testNetAddr = '0x5770345100a27b15f5b40bec86a701f888e8c601';
+var heightPerRelay;
+var relayAddr;
+var lastNet = 'main';
 
 $(function() {
-  function getStatus(net) {
+  function updatePage(net) {
+    lastNet = net;
+    $('#warnSync').hide();
     $('#header').html((net === 'main' ? 'Main' : 'Test') + ' net live status' + (net === 'test' ? ' <small>(may need relayers)</small>' : ''));
-  	// if (typeof web3 !== 'undefined') {
-   //    // Web3 has been injected by the browser (Mist/MetaMask)
-   //    web3 = new Web3(web3.currentProvider);
-   //  } else {
-      // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
-      web3 = new Web3(new Web3.providers.HttpProvider(net === 'main' ? mainNetHost : testNetHost));
-    // }
-
-    var heightPerRelay;
-
-    /*
-      do NOT forget to update ABI files when needed
-     */
-
-    var relayAddr = net === 'main' ? mainNetAddr : testNetAddr; // Alpha Frontier
-
-    // var relayAddr = web3.eth.namereg.addr('btcrelay');  // Olympic
+    relayAddr = net === 'main' ? mainNetAddr : testNetAddr;
     $('#relayAddr').text(relayAddr);
 
+    setTimeout(function() {getStatus(net);}, 400);
+  }
+
+  function getStatus(net) {
+    web3 = new Web3(new Web3.providers.HttpProvider(net === 'main' ? mainNetHost : testNetHost));
+
+    relayAddr = net === 'main' ? mainNetAddr : testNetAddr;
 
     updateBCI();
     updateBlockr();
 
-    var RelayContract = web3.eth.contract(btcRelayAbi);  // see ./js/btcRelayAbi.js
+    var RelayContract = web3.eth.contract(btcRelayAbi);
     var contract = RelayContract.at(relayAddr);
 
     heightPerRelay = contract.getLastBlockHeight.call().toString();
@@ -45,27 +41,14 @@ $(function() {
     $('#feeRecipient').text('0x' + formatETHAddress(feeRecipient));
 
     window.btcrelayTester = contract;
-    // signature of verifyTx is (txHash, txIndex, merkleSiblingArray, txBlockHash)
-    // to make a call to verifyTx so that btcrelay will get some fees,
-    // run this code in the browser developer console: fees will be sent
-    // from the coinbase
-    // res = btcrelayTester.verifyTx.sendTransaction(0, 1, [], 0, {from: web3.eth.coinbase, value: web3.toWei('0.1', 'ether')});
-    // console.log('txHash for verifyTx: ', res)
 
-
-    //setTimeout(checkHeights, 1000);
+    setTimeout(checkHeights, 1000);
   }
 
   function updateBCI() {
-    // 2 calls needed since https://blockchain.info/latestblock is missing CORS
     $.getJSON('https://blockchain.info/q/getblockcount?cors=true', function(data) {
       $('#bciBlockHeight').text(data);
     });
-
-    // https://github.com/blockchain/api-v1-client-python/issues/17
-    // $.getJSON('https://blockchain.info/q/latesthash?cors=true', function(data) {
-    //   $('#bciBlockHash').text(data);
-    // });
   }
 
   function updateBlockr() {
@@ -97,13 +80,17 @@ $(function() {
     return Array(40 - ethAddress.length + 1).join('0') + ethAddress;
   }
 
-  getStatus('main');
-
   $('#mainnetHeading').on('click', function(e) {
-    setTimeout(function() {getStatus('main');}, 400);
+    $(this).find('li.header').removeClass('active').addClass('active');
+    $('#testnetHeading').find('li.header').removeClass('active');
+    updatePage('main');
   });
 
   $('#testnetHeading').on('click', function(e) {
-    setTimeout(function() {getStatus('test');}, 400);
+    $(this).find('li.header').removeClass('active').addClass('active');
+    $('#mainnetHeading').find('li.header').removeClass('active');
+    updatePage('test');
   });
+
+  getStatus('main');
 });
