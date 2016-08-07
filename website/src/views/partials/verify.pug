@@ -1,16 +1,37 @@
 div#verifyPage.example-page
-	p This is a sample of calling #[a(href="https://github.com/ethereum/btcrelay/tree/master#verifytxrawtransaction-transactionindex-merklesibling-blockhash" target="_blank" style="text-transform: none;") verifyTx]
+	div.verify-only
+		p This is a sample of calling #[a(href="https://github.com/ethereum/btcrelay/tree/master#verifytxrawtransaction-transactionindex-merklesibling-blockhash" target="_blank" style="text-transform: none;") verifyTx]
+
+	div.relay-only
+		p Create and deploy a BitcoinProcessor contract with a processTransaction function with the following signature:
+		p
+			code function processTransaction(bytes txn, uint256 txHash) returns (int256)
+
+		p From your frontend, call BTC Relay #[a(href="https://github.com/ethereum/btcrelay#relaytxrawtransaction-transactionindex-merklesibling-blockhash-contractaddress" target="_blank") relayTx]
 	hr
 	div.row
-		div.col-lg-3
+		div.col-md-3
 			span.left BTC Relay
-		div.col-lg-9.text-right
+		div.col-md-9.text-right
 			a#relayAddr1(href="http://etherscan.io/address/0x41f274c0023f83391de4e0733c609df5a124c3d4" target="_blank") 0x41f274c0023f83391de4e0733c609df5a124c3d4
-		div.col-lg-12
+		div.col-md-12
 			hr
-		div.col-lg-1
+			div.relay-only
+				p This is a sample of using BTC Relay #[a(href="https://github.com/ethereum/btcrelay#relaytxrawtransaction-transactionindex-merklesibling-blockhash-contractaddress" target="_blank") relayTx], which is the easiest way to integrate BTC Relay because the ABI can remain in the frontend.
+				p A Bitcoin transaction is relayed to #[a(href="https://github.com/ethereum/btcrelay/blob/master/examples/BitcoinProcessor.sol" target="_blank") BitcoinProcessor.sol] that has been deployed at #[a(href="http://testnet.etherscan.io/address/0x59c9fb53d658b15a7dded65c693703baf58cf63c" target="_blank") 0x59c9fb53d658b15a7dded65c693703baf58cf63c]
+
+				br
+
+				p The easiest way to run this sample is with the #[a(href="https://metamask.io/" target="_blank") Metamask] Chrome plug-in
+				p
+					a.metamask-logo(href="https://chrome.google.com/webstore/detail/nkbihfbeogaeaoehlefnkodbefgpgknn" target="_blank")
+				p Otherwise you need a testnet client configured like:
+				p #[kbd geth --testnet --unlock 0 --rpc --rpcport 8545 --rpccorsdomain=* --rpcaddr localhost]
+
+				hr
+		div.col-sm-1
 			div.circle 1
-		div.col-lg-11
+		div.col-sm-11
 			h3 Find a transaction
 			span.left Bitcoin transaction hash
 
@@ -36,27 +57,50 @@ div#verifyPage.example-page
 
 			hr
 
-		div.col-lg-1
+		div.col-sm-1
 			div.circle 2
-		div.col-lg-11
-			h3 Verify transaction
-			button.btn-rounded#btn-verify-tx Call verifyTx
+		div.col-sm-11
+			div.verify-only
+				h3 Verify transaction
+				button.btn-rounded#btn-verify-tx Call verifyTx
+			div.relay-only
+				h3 Send relay tx
+				button.btn-rounded#btn-relay-tx Send transaction relay tx
 
 			hr
 
 			h3 Results
-			span.left BTC Relay verifyTx returned
-			div.text-result
-				span#txReturned -
-				div.status-box
-					span.glyphicon.glyphicon-repeat
+			div.verify-only
+				span.left BTC Relay verifyTx returned
 
-	hr
-	p
-		strong View page source to see the main steps:
-	ul
-		li Getting a raw transaction and its index from a hash
-		li Using #[a(href="https://www.npmjs.com/package/bitcoin-proof" target="_blank") bitcoin-proof] to get a Merkle proof
-		li Calling #[a(href="https://github.com/ethereum/btcrelay#verifytxrawtransaction-transactionindex-merklesibling-blockhash" target="_blank") verifyTx]
+				div.text-result.result-box
+					span#txReturned -
+					div.status-box
+						span.glyphicon.glyphicon-repeat
+
+			div.relay-only
+				span.left BTC Relay Ethereum tx hash
+
+				div.text-result.result-box
+					a#txHashReturned(href="#" target="_blank") -
+					div.status-box
+						span.glyphicon.glyphicon-repeat
+
+			div.relay-only
+				hr
+
+				p When this tx is mined, check the #[a(href="http://testnet.etherscan.io/address/0x59c9fb53d658b15a7dded65c693703baf58cf63c" target="_blank") BitcoinProcessor] sample contract. In its storage, the lastTxHash value should be the same as your input, and ethBlock block will be the mined Ethereum block number.
+
+				p If morden.ether.camp isn't running, you can use #[code web3.eth.getStorageAt('0x59c9fb53d658b15a7dded65c693703baf58cf63c', 0)] and #[code web3.toDecimal(web3.eth.getStorageAt('0x59c9fb53d658b15a7dded65c693703baf58cf63c', 0))] to look up the values in storage.
+
+				p This example shows the use of a BitcoinProcessor contract, which receives Bitcoin transactions via relayTx. This is the easiest way to use BTC Relay because the ABI can remain on the frontend.
+	div.verify-only
+		hr
+		p
+			strong View page source to see the main steps:
+		ul
+			li Getting a raw transaction and its index from a hash
+			li Using #[a(href="https://www.npmjs.com/package/bitcoin-proof" target="_blank") bitcoin-proof] to get a Merkle proof
+			li Calling #[a(href="https://github.com/ethereum/btcrelay#verifytxrawtransaction-transactionindex-merklesibling-blockhash" target="_blank") verifyTx]
 	br
 	br
