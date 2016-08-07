@@ -15884,6 +15884,8 @@ var mainNetHost = 'http://frontier-lb.ether.camp';
 var testNetHost = 'https://morden.infura.io:8545';
 var mainNetAddr = '0x41f274c0023f83391de4e0733c609df5a124c3d4';
 var testNetAddr = '0x5770345100a27b15f5b40bec86a701f888e8c601';
+var mainNetStats = 'https://ethstats.net';
+var testNetStats = 'https://morden.io';
 var heightPerRelay;
 var relayAddr;
 var gMerkleProof;
@@ -15974,7 +15976,7 @@ function checkHeights() {
   }
   else {
     $('#nodeBlockNum').text('# ' + web3.eth.blockNumber);
-    $('#statsLink').attr('href', (lastNet === 'test' ? 'https://morden.io/' : 'https://ethstats.net'));
+    $('#statsLink').attr('href', (lastNet === 'test' ? testNetStats : mainNetStats));
     $('#warnSync').show();
   }
 }
