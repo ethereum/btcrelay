@@ -87,6 +87,7 @@ header {
 				background-color: #fff;
 				font-size: 16px;
 				line-height: 37px;
+				margin-bottom: 1px;
 
 				&:not(.active) > a:focus {
 					background-color: #fff;
@@ -99,6 +100,14 @@ header {
 			&.active > a:hover {
 				color: #fff;
 				background-color: #525252;
+			}
+
+			&.statusBut {
+				a:hover,
+				&.active > a,
+				&.active > a:hover {
+					background-color: #0092c1;
+				}
 			}
 
 			&.dropdown {

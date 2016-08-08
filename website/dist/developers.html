@@ -52,13 +52,13 @@
             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
               <div class="panel">
                 <ul class="nav nav-stacked" id="mainnetHeading" role="tab">
-                  <li class="header active"><a role="button" data-toggle="collapse" data-parent="#accordion" href="#main-net" aria-expanded="true" aria-controls="main-net">Main Net</a></li>
+                  <li class="header active"><a role="button" data-toggle="collapse" data-parent="#accordion" href="#mainNetPanel" aria-expanded="true" aria-controls="mainNetPanel">Main Net</a></li>
                 </ul>
-                <ul class="nav nav-stacked collapse in" id="main-net" role="tabpanel" aria-labelledby="mainnetHeading">
-                  <li><a class="statusPage" href="#" data-net="main">Status</a></li>
+                <ul class="nav nav-stacked collapse in" id="mainNetPanel" role="tabpanel" aria-labelledby="mainnetHeading">
+                  <li class="statusBut active"><a class="statusPage" href="#" data-net="main">Status</a></li>
                   <li class="dropdown"><a class="dropdown-toggle collapsed" href="#main-examples" data-toggle="collapse" aria-expanded="false">Examples <span class="caret"></span></a>
                     <ul class="nav collapse example-list" id="main-examples">
-                      <li class="active"><a class="verifyTxPage" href="#">Verify TX</a></li>
+                      <li><a class="verifyTxPage" href="#">Verify TX</a></li>
                       <li><a class="relayTxPage" href="#">Relay TX</a></li>
                     </ul>
                   </li>
@@ -67,10 +67,10 @@
               </div>
               <div class="panel">
                 <ul class="nav nav-stacked" id="testnetHeading" role="tab">
-                  <li class="header"><a role="button" data-toggle="collapse" data-parent="#accordion" href="#test-net" aria-expanded="false" aria-controls="test-net">Test net</a></li>
+                  <li class="header"><a role="button" data-toggle="collapse" data-parent="#accordion" href="#testNetPanel" aria-expanded="false" aria-controls="testNetPanel">Test net</a></li>
                 </ul>
-                <ul class="nav nav-stacked collapse" id="test-net" role="tabpanel" aria-labelledby="testnetHeading">
-                  <li><a class="statusPage" href="#" data-net="test">Status</a></li>
+                <ul class="nav nav-stacked collapse" id="testNetPanel" role="tabpanel" aria-labelledby="testnetHeading">
+                  <li class="statusBut"><a class="statusPage" href="#" data-net="test">Status</a></li>
                   <li class="dropdown"><a class="dropdown-toggle collapsed" href="#test-examples" data-toggle="collapse" aria-expanded="false">Examples <span class="caret"></span></a>
                     <ul class="nav collapse example-list" id="test-examples">
                       <li><a class="verifyTxPage" href="#">Verify TX</a></li>
