@@ -16143,7 +16143,8 @@ $(function() {
     $('#testNetPanel li.statusBut').removeClass('active');
   }
 
-  // cleanup();
+  cleanup();
+  $('#mainNetPanel li.statusBut').addClass('active');
 
   $('#mainnetHeading').on('click', function(e) {
     $(this).find('li.header').removeClass('active').addClass('active');

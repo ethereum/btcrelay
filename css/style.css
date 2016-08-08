@@ -7313,6 +7313,9 @@ header .nav li.active a {
   color: #fff;
   background-color: #0092c1;
 }
+.left-menu .nav.bottomMenu {
+  bottom: 0;
+}
 @media (min-width: 1200px) {
   .left-menu {
     width: 263px;
