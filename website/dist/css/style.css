@@ -6908,13 +6908,18 @@ footer {
   position: absolute;
   bottom: 0px;
   width: 100%;
-  padding: 25px 0px;
+  line-height: 32px;
+  padding: 19px 0px;
   font-weight: 300;
   background-color: #fff;
   z-index: 999;
 }
 footer a {
   text-decoration: underline;
+}
+footer img {
+  height: 32px;
+  padding-left: 6px;
 }
 .pink-button,
 .pink-button:focus {
