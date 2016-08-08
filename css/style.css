@@ -7274,6 +7274,7 @@ header .nav li.active a {
   background-color: #fff;
   font-size: 16px;
   line-height: 37px;
+  margin-bottom: 1px;
 }
 .left-menu .nav li.header:not(.active) > a:focus {
   background-color: #fff;
@@ -7284,6 +7285,11 @@ header .nav li.active a {
 .left-menu .nav li.active > a:hover {
   color: #fff;
   background-color: #525252;
+}
+.left-menu .nav li.statusBut a:hover,
+.left-menu .nav li.statusBut.active > a,
+.left-menu .nav li.statusBut.active > a:hover {
+  background-color: #0092c1;
 }
 .left-menu .nav li.dropdown span.caret {
   float: right;

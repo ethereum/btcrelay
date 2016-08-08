@@ -16138,15 +16138,20 @@ $(function() {
     $('.example-page').hide();
     $('#sourcePage').hide();
     $('.example-list li').removeClass('active');
+    $('.sourcePage').parent().removeClass('active');
+    $('#mainNetPanel li.statusBut').removeClass('active');
+    $('#testNetPanel li.statusBut').removeClass('active');
   }
 
-  cleanup();
+  // cleanup();
 
   $('#mainnetHeading').on('click', function(e) {
     $(this).find('li.header').removeClass('active').addClass('active');
     $('#testnetHeading').find('li.header').removeClass('active');
 
     cleanup();
+
+    $('#mainNetPanel li.statusBut').addClass('active');
 
     $('#statusPage').show();
     updatePage('main');
@@ -16157,6 +16162,8 @@ $(function() {
     $('#mainnetHeading').find('li.header').removeClass('active');
 
     cleanup();
+
+    $('ul#testNetPanel li.statusBut').addClass('active');
 
     $('#statusPage').show();
     updatePage('test');
@@ -16223,6 +16230,7 @@ $(function() {
 
   $('.sourcePage').on('click', function(e) {
     cleanup();
+    $(this).parent().addClass('active');
     $('#statusPage').hide();
     $('#sourcePage').removeClass('mainNet').removeClass('testNet').addClass((lastNet === 'main' ? 'main' : 'test') + 'Net');
      $('#header').html('Verifying the Source Code <small>at ' + (lastNet === 'main' ? mainNetAddr : testNetAddr) + '</small>');
