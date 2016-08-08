@@ -7270,11 +7270,13 @@ header .nav li.active a {
   padding: 10px 22px;
   letter-spacing: -0.1px;
 }
+.left-menu .nav li.dropdown {
+  margin-top: 0px;
+}
 .left-menu .nav li.header {
   background-color: #fff;
   font-size: 16px;
   line-height: 37px;
-  margin-bottom: 1px;
 }
 .left-menu .nav li.header:not(.active) > a:focus {
   background-color: #fff;
