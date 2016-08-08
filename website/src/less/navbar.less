@@ -87,29 +87,28 @@ header {
 				margin-top: 0px;
 			}
 
+			> a:hover,
+			&.active > a,
+			&.active > a:hover {
+				color: #fff;
+				background-color: #0092c1;
+			}
+
 			&.header {
 				background-color: #fff;
 				font-size: 16px;
 				line-height: 37px;
 
+				> a:hover,
+				&.active > a,
+				&.active > a:hover {
+					color: #fff;
+					background-color: #525252;
+				}
+
 				&:not(.active) > a:focus {
 					background-color: #fff;
 					color: #525252;
-				}
-			}
-
-			> a:hover,
-			&.active > a,
-			&.active > a:hover {
-				color: #fff;
-				background-color: #525252;
-			}
-
-			&.statusBut {
-				a:hover,
-				&.active > a,
-				&.active > a:hover {
-					background-color: #0092c1;
 				}
 			}
 
@@ -118,6 +117,10 @@ header {
 					float: right;
 					margin-top: 7px;
 				}
+
+				> a:hover,
+				&.active > a,
+				&.active > a:hover,
 				> a:not(.collapsed) {
 					background-color: #525252;
 					color: #fff;
@@ -143,7 +146,25 @@ header {
 		}
 
 		&.bottomMenu {
+			position: relative;
 			bottom: 0;
+
+			li {
+				a {
+					color: #276185;
+				}
+
+				a:hover,
+				a:focus {
+					color: #fff;
+				}
+			}
+		}
+
+		&.nav-stacked {
+			> li + li {
+				margin-top: 0px;
+			}
 		}
 	}
 

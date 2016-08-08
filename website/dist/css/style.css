@@ -6783,6 +6783,10 @@ strong {
   color: #282828;
   font-weight: 400;
 }
+hr {
+  border-top-color: #d2d2d2;
+  border-bottom: 1px solid #ffffff;
+}
 .btn-rounded {
   display: inline-block;
   font-size: 16px;
@@ -6970,10 +6974,6 @@ footer img {
 .developers p.text-right a {
   font-weight: 400;
   text-transform: uppercase;
-}
-.developers hr {
-  border-top-color: #d2d2d2;
-  border-bottom: 1px solid #ffffff;
 }
 .developers .red {
   color: #ff0000;
@@ -7273,34 +7273,41 @@ header .nav li.active a {
 .left-menu .nav li.dropdown {
   margin-top: 0px;
 }
+.left-menu .nav li > a:hover,
+.left-menu .nav li.active > a,
+.left-menu .nav li.active > a:hover {
+  color: #fff;
+  background-color: #0092c1;
+}
 .left-menu .nav li.header {
   background-color: #fff;
   font-size: 16px;
   line-height: 37px;
 }
-.left-menu .nav li.header:not(.active) > a:focus {
-  background-color: #fff;
-  color: #525252;
-}
-.left-menu .nav li > a:hover,
-.left-menu .nav li.active > a,
-.left-menu .nav li.active > a:hover {
+.left-menu .nav li.header > a:hover,
+.left-menu .nav li.header.active > a,
+.left-menu .nav li.header.active > a:hover {
   color: #fff;
   background-color: #525252;
 }
-.left-menu .nav li.statusBut a:hover,
-.left-menu .nav li.statusBut.active > a,
-.left-menu .nav li.statusBut.active > a:hover {
-  background-color: #0092c1;
+.left-menu .nav li.header:not(.active) > a:focus {
+  background-color: #fff;
+  color: #525252;
 }
 .left-menu .nav li.dropdown span.caret {
   float: right;
   margin-top: 7px;
 }
+.left-menu .nav li.dropdown > a:hover,
+.left-menu .nav li.dropdown.active > a,
+.left-menu .nav li.dropdown.active > a:hover,
 .left-menu .nav li.dropdown > a:not(.collapsed) {
   background-color: #525252;
   color: #fff;
 }
+.left-menu .nav li.dropdown > a:hover span.caret,
+.left-menu .nav li.dropdown.active > a span.caret,
+.left-menu .nav li.dropdown.active > a:hover span.caret,
 .left-menu .nav li.dropdown > a:not(.collapsed) span.caret {
   border-top: 0;
   border-bottom: 4px dashed;
@@ -7314,7 +7321,18 @@ header .nav li.active a {
   background-color: #0092c1;
 }
 .left-menu .nav.bottomMenu {
+  position: relative;
   bottom: 0;
+}
+.left-menu .nav.bottomMenu li a {
+  color: #276185;
+}
+.left-menu .nav.bottomMenu li a:hover,
+.left-menu .nav.bottomMenu li a:focus {
+  color: #fff;
+}
+.left-menu .nav.nav-stacked > li + li {
+  margin-top: 0px;
 }
 @media (min-width: 1200px) {
   .left-menu {
