@@ -28,6 +28,14 @@ BTC Relay is a building block for developers that want interoperability between
 Ethereum and Bitcoin.  For example, developers who want to allow their users to
 pay with Bitcoin to use their Ethereum application.
 
+How to be a Relayer and receive incentives?
+=============================
+
+Relayers are those who submit block headers to BTC Relay. To incentivize the community to be relayers, and thus allow BTC
+Relay to be autonomous and up-to-date with the Bitcoin blockchain, Relayers can submit block headers to BTC Relay. 
+When any transaction is verified in the block, or the header is retrieved, Relayers will be rewarded a fee (see details at https://github.com/ethereum/btcrelay/tree/master#incentives-for-relayers).
+
+**Warning**: as specified above, incentives are only sent when transactions are verified in the block or the header is retrieved, not when the block is submitted.
 
 Why isn't verifyTx / relayTx working?
 =============================
