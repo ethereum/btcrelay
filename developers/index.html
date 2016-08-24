@@ -33,7 +33,7 @@
           </div>
           <div class="collapse navbar-collapse" id="navbar-collapse">
             <ul class="nav navbar-nav navbar-right">
-              <li class="active"><a href="/developers.html">Developers</a></li>
+              <li class="active"><a href="/developers">Developers</a></li>
               <li><a href="https://github.com/consensys/btcrelay-fetchd" target="_blank">Become a relayer</a></li>
               <li><a href="http://btc-relay.readthedocs.io/en/latest/frequently-asked-questions.html" target="_blank">Faq</a></li>
               <li><a class="github" href="https://github.com/ethereum/btcrelay" target="_blank">
@@ -51,33 +51,33 @@
           <div class="left-menu">
             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
               <div class="panel">
-                <ul class="nav nav-stacked" id="mainnetHeading" role="tab">
-                  <li class="header active"><a role="button" data-toggle="collapse" data-parent="#accordion" href="#mainNetPanel" aria-expanded="true" aria-controls="mainNetPanel">Main Net</a></li>
+                <ul class="nav nav-stacked">
+                  <li class="header active"><a href="/developers">Main Net</a></li>
                 </ul>
-                <ul class="nav nav-stacked collapse in" id="mainNetPanel" role="tabpanel" aria-labelledby="mainnetHeading">
-                  <li class="statusBut active"><a class="statusPage" href="#" data-net="main">Status</a></li>
+                <ul class="nav nav-stacked">
+                  <li class="statusBut active"><a class="statusPage" href="/developers">Status</a></li>
                   <li class="dropdown"><a class="dropdown-toggle collapsed" href="#main-examples" data-toggle="collapse" aria-expanded="false">Examples <span class="caret"></span></a>
-                    <ul class="nav collapse example-list" id="main-examples">
-                      <li><a class="verifyTxPage" href="#">Verify TX</a></li>
-                      <li><a class="relayTxPage" href="#">Relay TX</a></li>
+                    <ul class="nav example-list collapse" id="main-examples">
+                      <li><a class="verifyTxPage" href="/developers/examples/verify-tx.html">Verify TX</a></li>
+                      <li><a class="relayTxPage" href="/developers/examples/relay-tx.html">Relay TX</a></li>
                     </ul>
                   </li>
-                  <li><a class="sourcePage" href="#">How to verify source code</a></li>
+                  <li><a class="sourcePage" href="/developers/how-to-verify-source-code.html">How to verify source code</a></li>
                 </ul>
               </div>
               <div class="panel">
-                <ul class="nav nav-stacked" id="testnetHeading" role="tab">
-                  <li class="header"><a role="button" data-toggle="collapse" data-parent="#accordion" href="#testNetPanel" aria-expanded="false" aria-controls="testNetPanel">Test net</a></li>
+                <ul class="nav nav-stacked">
+                  <li class="header"><a href="/developers/test-net">Test net</a></li>
                 </ul>
-                <ul class="nav nav-stacked collapse" id="testNetPanel" role="tabpanel" aria-labelledby="testnetHeading">
-                  <li class="statusBut"><a class="statusPage" href="#" data-net="test">Status</a></li>
+                <ul class="nav nav-stacked hidden">
+                  <li class="statusBut"><a class="statusPage" href="/developers/test-net">Status</a></li>
                   <li class="dropdown"><a class="dropdown-toggle collapsed" href="#test-examples" data-toggle="collapse" aria-expanded="false">Examples <span class="caret"></span></a>
-                    <ul class="nav collapse example-list" id="test-examples">
-                      <li><a class="verifyTxPage" href="#">Verify TX</a></li>
-                      <li><a class="relayTxPage" href="#">Relay TX</a></li>
+                    <ul class="nav example-list collapse" id="test-examples">
+                      <li><a class="verifyTxPage" href="/developers/test-net/examples/verify-tx.html">Verify TX</a></li>
+                      <li><a class="relayTxPage" href="/developers/test-net/examples/relay-tx.html">Relay TX</a></li>
                     </ul>
                   </li>
-                  <li><a class="sourcePage" href="#">How to verify source code</a></li>
+                  <li><a class="sourcePage" href="/developers/test-net/how-to-verify-source-code.html">How to verify source code</a></li>
                 </ul>
               </div>
             </div>
@@ -89,51 +89,6 @@
         </div>
         <div class="col-md-9 developers">
           <h1 id="header">Main net live status</h1>
-          <div id="sourcePage">
-            <p class="main-only">The deployed version of <a href="https://github.com/ethereum/btcrelay/tree/41753486b770665319f39da55676732b11af40fe" target="_blank">BTC Relay is from commit 41753486b770665319f39da55676732b11af40fe</a></p>
-            <p class="test-only">The deployed version of <a href="https://github.com/ethereum/btcrelay/tree/6fa4098747b9c030ed7a64b304dbcfa35100afe0" target="_blank">BTC Relay is from commit 6fa4098747b9c030ed7a64b304dbcfa35100afe0</a></p>
-            <p>In order to verify the source code please follow the these steps:</p>
-            <hr>
-            <div class="row">
-              <div class="col-sm-1">
-                <div class="circle">1</div>
-              </div>
-              <div class="col-sm-11">
-                <h3>Compile code to the evm (bytecode)</h3>
-                <pre>serpent compile btcBulkStoreHeaders.se > compiled.evm</pre>
-              </div>
-              <div class="col-sm-12">
-                <hr>
-              </div>
-              <div class="col-sm-1">
-                <div class="circle">2</div>
-              </div>
-              <div class="col-sm-11">
-                <h3>compare the evm against the data used in the contract creation transaction</h3>
-                <p>Here's how to use Geth console to obtain the evm. The receipt is used to guarantee that the tx hash provided is the one that created the BTC Relay contract (see contractAddress property of the receipt).</p>
-                <pre class="text-left main-only">> tx='0xa51ce97bd9a1e7be15c0e7bd2782967239cb9bc015c6088c37cc8931c8283f17'
-> objTx = eth.getTransaction(tx)
-> objTx.input</pre>
-                <pre class="text-left test-only">> tx='0x8e135b828db84bce864d4789cde112eacc04d3d21b5fa569f12f79d8d3ded3c6'
-> eth.getTransactionReceipt(tx)
-{
-  blockHash: "0x6739c150e39dbcc5c4c4b078a33061db444ef72ca4b671960fbec8ad49f4f99c",
-  blockNumber: 484230,
-  contractAddress: "0x5770345100a27b15f5b40bec86a701f888e8c601",
-  cumulativeGasUsed: 2776382,
-  gasUsed: 2776382,
-  logs: [],
-  transactionHash: "0x8e135b828db84bce864d4789cde112eacc04d3d21b5fa569f12f79d8d3ded3c6",
-  transactionIndex: 0
-}
-> objTx = eth.getTransaction(tx)
-> objTx.input</pre>
-                <p>Compare objTx.input with the contents of compiled.evm and you will see that they match identically (except for 0x at the front of objTx.input)</p>
-                <p class="main-only">The version of the <a href="https://github.com/ethereum/serpent/tree/51ee60857fe53c871fa916ef66fc1b4255bb9433" target="_blank">Serpent compiler used is commit 51ee60857fe53c871fa916ef66fc1b4255bb9433</a></p>
-                <p class="test-only">The version of the <a href="https://github.com/ethereum/serpent/tree/f0b4128f91d173fb3f6de48a6993e7db75446924" target="_blank">Serpent compiler used is commit f0b4128f91d173fb3f6de48a6993e7db75446924</a></p>
-              </div>
-            </div><br><br>
-          </div>
           <div id="statusPage">
             <hr>
             <div class="row">
@@ -174,88 +129,6 @@
             </div>
             <p class="text-right">For more information visit <a href="http://btc-relay.readthedocs.io/en/latest/status.html" target="_blank">Status FAQ</a><br>If you need more help visit <a href="https://gitter.im/ethereum/btcrelay" target="_blank">BTC Relay Gitter</a><br><br></p>
           </div>
-          <div class="example-page" id="verifyPage">
-            <div class="verify-only">
-              <p>This is a sample of calling <a href="https://github.com/ethereum/btcrelay/tree/master#verifytxrawtransaction-transactionindex-merklesibling-blockhash" target="_blank" style="text-transform: none">verifyTx</a></p>
-            </div>
-            <div class="relay-only">
-              <p>Create and deploy a BitcoinProcessor contract with a processTransaction function with the following signature:</p>
-              <p><code>function processTransaction(bytes txn, uint256 txHash) returns (int256)</code></p>
-              <p>From your frontend, call BTC Relay <a href="https://github.com/ethereum/btcrelay#relaytxrawtransaction-transactionindex-merklesibling-blockhash-contractaddress" target="_blank">relayTx</a></p>
-            </div>
-            <hr>
-            <div class="row">
-              <div class="col-md-3"><span class="left">BTC Relay</span></div>
-              <div class="col-md-9 text-right"><a id="relayAddr1" href="http://etherscan.io/address/0x41f274c0023f83391de4e0733c609df5a124c3d4" target="_blank">0x41f274c0023f83391de4e0733c609df5a124c3d4</a></div>
-              <div class="col-md-12">
-                <hr>
-                <div class="relay-only">
-                  <p>This is a sample of using BTC Relay <a href="https://github.com/ethereum/btcrelay#relaytxrawtransaction-transactionindex-merklesibling-blockhash-contractaddress" target="_blank">relayTx</a>, which is the easiest way to integrate BTC Relay because the ABI can remain in the frontend.</p>
-                  <p>A Bitcoin transaction is relayed to <a href="https://github.com/ethereum/btcrelay/blob/master/examples/BitcoinProcessor.sol" target="_blank">BitcoinProcessor.sol</a> that has been deployed at <a href="http://testnet.etherscan.io/address/0x59c9fb53d658b15a7dded65c693703baf58cf63c" target="_blank">0x59c9fb53d658b15a7dded65c693703baf58cf63c</a></p><br>
-                  <p>The easiest way to run this sample is with the <a href="https://metamask.io/" target="_blank">Metamask</a> Chrome plug-in</p>
-                  <p><a class="metamask-logo" href="https://chrome.google.com/webstore/detail/nkbihfbeogaeaoehlefnkodbefgpgknn" target="_blank"></a></p>
-                  <p>Otherwise you need a testnet client configured like:</p>
-                  <p><kbd>geth --testnet --unlock 0 --rpc --rpcport 8545 --rpccorsdomain=* --rpcaddr localhost</kbd></p>
-                  <hr>
-                </div>
-              </div>
-              <div class="col-sm-1">
-                <div class="circle">1</div>
-              </div>
-              <div class="col-sm-11">
-                <h3>Find a transaction</h3><span class="left">Bitcoin transaction hash</span><br>
-                <input id="btcTxHash" type="text" value="dd059634699e85b51af4964ab97d5e75fb7cd86b748d0ee1c537ca1850101dc7">
-                <button class="btn-rounded" id="btn-get-tx">Lookup</button>
-                <hr>
-                <h3>Results</h3><span class="left">Raw transaction</span>
-                <div class="text-result" id="rawTransaction">-</div><span class="left">Merkle proof</span>
-                <div class="text-result" id="merkleProof">-</div><span class="left">Block hash</span>
-                <div class="text-result" id="txBlockHash">-</div><span class="left">Verification Fee</span>
-                <div class="text-result" id="feeVerifyTx">-</div>
-                <hr>
-              </div>
-              <div class="col-sm-1">
-                <div class="circle">2</div>
-              </div>
-              <div class="col-sm-11">
-                <div class="verify-only">
-                  <h3>Verify transaction</h3>
-                  <button class="btn-rounded" id="btn-verify-tx">Call verifyTx</button>
-                </div>
-                <div class="relay-only">
-                  <h3>Send relay tx</h3>
-                  <button class="btn-rounded" id="btn-relay-tx">Send transaction relay tx</button>
-                </div>
-                <hr>
-                <h3>Results</h3>
-                <div class="verify-only"><span class="left">BTC Relay verifyTx returned</span>
-                  <div class="text-result result-box"><span id="txReturned">-</span>
-                    <div class="status-box"><span class="glyphicon glyphicon-repeat"></span></div>
-                  </div>
-                </div>
-                <div class="relay-only"><span class="left">BTC Relay Ethereum tx hash</span>
-                  <div class="text-result result-box"><span class="red" id="txHashError"></span><a id="txHashReturned" href="#" target="_blank">-</a>
-                    <div class="status-box"><span class="glyphicon glyphicon-repeat"></span></div>
-                  </div>
-                </div>
-                <div class="relay-only">
-                  <hr>
-                  <p>When this tx is mined, check the <a href="http://testnet.etherscan.io/address/0x59c9fb53d658b15a7dded65c693703baf58cf63c" target="_blank">BitcoinProcessor</a> sample contract. In its storage, the lastTxHash value should be the same as your input, and ethBlock block will be the mined Ethereum block number.</p>
-                  <p>If morden.ether.camp isn't running, you can use <code>web3.eth.getStorageAt('0x59c9fb53d658b15a7dded65c693703baf58cf63c', 0)</code> and <code>web3.toDecimal(web3.eth.getStorageAt('0x59c9fb53d658b15a7dded65c693703baf58cf63c', 0))</code> to look up the values in storage.</p>
-                  <p>This example shows the use of a BitcoinProcessor contract, which receives Bitcoin transactions via relayTx. This is the easiest way to use BTC Relay because the ABI can remain on the frontend.</p>
-                </div>
-              </div>
-            </div>
-            <div class="verify-only">
-              <hr>
-              <p><strong>View page source to see the main steps:</strong></p>
-              <ul>
-                <li>Getting a raw transaction and its index from a hash</li>
-                <li>Using <a href="https://www.npmjs.com/package/bitcoin-proof" target="_blank">bitcoin-proof</a> to get a Merkle proof</li>
-                <li>Calling <a href="https://github.com/ethereum/btcrelay#verifytxrawtransaction-transactionindex-merklesibling-blockhash" target="_blank">verifyTx</a></li>
-              </ul>
-            </div><br><br>
-          </div>
         </div>
       </div>
     </div>
@@ -267,10 +140,15 @@
         </div>
       </div>
     </footer>
-    <script src="./js/jquery.min.js"></script>
-    <script src="./js/bootstrap.min.js"></script>
-    <script src="./js/bignumber.min.js"></script>
-    <script src="./js/web3.min.js"></script>
-    <script src="./js/app.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/bignumber.min.js"></script>
+    <script src="/js/web3.min.js"></script>
+    <script src="/js/app.js"></script>
+    <script>
+      $(function() {
+      	updatePage('main');
+      });
+    </script>
   </body>
 </html>

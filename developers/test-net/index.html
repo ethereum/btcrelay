@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BTC Relay</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <meta name="description" content="btc relay, ethereum, bitcoin, bitcoin relay, smart contracts, sidechain, peg">
+    <link rel="apple-touch-icon" sizes="57x57" href="/images/favicons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/images/favicons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/images/favicons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/images/favicons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/images/favicons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/images/favicons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/images/favicons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/images/favicons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/images/favicons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/images/favicons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicons/favicon-16x16.png">
+    <link rel="manifest" href="/images/favicons/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/images/favicons/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+  </head>
+  <body class="grey-bg">
+    <header>
+      <div class="container">
+        <nav class="navbar navbar-default">
+          <div class="navbar-header">
+            <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/"><img src="/images/logo.svg"></a>
+          </div>
+          <div class="collapse navbar-collapse" id="navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+              <li class="active"><a href="/developers">Developers</a></li>
+              <li><a href="https://github.com/consensys/btcrelay-fetchd" target="_blank">Become a relayer</a></li>
+              <li><a href="http://btc-relay.readthedocs.io/en/latest/frequently-asked-questions.html" target="_blank">Faq</a></li>
+              <li><a class="github" href="https://github.com/ethereum/btcrelay" target="_blank">
+                  <svg aria-hidden="true" version="1.1" viewBox="0 0 16 16" width="24" height="24">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                  </svg></a></li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </header>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3 static">
+          <div class="left-menu">
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+              <div class="panel">
+                <ul class="nav nav-stacked">
+                  <li class="header"><a href="/developers">Main Net</a></li>
+                </ul>
+                <ul class="nav nav-stacked hidden">
+                  <li class="statusBut"><a class="statusPage" href="/developers">Status</a></li>
+                  <li class="dropdown"><a class="dropdown-toggle collapsed" href="#main-examples" data-toggle="collapse" aria-expanded="false">Examples <span class="caret"></span></a>
+                    <ul class="nav example-list collapse" id="main-examples">
+                      <li><a class="verifyTxPage" href="/developers/examples/verify-tx.html">Verify TX</a></li>
+                      <li><a class="relayTxPage" href="/developers/examples/relay-tx.html">Relay TX</a></li>
+                    </ul>
+                  </li>
+                  <li><a class="sourcePage" href="/developers/how-to-verify-source-code.html">How to verify source code</a></li>
+                </ul>
+              </div>
+              <div class="panel">
+                <ul class="nav nav-stacked">
+                  <li class="header active"><a href="/developers/test-net">Test net</a></li>
+                </ul>
+                <ul class="nav nav-stacked">
+                  <li class="statusBut active"><a class="statusPage" href="/developers/test-net">Status</a></li>
+                  <li class="dropdown"><a class="dropdown-toggle collapsed" href="#test-examples" data-toggle="collapse" aria-expanded="false">Examples <span class="caret"></span></a>
+                    <ul class="nav example-list collapse" id="test-examples">
+                      <li><a class="verifyTxPage" href="/developers/test-net/examples/verify-tx.html">Verify TX</a></li>
+                      <li><a class="relayTxPage" href="/developers/test-net/examples/relay-tx.html">Relay TX</a></li>
+                    </ul>
+                  </li>
+                  <li><a class="sourcePage" href="/developers/test-net/how-to-verify-source-code.html">How to verify source code</a></li>
+                </ul>
+              </div>
+            </div>
+            <ul class="nav nav-stacked bottomMenu">
+              <li><a href="http://btc-relay.readthedocs.io/en/latest/" target="_blank">Help</a></li>
+              <li><a href="">Terms of use</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-9 developers">
+          <h1 id="header">Test net live status <small>(may need relayers)</small></h1>
+          <div id="statusPage">
+            <hr>
+            <div class="row">
+              <div class="col-lg-3"><span class="left">Contract information</span></div>
+              <div class="col-lg-9 text-right"><a id="relayAddr" href="#" target="_blank">-</a><br>
+                <div class="button-group"><a class="pink-button pull-right" href="https://github.com/ethereum/btcrelay#api" target="_blank">API</a><a class="pink-button pull-right collapsed" role="button" data-toggle="collapse" href="#abi" aria-controls="abi" aria-expanded="false">ABI</a></div>
+                <div class="clearfix"></div>
+              </div>
+              <div class="col-lg-12">
+                <div class="collapse" id="abi">
+                  <pre class="abi">[{"constant": false, "type": "function", "name": "bulkStoreHeader(bytes,int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "bytes", "name": "headersBytes"}, {"type": "int256", "name": "count"}]}, {"constant": false, "type": "function", "name": "changeFeeRecipient(int256,int256,int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "int256", "name": "blockHash"}, {"type": "int256", "name": "feeWei"}, {"type": "int256", "name": "feeRecipient"}]}, {"constant": false, "type": "function", "name": "computeMerkle(int256,int256,int256[])", "outputs": [{"type": "uint256", "name": "out"}], "inputs": [{"type": "int256", "name": "txHash"}, {"type": "int256", "name": "txIndex"}, {"type": "int256[]", "name": "sibling"}]}, {"constant": false, "type": "function", "name": "depthCheck(int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "int256", "name": "n"}]}, {"constant": false, "type": "function", "name": "feePaid(int256,int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "int256", "name": "txBlockHash"}, {"type": "int256", "name": "amountWei"}]}, {"constant": false, "type": "function", "name": "getAverageChainWork()", "outputs": [{"type": "int256", "name": "out"}], "inputs": []}, {"constant": false, "type": "function", "name": "getBlockHeader(int256)", "outputs": [{"type": "bytes", "name": "out"}], "inputs": [{"type": "int256", "name": "blockHash"}]}, {"constant": false, "type": "function", "name": "getBlockchainHead()", "outputs": [{"type": "int256", "name": "out"}], "inputs": []}, {"constant": false, "type": "function", "name": "getChainWork()", "outputs": [{"type": "int256", "name": "out"}], "inputs": []}, {"constant": false, "type": "function", "name": "getChangeRecipientFee()", "outputs": [{"type": "int256", "name": "out"}], "inputs": []}, {"constant": false, "type": "function", "name": "getFeeAmount(int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "int256", "name": "blockHash"}]}, {"constant": false, "type": "function", "name": "getFeeRecipient(int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "int256", "name": "blockHash"}]}, {"constant": false, "type": "function", "name": "getLastBlockHeight()", "outputs": [{"type": "int256", "name": "out"}], "inputs": []}, {"constant": false, "type": "function", "name": "helperVerifyHash__(uint256,int256,int256[],int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "uint256", "name": "txHash"}, {"type": "int256", "name": "txIndex"}, {"type": "int256[]", "name": "sibling"}, {"type": "int256", "name": "txBlockHash"}]}, {"constant": false, "type": "function", "name": "priv_fastGetBlockHash__(int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "int256", "name": "blockHeight"}]}, {"constant": false, "type": "function", "name": "priv_inMainChain__(int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "int256", "name": "txBlockHash"}]}, {"constant": false, "type": "function", "name": "relayTx(bytes,int256,int256[],int256,int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "bytes", "name": "txBytes"}, {"type": "int256", "name": "txIndex"}, {"type": "int256[]", "name": "sibling"}, {"type": "int256", "name": "txBlockHash"}, {"type": "int256", "name": "contract"}]}, {"constant": false, "type": "function", "name": "setInitialParent(int256,int256,int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "int256", "name": "blockHash"}, {"type": "int256", "name": "height"}, {"type": "int256", "name": "chainWork"}]}, {"constant": false, "type": "function", "name": "storeBlockHeader(bytes)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "bytes", "name": "blockHeaderBytes"}]}, {"constant": false, "type": "function", "name": "storeBlockWithFee(bytes,int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "bytes", "name": "blockHeaderBytes"}, {"type": "int256", "name": "feeWei"}]}, {"constant": false, "type": "function", "name": "storeBlockWithFeeAndRecipient(bytes,int256,int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "bytes", "name": "blockHeaderBytes"}, {"type": "int256", "name": "feeWei"}, {"type": "int256", "name": "feeRecipient"}]}, {"constant": false, "type": "function", "name": "verifyTx(bytes,int256,int256[],int256)", "outputs": [{"type": "uint256", "name": "out"}], "inputs": [{"type": "bytes", "name": "txBytes"}, {"type": "int256", "name": "txIndex"}, {"type": "int256[]", "name": "sibling"}, {"type": "int256", "name": "txBlockHash"}]}, {"constant": false, "type": "function", "name": "within6Confirms(int256)", "outputs": [{"type": "int256", "name": "out"}], "inputs": [{"type": "int256", "name": "txBlockHash"}]}, {"inputs": [{"indexed": true, "type": "int256", "name": "recipient"}, {"indexed": false, "type": "int256", "name": "amount"}], "type": "event", "name": "EthPayment(int256,int256)"}, {"inputs": [{"indexed": true, "type": "uint256", "name": "blockHash"}, {"indexed": true, "type": "int256", "name": "returnCode"}], "type": "event", "name": "GetHeader(uint256,int256)"}, {"inputs": [{"indexed": true, "type": "uint256", "name": "txHash"}, {"indexed": true, "type": "int256", "name": "returnCode"}], "type": "event", "name": "RelayTransaction(uint256,int256)"}, {"inputs": [{"indexed": true, "type": "uint256", "name": "blockHash"}, {"indexed": true, "type": "int256", "name": "returnCode"}], "type": "event", "name": "StoreHeader(uint256,int256)"}, {"inputs": [{"indexed": true, "type": "uint256", "name": "txHash"}, {"indexed": true, "type": "int256", "name": "returnCode"}], "type": "event", "name": "VerifyTransaction(uint256,int256)"}]</pre>
+                </div>
+                <hr>
+              </div>
+              <div class="col-lg-3"><span class="left">Latest block hash</span></div>
+              <div class="col-lg-9 text-right">
+                <div id="latestBlockHash">-</div>
+              </div>
+              <div class="col-lg-12">
+                <div class="alert alert-danger" id="warnSync" style="display:none"><span class="glyphicon glyphicon-exclamation-sign"></span>Your Ethereum node may not be fully synced: <span id="nodeBlockNum">-</span>. Check <a id="statsLink" href="https://morden.io" target="_blank">stats</a> for the latest blocks.</div>
+                <hr>
+              </div>
+              <div class="col-lg-3"><br><span class="left">Latest block #</span></div>
+              <div class="col-lg-9 text-right"><span>BTC Relay <span class="red" id="latestBlockHeight"># -</span></span><br><a href="https://blockchain.info" target="_blank">Blockchain.info</a> <span id="bciBlockHeight"># -</span><br><a href="https://btc.blockr.io" target="_blank">btc.blockr.io</a> <span id="blockrBlockHeight"># -</span></div>
+              <div class="col-lg-12">
+                <hr>
+              </div>
+              <div class="col-lg-3"><span class="left">Eth fee</span></div>
+              <div class="col-lg-9 text-right"><span class="red" id="feeVTX">0.001</span></div>
+              <div class="col-lg-12">
+                <hr>
+              </div>
+              <div class="col-lg-3"><span class="left">Relayer address</span></div>
+              <div class="col-lg-9 text-right"><a id="feeRecipient" href="#" target="_blank">-</a></div>
+              <div class="col-lg-12">
+                <hr>
+              </div>
+            </div>
+            <p class="text-right">For more information visit <a href="http://btc-relay.readthedocs.io/en/latest/status.html" target="_blank">Status FAQ</a><br>If you need more help visit <a href="https://gitter.im/ethereum/btcrelay" target="_blank">BTC Relay Gitter</a><br><br></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer>
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-3">built on <a href="https://ethereum.org/" target="_blank"><img src="/images/ethereum-sign.svg"></a></div>
+          <div class="col-xs-9 text-right">©2016 <a href="https://en.wikipedia.org/wiki/MIT_License" target="_blank">Open Sourced</a> by BTCRelay</div>
+        </div>
+      </div>
+    </footer>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/bignumber.min.js"></script>
+    <script src="/js/web3.min.js"></script>
+    <script src="/js/app.js"></script>
+    <script>
+      $(function() {
+      	updatePage('test');
+      });
+    </script>
+  </body>
+</html>

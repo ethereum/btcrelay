@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BTC Relay</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <meta name="description" content="btc relay, ethereum, bitcoin, bitcoin relay, smart contracts, sidechain, peg">
+    <link rel="apple-touch-icon" sizes="57x57" href="/images/favicons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/images/favicons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/images/favicons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/images/favicons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/images/favicons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/images/favicons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/images/favicons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/images/favicons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/images/favicons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/images/favicons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicons/favicon-16x16.png">
+    <link rel="manifest" href="/images/favicons/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/images/favicons/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+  </head>
+  <body class="grey-bg">
+    <header>
+      <div class="container">
+        <nav class="navbar navbar-default">
+          <div class="navbar-header">
+            <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/"><img src="/images/logo.svg"></a>
+          </div>
+          <div class="collapse navbar-collapse" id="navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+              <li class="active"><a href="/developers">Developers</a></li>
+              <li><a href="https://github.com/consensys/btcrelay-fetchd" target="_blank">Become a relayer</a></li>
+              <li><a href="http://btc-relay.readthedocs.io/en/latest/frequently-asked-questions.html" target="_blank">Faq</a></li>
+              <li><a class="github" href="https://github.com/ethereum/btcrelay" target="_blank">
+                  <svg aria-hidden="true" version="1.1" viewBox="0 0 16 16" width="24" height="24">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                  </svg></a></li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </header>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3 static">
+          <div class="left-menu">
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+              <div class="panel">
+                <ul class="nav nav-stacked">
+                  <li class="header"><a href="/developers">Main Net</a></li>
+                </ul>
+                <ul class="nav nav-stacked hidden">
+                  <li class="statusBut"><a class="statusPage" href="/developers">Status</a></li>
+                  <li class="dropdown"><a class="dropdown-toggle collapsed" href="#main-examples" data-toggle="collapse" aria-expanded="false">Examples <span class="caret"></span></a>
+                    <ul class="nav example-list collapse" id="main-examples">
+                      <li><a class="verifyTxPage" href="/developers/examples/verify-tx.html">Verify TX</a></li>
+                      <li><a class="relayTxPage" href="/developers/examples/relay-tx.html">Relay TX</a></li>
+                    </ul>
+                  </li>
+                  <li><a class="sourcePage" href="/developers/how-to-verify-source-code.html">How to verify source code</a></li>
+                </ul>
+              </div>
+              <div class="panel">
+                <ul class="nav nav-stacked">
+                  <li class="header active"><a href="/developers/test-net">Test net</a></li>
+                </ul>
+                <ul class="nav nav-stacked">
+                  <li class="statusBut"><a class="statusPage" href="/developers/test-net">Status</a></li>
+                  <li class="dropdown"><a class="dropdown-toggle collapsed" href="#test-examples" data-toggle="collapse" aria-expanded="false">Examples <span class="caret"></span></a>
+                    <ul class="nav example-list collapse" id="test-examples">
+                      <li><a class="verifyTxPage" href="/developers/test-net/examples/verify-tx.html">Verify TX</a></li>
+                      <li><a class="relayTxPage" href="/developers/test-net/examples/relay-tx.html">Relay TX</a></li>
+                    </ul>
+                  </li>
+                  <li class="active"><a class="sourcePage" href="/developers/test-net/how-to-verify-source-code.html">How to verify source code</a></li>
+                </ul>
+              </div>
+            </div>
+            <ul class="nav nav-stacked bottomMenu">
+              <li><a href="http://btc-relay.readthedocs.io/en/latest/" target="_blank">Help</a></li>
+              <li><a href="">Terms of use</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-9 developers">
+          <h1 id="header">Verifying the source code <small>at 0x5770345100a27b15f5b40bec86a701f888e8c601</small></h1>
+          <div id="sourcePage">
+            <p>The deployed version of <a href="https://github.com/ethereum/btcrelay/tree/6fa4098747b9c030ed7a64b304dbcfa35100afe0" target="_blank">BTC Relay is from commit 6fa4098747b9c030ed7a64b304dbcfa35100afe0</a></p>
+            <p>In order to verify the source code please follow the these steps:</p>
+            <hr>
+            <div class="row">
+              <div class="col-sm-1">
+                <div class="circle">1</div>
+              </div>
+              <div class="col-sm-11">
+                <h3>Compile code to the evm (bytecode)</h3>
+                <pre>serpent compile btcBulkStoreHeaders.se > compiled.evm</pre>
+              </div>
+              <div class="col-sm-12">
+                <hr>
+              </div>
+              <div class="col-sm-1">
+                <div class="circle">2</div>
+              </div>
+              <div class="col-sm-11">
+                <h3>compare the evm against the data used in the contract creation transaction</h3>
+                <p>Here's how to use Geth console to obtain the evm. The receipt is used to guarantee that the tx hash provided is the one that created the BTC Relay contract (see contractAddress property of the receipt).</p>
+                <pre class="text-left">> tx='0x8e135b828db84bce864d4789cde112eacc04d3d21b5fa569f12f79d8d3ded3c6'
+> eth.getTransactionReceipt(tx)
+{
+  blockHash: "0x6739c150e39dbcc5c4c4b078a33061db444ef72ca4b671960fbec8ad49f4f99c",
+  blockNumber: 484230,
+  contractAddress: "0x5770345100a27b15f5b40bec86a701f888e8c601",
+  cumulativeGasUsed: 2776382,
+  gasUsed: 2776382,
+  logs: [],
+  transactionHash: "0x8e135b828db84bce864d4789cde112eacc04d3d21b5fa569f12f79d8d3ded3c6",
+  transactionIndex: 0
+}
+> objTx = eth.getTransaction(tx)
+> objTx.input</pre>
+                <p>Compare objTx.input with the contents of compiled.evm and you will see that they match identically (except for 0x at the front of objTx.input)</p>
+                <p>The version of the <a href="https://github.com/ethereum/serpent/tree/f0b4128f91d173fb3f6de48a6993e7db75446924" target="_blank">Serpent compiler used is commit f0b4128f91d173fb3f6de48a6993e7db75446924</a></p>
+              </div>
+            </div><br><br>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer>
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-3">built on <a href="https://ethereum.org/" target="_blank"><img src="/images/ethereum-sign.svg"></a></div>
+          <div class="col-xs-9 text-right">©2016 <a href="https://en.wikipedia.org/wiki/MIT_License" target="_blank">Open Sourced</a> by BTCRelay</div>
+        </div>
+      </div>
+    </footer>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/bignumber.min.js"></script>
+    <script src="/js/web3.min.js"></script>
+  </body>
+</html>
