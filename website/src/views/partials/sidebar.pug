@@ -1,41 +1,37 @@
 div.left-menu
 	div.panel-group#accordion(role="tablist" aria-multiselectable="true")
 		div.panel
-			ul.nav.nav-stacked#mainnetHeading(role="tab")
-				li.header.active
-					a(role="button" data-toggle="collapse" data-parent="#accordion" href="#mainNetPanel" aria-expanded="true" aria-controls="mainNetPanel") Main Net
-			ul.nav.nav-stacked.collapse.in#mainNetPanel(role="tabpanel" aria-labelledby="mainnetHeading")
-				li.statusBut.active
-					a.statusPage(href="#" data-net="main") Status
+			ul.nav.nav-stacked
+				li.header(class=section === 'main' ? 'active' : '')
+					a(href="/developers") Main Net
+			ul.nav.nav-stacked(class=(section === 'main' ? '' : 'hidden'))
+				li.statusBut(class=(section === 'main' && sub === 'status') ? 'active' : '')
+					a.statusPage(href="/developers") Status
 				li.dropdown
-					a.dropdown-toggle.collapsed(href="#main-examples" data-toggle="collapse" aria-expanded="false") Examples #[span.caret]
-					ul.nav.collapse.example-list#main-examples
-						li
-							a.verifyTxPage(href="#") Verify TX
-						li
-							a.relayTxPage(href="#") Relay TX
-						//- li
-							a(href="#") Bitcoin processor
-				li
-					a.sourcePage(href="#") How to verify source code
+					a.dropdown-toggle(href="#main-examples" data-toggle="collapse" aria-expanded=((section === 'main' && examples) ? "true" : "false") class=((section === 'main' && examples) ? '' : 'collapsed')) Examples #[span.caret]
+					ul.nav.example-list#main-examples(class=((section === 'main' && examples === true) ? 'collapse in' : 'collapse'))
+						li(class=(section === 'main' && sub === 'verify') ? 'active' : '')
+							a.verifyTxPage(href="/developers/examples/verify-tx.html") Verify TX
+						li(class=(section === 'main' && sub === 'relay') ? 'active' : '')
+							a.relayTxPage(href="/developers/examples/relay-tx.html") Relay TX
+				li(class=(section === 'main' && sub === 'source') ? 'active' : '')
+					a.sourcePage(href="/developers/how-to-verify-source-code.html") How to verify source code
 		div.panel
-			ul.nav.nav-stacked#testnetHeading(role="tab")
-				li.header
-					a(role="button" data-toggle="collapse" data-parent="#accordion" href="#testNetPanel" aria-expanded="false" aria-controls="testNetPanel") Test net
-			ul#testNetPanel.nav.nav-stacked.collapse(role="tabpanel" aria-labelledby="testnetHeading")
-				li.statusBut
-					a.statusPage(href="#" data-net="test") Status
+			ul.nav.nav-stacked
+				li.header(class=section === 'test' ? 'active' : '')
+					a(href="/developers/test-net") Test net
+			ul.nav.nav-stacked(class=(section === 'test' ? '' : 'hidden'))
+				li.statusBut(class=(section === 'test' && sub === 'status') ? 'active' : '')
+					a.statusPage(href="/developers/test-net") Status
 				li.dropdown
-					a.dropdown-toggle.collapsed(href="#test-examples" data-toggle="collapse" aria-expanded="false") Examples #[span.caret]
-					ul.nav.collapse.example-list#test-examples
-						li
-							a.verifyTxPage(href="#") Verify TX
-						li
-							a.relayTxPage(href="#") Relay TX
-						//- li
-							a(href="#") Bitcoin processor
-				li
-					a.sourcePage(href="#") How to verify source code
+					a.dropdown-toggle(href="#test-examples" data-toggle="collapse" aria-expanded=((section === 'test' && examples) ? "true" : "false") class=((section === 'test' && examples) ? '' : 'collapsed')) Examples #[span.caret]
+					ul.nav.example-list#test-examples(class=((section === 'test' && examples === true) ? 'collapse in' : 'collapse'))
+						li(class=(section === 'test' && sub === 'verify') ? 'active' : '')
+							a.verifyTxPage(href="/developers/test-net/examples/verify-tx.html") Verify TX
+						li(class=(section === 'test' && sub === 'relay') ? 'active' : '')
+							a.relayTxPage(href="/developers/test-net/examples/relay-tx.html") Relay TX
+				li(class=(section === 'test' && sub === 'source') ? 'active' : '')
+					a.sourcePage(href="/developers/test-net/how-to-verify-source-code.html") How to verify source code
 	//- hr
 	ul.nav.nav-stacked.bottomMenu
 		li

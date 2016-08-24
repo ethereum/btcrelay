@@ -31,8 +31,6 @@ function updatePage(net) {
 
     $('#relayAddr').text(relayAddr);
     $('#relayAddr').attr('href', 'http://' + (net === 'test' ? 'testnet.' : '') + 'etherscan.io/address/' + relayAddr);
-    $('#relayAddr1').text(relayAddr);
-    $('#relayAddr1').attr('href', 'http://' + (net === 'test' ? 'testnet.' : '') + 'etherscan.io/address/' + relayAddr);
 
     $('#latestBlockHeight').text('# -');
     $('#bciBlockHeight').text('# -');
@@ -42,7 +40,6 @@ function updatePage(net) {
     $('#feeRecipient').attr('href', '#');
     $('#feeVTX').text('-');
   }
-  $('#header').html((net === 'main' ? 'Main' : 'Test') + ' net live status' + (net === 'test' ? ' <small>(may need relayers)</small>' : ''));
 
   $('#warnSync').hide();
 
@@ -253,120 +250,9 @@ function callRelayContract() {
  */
 
 $(function() {
-  function cleanup() {
-    $('.example-page').hide();
-    $('#sourcePage').hide();
-    $('.example-list li').removeClass('active');
-    $('.sourcePage').parent().removeClass('active');
-    $('#mainNetPanel li.statusBut').removeClass('active');
-    $('#testNetPanel li.statusBut').removeClass('active');
-  }
-
-  cleanup();
-  $('#mainNetPanel li.statusBut').addClass('active');
-
-  $('#mainnetHeading').on('click', function(e) {
-    $(this).find('li.header').removeClass('active').addClass('active');
-    $('#testnetHeading').find('li.header').removeClass('active');
-
-    cleanup();
-
-    $('#mainNetPanel li.statusBut').addClass('active');
-
-    $('#statusPage').show();
-    updatePage('main');
-  });
-
-  $('#testnetHeading').on('click', function(e) {
-    $(this).find('li.header').removeClass('active').addClass('active');
-    $('#mainnetHeading').find('li.header').removeClass('active');
-
-    cleanup();
-
-    $('ul#testNetPanel li.statusBut').addClass('active');
-
-    $('#statusPage').show();
-    updatePage('test');
-  });
-
-  $('.statusPage').on('click', function(e) {
-    $('#' + $(this).data('net') + 'netHeading').trigger('click');
-  });
-
-
-  /*
-  Verify TX
-   */
-
-  $('.verifyTxPage').on('click', function(e) {
-    isRelay = false;
-    cleanup();
-
-    $(this).parent().addClass('active');
-    $('#statusPage').hide();
-    $('#verifyPage').removeClass('verify-active').removeClass('relay-active');
-
-    // Reset fields
-    $('#btcTxHash').val('dd059634699e85b51af4964ab97d5e75fb7cd86b748d0ee1c537ca1850101dc7');
-    $('#rawTransaction').html('-');
-    $('#merkleProof').html('-');
-    $('#txBlockHash').html('-');
-    $('#feeVerifyTx').html('-');
-    $('#txReturned').html('-');
-    $('#txHashReturned').text('-');
-    $('#txHashReturned').attr('href', '#');
-    $('.status-box').removeClass('danger').removeClass('success');
-    $('.status-box .glyphicon').removeClass('glyphicon-repeat').removeClass('glyphicon-ok').removeClass('glyphicon-remove').removeClass('spinning').addClass('glyphicon-repeat');
-    $('#verifyPage').addClass('verify-active').show();
-
-    $('#header').html('Verify Tx <small>' + (lastNet === 'main' ? '(Main net)' : '(Morden test net)') + '</small>');
-  });
-
-  $('.relayTxPage').on('click', function(e) {
-    isRelay = true;
-    cleanup();
-
-    $(this).parent().addClass('active');
-    $('#statusPage').hide();
-    $('#verifyPage').removeClass('verify-active').removeClass('relay-active');
-
-    // Reset fields
-    $('#btcTxHash').val('dd059634699e85b51af4964ab97d5e75fb7cd86b748d0ee1c537ca1850101dc7');
-    $('#rawTransaction').html('-');
-    $('#merkleProof').html('-');
-    $('#txBlockHash').html('-');
-    $('#feeVerifyTx').html('-');
-    $('#txReturned').html('-');
-    $('#txHashReturned').text('-');
-    $('#txHashReturned').attr('href', '#');
-    $('#txHashReturned').show();
-    $('#txHashError').hide();
-    $('.status-box').removeClass('danger').removeClass('success');
-    $('.status-box .glyphicon').removeClass('glyphicon-repeat').removeClass('glyphicon-ok').removeClass('glyphicon-remove').removeClass('spinning').addClass('glyphicon-repeat');
-    $('#verifyPage').addClass('relay-active').show();
-
-    $('#header').html('Relay Tx <small>' + (lastNet === 'main' ? '(Main net)' : '(Morden test net)') + '</small>');
-  });
-
-  $('.sourcePage').on('click', function(e) {
-    cleanup();
-    $(this).parent().addClass('active');
-    $('#statusPage').hide();
-    $('#sourcePage').removeClass('mainNet').removeClass('testNet').addClass((lastNet === 'main' ? 'main' : 'test') + 'Net');
-     $('#header').html('Verifying the Source Code <small>at ' + (lastNet === 'main' ? mainNetAddr : testNetAddr) + '</small>');
-    $('#sourcePage').show();
-  });
-
   $('#btn-get-tx').click(getTxInfo);
 
   $('#btn-verify-tx').click(callContract);
 
   $('#btn-relay-tx').click(callRelayContract);
-
-
-  /*
-  Init
-   */
-
-  updatePage('main');
 });

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>BTC Relay</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <meta name="description" content="btc relay, ethereum, bitcoin, bitcoin relay, smart contracts, sidechain, peg">
+    <link rel="apple-touch-icon" sizes="57x57" href="/images/favicons/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/images/favicons/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/images/favicons/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/images/favicons/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/images/favicons/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/images/favicons/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/images/favicons/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/images/favicons/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/images/favicons/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/images/favicons/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicons/favicon-16x16.png">
+    <link rel="manifest" href="/images/favicons/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/images/favicons/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
+  </head>
+  <body class="grey-bg">
+    <header>
+      <div class="container">
+        <nav class="navbar navbar-default">
+          <div class="navbar-header">
+            <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></button><a class="navbar-brand" href="/"><img src="/images/logo.svg"></a>
+          </div>
+          <div class="collapse navbar-collapse" id="navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+              <li class="active"><a href="/developers">Developers</a></li>
+              <li><a href="https://github.com/consensys/btcrelay-fetchd" target="_blank">Become a relayer</a></li>
+              <li><a href="http://btc-relay.readthedocs.io/en/latest/frequently-asked-questions.html" target="_blank">Faq</a></li>
+              <li><a class="github" href="https://github.com/ethereum/btcrelay" target="_blank">
+                  <svg aria-hidden="true" version="1.1" viewBox="0 0 16 16" width="24" height="24">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                  </svg></a></li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </header>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3 static">
+          <div class="left-menu">
+            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+              <div class="panel">
+                <ul class="nav nav-stacked">
+                  <li class="header"><a href="/developers">Main Net</a></li>
+                </ul>
+                <ul class="nav nav-stacked hidden">
+                  <li class="statusBut"><a class="statusPage" href="/developers">Status</a></li>
+                  <li class="dropdown"><a class="dropdown-toggle collapsed" href="#main-examples" data-toggle="collapse" aria-expanded="false">Examples <span class="caret"></span></a>
+                    <ul class="nav example-list collapse" id="main-examples">
+                      <li><a class="verifyTxPage" href="/developers/examples/verify-tx.html">Verify TX</a></li>
+                      <li><a class="relayTxPage" href="/developers/examples/relay-tx.html">Relay TX</a></li>
+                    </ul>
+                  </li>
+                  <li><a class="sourcePage" href="/developers/how-to-verify-source-code.html">How to verify source code</a></li>
+                </ul>
+              </div>
+              <div class="panel">
+                <ul class="nav nav-stacked">
+                  <li class="header active"><a href="/developers/test-net">Test net</a></li>
+                </ul>
+                <ul class="nav nav-stacked">
+                  <li class="statusBut"><a class="statusPage" href="/developers/test-net">Status</a></li>
+                  <li class="dropdown"><a class="dropdown-toggle" href="#test-examples" data-toggle="collapse" aria-expanded="true">Examples <span class="caret"></span></a>
+                    <ul class="nav example-list collapse in" id="test-examples">
+                      <li><a class="verifyTxPage" href="/developers/test-net/examples/verify-tx.html">Verify TX</a></li>
+                      <li class="active"><a class="relayTxPage" href="/developers/test-net/examples/relay-tx.html">Relay TX</a></li>
+                    </ul>
+                  </li>
+                  <li><a class="sourcePage" href="/developers/test-net/how-to-verify-source-code.html">How to verify source code</a></li>
+                </ul>
+              </div>
+            </div>
+            <ul class="nav nav-stacked bottomMenu">
+              <li><a href="http://btc-relay.readthedocs.io/en/latest/" target="_blank">Help</a></li>
+              <li><a href="">Terms of use</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-9 developers">
+          <h1 id="header">Relay tx <small>(Morden Test Net)</small></h1>
+          <div class="example-page" id="verifyPage">
+            <div>
+              <p>Create and deploy a BitcoinProcessor contract with a processTransaction function with the following signature:</p>
+              <p><code>function processTransaction(bytes txn, uint256 txHash) returns (int256)</code></p>
+              <p>From your frontend, call BTC Relay <a href="https://github.com/ethereum/btcrelay#relaytxrawtransaction-transactionindex-merklesibling-blockhash-contractaddress" target="_blank">relayTx</a></p>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-md-3"><span class="left">BTC Relay</span></div>
+              <div class="col-md-9 text-right"><a id="relayAddr1" href="http://testnet.etherscan.io/address/0x5770345100a27b15f5b40bec86a701f888e8c601" target="_blank">0x5770345100a27b15f5b40bec86a701f888e8c601</a></div>
+              <div class="col-md-12">
+                <hr>
+                <p>This is a sample of using BTC Relay <a href="https://github.com/ethereum/btcrelay#relaytxrawtransaction-transactionindex-merklesibling-blockhash-contractaddress" target="_blank">relayTx</a>, which is the easiest way to integrate BTC Relay because the ABI can remain in the frontend.</p>
+                <p>A Bitcoin transaction is relayed to <a href="https://github.com/ethereum/btcrelay/blob/master/examples/BitcoinProcessor.sol" target="_blank">BitcoinProcessor.sol</a> that has been deployed at <a href="http://testnet.etherscan.io/address/0x59c9fb53d658b15a7dded65c693703baf58cf63c" target="_blank">0x59c9fb53d658b15a7dded65c693703baf58cf63c</a></p><br>
+                <p>The easiest way to run this sample is with the <a href="https://metamask.io/" target="_blank">Metamask</a> Chrome plug-in</p>
+                <p><a class="metamask-logo" href="https://chrome.google.com/webstore/detail/nkbihfbeogaeaoehlefnkodbefgpgknn" target="_blank"></a></p>
+                <p>Otherwise you need a testnet client configured like:</p>
+                <p><kbd>geth --testnet --unlock 0 --rpc --rpcport 8545 --rpccorsdomain=* --rpcaddr localhost</kbd></p>
+                <hr>
+              </div>
+              <div class="col-sm-1">
+                <div class="circle">1</div>
+              </div>
+              <div class="col-sm-11">
+                <h3>Find a transaction</h3><span class="left">Bitcoin transaction hash</span><br>
+                <input id="btcTxHash" type="text" value="dd059634699e85b51af4964ab97d5e75fb7cd86b748d0ee1c537ca1850101dc7">
+                <button class="btn-rounded" id="btn-get-tx">Lookup</button>
+                <hr>
+                <h3>Results</h3><span class="left">Raw transaction</span>
+                <div class="text-result" id="rawTransaction">-</div><span class="left">Merkle proof</span>
+                <div class="text-result" id="merkleProof">-</div><span class="left">Block hash</span>
+                <div class="text-result" id="txBlockHash">-</div><span class="left">Verification Fee</span>
+                <div class="text-result" id="feeVerifyTx">-</div>
+                <hr>
+              </div>
+              <div class="col-sm-1">
+                <div class="circle">2</div>
+              </div>
+              <div class="col-sm-11">
+                <div>
+                  <h3>Send relay tx</h3>
+                  <button class="btn-rounded" id="btn-relay-tx">Send transaction relay tx</button>
+                </div>
+                <hr>
+                <h3>Results</h3><span class="left">BTC Relay Ethereum tx hash</span>
+                <div class="text-result result-box"><span class="red" id="txHashError"></span><a id="txHashReturned" href="#" target="_blank">-</a>
+                  <div class="status-box"><span class="glyphicon glyphicon-repeat"></span></div>
+                </div>
+                <hr>
+                <p>When this tx is mined, check the <a href="http://testnet.etherscan.io/address/0x59c9fb53d658b15a7dded65c693703baf58cf63c" target="_blank">BitcoinProcessor</a> sample contract. In its storage, the lastTxHash value should be the same as your input, and ethBlock block will be the mined Ethereum block number.</p>
+                <p>If morden.ether.camp isn't running, you can use <code>web3.eth.getStorageAt('0x59c9fb53d658b15a7dded65c693703baf58cf63c', 0)</code> and <code>web3.toDecimal(web3.eth.getStorageAt('0x59c9fb53d658b15a7dded65c693703baf58cf63c', 0))</code> to look up the values in storage.</p>
+                <p>This example shows the use of a BitcoinProcessor contract, which receives Bitcoin transactions via relayTx. This is the easiest way to use BTC Relay because the ABI can remain on the frontend.</p>
+              </div>
+            </div><br><br>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer>
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-3">built on <a href="https://ethereum.org/" target="_blank"><img src="/images/ethereum-sign.svg"></a></div>
+          <div class="col-xs-9 text-right">©2016 <a href="https://en.wikipedia.org/wiki/MIT_License" target="_blank">Open Sourced</a> by BTCRelay</div>
+        </div>
+      </div>
+    </footer>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/bignumber.min.js"></script>
+    <script src="/js/web3.min.js"></script>
+    <script src="/js/app.js"></script>
+    <script>
+      $(function() {
+      	isRelay = true;
+      	updatePage('test');
+      });
+    </script>
+  </body>
+</html>

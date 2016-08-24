@@ -1,0 +1,14 @@
+doctype html
+html
+	head
+		include ../partials/head.pug
+	body.grey-bg
+		- var page = 'home';
+		include ../partials/header.pug
+
+		block content
+
+		include ../partials/footer.pug
+
+		script(src="./js/jquery.min.js")
+		script(src="./js/bootstrap.min.js")
