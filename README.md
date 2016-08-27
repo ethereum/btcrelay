@@ -168,6 +168,14 @@ The easiest way to use BTC Relay is via [`relayTx`](#relaytxrawtransaction-trans
 See other [examples](#examples) for other ways to use BTC Relay and the
 [docs for FAQ.](http://btc-relay.readthedocs.io)
 
+### Libs/utils
+
+Thanks to those who wrote these:
+
+* https://github.com/rainbeam/solidity-btc-parser
+* https://github.com/tjade273/BTCRelay-tools
+* https://github.com/MrChico/verifyIPFS/blob/master/contracts/verifyIPFS.sol (hex to base58)
+
 ----
 
 ## Incentives for Relayers
