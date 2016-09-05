@@ -67,13 +67,13 @@
               </div>
               <div class="panel">
                 <ul class="nav nav-stacked">
-                  <li class="header active"><a href="/developers/test-net">Test net</a></li>
+                  <li class="header"><a href="/developers/test-net">Test net</a></li>
                 </ul>
-                <ul class="nav nav-stacked">
+                <ul class="nav nav-stacked hidden">
                   <li class="statusBut"><a class="statusPage" href="/developers/test-net">Status</a></li>
-                  <li class="dropdown"><a class="dropdown-toggle" href="#test-examples" data-toggle="collapse" aria-expanded="true">Examples <span class="caret"></span></a>
-                    <ul class="nav example-list collapse in" id="test-examples">
-                      <li class="active"><a class="verifyTxPage" href="/developers/test-net/examples/verify-tx.html">Verify TX</a></li>
+                  <li class="dropdown"><a class="dropdown-toggle collapsed" href="#test-examples" data-toggle="collapse" aria-expanded="false">Examples <span class="caret"></span></a>
+                    <ul class="nav example-list collapse" id="test-examples">
+                      <li><a class="verifyTxPage" href="/developers/test-net/examples/verify-tx.html">Verify TX</a></li>
                       <li><a class="relayTxPage" href="/developers/test-net/examples/relay-tx.html">Relay TX</a></li>
                     </ul>
                   </li>
@@ -88,59 +88,9 @@
           </div>
         </div>
         <div class="col-md-9 developers">
-          <h1 id="header">Verify tx <small>(Morden Test Net)</small></h1>
-          <div class="example-page" id="verifyPage">
-            <div>
-              <p>This is a sample of calling <a href="https://github.com/ethereum/btcrelay/tree/master#verifytxrawtransaction-transactionindex-merklesibling-blockhash" target="_blank" style="text-transform: none">verifyTx</a></p>
-            </div>
-            <hr>
-            <div class="row">
-              <div class="col-md-3"><span class="left">BTC Relay</span></div>
-              <div class="col-md-9 text-right"><a id="relayAddr1" href="http://testnet.etherscan.io/address/0x5770345100a27b15f5b40bec86a701f888e8c601" target="_blank">0x5770345100a27b15f5b40bec86a701f888e8c601</a></div>
-              <div class="col-md-12">
-                <hr>
-              </div>
-              <div class="col-sm-1">
-                <div class="circle">1</div>
-              </div>
-              <div class="col-sm-11">
-                <h3>Find a transaction</h3><span class="left">Bitcoin transaction hash</span><br>
-                <input id="btcTxHash" type="text" value="dd059634699e85b51af4964ab97d5e75fb7cd86b748d0ee1c537ca1850101dc7">
-                <button class="btn-rounded" id="btn-get-tx">Lookup</button>
-                <hr>
-                <h3>Results</h3><span class="left">Raw transaction</span>
-                <div class="text-result" id="rawTransaction">-</div><span class="left">Merkle proof</span>
-                <div class="text-result" id="merkleProof">-</div><span class="left">Block hash</span>
-                <div class="text-result" id="txBlockHash">-</div><span class="left">Verification Fee</span>
-                <div class="text-result" id="feeVerifyTx">-</div>
-                <hr>
-              </div>
-              <div class="col-sm-1">
-                <div class="circle">2</div>
-              </div>
-              <div class="col-sm-11">
-                <div>
-                  <h3>Verify transaction</h3>
-                  <button class="btn-rounded" id="btn-verify-tx">Call verifyTx</button>
-                </div>
-                <hr>
-                <h3>Results</h3>
-                <div><span class="left">BTC Relay verifyTx returned</span>
-                  <div class="text-result result-box"><span id="txReturned">-</span>
-                    <div class="status-box"><span class="glyphicon glyphicon-repeat"></span></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div>
-              <hr>
-              <p><strong>View page source to see the main steps:</strong></p>
-              <ul>
-                <li>Getting a raw transaction and its index from a hash</li>
-                <li>Using <a href="https://www.npmjs.com/package/bitcoin-proof" target="_blank">bitcoin-proof</a> to get a Merkle proof</li>
-                <li>Calling <a href="https://github.com/ethereum/btcrelay#verifytxrawtransaction-transactionindex-merklesibling-blockhash" target="_blank">verifyTx</a></li>
-              </ul>
-            </div><br><br>
+          <h1 id="header">Terms of Use</h1>
+          <div>
+            <p>BTC RELAY IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p><br><br>
           </div>
         </div>
       </div>
@@ -157,12 +107,5 @@
     <script src="/js/bootstrap.min.js"></script>
     <script src="/js/bignumber.min.js"></script>
     <script src="/js/web3.min.js"></script>
-    <script src="/js/app.js"></script>
-    <script>
-      $(function() {
-      	isRelay = false;
-      	updatePage('test');
-      });
-    </script>
   </body>
 </html>
