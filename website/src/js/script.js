@@ -27,7 +27,12 @@ function updatePage(net) {
     lastNet = net;
     relayAddr = net === 'main' ? mainNetAddr : testNetAddr;
 
-    web3 = new Web3(new Web3.providers.HttpProvider(net === 'main' ? mainNetHost : testNetHost));
+    if (typeof web3 !== 'undefined') {
+      // Web3 has been injected by the browser (Mist/MetaMask)
+      web3 = new Web3(web3.currentProvider);
+    } else {
+      web3 = new Web3(new Web3.providers.HttpProvider(net === 'main' ? mainNetHost : testNetHost));
+    }
 
     $('#relayAddr').text(relayAddr);
     $('#relayAddr').attr('href', 'http://' + (net === 'test' ? 'testnet.' : '') + 'etherscan.io/address/' + relayAddr);
@@ -53,18 +58,40 @@ function getStatus(net) {
   ContractClass = web3.eth.contract(btcRelayAbi);
   ContractObject = ContractClass.at(relayAddr);
 
-  heightPerRelay = ContractObject.getLastBlockHeight.call().toString();
-  $('#latestBlockHeight').text('# ' + heightPerRelay);
+  ContractObject.getLastBlockHeight.call(function(err, heightPerRelay) {
+    if (err) {
+      console.log('@err getLastBlockHeight')
+      return;
+    }
+    $('#latestBlockHeight').text('# ' + heightPerRelay.toString());
+  });
 
-  var headHash = ContractObject.getBlockchainHead.call();
-  $('#latestBlockHash').text(formatHash(headHash));
+  ContractObject.getBlockchainHead.call(function(err, headHash) {
+    if (err) {
+      console.log('@err getBlockchainHead')
+      return;
+    }
+    $('#latestBlockHash').text(formatHash(headHash));
 
-  var feeVTX = web3.fromWei(ContractObject.getFeeAmount.call(headHash), 'ether');
-  $('#feeVTX').text(feeVTX);
+    ContractObject.getFeeAmount.call(headHash, function(err, feeWei) {
+      if (err) {
+        console.log('@@@ getFeeAmount error');
+        return;
+      }
 
-  var feeRecipient = ContractObject.getFeeRecipient.call(headHash).toString(16);
-  $('#feeRecipient').text('0x' + formatETHAddress(feeRecipient));
-  $('#feeRecipient').attr('href', 'http://' + (net === 'test' ? 'testnet.' : '') + 'etherscan.io/address/' + feeRecipient);
+      gFeeVerifyEther = web3.fromWei(feeWei, 'ether');
+      $('#feeVTX').text(gFeeVerifyEther);
+    });
+
+    ContractObject.getFeeRecipient.call(headHash, function(err, feeRecipient) {
+      if (err) {
+        console.log('@@@ getFeeRecipient error');
+        return;
+      }
+      $('#feeRecipient').text('0x' + formatETHAddress(feeRecipient));
+      $('#feeRecipient').attr('href', 'http://' + (net === 'test' ? 'testnet.' : '') + 'etherscan.io/address/' + feeRecipient);
+    })
+  });
 
   window.btcrelayTester = ContractObject;
 }
@@ -166,20 +193,15 @@ function getTxInfo(isRelay) {
           console.log('merkle proof: ', gMerkleProof)
           $('#merkleProof').text(JSON.stringify(gMerkleProof));
 
-          if (isRelay) {
-            ContractObject.getFeeAmount.call('0x'+gBlockHashOfTx, function(err, feeWei) {
-              if (err) {
-                console.log('@@@ getFeeAmount error');
-                return;
-              }
+          ContractObject.getFeeAmount.call('0x'+gBlockHashOfTx, function(err, feeWei) {
+            if (err) {
+              console.log('@@@ getFeeAmount error');
+              return;
+            }
 
-              gFeeVerifyEther = web3.fromWei(feeWei, 'ether');
-              $('#feeVerifyTx').text(gFeeVerifyEther);
-            });
-          } else {
-            gFeeVerifyEther = web3.fromWei(ContractObject.getFeeAmount.call('0x'+gBlockHashOfTx), 'ether');
+            gFeeVerifyEther = web3.fromWei(feeWei, 'ether');
             $('#feeVerifyTx').text(gFeeVerifyEther);
-          }
+          });
       })
   })
 }
