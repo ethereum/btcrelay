@@ -9,7 +9,7 @@ var heightPerRelay;
 var relayAddr;
 var gMerkleProof;
 var gBlockHashOfTx;
-var gFeeVerifyFinney;
+var gFeeVerifyEther;
 var ContractClass;
 var ContractObject;
 var lastNet = null;
@@ -99,8 +99,8 @@ function formatETHAddress(bnEthAddress) {
 // shows how to use web3 to make an eth_call to the relay contract
 // verifyTx returns 1 (success) or 0 (verify failed)
 function callVerifyTx(txBytes, txIndex, merkleSibling, txBlockHash) {
-  // gFeeVerifyFinney is transferred!  coinbase must have it or verifyTx fails
-  var feeWei = web3.toWei(gFeeVerifyFinney, 'finney');
+  // gFeeVerifyEther is transferred!  coinbase must have it or verifyTx fails
+  var feeWei = web3.toWei(gFeeVerifyEther, 'ether');
   // var objParam = { from: web3.eth.coinbase, value: feeWei, gas: 3000000 };
   var objParam = { from: '0x102e61f5d8f9bc71d0ad4a084df4e65e05ce0e1c', value: feeWei, gas: 3000000 };
   var res = ContractObject.verifyTx.call(txBytes, txIndex, merkleSibling, txBlockHash, objParam);
@@ -173,20 +173,20 @@ function getTxInfo(isRelay) {
                 return;
               }
 
-              gFeeVerifyFinney = web3.fromWei(feeWei, 'finney');
-              $('#feeVerifyTx').text(gFeeVerifyFinney);
+              gFeeVerifyEther = web3.fromWei(feeWei, 'ether');
+              $('#feeVerifyTx').text(gFeeVerifyEther);
             });
           } else {
-            gFeeVerifyFinney = web3.fromWei(ContractObject.getFeeAmount.call('0x'+gBlockHashOfTx), 'finney');
-            $('#feeVerifyTx').text(gFeeVerifyFinney);
+            gFeeVerifyEther = web3.fromWei(ContractObject.getFeeAmount.call('0x'+gBlockHashOfTx), 'ether');
+            $('#feeVerifyTx').text(gFeeVerifyEther);
           }
       })
   })
 }
 
 function doRelayTx(txBytes, txIndex, merkleSibling, txBlockHash) {
-  // gFeeVerifyFinney is transferred!  coinbase must have it or relayTx fails
-  var feeWei = web3.toWei(gFeeVerifyFinney, 'finney');
+  // gFeeVerifyEther is transferred!  coinbase must have it or relayTx fails
+  var feeWei = web3.toWei(gFeeVerifyEther, 'ether');
   // var objParam = { from: web3.eth.coinbase, value: feeWei, gas: 1900000 };
   var objParam = { from: '0x102e61f5d8f9bc71d0ad4a084df4e65e05ce0e1c', value: feeWei, gas: 1900000 };
 
