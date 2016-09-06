@@ -125,19 +125,29 @@
               </div>
               <div class="col-sm-11">
                 <div>
-                  <h3>Send relay tx</h3>
-                  <button class="btn-rounded" id="btn-relay-tx">Send transaction relay tx</button>
+                  <h3>Relay transaction</h3>
+                  <p>If you're using MetaMask, make sure it is configured for Morden Test Net</p>
+                  <button class="btn-rounded" id="btn-relay-tx">Invoke relayTx</button>
                 </div>
                 <hr>
-                <h3>Results</h3><span class="left">BTC Relay Ethereum tx hash</span>
+                <h3>Results</h3><span class="left">relayTx hash</span>
                 <div class="text-result result-box"><span class="red" id="txHashError"></span><a id="txHashReturned" href="#" target="_blank">-</a>
                   <div class="status-box"><span class="glyphicon glyphicon-repeat"></span></div>
                 </div>
                 <hr>
-                <p>When this tx is mined, check the <a href="http://testnet.etherscan.io/address/0x59c9fb53d658b15a7dded65c693703baf58cf63c" target="_blank">BitcoinProcessor</a> sample contract. In its storage, the lastTxHash value should be the same as your input, and ethBlock block will be the mined Ethereum block number.</p>
+                <p>When this tx is mined, check the <a href="http://testnet.etherscan.io/address/0x59c9fb53d658b15a7dded65c693703baf58cf63c" target="_blank">BitcoinProcessor</a> sample contract. In its storage, the lastTxHash value should be the same as your input Bitcoin transaction hash, and ethBlock block will be the mined Ethereum block number.</p>
                 <p>If morden.ether.camp isn't running, you can use <code>web3.eth.getStorageAt('0x59c9fb53d658b15a7dded65c693703baf58cf63c', 0)</code> and <code>web3.toDecimal(web3.eth.getStorageAt('0x59c9fb53d658b15a7dded65c693703baf58cf63c', 0))</code> to look up the values in storage.</p>
                 <p>This example shows the use of a BitcoinProcessor contract, which receives Bitcoin transactions via relayTx. This is the easiest way to use BTC Relay because the ABI can remain on the frontend.</p>
               </div>
+            </div>
+            <div>
+              <hr>
+              <p><strong>View <a href="http://btcrelay.surge.sh/testnetSampleRelayTx.html" target="_blank">page source of testnetSampleRelayTx.html</a> to see the main steps:</strong></p>
+              <ul>
+                <li>Getting a raw transaction and its index from a hash</li>
+                <li>Using <a href="https://www.npmjs.com/package/bitcoin-proof" target="_blank">bitcoin-proof</a> to get a Merkle proof</li>
+                <li>Invoking <a href="https://github.com/ethereum/btcrelay#relaytxrawtransaction-transactionindex-merklesibling-blockhash-contractaddress" target="_blank">relayTx</a></li>
+              </ul>
             </div><br><br>
           </div>
         </div>
