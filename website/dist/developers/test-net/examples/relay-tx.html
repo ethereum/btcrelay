@@ -98,7 +98,7 @@
               <div class="col-md-12">
                 <hr>
                 <p>This is a sample of using BTC Relay <a href="https://github.com/ethereum/btcrelay#relaytxrawtransaction-transactionindex-merklesibling-blockhash-contractaddress" target="_blank">relayTx</a>, which is the easiest way to integrate BTC Relay because the ABI can remain in the frontend.</p>
-                <p>A Bitcoin transaction is relayed to <a href="https://github.com/ethereum/btcrelay/blob/master/examples/BitcoinProcessor.sol" target="_blank">BitcoinProcessor.sol</a> that has been deployed at <a href="http://testnet.etherscan.io/address/0x59c9fb53d658b15a7dded65c693703baf58cf63c" target="_blank">0x59c9fb53d658b15a7dded65c693703baf58cf63c</a></p><br>
+                <p>A Bitcoin transaction is relayed to <a href="https://github.com/ethereum/btcrelay/blob/master/examples/BitcoinProcessor.sol" target="_blank">BitcoinProcessor.sol</a> that has been deployed at <a href="https://morden.ether.camp/account/59c9fb53d658b15a7dded65c693703baf58cf63c" target="_blank">0x59c9fb53d658b15a7dded65c693703baf58cf63c</a></p><br>
                 <p>The easiest way to run this sample is with the <a href="https://metamask.io/" target="_blank">Metamask</a> Chrome plug-in</p>
                 <p><a class="metamask-logo" href="https://chrome.google.com/webstore/detail/nkbihfbeogaeaoehlefnkodbefgpgknn" target="_blank"></a></p>
                 <p>Otherwise you need a testnet client configured like:</p>
@@ -135,7 +135,7 @@
                   <div class="status-box"><span class="glyphicon glyphicon-repeat"></span></div>
                 </div>
                 <hr>
-                <p>When this tx is mined, check the <a href="http://testnet.etherscan.io/address/0x59c9fb53d658b15a7dded65c693703baf58cf63c" target="_blank">BitcoinProcessor</a> sample contract. In its storage, <code>lastTxHash</code> should be the same as your input Bitcoin transaction hash, and <code>ethBlock</code> will be the mined Ethereum block number containing relayTx hash.</p>
+                <p>When this tx is mined, check the <a href="https://morden.ether.camp/account/59c9fb53d658b15a7dded65c693703baf58cf63c" target="_blank">BitcoinProcessor</a> sample contract. In its storage, <code>lastTxHash</code> should be the same as your input Bitcoin transaction hash, and <code>ethBlock</code> will be the mined Ethereum block number containing relayTx hash.</p>
                 <p>If morden.ether.camp isn't running, you can use <code>web3.eth.getStorageAt('0x59c9fb53d658b15a7dded65c693703baf58cf63c', 0)</code> and <code>web3.toDecimal(web3.eth.getStorageAt('0x59c9fb53d658b15a7dded65c693703baf58cf63c', 0))</code> to look up the values in storage.</p>
                 <p>This example shows the use of a BitcoinProcessor contract, which receives Bitcoin transactions via relayTx. This is the easiest way to use BTC Relay because the ABI can remain on the frontend.</p>
               </div>
