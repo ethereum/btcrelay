@@ -42,9 +42,9 @@
     web3 = new Web3(web3.currentProvider);
   } else {
     // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
-    web3 = new Web3(new Web3.providers.HttpProvider("http://frontier-lb.ether.camp"));
+    web3 = new Web3(new Web3.providers.HttpProvider("https://mainnet.infura.io:8545"));
   }
-	
+
   var btcproof = require('bitcoin-proof');
 
   // var gRelayAddr = web3.eth.namereg.addr('btcrelay');
@@ -62,7 +62,7 @@
   function callVerifyTx(txBytes, txIndex, merkleSibling, txBlockHash) {
     // gFeeVerifyFinney is transferred!  coinbase must have it or verifyTx fails
     var feeWei = web3.toWei(gFeeVerifyFinney, 'finney');
-    var objParam = { from: web3.eth.coinbase, value: feeWei, gas: 3000000 };
+    var objParam = { from: '0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae', value: feeWei, gas: 3000000 };
     var res = gRelayContract.verifyTx.call(txBytes, txIndex, merkleSibling, txBlockHash, objParam);
 
     document.getElementById('result').innerText = res.toString(16);
