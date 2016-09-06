@@ -196,14 +196,26 @@ footer {
 	background-color: #fff;
 	z-index: 999;
 
-	a {
-		text-decoration: underline;
-	}
-
 	img {
 		height: 32px;
 		padding-left: 6px;
 	}
+
+  a.github {
+    line-height: 24px;
+
+    svg {
+      fill: #777;
+      vertical-align: middle;
+    }
+
+    &:hover {
+      svg {
+        fill: #333;
+      }
+      text-decoration: none;
+    }
+  }
 }
 
 .pink-button,
