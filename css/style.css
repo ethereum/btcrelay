@@ -6918,12 +6918,22 @@ footer {
   background-color: #fff;
   z-index: 999;
 }
-footer a {
-  text-decoration: underline;
-}
 footer img {
   height: 32px;
   padding-left: 6px;
+}
+footer a.github {
+  line-height: 24px;
+}
+footer a.github svg {
+  fill: #777;
+  vertical-align: middle;
+}
+footer a.github:hover {
+  text-decoration: none;
+}
+footer a.github:hover svg {
+  fill: #333;
 }
 .pink-button,
 .pink-button:focus {
@@ -7231,16 +7241,6 @@ header .nav li a {
   font-size: 12px;
   line-height: 35px;
   text-transform: uppercase;
-}
-header .nav li a.github {
-  line-height: 24px;
-}
-header .nav li a.github svg {
-  fill: #777;
-  margin-top: 4px;
-}
-header .nav li a.github:hover svg {
-  fill: #333;
 }
 header .nav li.active a {
   background-color: transparent !important;
