@@ -67,8 +67,6 @@ function getStatus(net) {
   $('#feeRecipient').attr('href', 'http://' + (net === 'test' ? 'testnet.' : '') + 'etherscan.io/address/' + feeRecipient);
 
   window.btcrelayTester = ContractObject;
-
-  setTimeout(checkHeights, 1000);
 }
 
 function updateBCI() {
@@ -81,20 +79,6 @@ function updateBlockr() {
   $.getJSON('http://btc.blockr.io/api/v1/block/info/last', function(data) {
     $('#blockrBlockHeight').text('# ' + data.data.nb);
   });
-}
-
-function checkHeights() {
-  var bciHeight = $('#bciBlockHeight').text().replace('# ', '');
-  var blockrHeight = $('#blockrBlockHeight').text().replace('# ', '');
-  if (!bciHeight || !blockrHeight ||
-    heightPerRelay === bciHeight || heightPerRelay === blockrHeight) {
-      $('#warnSync').hide();
-  }
-  else {
-    $('#nodeBlockNum').text('# ' + web3.eth.blockNumber);
-    $('#statsLink').attr('href', (lastNet === 'test' ? testNetStats : mainNetStats));
-    $('#warnSync').show();
-  }
 }
 
 function formatHash(bnHash) {
