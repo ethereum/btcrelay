@@ -15944,7 +15944,13 @@ function getStatus(net) {
       console.log('@err getLastBlockHeight')
       return;
     }
-    $('#latestBlockHeight').text('# ' + heightPerRelay.toString());
+    $('#latestBlockHeight').text('# ' + heightPerRelay);
+
+    if (heightPerRelay.toNumber() === 0) {
+      $('#warnSync').show();
+    } else {
+      $('#warnSync').hide();
+    }
   });
 
   ContractObject.getBlockchainHead.call(function(err, headHash) {
