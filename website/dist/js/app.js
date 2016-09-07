@@ -16096,8 +16096,7 @@ function getTxInfo(isRelay) {
 function doRelayTx(txBytes, txIndex, merkleSibling, txBlockHash) {
   // gFeeVerifyEther is transferred!  coinbase must have it or relayTx fails
   var feeWei = web3.toWei(gFeeVerifyEther, 'ether');
-  // var objParam = { from: web3.eth.coinbase, value: feeWei, gas: 1900000 };
-  var objParam = { from: '0x102e61f5d8f9bc71d0ad4a084df4e65e05ce0e1c', value: feeWei, gas: 1900000 };
+  var objParam = { from: web3.eth.coinbase, value: feeWei, gas: 1900000 };
 
   ContractObject.relayTx.sendTransaction(txBytes, txIndex, merkleSibling,
       txBlockHash, gProcessorAddr, objParam, function(err, ethTx) {
