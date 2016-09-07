@@ -235,7 +235,7 @@ function doRelayTx(txBytes, txIndex, merkleSibling, txBlockHash) {
     $('.status-box').removeClass('danger').removeClass('success').addClass('success');
     $('.status-box .glyphicon').removeClass('glyphicon-repeat').removeClass('glyphicon-ok').removeClass('glyphicon-remove').removeClass('spinning').addClass('glyphicon-ok');
     $('#txHashReturned').text(ethTx);
-    $('#txHashReturned').attr('href', 'http://' + (net === 'test' ? 'testnet.' : '') + 'etherscan.io/tx/' + ethTx);
+    $('#txHashReturned').attr('href', 'http://' + (lastNet === 'test' ? 'testnet.' : '') + 'etherscan.io/tx/' + ethTx);
   });
 }
 
