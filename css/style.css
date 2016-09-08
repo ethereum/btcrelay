@@ -7321,7 +7321,8 @@ header .nav li.active a {
   background-color: #0092c1;
 }
 .left-menu .nav.bottomMenu {
-  position: relative;
+  position: absolute;
+  width: 100%;
   bottom: 0;
 }
 .left-menu .nav.bottomMenu li a {
