@@ -16125,7 +16125,7 @@ function callRelayContract() {
   $('#txHashError').hide();
   $('.status-box').removeClass('danger').removeClass('success');
   $('.status-box .glyphicon').removeClass('glyphicon-repeat').removeClass('glyphicon-ok').removeClass('glyphicon-remove').removeClass('spinning').addClass('glyphicon-repeat').addClass('spinning');
-  var txBytes = '0x' + $('#rawTransaction').val();
+  var txBytes = '0x' + $('#rawTransaction').text();
   var txBlockHash = '0x' + gBlockHashOfTx;
 
   // web3.js wants 0x prepended
