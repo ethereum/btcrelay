@@ -9,6 +9,14 @@ import logging
 from pyepm import api, config, __version__
 from bitcoin import *  # NOQA
 
+from urllib import urlopen
+
+# Warning !!!
+# to make things work, also at https://github.com/etherex/pyepm/blob/master/pyepm/api.py#L38
+# (method abi_data, before last return)
+# need to implement fix for hex with odd length
+# if len(data_abi) % 2 > 0:
+#     data_abi = data_abi.replace('0x','0x0')
 
 BITCOIN_MAINNET = 'btc'
 BITCOIN_TESTNET = 'testnet'
@@ -42,6 +50,27 @@ instance.walletContract = ''  # address of the contract wallet
 instance.weiRefill = int(1e18)  # 1 ETH.  Amount to refill the "hot" sender account each time walletWithdraw() is called
 aWalletOwner = ''  # address of an owner of the contract wallet
 
+def get_hash_by_height(height,network='btc'):
+    url = 'https://blockchain.info/block-height/'+str(height)+'?format=json'
+    jsonurl = urlopen(url)
+    text = json.loads(jsonurl.read())
+    return text['blocks'][0]['hash']
+
+def serialize_header(height,network='btc'):
+    url = 'https://blockchain.info/block-height/'+str(height)+'?format=json'
+    jsonurl = urlopen(url)
+    text = json.loads(jsonurl.read())
+    inp = text['blocks'][0]
+
+    o = encode(inp['ver'], 256, 4)[::-1] + \
+        inp['prev_block'].decode('hex')[::-1] + \
+        inp['mrkl_root'].decode('hex')[::-1] + \
+        encode(inp['time'], 256, 4)[::-1] + \
+        encode(inp['bits'], 256, 4)[::-1] + \
+        encode(inp['nonce'], 256, 4)[::-1]
+    h = bin_sha256(bin_sha256(o))[::-1].encode('hex')
+    assert h == inp['hash'], (sha256(o), inp['hash'])
+    return o.encode('hex')
 
 def main():
     # logging.basicConfig(level=logging.DEBUG)
@@ -140,7 +169,7 @@ def run(feeVerifyTx, feeRecipient, doFetch=False, network=BITCOIN_TESTNET, start
             contractHeight = startBlock
         else:
             contractHeight = getLastBlockHeight()
-        realHead = blockr_get_block_header_data(contractHeight, network=network)['hash']
+        realHead = get_hash_by_height(contractHeight, network=network)
         heightToRefetch = contractHeight
         while chainHead != realHead:
             logger.info('@@@ chainHead: {0}  realHead: {1}'.format(chainHead, realHead))
@@ -157,7 +186,7 @@ def run(feeVerifyTx, feeRecipient, doFetch=False, network=BITCOIN_TESTNET, start
             instance.wait_for_next_block(from_block=instance.last_block(), verbose=True)
 
             chainHead = blockHashHex(getBlockchainHead())
-            realHead = blockr_get_block_header_data(heightToRefetch, network=network)['hash']
+            realHead = get_hash_by_height(heightToRefetch, network=network)
 
             heightToRefetch -= 1
 
@@ -200,8 +229,7 @@ def fetchHeaders(chunkStartNum, chunkSize, numChunk, feeVerifyTx, feeRecipient, 
         strings = ""
         for i in range(chunkSize):
             blockNum = chunkStartNum + i
-            bhJson = blockr_get_block_header_data(blockNum, network=network)
-            bhStr = serialize_header(bhJson)
+            bhStr = serialize_header(blockNum, network=network)
             logger.info("@@@ {0}: {1}".format(blockNum, bhStr))
             logger.debug("Block header: %s" % repr(bhStr.decode('hex')))
             strings += bhStr
