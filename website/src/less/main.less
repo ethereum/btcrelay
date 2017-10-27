@@ -1,0 +1,507 @@
+@font-face {
+    font-family: 'Montserrat';
+    src: local('Montserrat-Regular'), url('../fonts/montserrat-regular-webfont.woff2') format('woff2'),
+         url('../fonts/montserrat-regular-webfont.woff') format('woff');
+    font-style: normal;
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'Montserrat';
+    src: local('Montserrat-Light'), url('../fonts/montserrat-light-webfont.woff2') format('woff2'),
+         url('../fonts/montserrat-light-webfont.woff') format('woff');
+    font-style: normal;
+    font-weight: 300;
+}
+
+html, body {
+	min-height: 100vh;
+	height: auto;
+}
+
+body {
+	position: relative;
+	color: @base-color;
+	font-family: 'Montserrat', sans-serif;
+	font-size: 14px;
+	padding-top: 65px;
+	padding-bottom: 70px;
+	// -webkit-font-smoothing: subpixel-antialiased;
+	-webkit-font-smoothing: antialiased;
+
+	&.grey-bg {
+		background-color: @grey-color;
+	}
+}
+
+strong {
+	color: @dark-grey-color;
+	font-weight: 400;
+}
+
+hr {
+	border-top-color: #d2d2d2;
+	border-bottom: 1px solid #ffffff;
+}
+
+.btn-rounded {
+	display: inline-block;
+	font-size: 16px;
+	line-height: 22px;
+	color: @grey-color;
+	text-transform: uppercase;
+	padding: 7px 17px;
+	border: none;
+	border-radius: 18px;
+	outline: none;
+	background-color: @link-color;
+
+	&:hover {
+		color: @grey-color;
+		text-decoration: none;
+		background-color: darken(@link-color, 10%);
+	}
+
+	&.btn-red {
+		background-color: @red-button;
+
+		&:hover {
+			background-color: darken(@red-button, 10%);
+		}
+	}
+}
+
+section {
+	padding: 50px 0;
+
+	&.grey {
+		background-color: @grey-color;
+
+		div.smaller {
+			width: 100%;
+			height: 70px;
+			line-height: 70px;
+			text-align: center;
+
+			span {
+				font-size: 15px;
+				font-weight: 300;
+				display: inline-block;
+				line-height: 22px;
+				vertical-align: middle;
+				color: #36546b;
+			}
+		}
+
+		.btn-rounded {
+			width: 100%;
+		}
+
+		@media (max-width: 768px) {
+			div.smaller {
+				height: 22px;
+				line-height: 22px;
+				margin-top: 20px;
+				margin-bottom: 8px;
+			}
+
+			.btn-rounded {
+				width: 280px;
+				margin: 0 auto;
+			}
+		}
+	}
+
+	&.dark-grey {
+		background-color: @light-grey-color;
+	}
+
+	&.jumbotron {
+		background: url('../images/bridge.jpg') center center no-repeat;
+		background-size: cover;
+		margin-bottom: 0;
+
+		.spacer {
+			height: 150px;
+		}
+
+		h1 {
+			font-size: 35px;
+			font-weight: 300;
+			color: #fff;
+			max-width: 770px;
+			margin: 20px auto;
+		}
+
+		p {
+			font-size: 16px;
+			font-weight: 300;
+			color: #c4c4c4;
+			max-width: 770px !important;
+		}
+
+		span.scroll {
+			font-size: 10px;
+			line-height: 20px;
+			color: #fff;
+			text-transform: uppercase;
+		}
+	}
+
+	h2 {
+		font-size: 30px;
+		font-weight: 300;
+		text-transform: uppercase;
+		color: @header-color;
+		opacity: 0.3;
+		margin-bottom: 50px;
+	}
+
+	h4 {
+		font-size: 16px;
+		font-weight: 300;
+		color: #1f435e;
+		text-transform: uppercase;
+	}
+
+	p {
+		font-size: 16px;
+		font-weight: 300;
+		color: @paragraph-color;
+		max-width: 670px;
+		margin: 0 auto;
+		margin-bottom: 25px;
+	}
+
+	.img-responsive {
+		width: 100%;
+		max-width: 885px;
+		margin: 0 auto;
+	}
+
+	span.feature {
+		display: inline-block;
+		font-weight: 300;
+		margin-bottom: 25px;
+	}
+}
+
+footer {
+	position: absolute;
+	bottom: 0px;
+	width: 100%;
+	line-height: 32px;
+	padding: 19px 0px;
+	font-weight: 300;
+	background-color: #fff;
+	z-index: 999;
+
+	img {
+		height: 32px;
+		padding-left: 6px;
+	}
+
+  a.github {
+    line-height: 24px;
+
+    svg {
+      fill: #777;
+      vertical-align: middle;
+    }
+
+    &:hover {
+      svg {
+        fill: #333;
+      }
+      text-decoration: none;
+    }
+  }
+}
+
+.pink-button,
+.pink-button:focus {
+	display: block;
+	width: auto;
+	font-size: 16px;
+	letter-spacing: 6px;
+	color: #fff !important;
+	background-color: @pink-color;
+	text-decoration: none !important;
+	box-shadow: 0px 1px 2px 0px rgba(176, 176, 176, 1);
+	padding: 7px 15px;
+	padding-top: 5px;
+	border-top: 2px solid transparent;
+	margin-top: 2px;
+	margin-left: 15px;
+	margin-right: 15px;
+
+	&:hover {
+		border-top: none;
+		border-bottom: 2px solid transparent;
+		margin-top: 0px;
+		margin-bottom: 2px;
+		padding-top: 7px;
+		padding-bottom: 5px;
+		box-shadow: 0px 3px 6px 0px rgba(176, 176, 176, .57);
+	}
+}
+
+.developers {
+	color: @text-grey-color;
+
+	h1 {
+		font-size: 24px;
+		color: @dark-grey-color;
+		text-transform: uppercase;
+		margin-top: 45px;
+		margin-bottom: 45px;
+	}
+
+	a {
+		color: #0092c1;
+	}
+
+	p.text-right {
+		font-weight: 300;
+		color: @base-color;
+
+		a {
+			font-weight: 400;
+			text-transform: uppercase;
+		}
+	}
+
+	.red {
+		color: @red-color;
+	}
+
+	.left {
+		text-transform: uppercase;
+		opacity: 0.7;
+		text-shadow: 0px 1px 0px rgba(255, 255, 255, 1);
+	}
+
+	.button-group {
+		float: right;
+		padding-top: 11px;
+		padding-bottom: 20px;
+		margin-top: 2px;
+		margin-bottom: 2px;
+		margin-right: -15px;
+		clear: both;
+	}
+
+	pre {
+		width: 100%;
+		background-color: #ececec;
+
+		&.abi {
+			max-height: 200px;
+			white-space: normal;
+		}
+	}
+
+	code {
+		border: 1px solid @code-border-color;
+		border-radius: 2px;
+	}
+
+	#latestBlockHash {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.alert {
+		margin-top: 15px;
+
+		.glyphicon {
+			font-size: 18px;
+			line-height: 12px;
+			top: 4px;
+			padding-right: 10px;
+		}
+	}
+
+	.circle {
+		width: 40px;
+		height: 40px;
+		font-size: 16px;
+		font-weight: 400;
+		line-height: 40px;
+		padding-left: 2px;
+		text-align: center;
+		color: #fff;
+		background-color: #0092c1;
+		border-radius: 50% 50%;
+	}
+
+	h3 {
+		font-size: 18px;
+		text-transform: uppercase;
+		color: #000000;
+		margin-top: 10px;
+		margin-bottom: 20px;
+	}
+
+	input,
+	textarea,
+	div.text-result {
+		width: 100%;
+		padding: 8px 12px;
+		border: 1px solid #b6b7b7;
+		color: #3f3f3f;
+		line-height: 23px;
+		margin-top: 9px;
+		margin-bottom: 16px;
+		min-height: 23px;
+	}
+
+	textarea,
+	div.text-result {
+		padding: 12px 16px;
+		background-color: @light-grey-color;
+	}
+
+	div.text-result {
+		position: relative;
+		word-wrap: break-word;
+
+		div.status-box {
+			position: absolute;
+			right: 0px;
+			top: 0px;
+			bottom: 0px;
+			line-height: 23px;
+			padding: 12px 16px;
+			border-left: 1px solid #b6b7b7;
+			font-size: 20px;
+			background-color: @light-grey-color;
+
+			&.success {
+				color: @green-color;
+			}
+
+			&.danger {
+				color: @brand-danger;
+			}
+		}
+
+		&.result-box {
+			padding-right: 69px;
+			overflow: hidden;
+			white-space: nowrap;
+		}
+	}
+
+	.relay-active {
+		.verify-only {
+			display: none;
+			visibility: hidden;
+		}
+
+		.relay-only {
+			display: block;
+			visibility: visible;
+		}
+	}
+
+	.verify-active {
+		.verify-only {
+			display: block;
+			visibility: visible;
+		}
+
+		.relay-only {
+			display: none;
+			visibility: hidden;
+		}
+	}
+
+	.mainNet {
+		.main-only {
+			display: block;
+			visibility: visible;
+		}
+
+		.test-only {
+			display: none;
+			visibility: hidden;
+		}
+	}
+
+	.testNet {
+		.main-only {
+			display: none;
+			visibility: hidden;
+		}
+
+		.test-only {
+			display: block;
+			visibility: visible;
+		}
+	}
+
+	.metamask-logo {
+		display: block;
+		width: 185px;
+		height: 56px;
+		margin-top: 10px;
+		margin-bottom: 10px;
+		.img-retina('/images/metamask-1x.png', '/images/metamask-2x.png', 185px, 56px);
+	}
+
+	kbd {
+		padding: 4px 6px;
+	}
+
+	@media (max-width: 768px) {
+		text-align: center;
+
+		.text-right {
+			text-align: center;
+		}
+
+		.button-group {
+			display: inline-block;
+			margin: 0 auto;
+			float: none;
+		}
+
+		.circle {
+			margin: 0 auto;
+		}
+
+		input,
+		textarea,
+		div.text-result {
+			font-size: 12px;
+			line-height: 19px;
+		}
+
+
+		.result-box {
+			text-align: left;
+
+			div.status-box {
+				line-height: 19px !important;
+				font-size: 18px !important;
+			}
+		}
+	}
+}
+
+.glyphicon.spinning {
+    animation: spin 1s infinite linear;
+    -webkit-animation: spin2 1s infinite linear;
+}
+
+@keyframes spin {
+    from { transform: scale(1) rotate(0deg); }
+    to { transform: scale(1) rotate(360deg); }
+}
+
+@-webkit-keyframes spin2 {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
+}

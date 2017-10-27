@@ -1,0 +1,23 @@
+//- verify-tx.pug
+extends ../../../layouts/developers.pug
+
+block sidebar
+	- var section = 'main';
+	- var examples = true;
+	- var sub = 'relay';
+
+block content
+	h1#header Relay tx
+
+	div#verifyPage.example-page
+		div
+			p See the example for #[a(href="/developers/test-net/examples/relay-tx.html") Relay TX on Test Net].
+				|  Make sure you switch your Ethereum node or MetaMask to the Morden Test Net.
+
+block scripts
+	script(src="/js/app.js")
+	script.
+		$(function() {
+			isRelay = true;
+			updatePage('main');
+		});

@@ -1,0 +1,74 @@
+//- index.pug
+extends ../../layouts/developers.pug
+
+block sidebar
+	- var section = 'main';
+	- var examples = false;
+	- var sub = 'status';
+
+block content
+	h1#header Main net live status
+	div#statusPage
+		hr
+		div.row
+			div.col-lg-3
+				span.left Contract information
+			div.col-lg-9.text-right
+				a#relayAddr(href="#" target="_blank") -
+				br
+				div.button-group
+					a.pink-button.pull-right(href="https://github.com/ethereum/btcrelay#api" target="_blank") API
+					a.pink-button.pull-right.collapsed(role="button" data-toggle="collapse" href="#abi" aria-controls="main-net" aria-expanded="false") ABI
+				div.clearfix
+			div.col-lg-12
+				div#abi.collapse
+					include ../../partials/abi.pug
+				hr
+
+			div.col-lg-3
+				span.left Latest block hash
+			div.col-lg-9.text-right
+				div#latestBlockHash -
+			div.col-lg-12
+				div.alert.alert-danger#warnSync(style="display:none;")
+					span.glyphicon.glyphicon-exclamation-sign
+					| Is MetaMask or your Ethereum node connected to the Main Net?
+				hr
+
+			div.col-lg-3
+				br
+				span.left Latest block #
+			div.col-lg-9.text-right
+				span BTC Relay #[span#latestBlockHeight.red # -]
+				br
+				| #[a(href="https://blockchain.info" target="_blank") Blockchain.info] #[span#bciBlockHeight # -]
+				br
+				| #[a(href="https://btc.blockr.io" target="_blank") btc.blockr.io] #[span#blockrBlockHeight # -]
+			div.col-lg-12
+				hr
+
+			div.col-lg-3
+				span.left Eth fee
+			div.col-lg-9.text-right
+				span#feeVTX.red 0.001
+			div.col-lg-12
+				hr
+
+			div.col-lg-3
+				span.left Relayer address
+			div.col-lg-9.text-right
+				a#feeRecipient(href="#" target="_blank") -
+			div.col-lg-12
+				hr
+
+		p.text-right
+			| #[a(href="http://btc-relay.readthedocs.io/en/latest/status.html" target="_blank") Status FAQ]
+			br
+			br
+
+block scripts
+	script(src="/js/app.js")
+	script.
+		$(function() {
+			updatePage('main');
+		});

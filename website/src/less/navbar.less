@@ -1,0 +1,191 @@
+header {
+	position: absolute;
+	top: 0;
+	width: 100%;
+	height: auto;
+	background-color: #fff;
+	box-shadow: 0px 1px 0px 1px rgba(0,0,0,0.08);
+	z-index: 1000;
+
+	.navbar {
+		background: transparent;
+		border: none;
+		margin-bottom: 0px;
+		min-height: 65px;
+	}
+
+	.navbar-brand {
+		height: 65px;
+
+		img {
+			height: 35px;
+			width: auto;
+		}
+	}
+
+	.nav {
+		li {
+			a {
+				font-size: 12px;
+				line-height: 35px;
+				text-transform: uppercase;
+			}
+
+			&.active {
+				a {
+					background-color: transparent !important;
+					color: @link-color !important;
+				}
+			}
+		}
+	}
+}
+
+.static {
+	position: static;
+}
+
+.left-menu {
+	position: absolute;
+	top: 65px;
+	bottom: 70px;
+	z-index: 800;
+	background-color: #ebebeb;
+
+	.panel {
+		border: none;
+		background-color: transparent;
+		box-shadow: none;
+	}
+
+	.nav {
+		li {
+			text-transform: uppercase;
+
+			a {
+				color: #525252;
+				padding: 10px 22px;
+				letter-spacing: -0.1px;
+			}
+
+			&.dropdown {
+				margin-top: 0px;
+			}
+
+			> a:hover,
+			&.active > a,
+			&.active > a:hover {
+				color: #fff;
+				background-color: #0092c1;
+			}
+
+			&.header {
+				background-color: #fff;
+				font-size: 16px;
+				line-height: 37px;
+
+				> a:hover,
+				&.active > a,
+				&.active > a:hover {
+					color: #fff;
+					background-color: #525252;
+				}
+
+				&:not(.active) > a:focus {
+					background-color: #fff;
+					color: #525252;
+				}
+			}
+
+			&.dropdown {
+				span.caret {
+					float: right;
+					margin-top: 7px;
+				}
+
+				> a:hover,
+				&.active > a,
+				&.active > a:hover,
+				> a:not(.collapsed) {
+					background-color: #525252;
+					color: #fff;
+
+					span.caret {
+						border-top: 0;
+						border-bottom: 4px dashed;
+					}
+				}
+
+				ul > li {
+					a {
+						padding-left: 42px;
+					}
+
+					> a:hover,
+					&.active > a {
+						color: #fff;
+						background-color: #0092c1;
+					}
+				}
+			}
+		}
+
+		&.bottomMenu {
+			position: absolute;
+			width: 100%;
+			bottom: 0;
+
+			li {
+				a {
+					color: #276185;
+				}
+
+				a:hover,
+				a:focus {
+					color: #fff;
+				}
+			}
+		}
+
+		&.nav-stacked {
+			> li + li {
+				margin-top: 0px;
+			}
+		}
+	}
+
+	@media (min-width: 1200px) {
+		width: 263px;
+	}
+
+	@media (min-width: 992px) and (max-width: 1199px) {
+		width: 212px;
+	}
+
+
+	@media (max-width: 991px) {
+		position: static;
+		top: 0;
+		bottom: 0;
+	}
+}
+
+@media (max-width: 768px) {
+	header {
+		.nav {
+			li {
+				text-align: center;
+
+				&:not(:last-child) {
+					border-bottom: 1px solid #e7e7e7;
+				}
+			}
+		}
+	}
+
+	.left-menu {
+		position: static;
+		top: 0;
+		bottom: 0;
+	}
+}

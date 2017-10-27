@@ -1,0 +1,40 @@
+//- index.pug
+extends ../../layouts/developers.pug
+
+block sidebar
+	- var section = 'main';
+	- var examples = false;
+	- var sub = 'source';
+
+block content
+	h1#header Verifying the source code #[small at 0x41f274c0023f83391de4e0733c609df5a124c3d4]
+	div#sourcePage
+		p The deployed version of #[a(href="https://github.com/ethereum/btcrelay/tree/41753486b770665319f39da55676732b11af40fe" target="_blank") BTC Relay is from commit 41753486b770665319f39da55676732b11af40fe]
+
+		p In order to verify the source code please follow the these steps:
+
+		hr
+
+		div.row
+			div.col-sm-1
+				div.circle 1
+			div.col-sm-11
+				h3 Compile code to the evm (bytecode)
+				pre serpent compile btcBulkStoreHeaders.se > compiled.evm
+
+			div.col-sm-12
+				hr
+
+			div.col-sm-1
+				div.circle 2
+			div.col-sm-11
+				h3 compare the evm against the data used in the contract creation transaction
+				p Here's how to use Geth console to obtain the evm. The receipt is used to guarantee that the tx hash provided is the one that created the BTC Relay contract (see contractAddress property of the receipt).
+				pre.text-left
+					include ../../partials/gethmaincheck.txt
+
+				p Compare objTx.input with the contents of compiled.evm and you will see that they match identically (except for 0x at the front of objTx.input)
+				p The version of the #[a(href="https://github.com/ethereum/serpent/tree/51ee60857fe53c871fa916ef66fc1b4255bb9433" target="_blank") Serpent compiler used is commit 51ee60857fe53c871fa916ef66fc1b4255bb9433]
+
+		br
+		br

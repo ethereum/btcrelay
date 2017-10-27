@@ -1,0 +1,73 @@
+//- index.pug
+extends ../layouts/main.pug
+
+block content
+	section.jumbotron
+		div.container.text-center
+			div.visible-lg.spacer
+			h1 A bridge between the Bitcoin blockchain & Ethereum smart contracts
+			p BTC Relay is a building block that allows Ethereum contracts to securely verify Bitcoin transactions without any intermediaries: in short users can pay with Bitcoin to use Ethereum DAPPs.
+			br
+			br
+			br
+			img(src="/images/graph.svg")
+			br
+			br
+			br
+			img(src="/images/arrow.png")
+			br
+			span.scroll Scroll
+	section.grey
+		div.container.text-center
+			h2 What is it?
+			p BTC Relay is an Ethereum contract that stores Bitcoin block headers. BTC Relay uses these block headers to build a mini-version of the Bitcoin blockchain: a method used by Bitcoin SPV light wallets.
+			p BTC Relay is open source, trust-free, and decentralized.
+			div.row
+				div.col-lg-3.col-md-2.col-sm-1
+				div.col-lg-3.col-md-4.col-sm-5
+					div.smaller
+						span Are you a developer?
+					a.btn-rounded(href="/developers") Try it out
+				div.col-lg-3.col-md-4.col-sm-5
+					div.smaller
+						span Everybody can be a relayer#[br.hidden-xs] and earn ETH
+					a.btn-rounded.btn-red(href="https://github.com/consensys/btcrelay-fetchd" target="_blank") Become a relayer
+	section
+		div.container.text-center
+			h2 How it works?
+			img.img-responsive(src="/images/how-it-works.svg")
+	section.dark-grey
+		div.container.text-center
+			h2 Features
+			div.row
+				div.col-lg-3.col-sm-6
+					img(src="/images/open-source.svg")
+					h4 Open source
+					span.feature Participate in #[a(href="https://github.com/ethereum/btcrelay" target="_blank") Github]. Questions? See the #[a(href="http://btc-relay.readthedocs.io/en/latest/frequently-asked-questions.html" target="_blank") FAQ] and ask in the #[a(href="https://gitter.im/ethereum/btcrelay" target="_blank") Gitter].
+
+				div.col-lg-3.col-sm-6
+					img(src="/images/easy.svg")
+					h4 Easy to use
+					span.feature For developers, BTC Relay is #[a(href="https://github.com/ethereum/btcrelay/tree/master#how-to-use-btc-relay" target="_blank") easy to integrate] in an Ethereum application or smart contract.
+
+				div.col-lg-3.col-sm-6
+					img(src="/images/decentralized.svg")
+					h4 Decentralized
+					span.feature #[a(href="https://github.com/consensys/btcrelay-fetchd" target="_blank") Anyone can be a Relayer:] no heavy hardware or electricity costs like Bitcoin mining. No special privileges for any entity.
+
+				div.col-lg-3.col-sm-6
+					img(src="/images/payments.svg")
+					h4 Flexible payments
+					span.feature Reach a wider audience with your Ethereum application (DApp) by opening up payments to Bitcoin users.
+	section.grey
+		div.container.text-center
+			h2 Brought to you by
+			div.row
+				div.col-lg-3.hidden-sm
+				div.col-lg-3.col-sm-6
+					a(href="https://ethereum.org" target="_blank")
+						img(src="/images/ethereum.svg")
+				div.col-lg-3.col-sm-6
+					a(href="https://consensys.net" target="_blank")
+						img(src="/images/consensys.svg")
+				div.col-lg-3.hidden-sm

@@ -1,0 +1,86 @@
+//- verify-tx.pug
+extends ../../../layouts/developers.pug
+
+block sidebar
+	- var section = 'main';
+	- var examples = true;
+	- var sub = 'verify';
+
+block content
+	h1#header Verify tx #[small (Main Net)]
+
+	div#verifyPage.example-page
+		div
+			p This is a sample of calling #[a(href="https://github.com/ethereum/btcrelay/tree/master#verifytxrawtransaction-transactionindex-merklesibling-blockhash" target="_blank" style="text-transform: none;") verifyTx]
+
+		hr
+		div.row
+			div.col-md-3
+				span.left BTC Relay
+			div.col-md-9.text-right
+				a#relayAddr1(href="http://etherscan.io/address/0x41f274c0023f83391de4e0733c609df5a124c3d4" target="_blank") 0x41f274c0023f83391de4e0733c609df5a124c3d4
+			div.col-md-12
+				hr
+			div.col-sm-1
+				div.circle 1
+			div.col-sm-11
+				h3 Find a transaction
+				span.left Bitcoin transaction hash
+
+				br
+
+				input#btcTxHash(type="text" value="dd059634699e85b51af4964ab97d5e75fb7cd86b748d0ee1c537ca1850101dc7")
+				button.btn-rounded#btn-get-tx Lookup
+
+				hr
+
+				h3 Results
+				span.left Raw transaction
+				div.text-result#rawTransaction -
+
+				span.left Merkle proof
+				div.text-result#merkleProof -
+
+				span.left Block hash
+				div.text-result#txBlockHash -
+
+				span.left Verification Fee
+				div.text-result#feeVerifyTx -
+
+				hr
+
+			div.col-sm-1
+				div.circle 2
+			div.col-sm-11
+				div
+					h3 Verify transaction
+					button.btn-rounded#btn-verify-tx Call verifyTx
+
+				hr
+
+				h3 Results
+				div
+					span.left BTC Relay verifyTx returned
+
+					div.text-result.result-box
+						span#txReturned -
+						div.status-box
+							span.glyphicon.glyphicon-repeat
+		div
+			hr
+			p
+				strong View #[a(href="http://btcrelay.surge.sh/sampleCall.html" target="_blank") page source of sampleCall.html] to see the main steps:
+			ul
+				li Getting a raw transaction and its index from a hash
+				li Using #[a(href="https://www.npmjs.com/package/bitcoin-proof" target="_blank") bitcoin-proof] to get a Merkle proof
+				li Calling #[a(href="https://github.com/ethereum/btcrelay#verifytxrawtransaction-transactionindex-merklesibling-blockhash" target="_blank") verifyTx]
+		br
+		br
+
+block scripts
+	script(src="/js/app.js")
+	script.
+		$(function() {
+			isRelay = false;
+			updatePage('main');
+		});

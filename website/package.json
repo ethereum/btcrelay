@@ -1,0 +1,44 @@
+{
+  "name": "btc-relay-website",
+  "description": "BTC Relay website",
+  "version": "0.0.1",
+  "private": true,
+  "engines": {
+    "node": "0.12.0",
+    "npm": "2.5.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ethereum/btcrelay.git"
+  },
+  "homepage": "https://github.com/ethereum/btcrelay",
+  "bugs": {
+    "url": "https://github.com/ethereum/btcrelay/issues"
+  },
+  "authors": [
+    {
+      "name": "Marian Oancea",
+      "email": "marian.oancea@consensys.net",
+      "url": "https://consensys.net"
+    }
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-autoprefixer": "3.0.4",
+    "grunt-contrib-clean": "1.0.0",
+    "grunt-contrib-concat": "1.0.1",
+    "grunt-contrib-copy": "1.0.0",
+    "grunt-contrib-cssmin": "1.0.1",
+    "grunt-contrib-jshint": "1.0.0",
+    "grunt-contrib-less": "1.3.0",
+    "grunt-contrib-pug": "1.0.0",
+    "grunt-contrib-uglify": "1.0.1",
+    "grunt-contrib-watch": "1.0.0",
+    "grunt-express": "^1.4.1",
+    "grunt-open": "^0.2.3",
+    "grunt-parallel": "^0.5.1",
+    "grunt-surge": "^0.7.0",
+    "load-grunt-tasks": "3.5.0"
+  }
+}
