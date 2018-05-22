@@ -199,14 +199,17 @@ def run(feeVerifyTx, feeRecipient, doFetch=False, network=BITCOIN_TESTNET, start
                 else:
                     logger.info('@@@@ handle orphan did not succeed iteration {0}'.format(i))
                     break  # start the refetch again, this time ++i
-        break  # chainHead is same realHead
+        
+        # chainHead is same realHead
+        if chainHead == realHead:
+            break
 
     actualHeight = last_block_height(network)  # pybitcointools 1.1.33
 
     if startBlock:
         instance.heightToStartFetch = startBlock
     else:
-        instance.heightToStartFetch = getLastBlockHeight() + 1
+        instance.heightToStartFetch = heightToRefetch + 1
 
     logger.info('@@@ startFetch: {0} actualHeight: {1}'.format(instance.heightToStartFetch, actualHeight))
 
