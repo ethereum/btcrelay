@@ -16,6 +16,12 @@
 
 The address and ABI is all that's needed to use BTC Relay, in addition to the API documentation below.
 
+Also available on:
+
+* [ropsten](https://ropsten.etherscan.io/address/0x8ffd7bb8499879eae66ce677ab662bd46c8a6d37)
+* [rinkeby](https://rinkeby.etherscan.io/address/0xa03f0c195960d078704c24ea8aca2678b06afe48)
+* [kovan](https://kovan.etherscan.io/address/0xe3cc2ab5d600dbf59eb12c838a6944c8d8418efb)
+
 ## API
 
 
