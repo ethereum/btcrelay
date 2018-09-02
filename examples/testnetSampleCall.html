@@ -86,7 +86,7 @@
   // This function also shows how to use the bitcoin-proof module.
   function getTxInfo() {
     var txid = $('#transHex').val();
-    var urlJsonTx = "https://btc.blockr.io/api/v1/tx/raw/" + txid;
+    var urlJsonTx = "https://blockexplorer.com/api/tx/" + txid;
     $.getJSON(urlJsonTx, function(data) {
         $('#txHexText').val(data.data.tx.hex);
 
