@@ -96,44 +96,50 @@
   // This function also shows how to use the bitcoin-proof module.
   function getTxInfo() {
     var txid = $('#transHex').val();
-    var urlJsonTx = "https://btc.blockr.io/api/v1/tx/raw/" + txid;
+    var urlJsonTx = "https://blockexplorer.com/api/rawtx/" + txid;
     $.getJSON(urlJsonTx, function(data) {
-        var rawTx = data.data.tx.hex;
+        console.log("here is the data" + JSON.stringify(data));
+        var rawTx = data.rawtx;
         $('#txHexText').val(rawTx);
-
+        var urlGetBlockInfo = "https://blockexplorer.com/api/tx/" + txid;
         // A separate call is needed because the transaction index, the position
         // of the transaction in the block, is needed to be able to compute the
         // Merkle proof
-        var blockNum = data.data.tx.blockhash;
-        var blockInfoUrl = "//btc.blockr.io/api/v1/block/raw/"+blockNum;
-        $.getJSON(blockInfoUrl, function(res) {
-            gBlockHashOfTx = res.data.hash;
-            $('#txBlockHash').text(gBlockHashOfTx)
+        //TODO this is a lot of api calls
+        $.getJSON(urlGetBlockInfo, function(data) {
+            var blockNum = data.blockheight;
+            var blockHashUrl = "https://blockexplorer.com/api/block-index/" + blockNum;
+            $.getJSON(blockHashUrl, function(res) {
+                gBlockHashOfTx = res.blockHash;
+                $('#txBlockHash').text(gBlockHashOfTx);
+                var blockInfoURL = "https://blockexplorer.com/api/block/" + gBlockHashOfTx;
+                $.getJSON(blockInfoURL, function(res) {
+                    var txIndex;
+                    for (var key in res.tx) {
+                        if (res.tx[key] == txid) {
+                            txIndex = key;
+                            break;
+                        }
+                    }
 
-            var txIndex;
-            for (var key in res.data.tx) {
-              if (res.data.tx[key] == txid) {
-                txIndex = key;
-                break;
-              }
-            }
+                    // Proof can now be computed from the raw transaction and
+                    // transaction index
+                    gMerkleProof = btcproof.getProof(res.tx, txIndex);
+                    console.log('merkle proof: ', gMerkleProof);
+                    $('#mProof').val(JSON.stringify(gMerkleProof));
 
-            // Proof can now be computed from the raw transaction and
-            // transaction index
-            gMerkleProof = btcproof.getProof(res.data.tx, txIndex);
-            console.log('merkle proof: ', gMerkleProof)
-            $('#mProof').val(JSON.stringify(gMerkleProof));
+                    gRelayContract.getFeeAmount.call('0x' + gBlockHashOfTx, function(err, feeWei) {
+                        if (err) {
+                            console.log('@@@ getFeeAmount error');
+                            return;
+                        }
 
-            gRelayContract.getFeeAmount.call('0x'+gBlockHashOfTx, function(err, feeWei) {
-              if (err) {
-                console.log('@@@ getFeeAmount error');
-                return;
-              }
-
-              gFeeVerifyFinney = web3.fromWei(feeWei, 'finney');
-              $('#feeVerifyTx').text(gFeeVerifyFinney);
+                        gFeeVerifyFinney = web3.fromWei(feeWei, 'finney');
+                        $('#feeVerifyTx').text(gFeeVerifyFinney);
+                    })
+                });
             })
-        })
+        });
     })
   }
 

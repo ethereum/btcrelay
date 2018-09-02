@@ -172,10 +172,10 @@ function getTxInfo() {
 
   var urlJsonTx;
   if (gBtcTestnet) {
-      urlJsonTx = "https://tbtc.blockr.io/api/v1/tx/raw/" + txid;
+      urlJsonTx = "https://testnet.blockexplorer.com/api/rawtx/" + txid;
   }
   else {
-      urlJsonTx = "https://btc.blockr.io/api/v1/tx/raw/" + txid;
+      urlJsonTx = "https://blockexplorer.com/api/tx/" + txid;
   }
   $.getJSON(urlJsonTx, function(data) {
       console.log('@@@ data: ', data)
