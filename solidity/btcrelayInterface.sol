@@ -54,7 +54,7 @@ contract btcrelayInterface
     // # the merkle proof is represented by 'txIndex', 'sibling', where:
     // # - 'txIndex' is the index of the tx within the block
     // # - 'sibling' are the merkle siblings of tx
-    function verifyTx(bytes txBytes, uint256 txIndex, bytes32[] sibling, uint256 txBlockHash) public payable returns (uint256);
+    function verifyTx(bytes txBytes, int256 txIndex, int256[] sibling, int256 txBlockHash) public payable returns (uint256){}
 
     // # Returns 1 if txHash is in the block given by 'txBlockHash' and the block is
     // # in Bitcoin's main chain (ie not a fork)
