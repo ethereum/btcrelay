@@ -84,6 +84,7 @@ contract btcrelayInterface
     // # understand what that contract's processTransaction method returns.
     function relayTx(
         bytes32 txBytes,
+        int256 txIndex,
         bytes32[] siblings,
         bytes32 txBlockHash,
         address contractAddress
