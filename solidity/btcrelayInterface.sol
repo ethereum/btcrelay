@@ -82,12 +82,13 @@ contract btcrelayInterface
     // # it may also have been returned by processTransaction(). callers should be
     // # aware of the contract that they are relaying transactions to and
     // # understand what that contract's processTransaction method returns.
+    //"relayTx(bytes,int256,int256[],int256,int256)"
     function relayTx(
-        bytes32 txBytes,
+        bytes txBytes,
         int256 txIndex,
-        bytes32[] siblings,
-        bytes32 txBlockHash,
-        address contractAddress
+        int256[] siblings,
+        int256 txBlockHash,
+        int256 contractAddress
     ) public payable returns(uint256);
 
     // # return the hash of the heaviest block aka the Tip
